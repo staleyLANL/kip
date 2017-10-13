@@ -1,0 +1,76 @@
+/* -*- C++ -*- */
+
+// origin
+sphere(0,0,0, 0.012, black)
+
+// +x
+silo(0,0,0, 0.9,0,0, 0.006, brick_red)
+cone(1,0,0, 0.9,0,0, 0.012, brick_red)
+spheroid(0.095,0,0, 0.105,0,0, 0.0144, brick_red)
+spheroid(0.195,0,0, 0.205,0,0, 0.0144, brick_red)
+spheroid(0.295,0,0, 0.305,0,0, 0.0144, brick_red)
+spheroid(0.395,0,0, 0.405,0,0, 0.0144, brick_red)
+spheroid(0.495,0,0, 0.505,0,0, 0.0144, brick_red)
+spheroid(0.595,0,0, 0.605,0,0, 0.0144, brick_red)
+spheroid(0.695,0,0, 0.705,0,0, 0.0144, brick_red)
+spheroid(0.795,0,0, 0.805,0,0, 0.0144, brick_red)
+
+// -x
+silo( 0,0,0, -0.9,0,0, 0.006, wild_watermelon)
+cone(-1,0,0, -0.9,0,0, 0.012, wild_watermelon)
+spheroid(-0.095,0,0, -0.105,0,0, 0.0144, wild_watermelon)
+spheroid(-0.195,0,0, -0.205,0,0, 0.0144, wild_watermelon)
+spheroid(-0.295,0,0, -0.305,0,0, 0.0144, wild_watermelon)
+spheroid(-0.395,0,0, -0.405,0,0, 0.0144, wild_watermelon)
+spheroid(-0.495,0,0, -0.505,0,0, 0.0144, wild_watermelon)
+spheroid(-0.595,0,0, -0.605,0,0, 0.0144, wild_watermelon)
+spheroid(-0.695,0,0, -0.705,0,0, 0.0144, wild_watermelon)
+spheroid(-0.795,0,0, -0.805,0,0, 0.0144, wild_watermelon)
+
+// +y
+silo(0,0,0, 0,0.9,0, 0.006, jungle_green)
+cone(0,1,0, 0,0.9,0, 0.012, jungle_green)
+spheroid(0,0.095,0, 0,0.105,0, 0.0144, jungle_green)
+spheroid(0,0.195,0, 0,0.205,0, 0.0144, jungle_green)
+spheroid(0,0.295,0, 0,0.305,0, 0.0144, jungle_green)
+spheroid(0,0.395,0, 0,0.405,0, 0.0144, jungle_green)
+spheroid(0,0.495,0, 0,0.505,0, 0.0144, jungle_green)
+spheroid(0,0.595,0, 0,0.605,0, 0.0144, jungle_green)
+spheroid(0,0.695,0, 0,0.705,0, 0.0144, jungle_green)
+spheroid(0,0.795,0, 0,0.805,0, 0.0144, jungle_green)
+
+// -y
+silo(0, 0,0, 0,-0.9,0, 0.006, granny_smith_apple)
+cone(0,-1,0, 0,-0.9,0, 0.012, granny_smith_apple)
+spheroid(0,-0.095,0, 0,-0.105,0, 0.0144, granny_smith_apple)
+spheroid(0,-0.195,0, 0,-0.205,0, 0.0144, granny_smith_apple)
+spheroid(0,-0.295,0, 0,-0.305,0, 0.0144, granny_smith_apple)
+spheroid(0,-0.395,0, 0,-0.405,0, 0.0144, granny_smith_apple)
+spheroid(0,-0.495,0, 0,-0.505,0, 0.0144, granny_smith_apple)
+spheroid(0,-0.595,0, 0,-0.605,0, 0.0144, granny_smith_apple)
+spheroid(0,-0.695,0, 0,-0.705,0, 0.0144, granny_smith_apple)
+spheroid(0,-0.795,0, 0,-0.805,0, 0.0144, granny_smith_apple)
+
+// +z
+silo(0,0,0, 0,0,0.9, 0.006, denim)
+cone(0,0,1, 0,0,0.9, 0.012, denim)
+spheroid(0,0,0.095, 0,0,0.105, 0.0144, denim)
+spheroid(0,0,0.195, 0,0,0.205, 0.0144, denim)
+spheroid(0,0,0.295, 0,0,0.305, 0.0144, denim)
+spheroid(0,0,0.395, 0,0,0.405, 0.0144, denim)
+spheroid(0,0,0.495, 0,0,0.505, 0.0144, denim)
+spheroid(0,0,0.595, 0,0,0.605, 0.0144, denim)
+spheroid(0,0,0.695, 0,0,0.705, 0.0144, denim)
+spheroid(0,0,0.795, 0,0,0.805, 0.0144, denim)
+
+// -z
+silo(0,0, 0, 0,0,-0.9, 0.006, cornflower)
+cone(0,0,-1, 0,0,-0.9, 0.012, cornflower)
+spheroid(0,0,-0.095, 0,0,-0.105, 0.0144, cornflower)
+spheroid(0,0,-0.195, 0,0,-0.205, 0.0144, cornflower)
+spheroid(0,0,-0.295, 0,0,-0.305, 0.0144, cornflower)
+spheroid(0,0,-0.395, 0,0,-0.405, 0.0144, cornflower)
+spheroid(0,0,-0.495, 0,0,-0.505, 0.0144, cornflower)
+spheroid(0,0,-0.595, 0,0,-0.605, 0.0144, cornflower)
+spheroid(0,0,-0.695, 0,0,-0.705, 0.0144, cornflower)
+spheroid(0,0,-0.795, 0,0,-0.805, 0.0144, cornflower)

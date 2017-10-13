@@ -1,0 +1,10 @@
+
+This is the primary "readme" file for the Kip 1.0 library. Subdirectories
+are as follows:
+
+   doc       Documentation, and some example codes.
+   example   Examples.
+   src       Source code.
+   test      Tests.
+
+See the individual readme files in each subdirectory for more information.

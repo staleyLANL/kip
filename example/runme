@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# C++
+#export PRE='clang++-3.8 -std=c++11 -Wno-c++11-extensions
+export  PRE='g++ -std=gnu++11 -fopenmp
+  -Wall -Winit-self -Wmissing-include-dirs -Wswitch-default -Wswitch-enum
+  -Wstrict-aliasing=2 -Wextra -Wundef -Wpointer-arith -Wunused-parameter
+  -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wconversion
+  -I../src
+  -I/usr/include/GL
+  -I../../libtk
+  -L../../libtk
+  -pedantic
+  -O3 -funroll-loops
+  -s'
+export POST='-ltk -lX11 -lGL'
+
+# Compile
+$PRE kip-short.cc  -o kip-short  $POST
+$PRE kip-medium.cc -o kip-medium $POST
+$PRE kip.cc        -o kip        $POST

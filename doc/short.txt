@@ -1,0 +1,315 @@
+
+================================================================================
+Kip Ray Tracer
+================================================================================
+
+========================
+Example
+========================
+
+The *.cc files in this directory serve as simple examples of how to use kip.
+
+
+========================
+Compilation
+========================
+
+Here are some compilation commands you can cut-and-paste. You'll may wish to
+create your own scripts or makefiles, based on these.
+
+Kip is "header-only," and thus requires no libraries other than those that come
+with C++. However, in order to display the images that kip computes, you'll need
+libraries for opening and writing to windows. For our examples, we used:
+
+   tk   Simple window library we found here:
+        ftp://ftp.sgi.com/opengl/contrib/
+
+   gl   OpenGL. Used only to display the kip-generated image.
+
+OpenGL's #includes and libraries are probably already on your system, as OpenGL
+is well-known and well-used. TK's #includes and libraries probably aren't; just
+download them from the ftp site given above.
+
+Now let's compile a kip code. Be sure you've created libtk.a, return to the doc/
+directory, and let:
+
+   file.cc = C++ file you want to compile.
+   exe     = Name you want for the executable.
+
+Basic compilation:
+
+   g++ -I../src -I/usr/include/GL -I../../libtk -L../../libtk \
+   file.cc -o exe -ltk -lX11 -lGL
+
+For OpenMP parallelism (if two or more processors, or processor cores, are
+available), add:
+
+  -fopenmp
+
+We often use additional compilation flags related to warnings and optimizations.
+See the "runme" file.
+
+
+
+================================================================================
+Classes
+================================================================================
+
+========================
+Template Defaults
+========================
+
+   real  = double
+   base  = kip::rgb   // red, green, blue
+   color = kip::rgba  // red, green, blue, alpha
+
+
+========================
+scene<real,base,color>
+========================
+
+   Derived from...
+
+   model <real,base>    // CSG model
+   view  <real>         // view information
+   light <real>         // light source
+   engine<real>         // internal parameters
+   image <real,color>   // output bitmap
+
+
+========================
+model<real,base>
+========================
+
+   // primitives
+   std::vector bicylinder
+   std::vector biwasher
+   std::vector box
+   std::vector circle
+   std::vector cone
+   std::vector cylinder
+   std::vector ellipsoid
+   std::vector half
+   std::vector paraboloid
+   std::vector pill
+   std::vector polygon
+   std::vector silo
+   std::vector sphere
+   std::vector spheroid
+   std::vector triangle
+   std::vector washer
+   std::vector xplane
+   std::vector tab
+   std::vector yplane
+   std::vector zplane
+
+   // unary operators
+   std::vector kipnot
+
+   // binary operators
+   std::vector kipand
+   std::vector kipcut
+   std::vector kipor
+   std::vector kipxor
+
+   // n-ary operators
+   std::vector ands
+   std::vector even
+   std::vector odd
+   std::vector one
+   std::vector ors
+   std::vector some
+
+
+========================
+view<real>
+========================
+
+   point<real> target
+
+   real d
+   real fov
+
+   real theta
+   real phi
+   real roll
+
+
+========================
+light<real>
+========================
+
+   Contains no user-accessible data.
+   For a light L, you can set L[0](x,y,z), the light-source coordinate.
+
+
+========================
+engine<real>
+========================
+
+   kip::method method  // set to kip::uniform for now; this is the default
+
+   unsigned hzone
+   unsigned vzone
+
+   unsigned hdivision
+   unsigned vdivision
+   unsigned min_area
+
+   real     sort_frac
+   unsigned sort_min
+
+   real     fudge
+
+
+========================
+image<real,color>
+========================
+
+   array<2,color> bitmap
+
+   const unsigned &hpixel  // you can examine, but not set directly
+   const unsigned &vpixel  // ditto
+
+   color    background
+   real     aspect
+   unsigned anti
+
+
+
+================================================================================
+Files
+================================================================================
+
+At the moment, kip files can only contain shapes (primitives and operators),
+not other quantities in the model, view, light, engine, and image classes.
+C++ style comments are allowed; in addition, /*...*/ comments can nest.
+
+All shapes are templated with <real,color> (e.g., sphere<real,color>) in C++
+codes. In kip files, use the plain name (e.g. sphere); the template parameters
+are implied by the C++ code that's reading the file.
+
+
+========================
+Notation
+========================
+
+      name        meaning(s)                      type
+   ---------------------------------------------------------------------------
+      a           point, apex, angles             (x,y,z)
+      b           point, base                     (x,y,z)
+
+      c           center                          (x,y,z)
+      p           point                           (x,y,z)
+
+      r           radius                          real, or (x,y,z)
+      r.a         radius at "a"                   real
+      r.b         radius at "b"                   real
+
+      i           inner radius                    real
+      i.a         inner radius at "a"             real
+      i.b         inner radius at "b"             real
+
+      o           outer radius                    real
+      o.a         outer radius at "a"             real
+      o.b         outer radius at "b"             real
+
+      n           table size, normal              unsigned, or (x,y,z)
+      table       container of coordinates        (x,y,z) or (x,r)
+
+      u           point                           (x,y,z)
+      v           point                           (x,y,z)
+      w           point                           (x,y,z)
+
+      x           x coordinate                    real
+      y           y coordinate                    real
+      z           z coordinate                    real
+
+      size.x      x size                          real
+      size.y      y size                          real
+      size.z      z size                          real
+   ---------------------------------------------------------------------------
+      name        meaning(s)                      type
+
+
+========================
+Primitives
+========================
+
+Listed in groups with the same or similar parameter lists,
+not in alphabetic order.
+
+
+sphere     ( c.x,c.y,c.z, r [, color] )
+
+ellipsoid  ( c.x,c.y,c.z, a.x,a.y,a.z, r.x,r.y,r.z [, color] )
+box        ( c.x,c.y,c.z, a.x,a.y,a.z, r.x,r.y,r.z [, color] )
+
+cylinder   ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+pill       ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+spheroid   ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+cone       ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+silo       ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+paraboloid ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+
+bicylinder ( a.x,a.y,a.z, b.x,b.y,b.z, r.a,r.b [, color] )
+washer     ( a.x,a.y,a.z, b.x,b.y,b.z, i,o [, color] )
+biwasher   ( a.x,a.y,a.z, b.x,b.y,b.z, i.a,i.b, o.a,o.b [, color] )
+
+circle     ( c.x,c.y,c.z, n.x,n.y,n.z, r [, color] )
+
+xplane     ( x, size.y,size.z, color [, second-color] )
+yplane     ( y, size.x,size.z, color [, second-color] )
+zplane     ( z, size.x,size.y, color [, second-color] )
+
+triangle   ( u.x,u.y,u.z, v.x,v.y,v.z, w.x,w.y,w.z [, color] )
+
+polygon    ( n,
+             table[ 0 ].x, table[ 0 ].y, table[ 0 ].z,
+             ...,
+             table[n-1].x, table[n-1].y, table[n-1].z
+             [, color] )
+
+tab        ( a.x,a.y,a.z, b.x,b.y,b.z,
+             n,
+             table[ 0 ].x, table[ 0 ].r,
+             ...,
+             table[n-1].x, table[n-1].r
+             [, color] )
+
+half       ( point.x,point.y,point.z, normal.x,normal.y,normal.z [, color] )
+
+
+========================
+Operators
+========================
+
+In C++ codes, write "kipnot", "kipand", "kipcut", "kipor", and "kipxor".
+
+In kip files, write "not", "and", "cut", "or", and "xor", OR write the
+kip-prefixed versions.
+
+
+Let "shape" be any primitive or operator, and shape-list be a comma-separated
+list of shapes. Then, the formats for kip's logical operators are as follows.
+
+
+not ( shape [, color] )
+
+and ( shape, shape [, color] )
+cut ( shape, shape [, color] )
+or  ( shape, shape [, color] )
+xor ( shape, shape [, color] )
+
+ands ( shape-list [; color] )
+even ( shape-list [; color] )
+odd  ( shape-list [; color] )
+one  ( shape-list [; color] )
+ors  ( shape-list [; color] )
+some ( shape-list [; color] )
+
+
+Note that the n-ary operators (ands, even, odd, one, ors, some) require that
+you place a semicolon, not a comma, after the main shape specification when you
+provide a color. This is so that kip can know when your (comma-separated!) list
+of shapes ends, and your color begins.

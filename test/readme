@@ -1,0 +1,3 @@
+
+At present, the kip distribution has no formal test suite. We do have codes that
+test kip; they're not, however, integrated into the distribution at this time.

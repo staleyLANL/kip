@@ -1,0 +1,197 @@
+
+========================
+Introduction
+========================
+
+Note: most things you'll realistically ray-trace, at least initially, should
+display almost immediately. If they don't, there may be something wrong with
+your windowing mechanism. Someone who tried an earlier version of this code
+said he had to minimize and then maximize his window in order for the result
+to display.
+
+With longer input files, reading the file actually takes most of the time.
+Once loaded, the model ray-traces faster.
+
+For a simple model, when you're moving around, rotating, etc., the ray-tracing
+speed might be faster than your keyboard-repeat speed. Try increasing your
+keyboard repeat speed if you think this might be the case (and if you want
+improved ray-tracing speed).
+
+Contents of this directory are described below.
+
+
+
+========================
+input/*/*.kip
+========================
+
+Example kip-format input files.
+
+
+
+========================
+libtk
+========================
+
+This is the "Nano Window Toolkit," a small add-on for OpenGL. It supports some
+simple operations, like opening windows and getting window and keyboard events.
+It's from:
+
+   ftp://ftp.sgi.com/opengl/contrib/
+
+except that we modified it to accept additional keyboard input.
+
+The ray-tracing library itself requires nothing other than a C++ compiler.
+However, most of my demo programs use libtk and OpenGL for displaying the image
+and for getting window and keyboard events. See, for instance, kip.cc.
+
+If libtk isn't in this particular distribution of kip, then you can get it
+from the above site, and compile it into an archive file, libtk.a, to which
+you can link kip codes that use it. However, modifications are necessary in
+order to run kip.cc with the keyboard commands we speak of below.
+
+
+
+========================
+src (or ../src)
+========================
+
+The ray-tracer code. This directory should be in your compiler's #include path,
+which is often accomplished by using the -I compiler option. #include only
+kip.h. It includes the other files, in their proper order. No configure, make,
+or install scripts are required. Just #include "kip.h" in your own code, and
+compile as you usually do.
+
+
+
+========================
+runme
+========================
+
+Bash script for compilation of this directory's example codes using g++. Tweak
+as necessary for your machine.
+
+The combination of optimization flags in the compiler command in this script has
+proven to work well for ray-tracing speed.
+
+
+
+========================
+kip-short.cc
+========================
+
+Essentially the minimal kip program. Just reads a kip file and ray-traces,
+without displaying anything. Everything happens internally, and no external
+libraries (e.g., to display the result) are needed.
+
+Usage:
+   kip-short <file>
+
+Example:
+   kip-short input/rgb/axis.kip
+
+
+
+========================
+kip-medium.cc
+========================
+
+Reads a kip file, ray-traces, displays the result, waits for you to press
+the Enter key (from the command window, not the display window), then quits.
+
+Usage:
+   kip-medium <file>
+
+Example:
+   kip-medium input/rgb/axis.kip
+
+
+
+========================
+kip.cc
+========================
+
+Basic demo program. Reads a kip file and displays. Keyboard commands allow
+you to move around, zoom in/out, etc. See "Keyboard Commands" below.
+
+Usage:
+   kip <file>
+
+Example:
+   kip input/rgb/axis.kip
+
+At this time, our modified version of the "tk" code, mentioned earlier, is
+required in order for all of the keyboard commands described below to work.
+
+
+
+========================
+Keyboard Commands
+========================
+
+For the kip.cc demo program.
+
+Case-sensitive; turn off the caps-lock key.
+
+Press these keys from within the display window that comes up, not from within
+the command window where you ran the code.
+
+   i
+   o
+      Move observer in toward the origin, or out from it.
+
+   space
+   backspace
+      Perform more or less antialiasing. Pressing <space> takes you from 1x1
+      to 2x2 antialiasing, then 3x3, 4x4, and 5x5. After that the code stops,
+      as improvements beyond 5x5 generally aren't noticeable. Ray-tracing times
+      multiply by roughly 4, 9, 16, and 25, minus some overhead. Use <backspace>
+      to "back out" of antialiasing: 5x5 to 4x4, etc., down to 1x1. Note that
+      antialiasing requires more time, not more memory.
+
+   cursor left
+   cursor right
+   cursor up
+   cursor down
+      Rotate observer left/right (as in spherical "theta" coordinate), or
+      up/down (as in spherical "phi" coordinate).
+
+   0
+   9
+      Roll observer one way or another. The effect is for the picture to spin.
+
+   -
+   =
+      Decrease (-) or increase (=) the field-of-view. In effect, - means more
+      telephoto, = means more wide-angle. (The angle always remains less than
+      180 degrees.) Try zooming in close to a model using "i", then pressing "="
+      several times for a fisheye effect.
+
+   keypad 6
+   keypad 4
+   keypad 8
+   keypad 2
+   page up
+   page down
+      Respectively: increase/decrease x, increase/decrease y, and
+      increase/decrease z of the target point (the point being looked
+      at by the observer).
+
+   , or <
+   . or >
+      Make the sampling coarser or finer. Coarsing sampling means that we'll
+      ray-trace fewer pixels internally, then scale up to the window's size.
+
+   p
+      Toggle informational printing of various parameters.
+
+   home
+      Reset to original view.
+
+   q
+      Quit.
+
+You should be able to resize the window, move it, maximize it, etc.
+
+Kip offers much more than what you can do with the demos. Don't misconstrue what
+you see above as being the total of what the library has to offer.

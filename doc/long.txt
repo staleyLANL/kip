@@ -1,0 +1,932 @@
+
+================================================================================
+================================================================================
+Major Structures
+================================================================================
+================================================================================
+
+Notes
+
+   default real  = double
+   default base  = kip::rgb   // red, green, blue
+   default color = kip::rgba  // red, green, blue, alpha
+
+
+
+========================
+scene<real,base,color>
+========================
+
+Synopsis
+
+   Combines model, view, light, engine, and image (see below) into one
+   convenient class. Publicly derived from:
+
+      model <real,base>
+      view  <real>
+      light <real>
+      engine<real>
+      image <real,color>
+
+
+Member Functions
+
+   default constructor
+
+   model ()   return model part
+   view  ()   return view part
+   light ()   return light part
+   engine()   return engine part
+   image ()   return image part
+
+   trace ()   ray trace
+
+
+Example
+
+   #include "kip.h"
+
+   int main(void)
+   {
+      kip::scene<> s;
+      s.view().target(0,0,0);
+      s.target(0,0,0);  // because scene is derived from view
+   }
+
+
+
+========================
+model<real,base>
+========================
+
+Synopsis
+
+   Just the kip model proper.
+
+
+Member Data
+
+   container_t sphere
+   container_t box
+   ...
+
+   bool append  // behavior of model's operator>>
+
+
+Member Functions
+
+   default constructor
+
+   void erase()     Clear model; equivalent to type.clear() for all types.
+
+   void push(sphere &)
+   void push(box &)
+   ...
+
+   unsigned size()  Total number of objects in the model.
+
+
+Notes
+
+   Above, container_t is an array-like container type. Other than that,
+   I'd like to leave its precise class undefined. It has (among other
+   things) an erase() function, which erases all its elements. Model
+   has the following container_ts:
+
+      // unary operators
+      kipnot
+
+      // binary operators
+      kipand   kipcut   kipor   kipxor
+
+      // n-ary operators
+      ands   odd   even   some
+      one    ors
+
+      // primitives
+      bicylinder   biwasher   box         cone         silo
+      cylinder     pill       ellipsoid   paraboloid   half
+      circle       xplane     yplane      zplane       sphere
+      spheroid     triangle   polygon     washer       tabular
+
+
+Example
+
+   #include "kip.h"
+
+   int main(void)
+   {
+      kip::model<> m;
+
+      m.push(kip::sphere<>(0,0,0, 1));
+      m.push(kip::sphere<>(0,0,0, 2));
+      m.push(kip::cylinder<>(0,0,0, 1,0,0, 0.5));
+
+      assert(m.size() == 3);
+      assert(m.sphere[1].r == 2);
+
+      m.erase();
+      assert(m.size() == 0);
+   }
+
+
+
+========================
+view<real>
+========================
+
+Synopsis
+
+   Information about the "view": how we're viewing a model.
+
+
+Member Data
+
+   point<real> target = 0,0,0  // x,y,z
+
+   real d     = 8
+   real theta = 60
+   real phi   = 30
+   real roll  = 0
+   real fov   = 16
+
+   Place your eye on the +x axis, specifically at (d,0,0). Look toward the
+   origin, with your head up and feet down (head +z, feet -z). In the xy
+   plane, move theta degrees toward -y. Then move phi degrees "up" from
+   the xy plane toward +z.
+
+   Field-of-view, fov, is the total left-to-right angle of view in degrees;
+   use numbers in [0,180). Small = telephoto, large = wide-angle.
+
+   Spin image in front of you by roll degrees counterclockwise; equivalently,
+   spin eyeball by roll degrees clockwise. Finally, translate everything by
+   target (so that (0,0,0) becomes target).
+
+
+Member Functions
+
+   default constructor
+
+
+Example
+
+   #include "kip.h"
+
+   int main(void)
+   {
+      kip::view<> v;
+      v.target(1,1,1);
+
+      v.d     = 10;
+      v.theta = 60;  // degrees
+      v.phi   = 30;  // degrees
+      v.roll  = 10;  // degrees
+      v.fov   = 20;  // degrees
+   }
+
+
+
+========================
+light<real>
+========================
+
+Synopsis
+
+   Information about the light source.
+
+
+Member Data
+
+   (Not directly user-accessible.)
+
+
+Member Functions
+
+   default constructor
+   operator[]
+
+
+Notes
+
+   For a light called L, refer to a point<real> "light source" by writing
+   L[0]. That is, L[0].x, L[0].y, and L[0].z are reals, typically doubles.
+
+   The idea here is that we'll eventually allow for multiple light sources,
+   which will be accessible by L[0], L[1], etc. Eventually, I may also allow
+   for additional attributes, such as intensity and color. For now just use
+   L[0], and consider it to contain (x,y,z) only.
+
+
+Example
+
+   #include "kip.h"
+
+   int main(void)
+   {
+      kip::light<> L;
+
+      L[0] = kip::point<double>(10,20,30);  // longhand
+      L[0](10,20,30);  // shorthand
+   }
+
+
+
+========================
+engine<real>
+========================
+
+Synopsis
+
+   Internal parameters related to the ray tracing algorithm. Most users
+   should just leave these at their defaults. You can play around with them
+   to see if you can speed up ray-traces of your particular models, because
+   these parameters affect ray tracing speed.
+
+
+Member Data
+
+   // ray-tracing "method"; relates to kip's way of localizing objects;
+   // kip::recursive is still in development and shouldn't be used yet
+   kip::method method = kip::uniform;  // use kip::uniform or kip::recursive
+
+   unsigned hzone = 40;  // uniform only. Range: [1, horizontal pixels]
+   unsigned vzone = 40;  // uniform only. Range: [1, vertical pixels]
+
+   unsigned hdivision = 2;    // recursive only. Range: [2, horizontal pixels]
+   unsigned vdivision = 2;    // recursive only. Range: [2, vertical pixels]
+   unsigned min_area = 800;   // recursive only. Range: [1, total pixels]
+
+   real     sort_frac = 0.02;  // for both methods. Range: (0, infinity)
+   unsigned sort_min = 64;     // for both methods. Range: [1, infinity)
+
+   real     fudge = 0.99999;   // fudge factor; use 1-"epsilon"
+
+   Note: feel free to experiment, but if you do, watch ranges carefully.
+   And, I suggest leaving "fudge" as-is in any event. Varying it will have
+   little, if any, effect.
+
+
+Member Functions
+
+   default constructor
+
+
+Example
+
+   #include "kip.h"
+
+   int main(void)
+   {
+      kip::engine<> e;
+
+      e.method = kip::uniform;
+      e.hzone = 32;
+   }
+
+
+
+========================
+image<real,color>
+========================
+
+Synopsis
+
+   Objects of this type contain the output "bitmap" created by ray tracing,
+   plus a few related odds and ends.
+
+
+Member Data
+
+   unsigned hpixel = 800   // Number of horizontal pixels
+   unsigned vpixel = 800   // Number of vertical pixels
+      Note: You can examine these, but can't set them directly. To set them,
+      use resize() or upsize() as explained below.
+
+   color background = color()  // with color==kip::rgb, default is gray
+   real aspect = 1             // pixel aspect ratio: vertical/horizontal
+   unsigned anti = 1           // anti-aliasing level. Range: >= 1
+
+   array<2,color> bitmap  // output "bitmap" created by ray tracing
+
+   hpixel and vpixel are the number of "pixels" to ray trace. This really
+   means the size of the 2d array-like structure "bitmap". You can access
+   elements of bitmap using parenthesis: bitmap(0,0), bitmap(1,0), etc.
+   Horizontal values vary the fastest in memory, so that bitmap(i,j) and
+   bitmap(i+1,j) are next to each other in memory.
+
+   Ray-tracing time increases approximately with anti^2. Avoid going over
+   values of about 4. The answer won't be noticeably different above that,
+   and the code will be much, much slower. In fact, we suggest anti = 1
+   most of the time, and more than that only for a "final" image that has
+   to look as perfect as possible.
+
+
+Member Functions
+
+   resize(h,v)
+      Set hpixel=h and vpixel=v, and reallocate bitmap iff its current
+      total size is different.
+
+   upsize(h,v)
+      Set hpixel=h and vpixel=v, and reallocate bitmap iff its current
+      total size is smaller. (If its current size is as large or larger
+      than necessary, upsize() leaves it at its current size and uses
+      only the first part.)
+
+   operator()(i,j)
+      Direct access to the image's bitmap(i,j).
+
+   operator()()
+      Returns a pointer to bitmap(0,0). Convenient for functions like
+      OpenGL's glDrawPixels.
+
+
+Example
+
+   #include "kip.h"
+   #include "gl.h"
+
+   int main(void)
+   {
+      kip::image<> i;
+
+      i.background = kip::rgba(0,0,0);  // black background
+      i.background = kip::rgba(255,255,255);  // nah, try white
+
+      i.anti = 3;  // anti-alias, for a smoother image
+      i.upsize(1024,768);  // decent-sized bitmap
+
+      // Assume we do a ray-trace right here, and then set up a window for
+      // OpenGL's use. Then...
+
+      glDrawPixels(i.hpixel,i.vpixel, GL_RGBA,GL_UNSIGNED_BYTE, i());
+   }
+
+
+
+================================================================================
+================================================================================
+File Format
+================================================================================
+================================================================================
+
+At present, kip files can contain only models, not other things (e.g. view
+information) that objects of the aggregate kip::scene class contain.
+
+I suggest using the ".kip" filename extension for kip files; but kip doesn't
+care.
+
+In the following informal kip-file grammar, lists of indented items represent
+different forms allowed for the entry in question. For example, a model is
+either nothing, a shape, or a shape followed by a model (the result being
+that a model consists of zero or more shapes). Brackets [] denote optional
+items.
+
+Note: the unary and binary operators---not, and, cut, or, and xor---are named
+not, and, cut, or, and xor in kip files. In the C++ kip library, however,
+their classes are called kipnot, kipand, kipcut, kipor, and kipnot. This is
+because not, and, or, and xor serve in C++ as alternative tokens for !, &&,
+||, and ^, respectively; see [lex.digraph] in the C++ standard. (The name "cut"
+would have been fine as-is, but I used "kipcut" in order to be consistent with
+the others.)
+
+C++ style comments are supported. Block comments, /* ... */, begin with a /
+followed directly by an *, and end with the next / preceded directly by an *.
+(The smallest such comment is thus /*/, in case you wanted to know.) Line
+comments begin with // and end with the next end-of-line or end-of-file.
+Unlike C++, kip allows for nested block comments.
+
+File-format grammar follows.
+
+
+
+model:
+   <nothing>  // Thus an empty file is a valid kip file. :-)
+   shape
+   shape model
+
+shape:
+   primitive
+   unary-operator
+   binary-operator
+   n-ary-operator
+
+shapelist:  // Zero or more comma-separated shapes
+   <nothing>
+   shape
+   shape, shapelist
+
+
+
+primitive:  // See explanations elsewhere of each specific primitive
+   bicylinder
+   biwasher
+   box
+   circle
+   cone
+   cylinder
+   ellipsoid
+   half
+   paraboloid
+   pill
+   polygon
+   silo
+   sphere
+   spheroid
+   triangle
+   washer
+   xplane
+   tab
+   yplane
+   zplane
+
+unary-operator:  // See explanations elsewhere of each specific type
+   not  ( shape [, color] )
+
+binary-operator:  // See explanations elsewhere of each specific type
+   and  ( shape, shape [, color] )
+   cut  ( shape, shape [, color] )
+   or   ( shape, shape [, color] )
+   xor  ( shape, shape [, color] )
+
+n-ary-operator:  // See explanations elsewhere of each specific type
+   ands ( shapelist [; color] )  // Note semicolon instead of comma in these...
+   even ( shapelist [; color] )
+   odd  ( shapelist [; color] )
+   one  ( shapelist [; color] )
+   ors  ( shapelist [; color] )
+   some ( shapelist [; color] )
+
+
+
+color:
+   red, green, blue   // Assuming you use kip::rgb<> for your color type
+
+red:
+   0..255   // Meaning an integer in [0,255]
+
+green:
+   0..255
+
+blue:
+   0..255
+
+
+
+================================================================================
+================================================================================
+Primitives
+================================================================================
+================================================================================
+
+Listed here in alphabetical order.
+
+Each is templated by class real followed by class color.
+
+
+
+bicylinder ( a.x,a.y,a.z, b.x,b.y,b.z, r.a,r.b [, color] )
+
+   Like a cylinder, but with different radii allowed at each end.
+   Could be thought of as a "truncated cone".
+
+   a = endpoint #1
+   b = endpoint #2
+
+   r.a = radius at a
+   r.b = radius at b
+
+
+
+biwasher ( a.x,a.y,a.z, b.x,b.y,b.z, i.a,i.b, o.a,o.b [, color] )
+
+   Like a washer, but with different radii (both inner and outer)
+   allowed at each end.
+
+   a = endpoint #1
+   b = endpoint #2
+
+   i.a, i.b = inner radii at a and b
+   o.a, o.b = outer radii at a and b
+
+
+
+box ( c.x,c.y,c.z, a.x,a.y,a.z, r.x,r.y,r.z [, color] )
+
+   Note: In order to be consistent with things like spheres and
+   ellipsoids, kip asks for "radii" (half-sizes) of boxes, not full
+   sizes.
+
+   Rotation angles are in degrees.
+
+   c = center
+
+   a = angles of rotation, clockwise as viewed from +x,+y,+z toward
+       center
+
+   r = radii (half-sizes)
+
+
+
+circle ( c.x,c.y,c.z, n.x,n.y,n.z, r [, color] )
+
+   2d circle embedded in kip's native 3d space.
+
+   c = center
+   n = normal
+
+   r = radius
+
+   Rather than using a normal, n, to define a circle's orientation,
+   we could instead have chosen to use two angles; say, (theta,phi).
+   This would have saved one real number per circle. However, our
+   experience has been that our (center,normal,radius) specification
+   is perhaps more convenient to use.
+
+
+
+cone ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+
+   Self-explanatory.
+
+   a = apex (pointy end)
+   b = base (flat end)
+
+   r = radius at base
+
+
+
+cylinder ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+
+   Self-explanatory.
+
+   a = endpoint #1
+   b = endpoint #2
+
+   r = radius
+
+
+
+ellipsoid ( c.x,c.y,c.z, a.x,a.y,a.z, r.x,r.y,r.z [, color] )
+
+   All three radii can be different. Rotation angles are in degrees.
+
+   c = center
+
+   a = angles of rotation, clockwise as viewed from +x,+y,+z toward
+       center
+
+   r = radii
+
+
+
+half ( point.x,point.y,point.z, normal.x,normal.y,normal.z [, color] )
+
+   Half space, i.e., half of kip's universe. You can use half spaces
+   to create cut-planes.
+
+   point  = point on the boundary between the universe's two halves.
+   normal = normal, *out* of the material.
+
+
+
+paraboloid ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+
+   Self-explanatory.
+
+   a = apex (rounded end)
+   b = base (flat end)
+
+   r = radius at base
+
+
+
+pill ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+
+   Like a cylinder, but with a hemisphere at each endpoint.
+   Endpoints "a" and "b" are of the cylindrical part; thus,
+   the overall endpoints, due to the half-spheres, are a
+   distance of r further out in each direction.
+
+   a = endpoint #1 (of cylindrical part)
+   b = endpoint #2 (of cylindrical part)
+
+   r = radius
+
+
+
+polygon ( n,
+          table[ 0 ].x, table[ 0 ].y, table[ 0 ].z,
+          table[ 1 ].x, table[ 1 ].y, table[ 1 ].z,
+          table[n-1].x, table[n-1].y, table[n-1].z [, color] )
+
+   2d polygon embedded in kip's native 3d space. Results are undefined
+   if the points do not all lie in the same plane. n = 0, 1, and 2 are
+   allowed but are not useful; they are equivalent to {} (empty set or
+   nothing-object).
+
+   n = number of points
+   table[i].x, table[i].y, table[i].z = (x,y,z) coordinate of point i
+
+
+
+silo ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+
+   Like a cylinder, but with a half-sphere at endpoint #1 (a).
+   Endpoints "a" and "b" are of the cylindrical part; thus, the
+   overall endpoint due to the half-sphere at "a" is a distance
+   of r further out.
+
+   a = endpoint #1 (of cylindrical part)
+   b = endpoint #2
+
+   r = radius
+
+
+
+sphere ( c.x,c.y,c.z, r [, color] )
+
+   Self-explanatory.
+
+   c = center
+
+   r = radius
+
+
+
+spheroid ( a.x,a.y,a.z, b.x,b.y,b.z, r [, color] )
+
+   Midway between sphere and ellipsoid, in the sense that two of the
+   three radii are equal. Specified using "endpoints", as with cylinders
+   and some other shapes. Think of the endpoints "a" and "b" as north
+   and south poles, with r as the equatorial radius.
+
+   a = endpoint ("pole") #1
+   b = endpoint ("pole") #2
+
+   r = radius at the "equator"
+
+
+
+triangle ( u.x,u.y,u.z, v.x,v.y,v.z, w.x,w.y,w.z [, color] )
+
+   Self-explanatory.
+
+   u = point #1
+   v = point #2
+   w = point #3
+
+
+
+washer ( a.x,a.y,a.z, b.x,b.y,b.z, i,o [, color] )
+
+   Like a cylinder, with a thinner cylinder cut out along its axis.
+
+   a = endpoint #1
+   b = endpoint #2
+
+   i = inner radius
+   o = outer radius
+
+
+
+xplane ( x, size.y,size.z, color [, second-color] )
+
+   Infinite checkerboarded plane, passing through (x,0,0) and parallel
+   to the yz plane. Checkerboard tiles are of size size.y by size.z.
+
+   The color and second-color entries are both of the "color" class
+   as given by xplane's template arguments. All of kip's shapes are
+   derived from this class. However, unlike most kip shapes, xplanes
+   (and yplanes and zplanes; see below) have two colors: the alternating
+   colors of the checkerboard. The second-color entry above provides one
+   such color, and automatically exists because xplane is derived from
+   its class. We therefore need another color, which we'll literally
+   call "color". If the template color type is kip::rgb, for example,
+   and you have an xplane object called obj, then you'd access the
+   first color by writing obj.color.red, obj.color.green, and
+   obj.color.blue, and access the other color (from the base class)
+   by writing obj.red, obj.green, and obj.blue.
+
+   Tile colors are computed so that the origin lands at the corners
+   of four tiles, and color (not second-color) appears at +y,+z
+   coordinates just out from the origin.
+
+   x = x position of the plane
+
+   size.y = y size of the tiles
+   size.z = z size of the tiles
+
+   color = first color
+
+
+
+tab ( a.x,a.y,a.z, b.x,b.y,b.z,
+      n,
+      table[ 0 ].x, table[ 0 ].r,
+      table[ 1 ].x, table[ 1 ].r,
+      table[n-1].x, table[n-1].r [, color] )
+
+   Convex tabular surface---"convex" in the sense that we impose
+   certain restrictions on its table of values, in order to facilitate
+   certain ray tracing optimizations. In the future, we'll probably
+   give kip a general "tabular" class.
+
+   Consider an ordered list of n points (x,r)_i, for i = 0 to n-1,
+   in an (x,r) plane, x being an x axis and r being a perpendicular
+   distance from the x axis. These coordinates are given in a
+   tab's "table" data member.
+
+   Two requirements of "convex" tabular surfaces are (1) that the
+   x's are monotonically increasing, and (2) that all r's are >= 0,
+   with no two successive r's both = 0. These conditions allow for
+   faster ray tracing of these surfaces than what we'd achieve with
+   a more-general type of tabular surface.
+
+   Now imagine constructing a rigid rotation and translation such
+   that the origin (x=0,r=0) maps to point a, and the positive x
+   axis passes through point b. Apply this transformation to the
+   (x,r) points in the table, and that's your final tabular surface.
+
+   a = "endpoint" #1 (in the sense that the origin maps to here)
+   b = "endpoint" #2 (in the sense that the +x axis goes through this)
+
+   n = number of points
+   table[i].x, table[i].r = (x,r) coordinate of point i
+
+
+
+yplane ( y, size.x,size.z, color [, second-color] )
+
+   Infinite checkerboarded plane, passing through (0,y,0) and parallel
+   to the xz plane. Color and second-color are as with xplane; see above.
+
+   Tile colors are computed so that the origin lands at the corners of
+   four tiles, and color (not second-color) appears at +x,+z coordinates
+   just out from the origin.
+
+   y = y position of the plane
+
+   size.x = x size of the tiles
+   size.z = z size of the tiles
+
+   color = first color
+
+
+
+zplane ( z, size.x,size.y, color [, second-color] )
+
+   Infinite checkerboarded plane, passing through (0,0,z) and parallel
+   to the xy plane. Color and second-color are as with xplane; see above.
+
+   Tile colors are computed so that the origin lands at the corners of
+   four tiles, and color (not second-color) appears at +x,+y coordinates
+   just out from the origin.
+
+   z = z position of the plane
+
+   size.x = x size of the tiles
+   size.y = y size of the tiles
+
+   color = first color
+
+
+
+================================================================================
+================================================================================
+Operators: Unary
+================================================================================
+================================================================================
+
+In kip files, the following is named "not". Its class in the kip
+library is called "kipnot"; this name is also allowed in kip files.
+
+
+
+not ( a [, color] )
+
+   Logical NOT of the operand "a". The color is sent to a's color if
+   a's color was not defined.
+
+   Generally, it's best to use other operators, e.g. cut, to create
+   shapes that would otherwise require a logical not. For instance,
+   and(a,not(b)) is equivalent to cut(a,b), but the cut version is
+   much faster, and also requires less memory.
+
+
+
+================================================================================
+================================================================================
+Operators: Binary
+================================================================================
+================================================================================
+
+In kip files, the following are named "and", "cut", "or", and "xor".
+Their classes in the kip library are called "kipand", "kipcut", "kipor",
+and "kipxor"; these names are also allowed in kip files.
+
+In each case, the color is sent to a's color if a's color was not
+defined, and to b's color if b's color was not defined.
+
+
+
+and ( a,b [, color] )
+
+   Logical AND (conjunction, a.k.a. intersection) of the operands "a"
+   and "b".
+
+
+
+cut ( a,b [, color] )
+
+   Logical and-not of "a" followed by "b": take a, and cut out whatever
+   part of it is intersected by b. Note: unlike and, or, and xor, this
+   operator is NOT reflexive.
+
+
+
+or ( a,b [, color] )
+
+   Logical OR (disjunction, a.k.a. union) of the operands "a" and "b".
+
+
+
+xor ( a,b [, color] )
+
+   Logical XOR (exclusive-or) of the operands "a" and "b".
+
+
+
+================================================================================
+================================================================================
+Operators: N-ary
+================================================================================
+================================================================================
+
+The following are called "ands", "even", "odd", "one", "ors", and "some",
+both in kip files and as classes in the kip library.
+
+Important note: Each of the following specifications is different than
+those of shapes, and other kinds of operands, in that a semicolon, not
+a comma, separates the operands from the color. We made this choice so
+that kip's parser could know when the (comma-separated!), arbitrarily-
+long list of operands ends, and the color begins. Alternatively, we
+could have required that an "n" (number of operands) precede the
+operand list; then we'd know operand parsing had ended after we'd
+parsed n operands. However, we found that this was inconvenient with
+kip's n-ary operators. When combining multiple operands within an n-ary
+operator, it's much more convenient to just add operands until you're
+done, without having to count how many you entered.
+
+Each of the following is mutually reflexive---all operand reorderings
+are equivalent.
+
+In each case, the color is sent to any operand whose color was not
+defined.
+
+
+
+ands ( [a, ...] [; color] )
+
+   Logical multi-AND (mutual conjunction, or intersection) of the
+   operands. In other words: true where, and only where, all of the
+   operands are true.
+
+
+
+even ( [a, ...] [; color] )
+
+   Logical "even" operator. True where 2, 4, 6, ... (but not 0) of
+   the operands mutually intersect. False elsewhere.
+
+
+
+odd ( [a, ...] [; color] )
+
+   Logical "odd" operator. True where 1, 3, 5, ... of the operands
+   mutually intersect. False elsewhere.
+
+
+
+one ( [a, ...] [; color] )
+
+   Logical "one" operator. True where exactly 1 of the operands is
+   true; false elsewhere. Could be thought of as a multi-operand
+   version of xor, if xor is taken to mean "exactly one of the operands".
+
+
+
+ors ( [a, ...] [; color] )
+
+   Logical multi-OR (mutual disjunction, or union) of the operands.
+   In other words: true where, and only where, at least one of the
+   operands is true.
+
+
+
+some ( [a, ...] [; color] )
+
+   Logical "some" operator. True where at least one of the operands,
+   but not all, is true; false elsewhere. Could be thought of as a
+   multi-operand version of xor, if xor is taken to mean "neither
+   none nor all of the objects".
