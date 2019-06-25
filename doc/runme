@@ -11,7 +11,7 @@ export  PRE='g++ -std=gnu++11 -fopenmp
   -I../../libtk
   -L../../libtk
   -pedantic
-  -O3 -funroll-loops
+  -O3 -funroll-loops -ffast-math
   -s'
 export POST='-ltk -lX11 -lGL'
 

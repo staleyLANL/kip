@@ -11,7 +11,7 @@ export  PRE='g++ -std=gnu++11 -fopenmp
   -I../../libtk
   -L../../libtk
   -pedantic
-  -O3 -funroll-loops
+  -O3 -funroll-loops -ffast-math
   -s'
 export POST='-ltk -lX11 -lGL'
 
@@ -19,3 +19,10 @@ export POST='-ltk -lX11 -lGL'
 $PRE kip-short.cc  -o kip-short  $POST
 $PRE kip-medium.cc -o kip-medium $POST
 $PRE kip.cc        -o kip        $POST
+$PRE model.cc   -o model   $POST
+$PRE view.cc    -o view    $POST
+$PRE light.cc   -o light   $POST
+$PRE engine.cc  -o engine  $POST
+$PRE image-1.cc -o image-1 $POST
+$PRE image-2.cc -o image-2 $POST
+$PRE image-3.cc -o image-3 $POST
