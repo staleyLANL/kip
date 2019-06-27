@@ -27,8 +27,8 @@ size_t downsize = 1;
 // window: current size, initial position
 // Note: the rendered-image size is initially set to [hv]window,
 // but may become smaller if the undersampling feature is used.
-size_t hwindow = 1000;
-size_t vwindow = 1000;
+size_t hwindow = 1200;
+size_t vwindow = 1200;
 const size_t hpos = 50;
 const size_t vpos = 0;
 
@@ -53,7 +53,7 @@ void initialize(void)
    // Nothing in particular to set; model.append is set in main()
 
    // view
-   view.target = kip::point<real>(0,0,0);
+   view.target = kip::point<real>(0.0,0.0,0.0);
    view.d      = 10.0;
    view.fov    = 20.0;
    view.theta  = 60.0;
