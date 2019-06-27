@@ -6,7 +6,7 @@ export  PRE='g++ -std=gnu++11 -fopenmp
   -Wall -Winit-self -Wmissing-include-dirs -Wswitch-default -Wswitch-enum
   -Wstrict-aliasing=2 -Wextra -Wundef -Wpointer-arith -Wunused-parameter
   -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wconversion
-  -I../src
+  -I../../src
   -I/usr/include/GL
   -I../../libtk
   -L../../libtk
@@ -16,6 +16,12 @@ export  PRE='g++ -std=gnu++11 -fopenmp
 export POST='-ltk -lX11 -lGL'
 
 # Compile
-$PRE rotate.cc -o rotate $POST
-$PRE shapes.cc -o shapes $POST
-$PRE simple.cc -o simple $POST
+/bin/rm -rf build
+mkdir build
+cd build
+
+$PRE ../rotate.cc -o rotate $POST
+$PRE ../shapes.cc -o shapes $POST
+$PRE ../simple.cc -o simple $POST
+
+cd ..
