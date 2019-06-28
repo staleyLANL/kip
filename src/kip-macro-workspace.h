@@ -1,12 +1,11 @@
-/* -*- C++ -*- */
 
 // OpenMP- and compiler-specific nonsense
 
 #ifndef _OPENMP
 
-      // ================
+      // ----------------
       // serial
-      // ================
+      // ----------------
 
       static grower< per_operand > work;
       per_operand *const operand = work.more(num_operand);
@@ -18,9 +17,9 @@
    // Apparently, Intel C++ #defines __GNUC__...
    #if !defined(_MSC_VER) && (!defined(__GNUC__) || defined(__INTEL_COMPILER))
 
-      // ================
+      // ----------------
       // openmp
-      // ================
+      // ----------------
 
       static grower< per_operand > work;
       #pragma omp threadprivate(work)
@@ -30,9 +29,9 @@
 
    #else
 
-      // ================
+      // ----------------
       // openmp: g++
-      // ================
+      // ----------------
 
       // Note: use the general case after g++'s openmp bug is fixed
 

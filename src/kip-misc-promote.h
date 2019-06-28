@@ -1,7 +1,5 @@
-/* -*- C++ -*- */
 
-#ifndef KIP_MISC_PROMOTE
-#define KIP_MISC_PROMOTE
+#pragma once
 
 // This file provides some type-promotion information that will be used
 // by the RGB and RGBA classes. What we have here right now is overkill,
@@ -17,16 +15,16 @@ class if_same<T,T> { public: typedef T result; };
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // pro: helper class for promote<>
 // Reasonable promotion for fundamental types, except that for our purposes
 // here, we neglect wchar_t.
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 /*
-========================
+------------------------
 Types, excluding wchar_t
-========================
+------------------------
 
    bool
    char
@@ -42,9 +40,9 @@ Types, excluding wchar_t
    double
    long double
 
-========================
+------------------------
 Rules
-========================
+------------------------
 
    bases:
       bool --> char
@@ -287,12 +285,12 @@ namespace internal {
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // promote<A, B [, at_least]>
 // The last template parameter allows us to prescribe "at least" a certain
 // precision to be used for the arithmetic and the result, in the contexts
 // in which we'll use the promote<> class.
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 template<class A, class B, class at_least = B>
 class promote {
@@ -303,5 +301,3 @@ public:
 };
 
 }
-
-#endif

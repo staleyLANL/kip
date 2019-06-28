@@ -1,7 +1,5 @@
-/* -*- C++ -*- */
 
-#ifndef KIP_COLOR_MARBLE
-#define KIP_COLOR_MARBLE
+#pragma once
 
 // This file defines the marble class template and related functions.
 
@@ -9,10 +7,10 @@ namespace kip {
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // marble
 // zzz make this more hierarchical, e.g. based on full RGB<T> or crayola
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 template<class T = unsigned char, class real = double>
 class marble {
@@ -90,9 +88,9 @@ inline marble<C,real> &random(marble<C,real> &obj)
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // read_value(marble)
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 template<class ISTREAM, class C, class real>
 bool read_value(
@@ -128,8 +126,6 @@ bool read_value(
 }
 
 }
-
-#endif
 
 /*
    const real &_amp = 1, const real &_ampfac = 0.5,

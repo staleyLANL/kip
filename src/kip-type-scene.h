@@ -1,7 +1,5 @@
-/* -*- C++ -*- */
 
-#ifndef KIP_TYPE_SCENE
-#define KIP_TYPE_SCENE
+#pragma once
 
 // This file provides the "scene" class, which derives from the other
 // major classes: model, view, light, engine, image.
@@ -19,9 +17,9 @@ namespace kip {
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // scene
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 namespace kip {
 
@@ -61,5 +59,3 @@ public:
 };
 
 }
-
-#endif

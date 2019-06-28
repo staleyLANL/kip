@@ -1,4 +1,3 @@
-/* -*- C++ -*- */
 
 // This file is #included in various places to help create stream i/o
 // for nary operator shapes.

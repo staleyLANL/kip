@@ -1,4 +1,3 @@
-/* -*- C++ -*- */
 
 // This file is #included in various places to help create
 // primitives with {a,b,r} (or {c,n,r}).

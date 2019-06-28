@@ -1,4 +1,3 @@
-/* -*- C++ -*- */
 
 // This file is #included in various places, to create member functions
 // for nary operator classes.
@@ -27,9 +26,9 @@ public:
 
 
 
-   // ========================
+   // ------------------------
    // Helpers
-   // ========================
+   // ------------------------
 
 private:
 
@@ -60,9 +59,9 @@ private:
 
 
 
-   // ========================
+   // ------------------------
    // Miscellaneous
-   // ========================
+   // ------------------------
 
 public:
 
@@ -88,11 +87,11 @@ public:
 
 
 
-   // ========================
+   // ------------------------
    // Constructors
    // Copy assignment
    // Destructor
-   // ========================
+   // ------------------------
 
    // kip_class()
    inline explicit kip_class(void) : shape<real,tag>(this)
@@ -137,9 +136,9 @@ public:
 
 
 
-   // ========================
+   // ------------------------
    // push
-   // ========================
+   // ------------------------
 
    // from pointer
    inline shape<real,tag> &push(const shape<real,tag> *const ptr)
@@ -158,9 +157,9 @@ public:
 
 
 
-   // ========================
+   // ------------------------
    // check
-   // ========================
+   // ------------------------
 
    kip_functions(kip_class)  // ends with check() header
    {
