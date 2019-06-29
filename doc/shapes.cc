@@ -1,4 +1,3 @@
-/* -*- C++ -*- */
 
 // Kip
 #include "kip.h"

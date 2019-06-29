@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# C++
+#export CXX_BEGIN='clang++-3.8 -std=c++11
+export  CXX_BEGIN='g++ -std=c++11 -fopenmp
+  -Wall -Winit-self -Wmissing-include-dirs -Wswitch-default -Wswitch-enum
+  -Wstrict-aliasing=2 -Wextra -Wundef -Wpointer-arith -Wunused-parameter
+  -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wconversion
+  -I../src
+  -I/usr/include/GL
+  -I../libtk
+  -L../libtk
+  -pedantic
+  -O3 -funroll-loops -ffast-math
+  -s'
+export CXX_END='-ltk -lX11 -lGL'
+
+# doc
+cd doc
+./runme
+cd ..
+
+# example
+cd example
+./runme
+cd ..
