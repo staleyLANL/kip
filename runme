@@ -2,7 +2,8 @@
 
 # C++
 #export CXX_BEGIN='clang++-3.8 -std=c++11
-export  CXX_BEGIN='g++ -std=c++11 -fopenmp
+export  CXX_BEGIN='g++
+  -std=c++17
   -Wall -Winit-self -Wmissing-include-dirs -Wswitch-default -Wswitch-enum
   -Wstrict-aliasing=2 -Wextra -Wundef -Wpointer-arith -Wunused-parameter
   -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wconversion
@@ -12,6 +13,8 @@ export  CXX_BEGIN='g++ -std=c++11 -fopenmp
   -L../libtk
   -pedantic
   -O3 -funroll-loops -ffast-math
+  -fno-show-column
+  -fopenmp
   -s'
 export CXX_END='-ltk -lX11 -lGL'
 

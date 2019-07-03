@@ -46,7 +46,7 @@ Example
 
    #include "kip.h"
 
-   int main(void)
+   int main()
    {
       kip::scene<> s;
       s.view().target(0,0,0);
@@ -114,7 +114,7 @@ Example
 
    #include "kip.h"
 
-   int main(void)
+   int main()
    {
       kip::model<> m;
 
@@ -172,7 +172,7 @@ Example
 
    #include "kip.h"
 
-   int main(void)
+   int main()
    {
       kip::view<> v;
       v.target(1,1,1);
@@ -221,7 +221,7 @@ Example
 
    #include "kip.h"
 
-   int main(void)
+   int main()
    {
       kip::light<> L;
 
@@ -275,7 +275,7 @@ Example
 
    #include "kip.h"
 
-   int main(void)
+   int main()
    {
       kip::engine<> e;
 
@@ -346,7 +346,7 @@ Example
    #include "kip.h"
    #include "gl.h"
 
-   int main(void)
+   int main()
    {
       kip::image<> i;
 

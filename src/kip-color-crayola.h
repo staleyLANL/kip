@@ -112,6 +112,9 @@ public:
       internal::crayola_base<char>(_index)
    { }
 
+   // crayola(crayola)
+   constexpr crayola(const crayola &) = default;
+
    // id()
    inline crayola_id_t id(void) const { return index; }
 

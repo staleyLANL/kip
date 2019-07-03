@@ -1,8 +1,11 @@
 
+// c++
+#include <map>
+
 // kip
 #include "kip.h"
 
-// GL, tk
+// gl, tk
 extern "C" {
 #include "gl.h"
 #include "tk.h"
@@ -20,9 +23,6 @@ kip::light <real      > light;
 kip::engine<real      > engine;
 kip::image <real,color> image;
 
-// downsize
-size_t downsize = 1;
-
 // window: current size, initial position
 // Note: the rendered-image size is initially set to [hv]window,
 // but may become smaller if the undersampling feature is used.
@@ -30,6 +30,9 @@ size_t hwindow = 1200;
 size_t vwindow = 1200;
 const size_t hpos = 50;
 const size_t vpos = 0;
+
+// downsize
+size_t downsize = 1;
 
 // print useful information per-render
 bool print = false;
@@ -40,13 +43,13 @@ const size_t ntimes = 0;
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // initialize
 // Sets up the major kip objects. All values already have reasonable
 // defaults; the real purpose here is to illustrate what's available.
-// =============================================================================
+// -----------------------------------------------------------------------------
 
-void initialize(void)
+void initialize()
 {
    // model
    // Nothing in particular to set; model.append is set in main()
@@ -86,13 +89,13 @@ void initialize(void)
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // render
 // putimage
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 // render
-inline void render(void)
+inline void render()
 {
    // diagnostics
    if (diag) {
@@ -134,7 +137,7 @@ inline void render(void)
 
 
 // putimage
-void putimage(void)
+void putimage()
 {
    if (diag)
       std::cout << "   putimage" << std::endl;
@@ -189,10 +192,10 @@ void putimage(void)
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // sample
 // Return value: does image need to be re-rendered?
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 enum sampling_t {
    sampling_coarser,
@@ -221,10 +224,10 @@ bool sample(const sampling_t samp)
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // move
 // Return value: does image need to be re-rendered?
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 bool move(const int key)
 {
@@ -290,11 +293,11 @@ bool move(const int key)
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // Events
 //    expose  - window was exposed
 //    keydown - keyboard key was pressed
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 // diffsize: helper
 bool diffsize(size_t &hpix, size_t &vpix)
@@ -359,9 +362,9 @@ GLenum keydown(const int key, const GLenum /*state*/)
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 // interactive
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 int interactive(const std::string &title)
 {
@@ -401,9 +404,161 @@ int interactive(const std::string &title)
 
 
 
-// =============================================================================
+// -----------------------------------------------------------------------------
+// command arguments
+// -----------------------------------------------------------------------------
+
+/*
+-shapes
+-threads
+-rotate [#]
+-exit
+what else
+
+(void) to () change
+*/
+
+
+
+namespace command {
+
+// shape
+template<class SHAPE>
+inline bool shape(const int n)
+{
+   std::cout << "      shape()" << std::endl;
+   (void)n;
+   return true;
+}
+
+
+
+// sphere
+static inline bool sphere(const int n)
+{
+   std::cout << "   sphere()" << std::endl;
+   return shape<kip::sphere<real,base>>(n);
+}
+
+// cone
+static inline bool cone(const int n)
+{
+   std::cout << "   cone()" << std::endl;
+   return shape<kip::cone<real,base>>(n);
+}
+
+// threads
+static inline bool threads(const int n)
+{
+   std::cout << "   threads()" << std::endl;
+   kip::threads = n;
+   return true;
+}
+
+// rotate
+static int nrotate = -1;
+static inline bool rotate(const int n)
+{
+   std::cout << "   rotate()" << std::endl;
+   nrotate = std::abs(n);
+   return true;
+}
+
+// exit
+static bool do_exit = false;
+static inline bool exitfun(const int)
+{
+   std::cout << "   exitfun()" << std::endl;
+   do_exit = true;
+   return true;
+}
+
+
+
+// map
+static std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
+   { "-sphere",  { command::sphere,  true  } },
+   { "-cone",    { command::cone,    true  } },
+   { "-threads", { command::threads, true  } },
+   { "-rotate",  { command::rotate,  true  } },
+   { "-exit",    { command::exitfun, false } }
+};
+
+
+
+// getint
+static inline bool getint(
+   const int argc, const char *const *const argv,
+   const int i, int &n, std::string &title
+) {
+   if (!(i < argc)) {
+      std::cout
+         << "Error: " << argv[i-1]
+         << " requires an argument" << std::endl;
+      return false;
+   }
+
+   std::istringstream iss(argv[i]);
+   if (!(iss >> n)) {
+      std::cout
+         << "Error: " << argv[i-1] << " argument " << argv[i]
+         << " could not be converted to int" << std::endl;
+      return false;
+   }
+
+   ///std::cout << "   n == " << n << std::endl;
+   title += std::string(" ") + argv[i];
+   return true;
+}
+
+
+
+// arguments
+static bool arguments(
+   const int argc, const char *const *const argv,
+   std::string &title
+) {
+   bool okay = true;
+
+   // process command arguments
+   for (int i = 1;  i < argc;  ++i) {
+      title += std::string(" ") + argv[i];
+
+      // option?
+      auto iter = map.find(argv[i]);
+      if (iter != map.end()) {
+         std::cout << "Found argument " << iter->first << std::endl;
+         int n;
+         auto p = iter->second; // the pair
+         if ((!p.second || getint(argc,argv,++i,n,title)) &&
+             (okay = p.first(n)))
+            continue;
+         else
+            return false;
+      }
+
+      // file?
+      kip::istream stream(argv[i]);
+      if (stream) {
+         model.append = true;
+         stream >> model;
+      } else {
+         std::cout << "Could not open file \"" << argv[i] << '"' << std::endl;
+         okay = false;
+      }
+   }
+
+   // done
+   return okay;
+}
+
+} // namespace command
+
+
+
+// -----------------------------------------------------------------------------
 // main
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 int main(const int argc, const char *const *const argv)
 {
@@ -412,24 +567,10 @@ int main(const int argc, const char *const *const argv)
 
    // arguments
    if (argc < 2) {
-      std::cout << "Usage: " << argv[0] << " <file> ..." << std::endl;
+      std::cout << "Usage: " << argv[0] << " <file> <option> ..." << std::endl;
       exit(1);
    }
-
-   // read file(s)
-   bool okay = true;
-   for (int i = 1;  i < argc;  ++i) {
-      kip::istream stream(argv[i]);
-      if (stream) {
-         model.append = true;
-         stream >> model;
-         title += std::string(" ") + argv[i];
-      } else {
-         std::cout << "Could not open file \"" << argv[i] << '"' << std::endl;
-         okay = false;
-      }
-   }
-   if (!okay)
+   if (!command::arguments(argc,argv,title))
       exit(1);
 
    // initialize kip parameters

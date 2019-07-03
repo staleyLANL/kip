@@ -31,7 +31,7 @@ cylinder<real,base>
    mask(-20,-2,-20, -20,2,-20, 4);
 
 // Perform a certain modification to the above cylinders
-void move_cylinders(void)
+void move_cylinders()
 {
    cyl0.a.x += 8;  cyl0.b.x += 8;  cyl1.a.x += 8;  cyl1.b.x += 8;
    cyl2.a.x += 8;  cyl2.b.x += 8;  cyl3.a.x += 8;  cyl3.b.x += 8;
@@ -49,9 +49,10 @@ int main(const int, const char *const *const argv)
 {
    kip::threads = 0;
 
-   // ========================
+
+   // ------------------------
    // Initialize
-   // ========================
+   // ------------------------
 
    // Scene
    scene<real,base,out> s;
@@ -61,9 +62,10 @@ int main(const int, const char *const *const argv)
    s.theta=75, s.phi=15, s.d=250;
    s.background = crayola::black;
 
-   // ========================
+a
+   // ------------------------
    // Primitives
-   // ========================
+   // ------------------------
 
    // bicylinder(a.x,a.y,a.z, b.x,b.y,b.z, r.a,r.b, color)
    s.push(bicylinder<real,base>(-23,0,20, -17,0,20, 3,2, crayola::red));
@@ -168,9 +170,10 @@ int main(const int, const char *const *const argv)
       sphere<real,base>(20,0,0, 4)
    ));
 
-   // ========================
+
+   // ------------------------
    // Operators: unary
-   // ========================
+   // ------------------------
 
    // not(a, color)
    // Write "kipnot", as this is C++
@@ -179,9 +182,10 @@ int main(const int, const char *const *const argv)
       box<real,base>(0,-200,0, 0,0,0, 600,3000,1000, crayola::gray)
    ));
 
-   // ========================
+
+   // ------------------------
    // Operators: binary
-   // ========================
+   // ------------------------
 
    // Note: each is logical-anded with a cylinder, for viz purposes
 
@@ -237,9 +241,10 @@ int main(const int, const char *const *const argv)
       )
    );
 
-   // ========================
+
+   // ------------------------
    // Operators: nary
-   // ========================
+   // ------------------------
 
    // Note: each is logical-anded with the "mask" cylinder, for viz purposes
 
@@ -285,9 +290,10 @@ int main(const int, const char *const *const argv)
    s.push(kipand<real,base>(SOME, mask, crayola::blue));
    move_cylinders();
 
-   // ========================
+
+   // ------------------------
    // Finish
-   // ========================
+   // ------------------------
 
    // Ray trace
    s.trace();

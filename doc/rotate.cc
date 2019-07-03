@@ -22,10 +22,9 @@ int main(const int, const char *const *const argv)
    (void)argv;
    kip::threads = 0;
 
-
-   // ========================
+   // ------------------------
    // Scene constituents
-   // ========================
+   // ------------------------
 
    // We'll illustrate these components of a "scene" individually.
    // Alternatively, you could define a single scene<real,base,color>,
@@ -44,10 +43,9 @@ int main(const int, const char *const *const argv)
    kip::image  <real_t,color_t>  image ;  // Output bitmap
 
 
-
-   // ========================
+   // ------------------------
    // Model
-   // ========================
+   // ------------------------
 
    // push()
    model.push(kip::sphere<real_t,base_t>(0,0,0, 1, kip::crayola::black));
@@ -99,10 +97,9 @@ int main(const int, const char *const *const argv)
    }
 
 
-
-   // ========================
+   // ------------------------
    // View
-   // ========================
+   // ------------------------
 
    // target - where we're looking
    view.target(0,0,0);
@@ -121,19 +118,17 @@ int main(const int, const char *const *const argv)
    view.roll  = 0;
 
 
-
-   // ========================
+   // ------------------------
    // Light
-   // ========================
+   // ------------------------
 
    // light-source position
    light[0](0,-10,5);
 
 
-
-   // ========================
+   // ------------------------
    // Engine
-   // ========================
+   // ------------------------
 
    // Most users shouldn't change these
 
@@ -156,10 +151,9 @@ int main(const int, const char *const *const argv)
    engine.fudge = 0.99999;
 
 
-
-   // ========================
+   // ------------------------
    // Image
-   // ========================
+   // ------------------------
 
    // background color
    // Note: this is a color_t (an rgba), not a base_t (a crayola)
@@ -178,10 +172,9 @@ int main(const int, const char *const *const argv)
    image.upsize(hsize,vsize);
 
 
-
-   // ========================
+   // ------------------------
    // Make a simple animation
-   // ========================
+   // ------------------------
 
 #ifndef TIMING
    // Open window
