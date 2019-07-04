@@ -31,15 +31,16 @@ size_t vwindow = 1200;
 const size_t hpos = 50;
 const size_t vpos = 0;
 
-// downsize
-size_t downsize = 1;
+// variables: misc
+size_t downsize;
+bool print;
 
-// print useful information per-render
-bool print = false;
-
-// for debugging
-const bool diag = false;
-const size_t ntimes = 0;
+// variables: from command-line arguments
+namespace vars {
+   int  nrender = 0;
+   bool timing  = false;
+   bool debug   = false;
+}
 
 
 
@@ -56,8 +57,8 @@ void initialize()
 
    // view
    view.target = kip::point<real>(0.0,0.0,0.0);
-   view.d      = 10.0;
-   view.fov    = 20.0;
+   view.d      =  5.0;
+   view.fov    = 24.0;
    view.theta  = 60.0;
    view.phi    = 30.0;
    view.roll   =  0.0;
@@ -78,13 +79,14 @@ void initialize()
 
    // image
    image.background    = color(150,150,150);
-   image.aspect        = 1.0;  // qqq Consider a/s for up/down
+   image.aspect        = 1.0;  // fixme Consider a/s for up/down
    image.anti          = 1;
    image.border.bin    = false;
    image.border.object = false;
 
-   // other
+   // misc
    downsize = 1;
+   print = false;
 }
 
 
@@ -97,8 +99,7 @@ void initialize()
 // render
 inline void render()
 {
-   // diagnostics
-   if (diag) {
+   if (vars::debug) {
       std::cout << "   render" << std::endl;
       std::cout << "      image.hpixel = " << image.hpixel << std::endl;
       std::cout << "      image.vpixel = " << image.vpixel << std::endl;
@@ -123,10 +124,10 @@ inline void render()
          << "\ntheta    = " << view  .theta
          << "\nphi      = " << view  .phi
          << "\nroll     = " << view  .roll
-//         << "\naspect   = " << image .aspect
+      // << "\naspect   = " << image .aspect
          << "\ndownsize = " <<        downsize
          << "\nanti     = " << image .anti
-//         << "\nlean     = " << engine.lean
+      // << "\nlean     = " << engine.lean
          << "\n"
       ;
 
@@ -139,13 +140,13 @@ inline void render()
 // putimage
 void putimage()
 {
-   if (diag)
+   if (vars::debug)
       std::cout << "   putimage" << std::endl;
 
    // size: zero
    if (image.hpixel == 0 &&
        image.vpixel == 0) {
-      if (diag) {
+      if (vars::debug) {
          std::cout << "      size: zero" << std::endl;
          std::cout << "      do nothing" << std::endl;
       }
@@ -156,7 +157,7 @@ void putimage()
    if (image.hpixel == hwindow &&
        image.vpixel == vwindow
    ) {
-      if (diag)
+      if (vars::debug)
          std::cout << "      glDrawPixels #1" << std::endl;
       glDrawPixels(
          GLsizei(hwindow), GLsizei(vwindow),
@@ -181,7 +182,7 @@ void putimage()
          size_t(vfac*(real(n / hwindow) + 0.5))
       );
 
-   if (diag)
+   if (vars::debug)
       std::cout << "      glDrawPixels #2" << std::endl;
    glDrawPixels(
       GLsizei(hwindow), GLsizei(vwindow),
@@ -231,7 +232,7 @@ bool sample(const sampling_t samp)
 
 bool move(const int key)
 {
-   if (diag)
+   if (vars::debug)
       std::cout << "   move: key == " << key << std::endl;
 
    // parameters
@@ -300,13 +301,13 @@ bool move(const int key)
 // -----------------------------------------------------------------------------
 
 // diffsize: helper
-bool diffsize(size_t &hpix, size_t &vpix)
+bool diffsize(size_t &himage, size_t &vimage)
 {
-   hpix = std::max(size_t(1), size_t(real(hwindow)/real(downsize) + 0.5));
-   vpix = std::max(size_t(1), size_t(real(vwindow)/real(downsize) + 0.5));
+   himage = std::max(size_t(1), size_t(real(hwindow)/real(downsize) + 0.5));
+   vimage = std::max(size_t(1), size_t(real(vwindow)/real(downsize) + 0.5));
    return
-      image.hpixel != hpix ||
-      image.vpixel != vpix;
+      image.hpixel != himage ||
+      image.vpixel != vimage;
 }
 
 
@@ -314,7 +315,7 @@ bool diffsize(size_t &hpix, size_t &vpix)
 // expose
 void expose(const int hsize, const int vsize)
 {
-   if (diag) {
+   if (vars::debug) {
       std::cout << "EXPOSE" << std::endl;
       std::cout << "   old hwindow = " << hwindow << std::endl;
       std::cout << "   old vwindow = " << vwindow << std::endl;
@@ -323,14 +324,14 @@ void expose(const int hsize, const int vsize)
    hwindow = size_t(hsize);
    vwindow = size_t(vsize);
 
-   if (diag) {
+   if (vars::debug) {
       std::cout << "   new hwindow = " << hwindow << std::endl;
       std::cout << "   new vwindow = " << vwindow << std::endl;
    }
 
-   size_t hpix, vpix;
-   if (diffsize(hpix,vpix)) {
-      image.upsize(hpix,vpix);
+   size_t himage, vimage;
+   if (diffsize(himage,vimage)) {
+      image.upsize(himage,vimage);
       render();
    }
    putimage();
@@ -341,7 +342,7 @@ void expose(const int hsize, const int vsize)
 // keydown
 GLenum keydown(const int key, const GLenum /*state*/)
 {
-   if (diag)
+   if (vars::debug)
       std::cout << "KEYDOWN" << std::endl;
 
    // quit?
@@ -350,9 +351,9 @@ GLenum keydown(const int key, const GLenum /*state*/)
 
    // process key
    if (move(key)) {
-      size_t hpix, vpix;
-      if (diffsize(hpix,vpix))
-         image.upsize(hpix,vpix);
+      size_t himage, vimage;
+      if (diffsize(himage,vimage))
+         image.upsize(himage,vimage);
       render();
       putimage();
    }
@@ -368,120 +369,145 @@ GLenum keydown(const int key, const GLenum /*state*/)
 
 int interactive(const std::string &title)
 {
-   // set window position and size
-   tkInitPosition(int(hpos), int(vpos), int(hwindow), int(vwindow));
+   if (!vars::timing) {
+      // window: set position and size
+      tkInitPosition(int(hpos), int(vpos), int(hwindow), int(vwindow));
 
-   // title
-   // Note: it seems that tkInitWindow() is not const correct
-   char *const str = new char[title.size()+1];  // tkInitWindow wants char *
-   const bool okay = tkInitWindow(strcpy(str,title.c_str())) != GL_FALSE;
-   delete[] str;
-   if (!okay) return 1;
+      // window: open
+      // Note: it seems that tkInitWindow() is not const correct...
+      char *const str = new char[title.size()+1];  // tkInitWindow wants char *
+      const bool okay = tkInitWindow(strcpy(str,title.c_str())) != GL_FALSE;
+      delete[] str;
+      if (!okay) return 1;
+   }
 
-   if (ntimes > 0) {
-      // Below, std::max(size_t(1),ntimes) is equivalent to ntimes; it just
-      // silences a g++ warning about comparison with zero when ntimes == 0.
-      expose(int(hwindow), int(vwindow));
-      for (size_t count = 1;  count < std::max(size_t(1),ntimes);  ++count) {
-         view.theta += real(1);
-         view.phi   += real(1);
+   if (vars::nrender > 0) {
+      // Meaning: if the current image size (which in this context would have
+      // been kip's default) is different from what we need, given the window
+      // size and the down-sampling, then [hv]image will come back as what we
+      // need; and thus we must upsize the image accordingly.
+      // fixme diffsize() does two things, and is confusing.
+      size_t himage, vimage;
+      if (diffsize(himage,vimage))
+         image.upsize(himage,vimage);
+      // else image is already exactly the size we need, so we're good to go
+
+      for (int n = 0;  n < vars::nrender;  ++n) {
+         if (n) {
+            view.theta += real(1);
+            view.phi   += real(1);
+         }
          render();
-         putimage();
+         if (!vars::timing)
+            putimage();
       }
-   } else {
+   }
+
+   if (!vars::timing) {
+      // start
       tkExposeFunc (expose);
       tkKeyDownFunc(keydown);
-      image.resize(0,0);
+      if (vars::nrender < 1)
+         image.upsize(0,0); // ensure render()
       tkExec();
+
+      // close
+      tkCloseWindow();
+      if (vars::debug)
+         std::cout << "\nReturning from interactive()" << std::endl;
    }
 
    // done
-   tkCloseWindow();
-   if (diag)
-      std::cout << "\nReturning from interactive()" << std::endl;
    return 0;
 }
 
 
 
 // -----------------------------------------------------------------------------
-// command arguments
+// command-line arguments
+// re: shapes
 // -----------------------------------------------------------------------------
 
-/*
--shapes
--threads
--rotate [#]
--exit
-what else
-
-(void) to () change
-*/
-
-
-
-namespace command {
+namespace args {
 
 // shape
 template<class SHAPE>
 inline bool shape(const int n)
 {
-   std::cout << "      shape()" << std::endl;
    (void)n;
    return true;
 }
 
-
-
 // sphere
 static inline bool sphere(const int n)
 {
-   std::cout << "   sphere()" << std::endl;
    return shape<kip::sphere<real,base>>(n);
 }
 
 // cone
 static inline bool cone(const int n)
 {
-   std::cout << "   cone()" << std::endl;
    return shape<kip::cone<real,base>>(n);
 }
+
+} // namespace args
+
+
+
+// -----------------------------------------------------------------------------
+// command-line arguments
+// re: misc
+// -----------------------------------------------------------------------------
+
+namespace args {
 
 // threads
 static inline bool threads(const int n)
 {
-   std::cout << "   threads()" << std::endl;
    kip::threads = n;
    return true;
 }
 
-// rotate
-static int nrotate = -1;
-static inline bool rotate(const int n)
+// render
+static inline bool render(const int n)
 {
-   std::cout << "   rotate()" << std::endl;
-   nrotate = std::abs(n);
+   vars::nrender = std::abs(n);
    return true;
 }
 
-// exit
-static bool do_exit = false;
-static inline bool exitfun(const int)
+// timing
+static inline bool timing(const int)
 {
-   std::cout << "   exitfun()" << std::endl;
-   do_exit = true;
+   vars::timing = true;
    return true;
 }
 
+// debug
+static inline bool debug(const int)
+{
+   vars::debug = true;
+   return true;
+}
 
+} // namespace args
+
+
+
+// -----------------------------------------------------------------------------
+// command-line arguments
+// -----------------------------------------------------------------------------
+
+namespace args {
 
 // map
 static std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
-   { "-sphere",  { command::sphere,  true  } },
-   { "-cone",    { command::cone,    true  } },
-   { "-threads", { command::threads, true  } },
-   { "-rotate",  { command::rotate,  true  } },
-   { "-exit",    { command::exitfun, false } }
+   // last value == option has int parameter?
+   { "-sphere",  { args::sphere,  true  } },
+   { "-cone",    { args::cone,    true  } },
+   { "-threads", { args::threads, true  } },
+   { "-render",  { args::render,  true  } },
+   { "-timing",  { args::timing,  false } },
+   { "-debug",   { args::debug,   false } }
 };
 
 
@@ -494,40 +520,38 @@ static inline bool getint(
    if (!(i < argc)) {
       std::cout
          << "Error: " << argv[i-1]
-         << " requires an argument" << std::endl;
+         << " requires an int parameter (" << argv[i-1] << " #)" << std::endl;
       return false;
    }
 
    std::istringstream iss(argv[i]);
    if (!(iss >> n)) {
       std::cout
-         << "Error: " << argv[i-1] << " argument " << argv[i]
+         << "Error: " << argv[i-1] << " parameter " << argv[i]
          << " could not be converted to int" << std::endl;
       return false;
    }
 
-   ///std::cout << "   n == " << n << std::endl;
    title += std::string(" ") + argv[i];
    return true;
 }
 
 
 
-// arguments
-static bool arguments(
+// read
+static bool read(
    const int argc, const char *const *const argv,
    std::string &title
 ) {
    bool okay = true;
 
-   // process command arguments
+   // process command-line arguments
    for (int i = 1;  i < argc;  ++i) {
       title += std::string(" ") + argv[i];
 
       // option?
       auto iter = map.find(argv[i]);
       if (iter != map.end()) {
-         std::cout << "Found argument " << iter->first << std::endl;
          int n;
          auto p = iter->second; // the pair
          if ((!p.second || getint(argc,argv,++i,n,title)) &&
@@ -543,7 +567,9 @@ static bool arguments(
          model.append = true;
          stream >> model;
       } else {
-         std::cout << "Could not open file \"" << argv[i] << '"' << std::endl;
+         std::cout
+            << "Error: could not open file \"" << argv[i] << '"'
+            <<  std::endl;
          okay = false;
       }
    }
@@ -552,7 +578,7 @@ static bool arguments(
    return okay;
 }
 
-} // namespace command
+} // namespace args
 
 
 
@@ -565,17 +591,17 @@ int main(const int argc, const char *const *const argv)
    kip::threads = 0;
    std::string title = argv[0];
 
-   // arguments
+   // command-line arguments
    if (argc < 2) {
       std::cout << "Usage: " << argv[0] << " <file> <option> ..." << std::endl;
       exit(1);
    }
-   if (!command::arguments(argc,argv,title))
+   if (!args::read(argc,argv,title))
       exit(1);
 
    // initialize kip parameters
    initialize();
 
-   // run
+   // action!
    return interactive(title);
 }
