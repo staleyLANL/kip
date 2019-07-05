@@ -24,7 +24,7 @@ kip::engine<real      > engine;
 kip::image <real,color> image;
 
 // misc
-size_t downsize;
+int downsize;
 
 
 
@@ -34,12 +34,12 @@ size_t downsize;
 
 namespace vars {
    // window: size
-   size_t hwindow = 1200;
-   size_t vwindow = 1200;
+   int hwindow = 1200;
+   int vwindow = 1200;
 
    // window: position
-   size_t hpos = 50;
-   size_t vpos = 0;
+   int hpos = 50;
+   int vpos = 0;
 
    // initial #renders prior to user control;
    // useful for timing
@@ -48,10 +48,10 @@ namespace vars {
    // if timing: no window; render, exit
    bool timing = false;
 
-   // print mode (print various parameters)
+   // print mode: print various parameters
    bool print = false;
 
-   // debug mode (very chatty)
+   // debug mode: very chatty
    bool debug = false;
 }
 
@@ -65,6 +65,9 @@ namespace vars {
 
 void initialize()
 {
+   if (vars::debug)
+      std::cout << "initialize()" << std::endl;
+
    // model
    // Nothing in particular to set; model.append is set in main()
 
@@ -112,18 +115,20 @@ void initialize()
 void render()
 {
    if (vars::debug) {
-      std::cout << "   render" << std::endl;
-      std::cout << "      image.hpixel = " << image.hpixel << std::endl;
-      std::cout << "      image.vpixel = " << image.vpixel << std::endl;
-      std::cout << "      rendering..." << std::endl;
+      std::cout << "render()" << std::endl;
+      std::cout << "   image.hpixel = " << image.hpixel << std::endl;
+      std::cout << "   image.vpixel = " << image.vpixel << std::endl;
    }
 
    // light (moves w/viewer)
    light[0](view.target, view.d, view.theta+60, view.phi+10);
 
-   // anything to do?
-   if (image.hpixel == 0 || image.vpixel == 0)
+   // size: zero
+   if (image.hpixel == 0 || image.vpixel == 0) {
+      if (vars::debug)
+         std::cout << "...image size = 0; returning" << std::endl;
       return;
+   }
 
    // print
    if (vars::print)
@@ -140,10 +145,12 @@ void render()
          << "\ndownsize = " << downsize
          << "\nanti     = " << image .anti
       // << "\nlean     = " << engine.lean
-         << "\n"
+         << std::endl
       ;
 
    // trace
+   if (vars::debug)
+      std::cout << "trace()" << std::endl;
    kip::trace(model, view, light, engine, image);
 }
 
@@ -153,24 +160,21 @@ void render()
 void putimage()
 {
    if (vars::debug)
-      std::cout << "   putimage" << std::endl;
+      std::cout << "putimage()" << std::endl;
 
    // size: zero
-   if (image.hpixel == 0 &&
-       image.vpixel == 0) {
-      if (vars::debug) {
-         std::cout << "      size: zero" << std::endl;
-         std::cout << "      do nothing" << std::endl;
-      }
+   if (image.hpixel == 0 || image.vpixel == 0) {
+      if (vars::debug)
+         std::cout << "...image size = 0; returning" << std::endl;
       return;
    }
 
    // size: same as window
-   if (image.hpixel == vars::hwindow &&
-       image.vpixel == vars::vwindow
+   if (int(image.hpixel) == vars::hwindow &&
+       int(image.vpixel) == vars::vwindow
    ) {
       if (vars::debug)
-         std::cout << "      glDrawPixels #1" << std::endl;
+         std::cout << "...glDrawPixels() #1" << std::endl;
       glDrawPixels(
          GLsizei(vars::hwindow), GLsizei(vars::vwindow),
          GL_RGBA, GL_UNSIGNED_BYTE, image()
@@ -182,20 +186,20 @@ void putimage()
    // size: different from window
    static kip::array<2,color> bitmap;
    bitmap.upsize(vars::hwindow,vars::vwindow);
-   const real hfac = real(image.hpixel)/real(vars::hwindow);
-   const real vfac = real(image.vpixel)/real(vars::vwindow);
+   const real hfac = real(image.hpixel) / real(vars::hwindow);
+   const real vfac = real(image.vpixel) / real(vars::vwindow);
 
    #ifdef _OPENMP
    #pragma omp parallel for
    #endif
-   for (size_t n = 0;  n < vars::hwindow*vars::vwindow;  ++n)
+   for (int n = 0;  n < vars::hwindow * vars::vwindow;  ++n)
       bitmap[n] = image(
-         size_t(hfac*(real(n % vars::hwindow) + 0.5)),
-         size_t(vfac*(real(n / vars::hwindow) + 0.5))
+         int(hfac*(real(n % vars::hwindow) + 0.5)),
+         int(vfac*(real(n / vars::hwindow) + 0.5))
       );
 
    if (vars::debug)
-      std::cout << "      glDrawPixels #2" << std::endl;
+      std::cout << "...glDrawPixels() #2" << std::endl;
    glDrawPixels(
       GLsizei(vars::hwindow), GLsizei(vars::vwindow),
       GL_RGBA, GL_UNSIGNED_BYTE, bitmap.data()
@@ -210,19 +214,21 @@ void putimage()
 // Return value: does image need to be re-rendered?
 // -----------------------------------------------------------------------------
 
-enum sampling_t {
+enum class sampling_t {
    sampling_coarser,
    sampling_finer
 };
 
+
+
 bool sample(const sampling_t samp)
 {
-   const size_t current_downsize = downsize;
+   const int current_downsize = downsize;
 
    // change
-   if (samp == sampling_coarser)
+   if (samp == sampling_t::sampling_coarser)
       downsize++;
-   if (samp == sampling_finer)
+   if (samp == sampling_t::sampling_finer)
       downsize--;
 
    // clip
@@ -244,8 +250,10 @@ bool sample(const sampling_t samp)
 
 bool move(const int key)
 {
-   if (vars::debug)
-      std::cout << "   move: key == " << key << std::endl;
+   if (vars::debug) {
+      std::cout << "move()" << std::endl;
+      std::cout << "   key = " << key << std::endl;
+   }
 
    // parameters
    static const real delta_angle  = 3.0;    // change for angles
@@ -287,8 +295,8 @@ bool move(const int key)
       case XK_Page_Up   : view.target.z += delta_target;  break;
 
       // sampling
-      case ',' : case '<' : return sample(sampling_coarser);
-      case '.' : case '>' : return sample(sampling_finer);
+      case ',' : case '<' : return sample(sampling_t::sampling_coarser);
+      case '.' : case '>' : return sample(sampling_t::sampling_finer);
 
       // toggle print, low(er)-memory mode
       case XK_p : vars::print = !vars::print;  break;
@@ -313,13 +321,13 @@ bool move(const int key)
 // -----------------------------------------------------------------------------
 
 // diffsize: helper
-inline bool diffsize(size_t &himage, size_t &vimage)
+inline bool diffsize(int &himage, int &vimage)
 {
-   himage = std::max(size_t(1), size_t(real(vars::hwindow)/real(downsize)+0.5));
-   vimage = std::max(size_t(1), size_t(real(vars::vwindow)/real(downsize)+0.5));
+   himage = std::max(1, int(real(vars::hwindow)/real(downsize) + 0.5));
+   vimage = std::max(1, int(real(vars::vwindow)/real(downsize) + 0.5));
    return
-      image.hpixel != himage ||
-      image.vpixel != vimage;
+      int(image.hpixel) != himage ||
+      int(image.vpixel) != vimage;
 }
 
 
@@ -328,20 +336,20 @@ inline bool diffsize(size_t &himage, size_t &vimage)
 void expose(const int hsize, const int vsize)
 {
    if (vars::debug) {
-      std::cout << "EXPOSE" << std::endl;
+      std::cout << "expose()" << std::endl;
       std::cout << "   old hwindow = " << vars::hwindow << std::endl;
       std::cout << "   old vwindow = " << vars::vwindow << std::endl;
    }
 
-   vars::hwindow = size_t(hsize);
-   vars::vwindow = size_t(vsize);
+   vars::hwindow = hsize;
+   vars::vwindow = vsize;
 
    if (vars::debug) {
       std::cout << "   new hwindow = " << vars::hwindow << std::endl;
       std::cout << "   new vwindow = " << vars::vwindow << std::endl;
    }
 
-   size_t himage, vimage;
+   int himage, vimage;
    if (diffsize(himage,vimage)) {
       image.upsize(himage,vimage);
       render();
@@ -355,7 +363,7 @@ void expose(const int hsize, const int vsize)
 GLenum keydown(const int key, const GLenum /*state*/)
 {
    if (vars::debug)
-      std::cout << "KEYDOWN" << std::endl;
+      std::cout << "keydown()" << std::endl;
 
    // quit?
    if (key == XK_Escape || key == XK_q || key == XK_Q)
@@ -363,7 +371,7 @@ GLenum keydown(const int key, const GLenum /*state*/)
 
    // process key
    if (move(key)) {
-      size_t himage, vimage;
+      int himage, vimage;
       if (diffsize(himage,vimage))
          image.upsize(himage,vimage);
       render();
@@ -381,12 +389,12 @@ GLenum keydown(const int key, const GLenum /*state*/)
 
 int interactive(const std::string &title)
 {
+   if (vars::debug)
+      std::cout << "interactive()" << std::endl;
+
    if (!vars::timing) {
       // window: set position and size
-      tkInitPosition(
-         int(vars::hpos), int(vars::vpos),
-         int(vars::hwindow), int(vars::vwindow)
-      );
+      tkInitPosition(vars::hpos, vars::vpos, vars::hwindow, vars::vwindow);
 
       // window: open
       // Note: it seems that tkInitWindow() is not const correct...
@@ -402,7 +410,7 @@ int interactive(const std::string &title)
       // size and the down-sampling, then [hv]image will come back as what we
       // need; and thus we must upsize the image accordingly.
       // fixme diffsize() does two things, and is confusing.
-      size_t himage, vimage;
+      int himage, vimage;
       if (diffsize(himage,vimage))
          image.upsize(himage,vimage);
       // else image is already exactly the size we need, so we're good to go
@@ -428,8 +436,6 @@ int interactive(const std::string &title)
 
       // close
       tkCloseWindow();
-      if (vars::debug)
-         std::cout << "\nReturning from interactive()" << std::endl;
    }
 
    // done
@@ -453,27 +459,55 @@ namespace args {
 template<class SHAPE>
 inline bool shape(const int n)
 {
-   (void)n;
+   static SHAPE obj;
+   for (int i = 0;  i < n;  ++i)
+      model.push(kip::random(obj));
    return true;
 }
-
-
 
 // ------------------------
 // specific
 // ------------------------
 
-// sphere
-inline bool sphere(const int n)
-{
-   return shape<kip::sphere<real,base>>(n);
-}
-
-// cone
+inline bool bicylinder(const int n)
+   { return shape<kip::bicylinder<real,base>>(n); }
+inline bool biwasher(const int n)
+   { return shape<kip::biwasher<real,base>>(n); }
+inline bool box(const int n)
+   { return shape<kip::box<real,base>>(n); }
+inline bool circle(const int n)
+   { return shape<kip::circle<real,base>>(n); }
 inline bool cone(const int n)
-{
-   return shape<kip::cone<real,base>>(n);
-}
+   { return shape<kip::cone<real,base>>(n); }
+inline bool cube(const int n)
+   { return shape<kip::cube<real,base>>(n); }
+inline bool cylinder(const int n)
+   { return shape<kip::cylinder<real,base>>(n); }
+inline bool ellipsoid(const int n)
+   { return shape<kip::ellipsoid<real,base>>(n); }
+inline bool paraboloid(const int n)
+   { return shape<kip::paraboloid<real,base>>(n); }
+inline bool pill(const int n)
+   { return shape<kip::pill<real,base>>(n); }
+inline bool silo(const int n)
+   { return shape<kip::silo<real,base>>(n); }
+inline bool sphere(const int n)
+   { return shape<kip::sphere<real,base>>(n); }
+inline bool spheroid(const int n)
+   { return shape<kip::spheroid<real,base>>(n); }
+inline bool washer(const int n)
+   { return shape<kip::washer<real,base>>(n); }
+
+/*
+polygon
+surf
+tabular
+triangle
+tri
+xplane
+yplane
+zplane
+*/
 
 } // namespace args
 
@@ -569,13 +603,26 @@ inline bool threads(const int n)
 
 namespace args {
 
+#define make_shape(shape) { "-" #shape, { args::shape, true } }
+
 // map
 // last value == option has int parameter?
 std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    // shapes
-   { "-sphere",  { args::sphere,  true  } },
-   { "-cone",    { args::cone,    true  } },
-   // fixme need lots more of these, and need to make them work
+   make_shape(bicylinder),
+   make_shape(biwasher),
+   make_shape(box),
+   make_shape(circle),
+   make_shape(cone),
+   make_shape(cube),
+   make_shape(cylinder),
+   make_shape(ellipsoid),
+   make_shape(paraboloid),
+   make_shape(pill),
+   make_shape(silo),
+   make_shape(sphere),
+   make_shape(spheroid),
+   make_shape(washer),
 
    // window
    { "-hwindow", { args::hwindow, true  } },
@@ -592,6 +639,8 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    // threads
    { "-threads", { args::threads, true  } },
 };
+
+#undef make_shape
 
 
 
@@ -650,9 +699,7 @@ bool read(
          model.append = true;
          stream >> model;
       } else {
-         std::cout
-            << "Error: could not open file \"" << argv[i] << '"'
-            <<  std::endl;
+         std::cout << "Could not open file \"" << argv[i] << '"' <<  std::endl;
          okay = false;
       }
    }
