@@ -9,8 +9,7 @@ namespace kip {
 
 template<class real = default_real_t, class tag = default_tag_t>
 class triangle : public shape<real,tag> {
-   // typedefs
-   typedef real T;
+   using T = real;
 
    // transformation
    mutable affine<real> aff;
@@ -230,7 +229,7 @@ kip_inall(triangle)
 kip_check(triangle)
 {
    static const char *const badvert = "Triangle has coincident vertices ";
-   typedef std::ostringstream ostr_t;
+   using ostr_t = std::ostringstream;
    diagnostic_t rv = diagnostic_good;
 
    if (u == v) { ostr_t oss;  oss << badvert << "u=v=" << u;  rv = error(oss); }

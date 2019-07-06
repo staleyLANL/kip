@@ -4,9 +4,9 @@
 namespace kip {
    // default shape base
    #ifdef KIP_DEFAULT_TAG_T
-      typedef KIP_DEFAULT_TAG_T default_tag_t;
+      using default_tag_t = KIP_DEFAULT_TAG_T;
    #else
-      typedef kip::rgb default_tag_t;
+      using default_tag_t = kip::rgb;
    #endif
 
    // shape - forward declaration
@@ -233,7 +233,7 @@ bool read_color_component(
    s.input(ell);
 
    if (!s.fail()) {
-      typedef unsigned char uchar;
+      using uchar = unsigned char;
       const uchar min = std::numeric_limits<uchar>::min();
       const uchar max = std::numeric_limits<uchar>::max();
 
@@ -354,19 +354,19 @@ template<
 >
 class component_traits {  // general
 public:
-   typedef T result;
+   using result = T;
 };
 
 template<class T>
 class component_traits<T,true,true> {  // for signed integral types
 public:
-   typedef long result;
+   using result = long;
 };
 
 template<class T>
 class component_traits<T,false,true> {  // for unsigned integral types
 public:
-   typedef unsigned long result;
+   using result = unsigned long;
 };
 
 }
@@ -403,7 +403,7 @@ template<class>
 kip::ostream &crayola_write(kip::ostream &k, const kip::crayola &obj)
 {
    const size_t size = kip::crayola::color_table().size();
-   typedef unsigned print_as;
+   using print_as = unsigned;
 
    if (obj.id() >= size) {
       std::ostringstream oss;
@@ -464,7 +464,7 @@ inline std::istream &operator>>(std::istream &s, kip::RGB<T> &obj)
 template<class T>
 inline kip::ostream &operator<<(kip::ostream &k, const kip::RGB<T> &obj)
 {
-   typedef typename kip::internal::component_traits<T>::result print_as;
+   using print_as = typename kip::internal::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -514,7 +514,7 @@ inline std::istream &operator>>(std::istream &s, kip::RGBA<T> &obj)
 template<class T>
 inline kip::ostream &operator<<(kip::ostream &k, const kip::RGBA<T> &obj)
 {
-   typedef typename kip::internal::component_traits<T>::result print_as;
+   using print_as = typename kip::internal::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -565,8 +565,7 @@ inline std::istream &operator>>(std::istream &s, kip::marble<T,real> &obj)
 template<class T, class real>
 kip::ostream &operator<<(kip::ostream &k, const kip::marble<T,real> &obj)
 {
-   typedef typename kip::internal::component_traits<T>::result print_as;
-
+   using print_as = typename kip::internal::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','

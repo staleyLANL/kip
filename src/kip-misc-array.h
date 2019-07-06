@@ -22,7 +22,7 @@ namespace internal {
 
    // is_integer_base<true,type>
    template<class type>
-   class is_integer_base<true,type> { public: typedef type result; };
+   class is_integer_base<true,type> { public: using result = type; };
 
    // is_integer
    template<class integer, class type>

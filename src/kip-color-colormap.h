@@ -25,12 +25,12 @@ namespace kip {
 // colormap_jet
 template<class unused>
 class colormap_jet {
-   typedef unsigned char uchar;
+   using uchar = unsigned char;
 
 public:
    // component, color, vec
-   typedef double component;
-   typedef RGB<component> color;
+   using component = double;
+   using color = RGB<component>;
    static std::vector<color> vec;
 
    // size()

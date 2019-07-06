@@ -9,7 +9,7 @@
 
 namespace kip {
    // Default type: real
-   typedef double default_real_t;
+   using default_real_t = double;
 
    // Key - like key() below, but always on (not turned off by KIP_NOKEY)
    inline void Key(void)
@@ -396,7 +396,7 @@ inline unsigned abs(const int val)
    { return unsigned(std::abs(val)); }
 
 inline unsigned long abs(const long val)
-   { typedef unsigned long ulong ; return ulong(std::labs(val)); }
+   { using ulong = unsigned long; return ulong(std::labs(val)); }
 
 // Apparently, Portland Group C++ is missing std::abs for (float), (long double)
 #ifndef __PGI

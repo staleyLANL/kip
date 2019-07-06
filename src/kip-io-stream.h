@@ -14,8 +14,8 @@ namespace kip {
 class istream {
    static const unsigned default_maxerr = 100;
 
-   typedef std::streampos streampos;
-   typedef std::ios_base::iostate iostate;
+   using streampos = std::streampos;
+   using iostate = std::ios_base::iostate;
 
    // ------------------------
    // Data
@@ -587,9 +587,9 @@ namespace kip {
 namespace kip {
    // default shape base
    #ifdef KIP_DEFAULT_TAG_T
-      typedef KIP_DEFAULT_TAG_T default_tag_t;
+      using default_tag_t = KIP_DEFAULT_TAG_T;
    #else
-      typedef kip::RGB<> default_tag_t;
+      using default_tag_t = kip::RGB<>;
    #endif
 
    // ostream << kipand

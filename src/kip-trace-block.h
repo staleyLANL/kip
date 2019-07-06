@@ -34,7 +34,7 @@ void block_setup_shape(
    const bbox<real> &aabb = model.aabb;
 
    // for each object of this shape
-   typedef typename CONTAINER::const_iterator iter_t;
+   using iter_t = typename CONTAINER::const_iterator;
    const iter_t end = objects.end();
    for (iter_t i = objects.begin();  i != end;  ++i) {
 
@@ -181,7 +181,7 @@ inline void btrace_shape(
    (void)objects;
 
 #ifdef KIP_BLOCK
-   typedef typename CONTAINER::const_iterator iter_t;
+   using iter_t = typename CONTAINER::const_iterator;
    const iter_t end = objects.end();
    for (iter_t i = objects.begin();  i != end;  ++i)
       i->lastpix = -2;
@@ -271,7 +271,7 @@ void btrace(
          const unsigned seg = i + engine.xzone*(j + engine.yzone*k);
 
          // bin: the present segment
-         typedef std::vector< minimum_and_shape<real,base> > vector_t;
+         using vector_t = std::vector< minimum_and_shape<real,base> >;
 
          vector_t &bin = vars.block[seg].vec;
          const size_t size = bin.size();

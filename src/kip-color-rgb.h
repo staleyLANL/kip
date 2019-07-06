@@ -6,7 +6,7 @@
 namespace kip {
 
 // Default type for red, green, and blue (and alpha)
-typedef unsigned char default_rgb_t;
+using default_rgb_t = unsigned char;
 class crayola;
 
 
@@ -24,7 +24,7 @@ class if_true { };
 template<class A, class B>
 class if_true<true,A,B> {
 public:
-   typedef B result;
+   using result = B;
 };
 
 
@@ -145,7 +145,7 @@ template<class rgb_t = default_rgb_t>
 class RGB {
 public:
    static const char *const description;
-   typedef rgb_t value_t;
+   using value_t = rgb_t;
 
 
    // components
@@ -191,7 +191,7 @@ public:
 template<class rgb_t> const char *const RGB<rgb_t>::description = "RGB";///
 
 // for users
-typedef RGB<> rgb;
+using rgb = RGB<>;
 
 
 
@@ -221,7 +221,7 @@ template<class rgb_t = default_rgb_t>
 class RGBA {
 public:
    static const char *const description;
-   typedef rgb_t value_t;
+   using value_t = rgb_t;
 
 
    // components
@@ -341,7 +341,7 @@ const rgb_t RGBA<rgb_t>::opaque      = internal::maxcolor<rgb_t>();  // e.g. 255
 */
 
 // for users
-typedef RGBA<> rgba;
+using rgba = RGBA<>;
 
 
 
@@ -413,7 +413,7 @@ inline kip::RGBA<
    typename kip::promote<A,B,float>::result  // at least float
 > operator*(const kip::RGBA<A> &lhs, const B &rhs)
 {
-   typedef typename kip::promote<A,B,float>::result T;
+   using T = typename kip::promote<A,B,float>::result;
    return kip::RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
 }
 */
@@ -465,7 +465,7 @@ inline kip::RGBA<
    typename kip::promote<A,B,float>::result  // at least float
 > operator*(const kip::RGBA<A> &lhs, const B &rhs)
 {
-   typedef typename kip::promote<A,B,float>::result T;
+   using T = typename kip::promote<A,B,float>::result;
    return kip::RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
 }
 

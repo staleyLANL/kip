@@ -475,7 +475,8 @@ inline void uprepare(
    #endif
    for (int i = 0;  i < numobj;  ++i) {
       ///      const size_t i = iint;
-      typedef typename SHAPEVEC::value_type SHAPE;  SHAPE &p = vec[size_t(i)];
+      using SHAPE = typename SHAPEVEC::value_type;
+      SHAPE &p = vec[size_t(i)];
       if (!p.on) continue;
 
       // minimum distance from eyeball
@@ -564,7 +565,7 @@ inline real uprepare_tri(
    }
 
    // for each tri
-   typedef tri<real,base> tri_t;
+   using tri_t = tri<real,base>;
    for (size_t it = surf.tri.size();  it--; ) {
       tri_t &t = surf.tri[it];  // this particular tri
 

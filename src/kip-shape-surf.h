@@ -63,7 +63,7 @@ template<class T>
 class binner {
    array< 1, std::vector<T> > linear;
 public:
-   typedef T element_type;
+   using element_type = T;
 
    // Each surf that's an *operand* contains its own binner. Some bins of some
    // of these surfs may not be reached during a ray trace. Therefore, although
@@ -106,8 +106,7 @@ public:
 
 template<class real = default_real_t, class tag = default_tag_t>
 class surf : public shape<real,tag> {
-   // typedefs
-   typedef point<real> pnt_t;
+   using pnt_t = point<real>;
 
    // interior / inside()
    using shape<real,tag>::interior;
@@ -120,7 +119,7 @@ class surf : public shape<real,tag> {
    // mint()
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
    using shape<real,tag>::surfdata;
-   typedef binner< internal::min_and_part< kip::tri<real,tag> > > binner_t;
+   using binner_t = binner< internal::min_and_part< kip::tri<real,tag> > >;
    inline binner_t &mint(void) const
       { return *(binner_t *)(void *)&surfdata.mint[0]; }
 
@@ -132,7 +131,7 @@ public:
    kip_functions(surf);
 
    // tri_t
-   typedef kip::tri<real,tag> tri_t;
+   using tri_t = kip::tri<real,tag>;
 
    // nodes and tris
    std::vector< point<real> > node;
@@ -451,7 +450,7 @@ kip_check(surf)
 // random
 kip_random(surf)
 {
-   typedef typename surf<real,tag>:: tri_t tri_t;
+   using tri_t = typename surf<real,tag>::tri_t;
 
    obj.node.clear();
    obj.tri .clear();
@@ -612,7 +611,7 @@ kip_read_value(surf) {
    //    tag
    // )
 
-   obj.node.clear();  typedef typename surf<real,tag>:: tri_t tri_t;
+   obj.node.clear();  using tri_t = typename surf<real,tag>::tri_t;
    obj.tri .clear();  unsigned nnode=0, ntri=0;  s.bail = false;
 
    // nnode

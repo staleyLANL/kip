@@ -16,7 +16,7 @@ template<class T = unsigned char, class real = double>
 class marble {
 public:
    static const char *const description;
-   typedef T value_t;
+   using value_t = T;
 
    // components
    union { mutable value_t r, red; };

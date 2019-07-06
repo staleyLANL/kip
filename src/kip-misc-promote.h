@@ -11,7 +11,7 @@ template<class A, class B>
 class if_same { /* nothing */ };
 
 template<class T>
-class if_same<T,T> { public: typedef T result; };
+class if_same<T,T> { public: using result = T; };
 
 
 
@@ -76,7 +76,7 @@ namespace internal {
    // others
 #define kip_make_pro(one_t, two_t, result_t)\
    template<>\
-   class pro<one_t,two_t> { public: typedef result_t result; }
+   class pro<one_t,two_t> { public: using result = result_t; }
 
 
 
@@ -295,9 +295,9 @@ namespace internal {
 template<class A, class B, class at_least = B>
 class promote {
 public:
-   typedef typename internal::pro<
+   using result = typename internal::pro<
       typename internal::pro<A,B>::result, at_least
-   >::result result;
+   >::result;
 };
 
 }

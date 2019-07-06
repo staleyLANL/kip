@@ -254,7 +254,7 @@ inline outcolor diffuse_specular(
 ) {
    // Assumptions: eyeball != intersection, light != intersection,
    // normal != (0,0,0).
-   typedef typename outcolor::value_t ctype;
+   using ctype = typename outcolor::value_t;
 
    const point<T> n   = normalized ? normal : normalize(normal);
    const point<T> i2l = light - intersection;

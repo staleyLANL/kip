@@ -185,7 +185,7 @@ kip_infirst(ands)
    // (from outside to inside) at the point after which we're inside all objects
 
    const size_t num_operand = kip_data.nop;
-   typedef afew_book< inq<real,tag> > per_operand;
+   using per_operand = afew_book< inq<real,tag> >;
 #include "kip-macro-workspace.h"
 
    // compute operand information
@@ -245,7 +245,7 @@ kip_inall(ands)
    if (kip_data.nop == 0) return false;  // no operands --> no intersection
 
    const size_t num_operand = kip_data.nop;
-   typedef afew_book< inq<real,tag> > per_operand;
+   using per_operand = afew_book< inq<real,tag> >;
 #include "kip-macro-workspace.h"
 
    // compute operand information

@@ -123,8 +123,8 @@ enum normalized_t { yesnorm, nonorm };
 template<class real, class base>
 class inq : public point<real> {  // the point<real> is the intersection
 public:
-   typedef real value_t;
-   typedef base base_t;
+   using value_t = real;
+   using base_t  = base;
 
    // data
    point<real> n;

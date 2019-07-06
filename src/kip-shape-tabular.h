@@ -21,7 +21,7 @@ class tabular : public shape<real,tag> {
    using shape<real,tag>::interior;
 
 public:
-   typedef std::vector< point_xr<real> > table_t;
+   using table_t = std::vector<point_xr<real>>;
 
 private:
    mutable rotate<3,real> rot;

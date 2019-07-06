@@ -19,10 +19,9 @@ public:
    using shape<real,tag>::misc;  // for ands
    using shape<real,tag>::nary;  // for nary != ands
 
-   typedef typename shape<real,tag>::misc_type misc_type;
-   typedef typename shape<real,tag>::nary_type nary_type;
-
-   typedef typename kip_type::vec_t vec_t;
+   using misc_type = typename shape<real,tag>::misc_type;
+   using nary_type = typename shape<real,tag>::nary_type;
+   using vec_t = typename kip_type::vec_t;
 
 
 

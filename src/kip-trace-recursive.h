@@ -69,7 +69,8 @@ inline void rprepare(
    // Prepare the shapes
    const typename FROM::iterator end = from.end();
    for (typename FROM::iterator p = from.begin();  p != end;  ++p) {
-      typedef typename FROM::value_type SHAPE;  SHAPE &s = *p;
+      using SHAPE = typename FROM::value_type;
+      SHAPE &s = *p;
       if (!s.on) continue;
 
       s.is_operand = false;

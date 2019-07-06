@@ -6,7 +6,7 @@
 namespace kip {
 
 // Default type: color
-typedef kip::rgba default_color_t;
+using default_color_t = kip::rgba;
 
 
 

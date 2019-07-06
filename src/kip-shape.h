@@ -51,7 +51,7 @@ public:
 // shape_id_t
 // Note: I found that by using unsigned char rather than an enum,
 // these allow for a smaller sizeof(shape<>).
-typedef unsigned char shape_id_t;
+using shape_id_t = unsigned char;
 
 namespace internal {
    // unique_number
@@ -220,8 +220,8 @@ public:
 
       // ands
       class ands_type {
-         private: typedef nary_element<real,tag,dummy> element_t;
-         public : typedef std::vector<element_t> vec_t;
+         private: using element_t = nary_element<real,tag,dummy>;
+         public : using vec_t = std::vector<element_t>;
          private: mutable char _per[sizeof(vec_t)];
       public:
          mutable size_t nop;
@@ -235,8 +235,8 @@ public:
 
    // for nary operators (except ands)
    class nary_type {
-      private: typedef nary_element<real,tag> element_t;
-      public : typedef std::vector<element_t> vec_t;
+      private: using element_t = nary_element<real,tag>;
+      public : using vec_t = std::vector<element_t>;
       private: mutable char _per[sizeof(vec_t)];
    public:
       mutable size_t nop;
@@ -280,7 +280,7 @@ public:
 
       // for binary operators
       class {
-         typedef shape *shape_ptr;
+         using shape_ptr = shape *;
       public:
          mutable real amin, bmin;
          mutable shape_ptr a, b;
@@ -334,7 +334,7 @@ public:
 
    // for binary operators
    class union_binary {
-      typedef shape *shape_ptr;
+      using shape_ptr = shape *;
    public:
       mutable real amin, bmin;
       mutable shape_ptr a, b;
@@ -1068,7 +1068,7 @@ inline bool op_all(
 // -----------------------------------------------------------------------------
 
 // minimum_t
-typedef float minimum_t;
+using minimum_t = float;
 
 // minimum_and_ptr
 template<class real, class SHAPE>

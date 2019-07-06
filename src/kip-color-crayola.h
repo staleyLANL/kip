@@ -6,8 +6,8 @@
 namespace kip {
 
 class crayola;
-typedef unsigned char crayola_id_t;
-typedef unsigned char crayola_rgb_t;
+using crayola_id_t = unsigned char;
+using crayola_rgb_t = unsigned char;
 
 
 
@@ -159,8 +159,8 @@ void color_table_initialize(
 ) {
    assert(table.size() == 0);  // should visit this function only once
 
-   typedef kip::RGB<crayola_rgb_t> rgb_t;
-   typedef std::pair<rgb_t,std::string> pair;
+   using rgb_t = kip::RGB<crayola_rgb_t>;
+   using pair = std::pair<rgb_t,std::string>;
 
    table.push_back(pair( rgb_t(0x00, 0x00, 0x00), "unknown"));
    table.push_back(pair( rgb_t(0xee, 0xd9, 0xc4), "almond"));

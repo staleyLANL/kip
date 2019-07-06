@@ -183,8 +183,8 @@ public:
 private:
 
    // bbox_representation_t, and_tight_t
-   typedef kip::ors<real,base> bbox_representation_t;
-   typedef internal::and_tight<real> and_tight_t;
+   using bbox_representation_t = kip::ors<real,base>;
+   using and_tight_t = internal::and_tight<real>;
 
    // rpush
    void rpush(
@@ -258,7 +258,7 @@ template<
    class base = default_tag_t
 >
 class loop {
-   typedef const shape<real,base> *pshape;
+   using pshape = const shape<real,base> *;
 
    // helper: class three
    class three {

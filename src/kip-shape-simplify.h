@@ -50,7 +50,7 @@ std::pair<
    const shape<real,base> *
 > simplify(const shape<real,base> *const ptr)
 {
-   typedef std::pair<const shape<real,base> *, const shape<real,base> *> pair;
+   using pair = std::pair<const shape<real,base> *, const shape<real,base> *>;
    const pair nn = pair(NULL,NULL);
 
    if (ptr == NULL)
@@ -218,7 +218,7 @@ kip_simplify(box)
 
    // if one radius == 0: polygon
    if (nzero == 1) {
-      typedef kip::polygon<real,base> polygon;
+      using polygon = kip::polygon<real,base>;
       polygon *const s = new polygon(obj.base());  s->table.reserve(4);
       obj.compute_corners();
 

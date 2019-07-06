@@ -979,9 +979,8 @@ void trace_bin(
       functor<SHAPE,real,color,base,pix>())
 
    // binsize-dependent [partial-]sorting actions
-   typedef
-      typename std::vector< minimum_and_shape<real,base> >::difference_type
-      diff_t;
+   using diff_t =
+      typename std::vector< minimum_and_shape<real,base> >::difference_type;
    size_t endsorted = 0;
 
    if (binsize == 2) {

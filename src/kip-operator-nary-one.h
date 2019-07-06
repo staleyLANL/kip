@@ -157,7 +157,7 @@ kip_infirst(one)
 
    // Inside 2 or more operands...
    const size_t num_operand = kip_data.nop;
-   typedef afew_book< inq<real,tag> > per_operand;
+   using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information
@@ -208,7 +208,7 @@ kip_inall(one)
    if (kip_data.nop == 0) return false;  // no operands --> no intersection
 
    const size_t num_operand = kip_data.nop;
-   typedef afew_book< inq<real,tag> > per_operand;
+   using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information

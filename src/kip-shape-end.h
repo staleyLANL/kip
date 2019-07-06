@@ -11,7 +11,7 @@
 namespace kip {
 
 // users may prefer the shorter name, "shape_id", without the "_t" suffix
-typedef shape_id_t shape_id;
+using shape_id = shape_id_t;
 
 namespace internal {
 
@@ -48,6 +48,6 @@ kip_extra_semi (kip_make_id)
 
 }
 
-typedef internal::id_t<char> id;
+using id = internal::id_t<char>;
 
 }
