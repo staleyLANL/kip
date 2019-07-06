@@ -199,8 +199,6 @@ kip_inall(sphere)
 
 kip_random(sphere)
 {
-
-   /*
    // center
    obj.c.x = op::twice(random<real>() - real(0.5));
    obj.c.y = op::twice(random<real>() - real(0.5));
@@ -212,8 +210,8 @@ kip_random(sphere)
    // base
    random(obj.base());  obj.baseset = true;
    return obj;
-   */
 
+   /*
    // center
    obj.c.x =  4*(random<real>() - real(0.5));
    obj.c.y = 10*(random<real>() - real(0.1));
@@ -225,6 +223,7 @@ kip_random(sphere)
    // base
    random(obj.base());  obj.baseset = true;
    return obj;
+   */
 
 } kip_end
 
