@@ -77,7 +77,7 @@ public:
    // (2) type &push(const type &)
    // (3) type &push(const type *const)
    #define kip_make_primitive(type,prop)\
-      std::vector< kip::type<real,base> > type;\
+      std::vector<kip::type<real,base>> type;\
       \
       inline kip::type<real,base> &push(const kip::type<real,base> &obj)\
       {\
@@ -88,7 +88,7 @@ public:
       \
       inline kip::type<real,base> &push(const kip::type<real,base> *const ptr)\
       {\
-         internal::tclass< kip::type<real,base> > t;\
+         internal::tclass<kip::type<real,base>> t;\
          return ptr ? push(*ptr) : default_parameter(t);\
       }
 
@@ -709,7 +709,7 @@ bool shape_select(const std::string &name, ACTION &action)
 
    // shortened names
    #define kip_if_shape(str,type)\
-      else if (name == str) { action.fun(internal::tclass<type<real,base> >()); }
+      else if (name == str) { action.fun(internal::tclass<type<real,base>>()); }
    kip_if_shape("not",  kipnot)
    kip_if_shape("and",  kipand)
    kip_if_shape("cut",  kipcut)
@@ -719,7 +719,7 @@ bool shape_select(const std::string &name, ACTION &action)
 
    // full names
    #define kip_if_shape(shp)\
-      else if (name == #shp) { action.fun(internal::tclass<shp<real,base> >()); }
+      else if (name == #shp) { action.fun(internal::tclass<shp<real,base>>()); }
    kip_expand_plain(kip_if_shape)
    #undef  kip_if_shape
 

@@ -26,7 +26,7 @@ kip_process(even)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector< minimum_and_shape<real,tag> > min_and_op(kip_data.nop);
+   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
 
    for (size_t i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->is_operand = true;
@@ -193,7 +193,7 @@ kip_infirst(even)
 
    // Inside 0 or 1 operands...
    const size_t num_operand = kip_data.nop;
-   using per_operand = afew_book< inq<real,tag> >;
+   using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information

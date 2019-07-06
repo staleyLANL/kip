@@ -489,6 +489,8 @@ inline bool paraboloid(const int n)
    { return shape<kip::paraboloid<real,base>>(n); }
 inline bool pill(const int n)
    { return shape<kip::pill<real,base>>(n); }
+inline bool polygon(const int n)
+   { return shape<kip::polygon<real,base>>(n); }
 inline bool silo(const int n)
    { return shape<kip::silo<real,base>>(n); }
 inline bool sphere(const int n)
@@ -499,7 +501,6 @@ inline bool washer(const int n)
    { return shape<kip::washer<real,base>>(n); }
 
 /*
-polygon
 surf
 tabular
 triangle
@@ -619,6 +620,7 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    make_shape(ellipsoid),
    make_shape(paraboloid),
    make_shape(pill),
+   make_shape(polygon),
    make_shape(silo),
    make_shape(sphere),
    make_shape(spheroid),

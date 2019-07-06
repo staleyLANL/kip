@@ -29,7 +29,7 @@ private:
    // actual begin/end (along a --> b) of tabular
    mutable point<real> atabular, btabular;
 
-   mutable array_simple< internal::rshhhd<real> > pre;
+   mutable array_simple<internal::rshhhd<real>> pre;
    mutable real hdr, rmaxsq, f, left, right;
 
 private:
@@ -64,11 +64,11 @@ private:
 
    inline void registerq(
       const real, const real, const real, const real, const real, const size_t,
-      afew< inq<real,tag> > &
+      afew<inq<real,tag>> &
    ) const;
 
    inline void segment2(
-      const real, const real, afew< inq<real,tag> > &,
+      const real, const real, afew<inq<real,tag>> &,
       const real, const real, const real, const real, const size_t
    ) const;
 
@@ -513,7 +513,7 @@ template<class real, class tag>
 inline void tabular<real,tag>::registerq(
    const real q, const real dx, const real dy,
    const real tar_z, const real slope, const size_t i,
-   afew< inq<real,tag> > &ints
+   afew<inq<real,tag>> &ints
 ) const {
    inq<real,tag> qtmp;
    qtmp.x = rot.ex + q*dx;
@@ -534,7 +534,7 @@ inline void tabular<real,tag>::registerq(
 // segment2
 template<class real, class tag>
 inline void tabular<real,tag>::segment2(
-   const real tar_z, const real qmin, afew< inq<real,tag> > &ints,
+   const real tar_z, const real qmin, afew<inq<real,tag>> &ints,
    const real dx, const real dy, const real tmp1, const real tmp2,
    const size_t i
 ) const {

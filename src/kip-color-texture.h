@@ -321,7 +321,7 @@ inline out kipcolor(
 // RGB
 template<class real, class rgb_t>
 inline RGB<rgb_t> kipcolor(
-   const shape<real,RGB<rgb_t> > *const,
+   const shape<real,RGB<rgb_t>> *const,
    const RGB<rgb_t> &qcolor,
    const point<real> &
 ) {
@@ -344,7 +344,7 @@ inline RGB<crayola_rgb_t> kipcolor(
 // marble
 template<class out, class real, class rgb_t, class mreal>
 inline out kipcolor(
-   const shape<real,marble<rgb_t,mreal> > *const qshape,
+   const shape<real,marble<rgb_t,mreal>> *const qshape,
    const marble<rgb_t,mreal> &qcolor,
    const point<real> &_intersection
 ) {
@@ -434,7 +434,7 @@ inline out get_color(
 
    const out rv = diffuse_specular<out>(
       // RGB
-      kip::kipcolor< RGB<unsigned char> >(
+      kip::kipcolor<RGB<unsigned char>>(
          q.shape,
         *q.color,
          q.fac > 0 ? q.fac*q : point<real>(q)  // true intersection

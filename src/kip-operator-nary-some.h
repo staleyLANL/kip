@@ -26,7 +26,7 @@ kip_process(some)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector< minimum_and_shape<real,tag> > min_and_op(kip_data.nop);
+   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
 
    for (size_t i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->is_operand = true;
@@ -164,7 +164,7 @@ kip_infirst(some)
 
    // Inside some...
    const size_t num_operand = kip_data.nop;
-   using per_operand = afew_book< inq<real,tag> >;
+   using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information
@@ -215,7 +215,7 @@ kip_inall(some)
    if (kip_data.nop < 2) return false;  // 0 or 1 operands --> no intersection
 
    const size_t num_operand = kip_data.nop;
-   using per_operand = afew_book< inq<real,tag> >;
+   using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information

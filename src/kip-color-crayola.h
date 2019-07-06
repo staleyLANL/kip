@@ -103,7 +103,7 @@ class crayola : public internal::crayola_base<char> {
 public:
 
    // color_table()
-   static inline std::vector< std::pair< RGB<crayola_rgb_t>, std::string > > &
+   static inline std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &
       color_table(void);
 
    // crayola(), crayola(crayola_id_t)
@@ -155,7 +155,7 @@ namespace internal {
 // color_table_initialize
 template<class>
 void color_table_initialize(
-   std::vector< std::pair< RGB<crayola_rgb_t>, std::string > > &table
+   std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &table
 ) {
    assert(table.size() == 0);  // should visit this function only once
 
@@ -319,10 +319,10 @@ void color_table_initialize(
 
 
 // crayola::color_table
-inline std::vector< std::pair< RGB<crayola_rgb_t>, std::string > > &
+inline std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &
 crayola::color_table(void)
 {
-   static std::vector< std::pair< RGB<crayola_rgb_t>, std::string > > table;
+   static std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> table;
    static bool first = true;
 
    if (first) {

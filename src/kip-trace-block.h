@@ -271,7 +271,7 @@ void btrace(
          const unsigned seg = i + engine.xzone*(j + engine.yzone*k);
 
          // bin: the present segment
-         using vector_t = std::vector< minimum_and_shape<real,base> >;
+         using vector_t = std::vector<minimum_and_shape<real,base>>;
 
          vector_t &bin = vars.block[seg].vec;
          const size_t size = bin.size();

@@ -605,7 +605,7 @@ kip_simplify(polygon)
    polygon<real,base> *const tmp = new polygon<real,base>(obj);
 
    // ...remove any successive duplicates
-   std::vector< point<real> > &t = tmp->table;
+   std::vector<point<real>> &t = tmp->table;
    t.erase(std::unique(t.begin(), t.end(), internal::same<real>()), t.end());
 
    // ...remove any begin/end duplicate

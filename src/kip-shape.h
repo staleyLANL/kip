@@ -308,7 +308,7 @@ public:
       class {
       public:
          mutable char mint
-            [sizeof(binner< internal::min_and_part< tri<real,tag> > >)];
+            [sizeof(binner<internal::min_and_part<tri<real,tag>>>)];
       } surfdata;
    };
    */
@@ -359,7 +359,7 @@ public:
    class union_surfdata {
    public:
       mutable char mint
-         [sizeof(binner< internal::min_and_part< tri<real,tag> > >)];
+         [sizeof(binner<internal::min_and_part<tri<real,tag>>>)];
    };
 
    // union'd data, as we only need one-at-a-time
@@ -506,7 +506,7 @@ public:
    // inall
    virtual bool inall(
       const eyetardiff<real> &,
-      const real, afew< inq<real,tag> > &, const internal::subinfo &
+      const real, afew<inq<real,tag>> &, const internal::subinfo &
    ) const = 0;
 
 #else
@@ -520,7 +520,7 @@ public:
    // inall
    virtual bool inall(
       const point<real> &, const point<real> &, const point<real> &,
-      const real, afew< inq<real,tag> > &, const internal::subinfo &
+      const real, afew<inq<real,tag>> &, const internal::subinfo &
    ) const = 0;
 
 #endif
@@ -611,7 +611,7 @@ public:
    inline bool inall(\
       const kip::eyetardiff<real> &,\
       const real,\
-      afew< inq<real,tag> > &,\
+      afew<inq<real,tag>> &,\
       const internal::subinfo &\
    ) const;\
    \
@@ -657,7 +657,7 @@ public:
       const kip::point<real> &,\
       const kip::point<real> &,\
       const real,\
-      afew< inq<real,tag> > &,\
+      afew<inq<real,tag>> &,\
       const internal::subinfo &\
    ) const;\
    \
@@ -735,7 +735,7 @@ public:
    inline bool type<real,tag>::inall(\
       const kip::eyetardiff<real> &etd,\
       const real qmin,\
-      afew< inq<real,tag> > &ints,\
+      afew<inq<real,tag>> &ints,\
       const internal::subinfo &insub\
    ) const {\
       const kip::point<real> &eyeball = etd.eyeball;\
@@ -772,7 +772,7 @@ public:
       const kip::point<real> &target,\
       const kip::point<real> &diff,\
       const real qmin,\
-      afew< inq<real,tag> > &ints,\
+      afew<inq<real,tag>> &ints,\
       const internal::subinfo &insub\
    ) const {\
       (void)eyeball;  (void)target;  (void)diff;\
@@ -1054,7 +1054,7 @@ inline bool op_all(
 #else
    const point<real> &, const point<real> &, const point<real> &,
 #endif
-   const real &, afew< inq<real,tag> > &, const subinfo &
+   const real &, afew<inq<real,tag>> &, const subinfo &
 );
 
 }
@@ -1084,12 +1084,12 @@ public:
 
 // minimum_and_shape
 template<class real, class base>
-class minimum_and_shape : public minimum_and_ptr< real,kip::shape<real,base> > {
+class minimum_and_shape : public minimum_and_ptr<real,kip::shape<real,base>> {
 public:
    inline explicit minimum_and_shape(void) { }
    inline explicit minimum_and_shape(
       const real &_minimum, kip::shape<real,base> &_shape
-   ) : minimum_and_ptr< real, kip::shape<real,base> >(_minimum,_shape) { }
+   ) : minimum_and_ptr<real, kip::shape<real,base>>(_minimum,_shape) { }
 };
 
 
@@ -1098,7 +1098,7 @@ public:
 template<class real, class base>
 class vec_reset {
 public:
-   std::vector< minimum_and_shape<real,base> > vec;
+   std::vector<minimum_and_shape<real,base>> vec;
    bool reset;
 };
 

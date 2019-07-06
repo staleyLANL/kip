@@ -421,7 +421,7 @@ template<class real, class base>
 inline void merge_bins(
    const int nbin, const unsigned hzone,
    vars<real,base> &vars, const int nthreads,
-   const array<3, std::vector< minimum_and_shape<real,base> > > &per_zone
+   const array<3,std::vector<minimum_and_shape<real,base>>> &per_zone
 ) {
    #ifdef _OPENMP
       #pragma omp parallel for
@@ -460,7 +460,7 @@ inline void uprepare(
    const bool diag = diagonal || _diag;
 
    // per_zone(hzone,vzone,nthreads-1) (-1 because thread 0 uses vars.uniform)
-   static array<3, std::vector< minimum_and_shape<real,base> > > per_zone;
+   static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
    const int nthreads = get_nthreads();
    #ifdef _OPENMP
       for (size_t z = per_zone.size();  z--; )
@@ -504,7 +504,7 @@ inline void uprepare(
       bin.jend = (sub.jend + engine.vsub - 1)/engine.vsub;
 
       const int thread = this_thread();
-      std::vector< minimum_and_shape<real,base> > *const ptr = thread
+      std::vector<minimum_and_shape<real,base>> *const ptr = thread
        ? &per_zone[nbin*(thread-1)]
        : &vars.uniform[0];
 
@@ -625,14 +625,14 @@ inline real uprepare_tri(
 template<class real, class base>
 inline void uprepare_surf(
    const light<real> &light, const engine<real> &engine, vars<real,base> &vars,
-   const int nbin, const bool object_border, std::vector< surf<real,base> > &vec
+   const int nbin, const bool object_border, std::vector<surf<real,base>> &vec
 ) {
    // number of surfs
    const int nsurf = int(vec.size());  // int, for OpenMP
    if (nsurf == 0) return;
 
    // per_zone(hzone, vzone, nthreads-1) (-1 because thread 0 uses vars.uniform)
-   static array<3, std::vector< minimum_and_shape<real,base> > > per_zone;
+   static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
    const int nthreads = get_nthreads();
    #ifdef _OPENMP
       for (size_t z = per_zone.size();  z--; )
@@ -662,10 +662,10 @@ inline void uprepare_surf(
       }
 
       const int thread = this_thread();
-      std::vector< minimum_and_shape<real,base> > *const ptr = thread
+      std::vector<minimum_and_shape<real,base>> *const ptr = thread
        ? &per_zone[nbin*(thread-1)]
        : &vars.uniform[0];
-      uprepare_tri< minimum_and_shape<real,base> >
+      uprepare_tri<minimum_and_shape<real,base>>
          (engine,vars, ptr,p, object_border);
    }
 

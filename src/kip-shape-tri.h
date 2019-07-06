@@ -138,7 +138,7 @@ public:
 
    // process - custom version
    inline real process(
-      const std::vector< point<real> > &, const point<real> &,
+      const std::vector<point<real>> &, const point<real> &,
       const engine<real> &, const internal::vars<real,tag> &
    ) const;
 };
@@ -171,7 +171,7 @@ kip_aabb  (tri) {
 // process
 template<class real, class tag>
 inline real tri<real,tag>::process(
-   const std::vector< point<real> > &node,
+   const std::vector<point<real>> &node,
    const point<real> &eyeball,
    const engine<real> &, const internal::vars<real,tag> &
 ) const {

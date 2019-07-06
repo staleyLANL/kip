@@ -314,7 +314,7 @@ inline bool op_first(
    return obj.infirst(kip_etd, qmin,q, insub);
 
    // Equivalent inall() call; useful for comparing first vs. all speed:
-   // afew< inq<real,tag> > ints;  ints.reset();
+   // afew<inq<real,tag>> ints;  ints.reset();
    // return obj.inall(kip_etd, qmin,ints, insub)
    //    ? q = ints[0], true
    //    : false;
@@ -339,7 +339,7 @@ inline bool op_all(
 
    // qmin, q
    const real &qmin,
-   afew< inq<real,tag> > &q,
+   afew<inq<real,tag>> &q,
 
    // insub
    const subinfo &insub
@@ -382,7 +382,7 @@ inline bool op_all(
    public:\
    inline void operator()(\
       const engine<real> &engine, const image<real,color> &image,\
-      std::vector< minimum_and_shape<real,base> > &bin,\
+      std::vector<minimum_and_shape<real,base>> &bin,\
       size_t &endsorted, const size_t binsize, const real &maximum,\
       inq<real,base> &qa, inq<real,base> *qa_ptr,\
       inq<real,base> &qb, inq<real,base> *qb_ptr,\
@@ -410,7 +410,7 @@ inline bool op_all(
    public:\
    inline bool operator()(\
       const engine<real> &engine, const image<real,color> &image,\
-      std::vector< minimum_and_shape<real,base> > &bin,\
+      std::vector<minimum_and_shape<real,base>> &bin,\
       size_t &endsorted, const size_t binsize, const real &maximum,\
       inq<real,base> &qa, inq<real,base> *qa_ptr,\
       inq<real,base> &qb, inq<real,base> *qb_ptr,\
@@ -644,7 +644,7 @@ kip_fill_anti(two_anti) {
 /*
    const engine<real      > &engine,
    const image <real,color> &image,
-   std::vector< minimum_and_shape<real,base> > &bin,
+   std::vector<minimum_and_shape<real,base>> &bin,
          size_t &endsorted,
    const size_t  binsize,
    const real   &maximum,
@@ -758,7 +758,7 @@ inline void fill_loop_plain(
    const size_t jmin, const size_t jend,
    const size_t zone, const real &maximum,
 
-   std::vector< minimum_and_shape<real,base> > &bin,
+   std::vector<minimum_and_shape<real,base>> &bin,
    size_t endsorted, const size_t binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
@@ -807,7 +807,7 @@ inline void fill_loop_lean(
    const size_t jmin, const size_t jend,
    const size_t zone, const real &maximum,
 
-   std::vector< minimum_and_shape<real,base> > &bin,
+   std::vector<minimum_and_shape<real,base>> &bin,
    size_t endsorted, const size_t binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
@@ -870,7 +870,7 @@ inline void fill_loop_anti(
    const size_t zone,
    const real &maximum,
 
-   std::vector< minimum_and_shape<real,base> > &bin,
+   std::vector<minimum_and_shape<real,base>> &bin,
    size_t endsorted, const size_t binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
@@ -948,7 +948,7 @@ void trace_bin(
    size_t jmin, size_t jend,
    const size_t zone, const size_t max_binsize,
 
-   std::vector< minimum_and_shape<real,base> > &bin,
+   std::vector<minimum_and_shape<real,base>> &bin,
    const size_t binsize
 ) {
    // border?
@@ -980,7 +980,7 @@ void trace_bin(
 
    // binsize-dependent [partial-]sorting actions
    using diff_t =
-      typename std::vector< minimum_and_shape<real,base> >::difference_type;
+      typename std::vector<minimum_and_shape<real,base>>::difference_type;
    size_t endsorted = 0;
 
    if (binsize == 2) {

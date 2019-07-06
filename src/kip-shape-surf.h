@@ -61,7 +61,7 @@ public:
 // binner
 template<class T>
 class binner {
-   array< 1, std::vector<T> > linear;
+   array<1,std::vector<T>> linear;
 public:
    using element_type = T;
 
@@ -119,7 +119,7 @@ class surf : public shape<real,tag> {
    // mint()
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
    using shape<real,tag>::surfdata;
-   using binner_t = binner< internal::min_and_part< kip::tri<real,tag> > >;
+   using binner_t = binner<internal::min_and_part<kip::tri<real,tag>>>;
    inline binner_t &mint(void) const
       { return *(binner_t *)(void *)&surfdata.mint[0]; }
 
@@ -134,7 +134,7 @@ public:
    using tri_t = kip::tri<real,tag>;
 
    // nodes and tris
-   std::vector< point<real> > node;
+   std::vector<point<real>> node;
    mutable std::vector<tri_t> tri;
    mutable std::vector<bool> used;
 
@@ -172,7 +172,7 @@ public:
 
    // surf(node, tri)
    inline explicit surf(
-      const std::vector< point<real> > &_node, const std::vector<tri_t> &_tri
+      const std::vector<point<real>> &_node, const std::vector<tri_t> &_tri
    ) :
       shape<real,tag>(this),
       node(_node), tri(_tri)
@@ -183,7 +183,7 @@ public:
 
    // surf(node, tri, tag)
    inline explicit surf(
-      const std::vector< point<real> > &_node, const std::vector<tri_t> &_tri,
+      const std::vector<point<real>> &_node, const std::vector<tri_t> &_tri,
       const tag &thetag
    ) :
       shape<real,tag>(this,thetag),
@@ -266,7 +266,7 @@ kip_process(surf)
    // process the tris
    mint().reset(engine);
    return internal::uprepare_tri<
-      internal::min_and_part< kip::tri<real,tag> >
+      internal::min_and_part<kip::tri<real,tag>>
    >(
       engine,
       vars,
@@ -521,14 +521,14 @@ kip_random(surf)
 kip_infirst(surf)
 {
    // bookkeeping
-   std::vector< internal::min_and_part< kip::tri<real,tag> > > &bin =
+   std::vector<internal::min_and_part<kip::tri<real,tag>>> &bin =
       mint()[insub.nzone];
    const size_t ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint().sorted[insub.nzone]) {
       std::sort(bin.begin(), bin.end(),
-                internal::part_less< kip::tri<real,tag> >());
+                internal::part_less<kip::tri<real,tag>>());
       mint().sorted[insub.nzone] = true;
    }
 
@@ -554,14 +554,14 @@ kip_infirst(surf)
 kip_inall(surf)
 {
    // bookkeeping
-   std::vector< internal::min_and_part< kip::tri<real,tag> > > &bin =
+   std::vector<internal::min_and_part<kip::tri<real,tag>>> &bin =
       mint()[insub.nzone];
    const size_t ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint().sorted[insub.nzone]) {
       std::sort(bin.begin(), bin.end(),
-                internal::part_less< kip::tri<real,tag> >());
+                internal::part_less<kip::tri<real,tag>>());
       mint().sorted[insub.nzone] = true;
    }
 

@@ -14,7 +14,7 @@ public:
 
    // data
    #define kip_make_shape_vector(type)\
-      std::vector< minimum_and_ptr< real, kip::type<real,tag> > > type
+      std::vector<minimum_and_ptr<real,kip::type<real,tag>>> type
    kip_expand_semi(kip_make_shape_vector)
    #undef  kip_make_shape_vector
 
@@ -171,10 +171,10 @@ void rsetup(
 
 template<class real, class base>
 class functor_sv2bin {
-   std::vector< minimum_and_shape<real,base> > &bin;
+   std::vector<minimum_and_shape<real,base>> &bin;
 
 public:
-   inline functor_sv2bin(std::vector< minimum_and_shape<real,base> > &_bin) :
+   inline functor_sv2bin(std::vector<minimum_and_shape<real,base>> &_bin) :
       bin(_bin) { }
 
    template<class CONTAINER>
@@ -199,7 +199,7 @@ inline void to_abstract_then_fill(
 
    const shape_vectors<real,base> &sv, const size_t binsize
 ) {
-   std::vector< minimum_and_shape<real,base> > bin;
+   std::vector<minimum_and_shape<real,base>> bin;
    bin.reserve(binsize);
 
    const functor_sv2bin<real,base> f(bin);
@@ -302,7 +302,7 @@ void grow_portion(
 ) {
 #define kip_make_grow(type)\
    grow_portion_specific\
-      (tclass< type<real,base> >(), current.type,portion.type, seg,pos);
+      (tclass<type<real,base>>(), current.type,portion.type, seg,pos);
    kip_expand_semi(kip_make_grow)
 #undef  kip_make_grow
 }

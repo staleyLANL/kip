@@ -217,12 +217,12 @@ kip_infirst(kipand)
    // the overall status changes (from outside to inside) at the point
    // after which we're inside both objects
 
-   afew< inq<real,tag> > aq;
+   afew<inq<real,tag>> aq;
    if (!internal::op_all(binary.a, kip_etd, qmin,aq, insub))
       return binary.ina &&
              internal::op_first(binary.b, kip_etd, qmin,q, insub);
 
-   afew< inq<real,tag> > bq;
+   afew<inq<real,tag>> bq;
    if (!internal::op_all(binary.b, kip_etd, qmin,bq, insub))
       return binary.inb && (q = aq[0], true);
 
@@ -252,12 +252,12 @@ kip_infirst(kipand)
 
 kip_inall(kipand)
 {
-   afew< inq<real,tag> > aq;
+   afew<inq<real,tag>> aq;
    if (!internal::op_all(binary.a, kip_etd, qmin,aq, insub))
       return binary.ina &&
              internal::op_all(binary.b, kip_etd, qmin,ints, insub);
 
-   afew< inq<real,tag> > bq;
+   afew<inq<real,tag>> bq;
    if (!internal::op_all(binary.b, kip_etd, qmin,bq, insub))
       return binary.inb && ints.assign(aq);
 

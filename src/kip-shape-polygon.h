@@ -12,12 +12,12 @@ class polygon : public shape<real,tag> {
    using shape<real,tag>::interior;
 
 public:
-   using table_t = std::vector< point<real> >;
+   using table_t = std::vector<point<real>>;
 
 private:
    // modified polygon: (0,0,0), (h,0,0), (ex,ey,0), ... (all with z == 0)
    mutable rotate<3,real> rot;
-   mutable array_simple< point_xy<real> > poly;  // rotated to 2d
+   mutable array_simple<point_xy<real>> poly;  // rotated to 2d
    mutable real xlo, xhi, ylo, yhi;  // 2d bounding box
    mutable size_t npts;
 

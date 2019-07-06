@@ -126,7 +126,7 @@ public:
    class _prior {
    public:
       // targets
-      array< 2, point<real> > targets;
+      array<2,point<real>> targets;
 
       // aspect, hpixel, vpixel
       real aspect;

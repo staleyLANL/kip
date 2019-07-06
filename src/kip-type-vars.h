@@ -14,8 +14,8 @@ template<class real, class tag>  // template arguments defaulted elsewhere
 class vars {
 public:
    // Shapes: abstract access for uniform and block methods
-   array<2,std::vector< minimum_and_shape<real,tag> > > uniform;
-   array<3,vec_reset<real,tag> > block;
+   array<2,std::vector<minimum_and_shape<real,tag>>> uniform;
+   array<3,vec_reset<real,tag>> block;
 
    // Miscellaneous
    rotate<3,real> t2e;
@@ -27,9 +27,9 @@ public:
    rotate<-3,real> left, right;
    rotate<-3,real> bottom, top, behind;
 
-   array< 1, rotate<-3,real> > seg_hneg, seg_hpos;
-   array< 1, rotate<-3,real> > seg_vneg, seg_vpos;
-   array< 1, rotate<-3,real> > seg_diag, seg_quad, seg_3060, seg_1575;
+   array<1,rotate<-3,real>> seg_hneg, seg_hpos;
+   array<1,rotate<-3,real>> seg_vneg, seg_vpos;
+   array<1,rotate<-3,real>> seg_diag, seg_quad, seg_3060, seg_1575;
 
    unsigned anti2;
 
