@@ -30,7 +30,7 @@ public:
    bool append;
 
    // Constructor
-   inline explicit model(void) : append(false) { }
+   inline explicit model() : append(false) { }
 
 
 
@@ -228,12 +228,12 @@ public:
    // --------------------------------
 
    // clear, assign, size
-   void clear(void);
+   void clear();
    model &assign(const model &);
-   size_t size(void) const;
+   size_t size() const;
 
    // unbound
-   void unbound(void);
+   void unbound();
 
    // aabb
    bbox<real> aabb(
@@ -276,12 +276,12 @@ class loop {
    // conversion to bool
    // Private; prevents users from writing "while (i)" instead of "while (i())"
    // for a loop i
-   inline operator bool(void) const { return true; }
+   inline operator bool() const { return true; }
 
 public:
 
    // reset
-   inline void reset(void) const
+   inline void reset() const
    {
       row = ROW;
       col = 0;
@@ -292,10 +292,10 @@ public:
 
 
    // operator()
-   bool operator()(void) const;
+   bool operator()() const;
 
    // dereference (gives shape *)
-   inline pshape operator*(void) const { return ptr; }
+   inline pshape operator*() const { return ptr; }
 };
 
 
@@ -329,7 +329,7 @@ loop<real,base>::loop(const model<real,base> &m)
 
 // operator()
 template<class real, class base>
-bool loop<real,base>::operator()(void) const
+bool loop<real,base>::operator()() const
 {
    if (ROW == nshapes)
       return false;
@@ -512,7 +512,7 @@ model<real,base>::push_bbox(
 namespace internal {
    class functor_clear {
    public:
-      inline functor_clear(void) { }
+      inline functor_clear() { }
 
       template<class CONTAINER>
       inline void operator()(CONTAINER &c) const { c.clear(); }
@@ -520,7 +520,7 @@ namespace internal {
 }
 
 template<class real, class base>
-void model<real,base>::clear(void)
+void model<real,base>::clear()
 {
    const internal::functor_clear f;
    internal::allshape(*this, f);
@@ -546,7 +546,7 @@ namespace internal {
    class functor_size {
    public:
       mutable size_t size;
-      inline functor_size(void) : size(0) { }
+      inline functor_size() : size(0) { }
 
       template<class CONTAINER>
       inline void operator()(CONTAINER &c) const { size += size_t(c.size()); }
@@ -554,7 +554,7 @@ namespace internal {
 }
 
 template<class real, class base>
-size_t model<real,base>::size(void) const
+size_t model<real,base>::size() const
 {
    const internal::functor_size f;
    internal::allshape(*this, f);
@@ -583,7 +583,7 @@ namespace internal {
 namespace internal {
    class functor_unbound {
    public:
-      inline functor_unbound(void) { }
+      inline functor_unbound() { }
 
       template<class CONTAINER>
       inline void operator()(CONTAINER &c) const
@@ -599,7 +599,7 @@ namespace internal {
 }
 
 template<class real, class base>
-void model<real,base>::unbound(void)
+void model<real,base>::unbound()
 {
    /// std::cout << "   unbound!" << std::endl;
 
@@ -920,7 +920,7 @@ bool read_value(
 
 
 namespace internal {
-   inline bool &write_shape_start(void)
+   inline bool &write_shape_start()
    {
       static bool value = true;
       return value;

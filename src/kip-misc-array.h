@@ -50,23 +50,23 @@ class array<0,element> {
 public:
 
    // array()
-   inline explicit array(void) : ptr(NULL), num(0) { }
+   inline explicit array() : ptr(NULL), num(0) { }
 
    // array(n)
    inline explicit array(const size_t n) : ptr(new element[n]), num(n) { }
 
    // destructor
-   inline ~array(void)
+   inline ~array()
    {
       delete[] ptr;
    }
 
    // data
-   inline       element *data(void)       { return ptr; }
-   inline const element *data(void) const { return ptr; }
+   inline       element *data()       { return ptr; }
+   inline const element *data() const { return ptr; }
 
    // size
-   inline size_t size(void) const { return num; }
+   inline size_t size() const { return num; }
 
    // resize
    // Reallocates to size newsize, if different from present size.
@@ -127,13 +127,13 @@ class array<1,element> : public array<0,element> {
 public:
 
    // array()
-   inline explicit array(void) : array<0,element>(), inum(0) { }
+   inline explicit array() : array<0,element>(), inum(0) { }
 
    // array(i)
    inline explicit array(const size_t i) : array<0,element>(i), inum(i) { }
 
    // isize
-   inline const size_t &isize(void) const { return inum; }
+   inline const size_t &isize() const { return inum; }
 
    // resize
    template<class integer>
@@ -176,15 +176,15 @@ class array<2,element> : public array<0,element> {
 public:
 
    // array()
-   inline explicit array(void) : array<0,element>(), inum(0), jnum(0) { }
+   inline explicit array() : array<0,element>(), inum(0), jnum(0) { }
 
    // array(i,j)
    inline explicit array(const size_t i, const size_t j) :
       array<0,element>(i*j), inum(i), jnum(j) { }
 
    // isize, jsize
-   inline const size_t &isize(void) const { return inum; }
-   inline const size_t &jsize(void) const { return jnum; }
+   inline const size_t &isize() const { return inum; }
+   inline const size_t &jsize() const { return jnum; }
 
    // resize
    inline array &resize(const size_t i, const size_t j)
@@ -223,7 +223,7 @@ class array<3,element> : public array<0,element> {
 public:
 
    // array()
-   inline explicit array(void) :
+   inline explicit array() :
       array<0,element>(), inum(0), jnum(0), knum(0)
    { }
 
@@ -232,9 +232,9 @@ public:
       array<0,element>(i*j*k), inum(i), jnum(j), knum(k) { }
 
    // [ijk]size
-   inline const size_t &isize(void) const { return inum; }
-   inline const size_t &jsize(void) const { return jnum; }
-   inline const size_t &ksize(void) const { return knum; }
+   inline const size_t &isize() const { return inum; }
+   inline const size_t &jsize() const { return jnum; }
+   inline const size_t &ksize() const { return knum; }
 
    // resize
    inline array &resize(const size_t i, const size_t j, const size_t k)

@@ -14,7 +14,7 @@ namespace kip {
 
 // diagonal (user-settable)
 namespace internal {
-   inline bool &diagonal_function(void)
+   inline bool &diagonal_function()
    {
       static bool value = false;
       return value;

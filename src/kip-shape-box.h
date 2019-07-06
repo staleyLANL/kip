@@ -23,7 +23,7 @@ public:
    kip_functions(box);
 
    // compute_corners
-   inline void compute_corners(void) const
+   inline void compute_corners() const
    {
       // rotation to move corners to their actual locations
       const rotate<3,real> move(a.x, a.y, a.z, c);

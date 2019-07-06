@@ -15,7 +15,7 @@ namespace internal {
 
 // light[0]
 template<class real>
-inline point<real> default_light0(void)
+inline point<real> default_light0()
 {
    return point<real>(real(0), real(-10), real(5));
 }
@@ -37,7 +37,7 @@ class light {
 public:
 
    // light()
-   inline explicit light(void) :
+   inline explicit light() :
       primary(internal::default_light0<real>())
    { }
 
@@ -46,7 +46,7 @@ public:
    inline const point<real> &operator[](const size_t) const { return primary; }
 
    // fix
-   inline const light &fix(void) const;
+   inline const light &fix() const;
 };
 
 
@@ -56,7 +56,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class real>
-inline const light<real> &light<real>::fix(void) const
+inline const light<real> &light<real>::fix() const
 {
    // currently, nothing needs fixing
    return *this;

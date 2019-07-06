@@ -27,13 +27,13 @@ public:
 
    // vertices
    table_t table;
-   inline size_t size(void) const { return table.size(); }
+   inline size_t size() const { return table.size(); }
 
    inline point<real> back(const point<real> &from) const { return rot.back(from); }
 
 
    // polygon([base])
-   inline explicit polygon(void) :
+   inline explicit polygon() :
       shape<real,tag>(this) { }
 
    inline explicit polygon(const tag &thebase) :

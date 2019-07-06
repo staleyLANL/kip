@@ -68,12 +68,12 @@ public:
 
    // u(), v(), w(): retrieve vertices
    using shape<real,tag>::vertex;
-   inline size_t &u(void) const { return vertex.u; }
-   inline size_t &v(void) const { return vertex.v; }
-   inline size_t &w(void) const { return vertex.w; }
+   inline size_t &u() const { return vertex.u; }
+   inline size_t &v() const { return vertex.v; }
+   inline size_t &w() const { return vertex.w; }
 
    // ghi()
-   inline point<real> &ghi(void) const
+   inline point<real> &ghi() const
       { return *(point<real> *)(void *)&vertex.ghi[0]; }
 
 
@@ -82,7 +82,7 @@ public:
    // ------------------------
 
    // tri()
-   inline explicit tri(void) :
+   inline explicit tri() :
       shape<real,tag>(this)
    {  this->eyelie = false; }
 

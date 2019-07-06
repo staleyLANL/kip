@@ -26,7 +26,7 @@ protected:
    crayola_id_t index;
 
 public:
-   inline explicit crayola_base(void) : index(0) { }
+   inline explicit crayola_base() : index(0) { }
    inline explicit crayola_base(const crayola_id_t &_index) : index(_index) { }
    static const char *const description;
 
@@ -104,10 +104,10 @@ public:
 
    // color_table()
    static inline std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &
-      color_table(void);
+      color_table();
 
    // crayola(), crayola(crayola_id_t)
-   inline explicit crayola(void) { }
+   inline explicit crayola() { }
    inline explicit crayola(const crayola_id_t &_index) :
       internal::crayola_base<char>(_index)
    { }
@@ -116,7 +116,7 @@ public:
    constexpr crayola(const crayola &) = default;
 
    // id()
-   inline crayola_id_t id(void) const { return index; }
+   inline crayola_id_t id() const { return index; }
 
    // operator=
    inline crayola &operator=(const crayola &from)
@@ -124,11 +124,11 @@ public:
 
 /*
    // conversion to RGB<crayola_rgb_t>
-   inline operator const RGB<crayola_rgb_t> &(void) const
+   inline operator const RGB<crayola_rgb_t> &() const
       { return color_table()[index].first; }
 
    // conversion to RGBA<crayola_rgb_t>
-   inline operator RGBA<crayola_rgb_t>(void) const
+   inline operator RGBA<crayola_rgb_t>() const
       { return color_table()[index].first; }
 */
 };
@@ -320,7 +320,7 @@ void color_table_initialize(
 
 // crayola::color_table
 inline std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &
-crayola::color_table(void)
+crayola::color_table()
 {
    static std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> table;
    static bool first = true;

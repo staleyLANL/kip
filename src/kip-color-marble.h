@@ -30,7 +30,7 @@ public:
    mutable bool swirl;
 
    // marble()
-   inline explicit marble(void) :
+   inline explicit marble() :
       r(internal::midcolor<value_t>()),
       g(internal::midcolor<value_t>()),
       b(internal::midcolor<value_t>()),

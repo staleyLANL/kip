@@ -15,23 +15,23 @@ namespace internal {
 
 // d
 template<class real>
-inline real default_d(void) { return real(8); }
+inline real default_d() { return real(8); }
 
 // target
 template<class real>
-inline point<real> default_target(void)
+inline point<real> default_target()
 {
    return point<real>(real(0), real(0), real(0));
 }
 
 // theta, phi, roll
-template<class real> inline real default_theta(void) { return real(60); }
-template<class real> inline real default_phi  (void) { return real(30); }
-template<class real> inline real default_roll (void) { return real( 0); }
+template<class real> inline real default_theta() { return real(60); }
+template<class real> inline real default_phi  () { return real(30); }
+template<class real> inline real default_roll () { return real( 0); }
 
 // fov
 template<class real>
-inline real default_fov(void) { return real(16); }
+inline real default_fov() { return real(16); }
 
 }
 
@@ -64,13 +64,13 @@ public:
       mutable bool first;
 
       // c'tor
-      inline explicit _prior(void) : first(true) { }
+      inline explicit _prior() : first(true) { }
    } prior;
 
 
 
    // view()
-   inline explicit view(void) :
+   inline explicit view() :
    target(internal::default_target<real>()),
    d     (internal::default_d     <real>()),
    fov   (internal::default_fov   <real>()),
@@ -80,7 +80,7 @@ public:
    { }
 
    // fix
-   inline const view &fix(void) const;
+   inline const view &fix() const;
 };
 
 
@@ -90,7 +90,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class real>
-const view<real> &view<real>::fix(void) const
+const view<real> &view<real>::fix() const
 {
    // d
    if (d <= 0) {

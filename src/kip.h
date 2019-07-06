@@ -237,10 +237,10 @@
 namespace kip {
 namespace internal {
 
-inline const char &nonsense(void);
+inline const char &nonsense();
 namespace { const char &stupid = nonsense(); }
 
-inline const char &nonsense(void)
+inline const char &nonsense()
 {
    (void)kip::notes;
    (void)kip::warnings;

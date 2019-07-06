@@ -20,10 +20,10 @@ class border_t {
 public:
 
    // defaults
-   static inline bool     default_bin   (void) { return false; }
-   static inline bool     default_object(void) { return false; }
-   static inline unsigned default_small (void) { return 4; }
-   static inline unsigned default_large (void) { return 2*default_small(); }
+   static inline bool     default_bin   () { return false; }
+   static inline bool     default_object() { return false; }
+   static inline unsigned default_small () { return 4; }
+   static inline unsigned default_large () { return 2*default_small(); }
 
    // data
    bool bin;
@@ -32,7 +32,7 @@ public:
    unsigned large;
 
    // border_t()
-   inline explicit border_t(void)
+   inline explicit border_t()
  : bin   (default_bin   ()),
    object(default_object()),
    small (default_small ()),
@@ -65,22 +65,22 @@ public:
 namespace internal {
 
 // hpixel, vpixel
-inline size_t default_hpixel(void) { return 800; }
-inline size_t default_vpixel(void) { return 800; }
+inline size_t default_hpixel() { return 800; }
+inline size_t default_vpixel() { return 800; }
 
 // background
 template<class color>
-inline color default_background(void) { return color::background(); }
+inline color default_background() { return color::background(); }
 
 // aspect
 template<class real>
-inline real default_aspect(void) { return real(1); }
+inline real default_aspect() { return real(1); }
 
 // anti
-inline unsigned default_anti(void) { return 1; }
+inline unsigned default_anti() { return 1; }
 
 // border
-inline border_t default_border(void) { return border_t(); }
+inline border_t default_border() { return border_t(); }
 
 }
 
@@ -137,7 +137,7 @@ public:
       bool first;
 
       // c'tor
-      inline explicit _prior(void) :
+      inline explicit _prior() :
          hpixel(targets.isize()),
          vpixel(targets.jsize()), first(true)
       { }
@@ -146,7 +146,7 @@ public:
 
 
    // image()
-   inline explicit image(void) :
+   inline explicit image() :
       bitmap     (internal::default_hpixel(), internal::default_vpixel()),
       hpixel     (bitmap.isize()),
       vpixel     (bitmap.jsize()),
@@ -163,7 +163,7 @@ public:
    // --------------------------------
 
    // fix
-   inline image &fix(void);
+   inline image &fix();
 
    // resize
    inline image &resize(const size_t h, const size_t v = 0)
@@ -180,8 +180,8 @@ public:
       { return bitmap(i,j); }
 
    // data access
-   inline       color *operator()(void)       { return bitmap.data(); }
-   inline const color *operator()(void) const { return bitmap.data(); }
+   inline       color *operator()()       { return bitmap.data(); }
+   inline const color *operator()() const { return bitmap.data(); }
 };
 
 
@@ -191,7 +191,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class real, class color>
-image<real,color> &image<real,color>::fix(void)
+image<real,color> &image<real,color>::fix()
 {
    // bitmap: guarantee size
    upsize(hpixel,vpixel);

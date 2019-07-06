@@ -23,7 +23,7 @@ public:
 
 
    // kipxor()
-   inline explicit kipxor(void) :
+   inline explicit kipxor() :
       shape<real,tag>(this)
    {
       kip_counter_ctor(kipxor);
@@ -100,7 +100,7 @@ public:
 
 
    // destructor
-   inline ~kipxor(void)
+   inline ~kipxor()
    {
       kip_counter_dtor(kipxor);
       delete binary.a;

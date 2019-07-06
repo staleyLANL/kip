@@ -4,7 +4,7 @@
 namespace kip {
 namespace internal {
    // eps_function
-   inline long double &eps_function(void)
+   inline long double &eps_function()
    {
       // 0 = default; means get_eps() will compute something reasonable
       static long double value = 0;
@@ -13,7 +13,7 @@ namespace internal {
 
    // get_eps
    template<class T>
-   inline T get_eps(void)
+   inline T get_eps()
    {
       return eps_function()
          ? T(eps_function())

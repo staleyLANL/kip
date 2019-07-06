@@ -5,7 +5,7 @@ namespace kip {
 
 // nsurf
 namespace internal {
-   inline size_t &nsurf_function(void)
+   inline size_t &nsurf_function()
       { static size_t value = 6;  return value; }
 }
 namespace { size_t &nsurf = internal::nsurf_function(); }
@@ -27,7 +27,7 @@ public:
    const SHAPE *ptr;
 
    // min_and_part()
-   inline explicit min_and_part(void) { }
+   inline explicit min_and_part() { }
 
    // min_and_part(min,ptr)
    template<class real>
@@ -43,7 +43,7 @@ template<class SHAPE>
 class part_less {
 public:
    // part_less()
-   inline explicit part_less(void) { }
+   inline explicit part_less() { }
 
    // for min_and_part
    inline bool operator()(
@@ -120,7 +120,7 @@ class surf : public shape<real,tag> {
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
    using shape<real,tag>::surfdata;
    using binner_t = binner<internal::min_and_part<kip::tri<real,tag>>>;
-   inline binner_t &mint(void) const
+   inline binner_t &mint() const
       { return *(binner_t *)(void *)&surfdata.mint[0]; }
 
 public:
@@ -155,7 +155,7 @@ public:
    // ------------------------
 
    // surf()
-   inline explicit surf(void) :
+   inline explicit surf() :
       shape<real,tag>(this)
    {
       new (&mint()) binner_t;
@@ -219,7 +219,7 @@ public:
    // Destructor
    // ------------------------
 
-   inline ~surf(void)
+   inline ~surf()
    {
       mint().~binner_t();
       kip_counter_dtor(surf);

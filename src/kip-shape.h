@@ -56,7 +56,7 @@ using shape_id_t = unsigned char;
 namespace internal {
    // unique_number
    template<class T>
-   inline T unique_number(void)
+   inline T unique_number()
    {
       static T value = T(0);
       return value++;
@@ -85,7 +85,7 @@ namespace internal {
 class minend {
 public:
    size_t imin, iend, jmin, jend;
-   inline explicit minend(void) { }
+   inline explicit minend() { }
 };
 
 
@@ -99,7 +99,7 @@ namespace internal {
       const unsigned nzone;
 
       // zzz remove?
-      inline explicit subinfo(void) : mend(*(minend*)NULL), nzone(0) { }
+      inline explicit subinfo() : mend(*(minend*)NULL), nzone(0) { }
 
       // subinfo(i,j)
       inline explicit subinfo(
@@ -172,17 +172,17 @@ public:
    mutable bool degenerate : 1;
 
    // id
-   virtual shape_id_t id(void) const = 0;
+   virtual shape_id_t id() const = 0;
 
    // [imin,iend) x [jmin,jend)
    mutable minend/*<>*/ mend;
 
    // get_interior(), because some g++s don't realize interior is public
-   inline bool get_interior(void) const { return interior; }
+   inline bool get_interior() const { return interior; }
 
    // base()
-   inline const tag &base(void) const { return *this; }
-   inline       tag &base(void)       { return *this; }
+   inline const tag &base() const { return *this; }
+   inline       tag &base()       { return *this; }
 
 
 
@@ -210,7 +210,7 @@ public:
       class {
          mutable char _f[sizeof(point<real>)];
       public:
-         inline point<real> &f(void) const
+         inline point<real> &f() const
             { return *(point<real> *)(void *)&_f[0]; }
          mutable real m;
       } sphere;
@@ -225,8 +225,8 @@ public:
          private: mutable char _per[sizeof(vec_t)];
       public:
          mutable size_t nop;
-         inline vec_t &vec(void) const { return *(vec_t *)(void *)&_per[0]; }
-         inline element_t &push(void) const
+         inline vec_t &vec() const { return *(vec_t *)(void *)&_per[0]; }
+         inline element_t &push() const
             { return vec().push_back(element_t()), vec().back(); }
          mutable size_t total_in;
       } ands;
@@ -240,9 +240,9 @@ public:
       private: mutable char _per[sizeof(vec_t)];
    public:
       mutable size_t nop;
-      inline vec_t &vec(void) const
+      inline vec_t &vec() const
          { return *(vec_t *)(void *)&_per[0]; }
-      inline element_t &push(void) const
+      inline element_t &push() const
          { return vec().push_back(element_t()), vec().back(); }
       mutable size_t total_in;
    };
@@ -264,9 +264,9 @@ public:
          mutable char _eye[sizeof(point<real >)];
          mutable char _lie[sizeof(point<float>)];
       public:
-         inline point<real > &eye(void) const
+         inline point<real > &eye() const
             { return *(point<real > *)(void *)&_eye[0]; }
-         inline point<float> &lie(void) const
+         inline point<float> &lie() const
             { return *(point<float> *)(void *)&_lie[0]; }
       } basic;
 
@@ -318,9 +318,9 @@ public:
       mutable char _eye[sizeof(point<real >)];
       mutable char _lie[sizeof(point<float>)];
    public:
-      inline point<real > &eye(void) const
+      inline point<real > &eye() const
          { return *(point<real > *)(void *)&_eye[0]; }
-      inline point<float> &lie(void) const
+      inline point<float> &lie() const
          { return *(point<float> *)(void *)&_lie[0]; }
    };
 
@@ -455,7 +455,7 @@ public:
    }
 
    // destructor
-   virtual inline ~shape(void) { }
+   virtual inline ~shape() { }
 
 
 
@@ -468,8 +468,8 @@ public:
    // ----------------
 
    // duplicate, size_of
-   virtual shape<real,tag> *duplicate(void) const = 0;
-   virtual size_t size_of(void) const = 0;
+   virtual shape<real,tag> *duplicate() const = 0;
+   virtual size_t size_of() const = 0;
 
 
    // read
@@ -488,7 +488,7 @@ public:
    ) const = 0;
 
    // aabb
-   virtual bbox<real> aabb(void) const = 0;
+   virtual bbox<real> aabb() const = 0;
 
    // dry
    virtual bool dry(const rotate<-3,real> &) const = 0;
@@ -528,7 +528,7 @@ public:
 
 
    // check
-   virtual diagnostic_t check(void) const = 0;
+   virtual diagnostic_t check() const = 0;
 
    // back
    virtual point<real> back(const point<real> &) const = 0;
@@ -557,13 +557,13 @@ public:
 
 // kip_virtual_id
 #define kip_virtual_id(kip_class)\
-   inline shape_id_t id(void) const\
+   inline shape_id_t id() const\
       { return internal::get_shape_id<kip::kip_class>::result; }
 
 // kip_destructor
 #ifdef KIP_CONSTRUCT_COUNTER
    #define kip_destructor(kip_class)\
-      inline ~kip_class(void)\
+      inline ~kip_class()\
          { kip_counter_dtor(kip_class); }
 #else
    #define kip_destructor(kip_class)
@@ -583,8 +583,8 @@ public:
    kip_virtual_id(kip_class)\
    kip_destructor(kip_class)\
    \
-   inline kip_class *duplicate(void) const { return new kip_class(*this); }\
-   inline size_t size_of(void) const { return sizeof(kip_class); }\
+   inline kip_class *duplicate() const { return new kip_class(*this); }\
+   inline size_t size_of() const { return sizeof(kip_class); }\
    \
    inline kip::istream &read (kip::istream &k)       { return k >> *this; }\
    inline std::istream &read (std::istream &s)       { return s >> *this; }\
@@ -598,7 +598,7 @@ public:
       const internal::vars<real,tag> &\
    ) const;\
    \
-   inline kip::bbox<real> aabb(void) const;\
+   inline kip::bbox<real> aabb() const;\
    inline bool dry(const rotate<-3,real> &) const;\
    \
    inline bool infirst(\
@@ -615,7 +615,7 @@ public:
       const internal::subinfo &\
    ) const;\
    \
-   inline diagnostic_t check(void) const
+   inline diagnostic_t check() const
    // no ';' at end - semicolons at *invocation* points help emacs indent
 
 #else
@@ -625,8 +625,8 @@ public:
    kip_virtual_id(kip_class)\
    kip_destructor(kip_class)\
    \
-   inline kip_class *duplicate(void) const { return new kip_class(*this); }\
-   inline size_t size_of(void) const { return sizeof(kip_class); }\
+   inline kip_class *duplicate() const { return new kip_class(*this); }\
+   inline size_t size_of() const { return sizeof(kip_class); }\
    \
    inline kip::istream &read (kip::istream &k)       { return k >> *this; }\
    inline std::istream &read (std::istream &s)       { return s >> *this; }\
@@ -640,7 +640,7 @@ public:
       const internal::vars<real,tag> &\
    ) const;\
    \
-   inline kip::bbox<real> aabb(void) const;\
+   inline kip::bbox<real> aabb() const;\
    inline bool dry(const rotate<-3,real> &) const;\
    \
    inline bool infirst(\
@@ -661,7 +661,7 @@ public:
       const internal::subinfo &\
    ) const;\
    \
-   inline diagnostic_t check(void) const
+   inline diagnostic_t check() const
    // no ';' at end - semicolons at *invocation* points help emacs indent
 
 #endif
@@ -687,7 +687,7 @@ public:
 // kip_aabb
 #define kip_aabb(type)\
    template<class real, class tag>\
-   inline bbox<real> type<real,tag>::aabb(void) const\
+   inline bbox<real> type<real,tag>::aabb() const\
    {
 
 // kip_inside
@@ -785,7 +785,7 @@ public:
 // kip_check
 #define kip_check(type)\
    template<class real, class tag>\
-   inline diagnostic_t type<real,tag>::check(void) const\
+   inline diagnostic_t type<real,tag>::check() const\
    {
 
 // kip_random
@@ -1077,7 +1077,7 @@ public:
    minimum_t minimum;
    SHAPE *shape;
 
-   inline explicit minimum_and_ptr(void) { }
+   inline explicit minimum_and_ptr() { }
    inline explicit minimum_and_ptr(const real &_minimum, SHAPE &_ptr) :
       minimum(minimum_t(_minimum)), shape(&_ptr) { }
 };
@@ -1086,7 +1086,7 @@ public:
 template<class real, class base>
 class minimum_and_shape : public minimum_and_ptr<real,kip::shape<real,base>> {
 public:
-   inline explicit minimum_and_shape(void) { }
+   inline explicit minimum_and_shape() { }
    inline explicit minimum_and_shape(
       const real &_minimum, kip::shape<real,base> &_shape
    ) : minimum_and_ptr<real, kip::shape<real,base>>(_minimum,_shape) { }
@@ -1114,7 +1114,7 @@ namespace internal {
 template<class real, class tag>
 class less {
 public:
-   inline explicit less(void) { }
+   inline explicit less() { }
 
    // for minimum_and_shape
    inline bool operator()(
@@ -1140,7 +1140,7 @@ template<class real> class mmi;
 template<class real>
 class less_mmi {
 public:
-   inline explicit less_mmi(void) { }
+   inline explicit less_mmi() { }
 
    // for mmi
    inline bool operator()(
@@ -1156,7 +1156,7 @@ public:
 template<class real>
 class same {
 public:
-   inline explicit same(void) { }
+   inline explicit same() { }
 
    // for point
    inline bool operator()(const point<real> &a, const point<real> &b) const
@@ -1169,7 +1169,7 @@ public:
 template<class real, class tag>
 class more {
 public:
-   inline explicit more(void) { }
+   inline explicit more() { }
 
    // for minimum_and_shape
    inline bool operator()(

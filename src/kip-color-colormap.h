@@ -34,10 +34,10 @@ public:
    static std::vector<color> vec;
 
    // size()
-   inline unsigned size(void) const { return vec.size(); }
+   inline unsigned size() const { return vec.size(); }
 
    // constructor
-   inline explicit colormap_jet(void) { }
+   inline explicit colormap_jet() { }
 
 
    // ------------------------
@@ -65,7 +65,7 @@ public:
    // initialize
    // ------------------------
 
-   inline void initialize(void) const
+   inline void initialize() const
    {
       static bool first = true;
       if (first) {

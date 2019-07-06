@@ -109,7 +109,7 @@ public:
    // --------------------------------
 
    // rotate()
-   inline explicit rotate(void) { }
+   inline explicit rotate() { }
 
 
    // rotate(one,two,three)
@@ -229,7 +229,7 @@ public:
    real c;
 
    // rotate()
-   inline explicit rotate(void) { }
+   inline explicit rotate() { }
 
    // rotate(one, two, three)
    inline explicit rotate(
@@ -298,7 +298,7 @@ public:
 
 
    // rotate()
-   inline explicit rotate(void) { }
+   inline explicit rotate() { }
 
    // rotate(one,two,three, factor)
    inline explicit rotate(

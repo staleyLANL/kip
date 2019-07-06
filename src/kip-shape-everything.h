@@ -16,7 +16,7 @@ public:
    inline point<real> back(const point<real> &from) const { return from; }
 
    // everything([base])
-   inline explicit everything(void) : shape<real,tag>(this) { }
+   inline explicit everything() : shape<real,tag>(this) { }
    inline explicit everything(const tag &thebase) :
       shape<real,tag>(this,thebase)
    { }

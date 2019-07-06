@@ -23,7 +23,7 @@ public:
 
 
    // kipor()
-   inline explicit kipor(void) :
+   inline explicit kipor() :
       shape<real,tag>(this)
    {
       kip_counter_ctor(kipor);
@@ -100,7 +100,7 @@ public:
 
 
    // destructor
-   inline ~kipor(void)
+   inline ~kipor()
    {
       kip_counter_dtor(kipor);
       delete binary.a;

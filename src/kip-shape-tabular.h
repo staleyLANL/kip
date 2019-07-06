@@ -5,7 +5,7 @@ namespace kip {
 
 // ntabular
 namespace internal {
-   inline size_t &ntabular_function(void)
+   inline size_t &ntabular_function()
       { static size_t value = 16;  return value; }
 }
 namespace { size_t &ntabular = internal::ntabular_function(); }
@@ -81,7 +81,7 @@ public:
 
    // (x,r) coordinates
    table_t table;
-   inline size_t size(void) const { return table.size(); }
+   inline size_t size() const { return table.size(); }
 
    kip_functions(tabular);
 

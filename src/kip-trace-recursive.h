@@ -19,7 +19,7 @@ public:
    #undef  kip_make_shape_vector
 
    // size
-   inline size_t size(void) const
+   inline size_t size() const
    {
       const functor_size f;
       allshape(*this, f);
@@ -27,7 +27,7 @@ public:
    }
 
    // clear
-   inline void clear(void)
+   inline void clear()
    {
       const functor_clear f;
       allshape(*this, f);

@@ -23,7 +23,7 @@ public:
 
 
    // kipcut()
-   inline explicit kipcut(void) :
+   inline explicit kipcut() :
       shape<real,tag>(this)
    {
       kip_counter_ctor(kipcut);
@@ -100,7 +100,7 @@ public:
 
 
    // destructor
-   inline ~kipcut(void)
+   inline ~kipcut()
    {
       kip_counter_dtor(kipcut);
       delete binary.a;

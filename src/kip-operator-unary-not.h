@@ -23,7 +23,7 @@ public:
 
 
    // kipnot()
-   inline explicit kipnot(void) :
+   inline explicit kipnot() :
       shape<real,tag>(this)
    { kip_counter_ctor(kipnot);  unary.a = NULL; }
 
@@ -74,7 +74,7 @@ public:
 
 
    // destructor
-   inline ~kipnot(void)
+   inline ~kipnot()
    {
       kip_counter_dtor(kipnot);
       delete unary.a;

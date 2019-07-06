@@ -23,7 +23,7 @@ public:
    point<real> u, v, w;
 
    // ghi()
-   inline point<real> &ghi(void) const
+   inline point<real> &ghi() const
       { return *(point<real> *)(void *)&this->shape<real,tag>::tridata.ghi[0]; }
 
    // back

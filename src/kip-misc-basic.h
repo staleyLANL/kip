@@ -12,7 +12,7 @@ namespace kip {
    using default_real_t = double;
 
    // Key - like key() below, but always on (not turned off by KIP_NOKEY)
-   inline void Key(void)
+   inline void Key()
    {
       std::cout << "press <enter> to continue...";
       char ch;
@@ -20,7 +20,7 @@ namespace kip {
    }
 
    // key
-   inline void key(void)
+   inline void key()
    {
       #ifndef KIP_NOKEY
          Key();
@@ -38,7 +38,7 @@ namespace kip {
 
    // random
    template<class real>
-   inline real random(void)
+   inline real random()
    {
       return real(rand())*(1/real(RAND_MAX));
    }
@@ -95,13 +95,13 @@ namespace kip {
 
    namespace internal {
       // no_action
-      inline void no_action(void) { }
+      inline void no_action() { }
 
       // tclass
       template<class T> class tclass
       {
       public:
-         inline explicit tclass(void) { }
+         inline explicit tclass() { }
       };
 
       /*
@@ -157,7 +157,7 @@ enum format_t {
 
 // format_function
 namespace internal {
-   inline format_t &format_function(void)
+   inline format_t &format_function()
    {
       static format_t value = format_default;
       return value;
@@ -170,14 +170,14 @@ namespace { format_t &format = internal:: format_function(); }
 
 
 // pform (for primitives)
-inline const char *pform(void)
+inline const char *pform()
 {
    assert(format != format_stub);  // or we shouldn't have called this function
    return format == format_one  || format == format_op  ? " " : "\n   ";
 }
 
 // oform (for operators)
-inline const char *oform(void)
+inline const char *oform()
 {
    return format == format_stub || format == format_one ? " " : "\n   ";
 }
@@ -213,7 +213,7 @@ namespace internal {
    class errors_class {
    public:
       static const bool value = true;
-      inline explicit errors_class(void) { }
+      inline explicit errors_class() { }
       inline const errors_class &operator=(const bool _value) const
       {
          if (!_value)
@@ -221,13 +221,13 @@ namespace internal {
                     "(un)fortunately, you can't turn off errors");
          return *this;
       }
-      inline operator bool(void) const { return true; }
+      inline operator bool() const { return true; }
    };
 
    // warnings, notes, addenda
-   inline bool &warnings_function(void) {static bool value=true; return value;}
-   inline bool &   notes_function(void) {static bool value=true; return value;}
-   inline bool & addenda_function(void) {static bool value=true; return value;}
+   inline bool &warnings_function() {static bool value=true; return value;}
+   inline bool &   notes_function() {static bool value=true; return value;}
+   inline bool & addenda_function() {static bool value=true; return value;}
 }
 
 namespace {
@@ -685,7 +685,7 @@ namespace kip {
 
 // threads (user-settable)
 namespace internal {
-   inline int &threads_function(void)
+   inline int &threads_function()
    {
       static int value = 0;  // 0 = default (means to ask the system)
       return value;
@@ -701,7 +701,7 @@ namespace { int &threads = internal::threads_function(); }
 // this_thread
 #ifdef _OPENMP
 
-   inline int  get_nthreads(void)
+   inline int  get_nthreads()
    {
       return internal::threads_function()
          // IF specified, number of specified threads (clipped to #processors)
@@ -715,14 +715,14 @@ namespace { int &threads = internal::threads_function(); }
       omp_set_num_threads(nthreads);
    }
 
-   inline int  this_thread (void) {
+   inline int  this_thread () {
       return omp_get_thread_num();
    }
 
 #else
-   inline int  get_nthreads(void) { return 1; }
+   inline int  get_nthreads() { return 1; }
    inline void set_nthreads(const int) { }
-   inline int  this_thread (void) { return 0; }
+   inline int  this_thread () { return 0; }
 #endif
 
 }

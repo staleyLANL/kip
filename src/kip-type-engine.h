@@ -14,7 +14,7 @@ namespace kip {
 namespace internal {
 
 // method
-inline method_t default_method(void) { return uniform; }
+inline method_t default_method() { return uniform; }
 
    // For method==uniform: hzone, hsub, vzone, vsub
    // Comment, 2017-04-08:
@@ -25,32 +25,32 @@ inline method_t default_method(void) { return uniform; }
    // wide. You might use 40 bins, in which case each bin is 25 pixels wide.
    // hsub could then be anywhere from 1..25. If 0, the "fix" stuff changes
    // it to the largest value, 25. Otherwise, clip to the allowable range.
-   inline unsigned default_hzone(void) { return 40; }
-   inline unsigned default_hsub (void) { return  0; }
-   inline unsigned default_vzone(void) { return 40; }
-   inline unsigned default_vsub (void) { return  0; }
+   inline unsigned default_hzone() { return 40; }
+   inline unsigned default_hsub () { return  0; }
+   inline unsigned default_vzone() { return 40; }
+   inline unsigned default_vsub () { return  0; }
 
    // For method==recursive: hdivision, vdivision, min_area
-   inline unsigned default_hdivision(void) { return 2; }
-   inline unsigned default_vdivision(void) { return 2; }
-   inline unsigned default_min_area (void) { return 800; }
+   inline unsigned default_hdivision() { return 2; }
+   inline unsigned default_vdivision() { return 2; }
+   inline unsigned default_min_area () { return 800; }
 
    // For method==block: xzone, yzone, zzone
-   inline unsigned default_xzone(void) { return 26; }
-   inline unsigned default_yzone(void) { return 26; }
-   inline unsigned default_zzone(void) { return 26; }
+   inline unsigned default_xzone() { return 26; }
+   inline unsigned default_yzone() { return 26; }
+   inline unsigned default_zzone() { return 26; }
 
 // For method==uniform and method==recursive: sort_frac, sort_min
 template<class real>
-inline real default_sort_frac(void) { return real(0.02); }
-inline unsigned default_sort_min(void) { return 64; }
+inline real default_sort_frac() { return real(0.02); }
+inline unsigned default_sort_min() { return 64; }
 
 // For all methods: "fudge factor," and "low memory" flag
 template<class real>
-inline real default_fudge(void) { return real(0.99999); }
+inline real default_fudge() { return real(0.99999); }
 
 // Lean[er] memory usage?
-inline bool default_lean(void) { return true; }
+inline bool default_lean() { return true; }
 
 }
 
@@ -99,7 +99,7 @@ public:
    // ------------------------
 
    // engine()
-   inline explicit engine(void) :
+   inline explicit engine() :
       method   (internal::default_method()),
       hzone    (internal::default_hzone()), hsub(internal::default_hsub()),
       vzone    (internal::default_vzone()), vsub(internal::default_vsub()),

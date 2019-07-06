@@ -23,14 +23,14 @@ public:
    bool normalized;                     // is |normal| == 1?
 
    // conversion to bool (meaning: ray hits shape)
-   inline operator bool(void) const
+   inline operator bool() const
    {
       // zzz Maybe just make to shape*; then same usage, plus more.
       return shape != NULL;
    }
 
    // initialize
-   inline void initialize(void)
+   inline void initialize()
    {
       shape = NULL;
    }

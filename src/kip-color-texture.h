@@ -10,7 +10,7 @@ namespace kip {
 
 class nothing_per_pixel {
 public:
-   inline void initialize(void) const
+   inline void initialize() const
    {
       assert(false);
    }

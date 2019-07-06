@@ -54,7 +54,7 @@ template<class real = default_real_t>
 class point_xy {
 public:
    real x, y;
-   inline explicit point_xy(void) { }
+   inline explicit point_xy() { }
    inline explicit point_xy(const real &_x, const real &_y) : x(_x), y(_y) { }
 };
 
@@ -64,7 +64,7 @@ template<class real = default_real_t>
 class point_xr {
 public:
    real x, r;
-   inline explicit point_xr(void) { }
+   inline explicit point_xr() { }
    inline explicit point_xr(const real &_x, const real &_r) : x(_x), r(_r) { }
 };
 
@@ -82,10 +82,10 @@ class array_simple {
 public:
 
    // array_simple()
-   inline explicit array_simple(void) : ptr(NULL), size(0) { }
+   inline explicit array_simple() : ptr(NULL), size(0) { }
 
    // destructor
-   inline ~array_simple(void)
+   inline ~array_simple()
    {
       delete[] ptr;
    }
@@ -136,7 +136,7 @@ public:
 
    // inq()
    // inq(real)
-   inline explicit inq(void) { }
+   inline explicit inq() { }
    inline explicit inq(const real &_q) : q(_q) { }
 
    // assignment from real
@@ -147,8 +147,8 @@ public:
    }
 
    // conversion to real
-   inline operator       real&(void)       { return q; }
-   inline operator const real&(void) const { return q; }
+   inline operator       real&()       { return q; }
+   inline operator const real&() const { return q; }
 
 
 
@@ -221,7 +221,7 @@ public:
       }
       return *this;
    }
-   inline inq &reverse(void) { return reverse(true); }  // unconditional
+   inline inq &reverse() { return reverse(true); }  // unconditional
 };
 
 
@@ -243,10 +243,10 @@ class afew {
 public:
 
    // constructor
-   inline explicit afew(void) : ptr(buffer), bufsize(length), num(0) { }
+   inline explicit afew() : ptr(buffer), bufsize(length), num(0) { }
 
    // destructor
-   inline ~afew(void)
+   inline ~afew()
    {
       if (ptr != buffer)
          delete[] ptr;
@@ -308,7 +308,7 @@ public:
 
 
    // size()
-   inline size_t size(void) const { return num; }
+   inline size_t size() const { return num; }
 
    // setsize(n) - use only if you know what you're doing
    inline void setsize(const size_t n) { num = n; }
@@ -340,7 +340,7 @@ public:
 
 
    // one()
-   inline INQ &one(void)
+   inline INQ &one()
    {
       num = 1;
       return ptr[0];
@@ -348,7 +348,7 @@ public:
 
 
    // reset()
-   inline void reset(void)
+   inline void reset()
    {
       num = 0;
    }
@@ -356,7 +356,7 @@ public:
 
 
    // convex()
-   inline void convex(void)
+   inline void convex()
    {
       num = 0;
    }
@@ -383,7 +383,7 @@ public:
 
 
    // four()
-   inline void four(void)
+   inline void four()
    {
       num = 0;
    }
@@ -395,7 +395,7 @@ public:
       return num == 4;  // done (true) if 4
    }
 
-   inline bool sort(void)
+   inline bool sort()
    {
       // this is kind of mindless; think up something better
       if (num > 1) {
@@ -433,13 +433,13 @@ public:
       return *this;
    }
 
-   inline afew &reverse(void)
+   inline afew &reverse()
    {
       return reverse(true);
    }
 
    // conversion to bool (always returns true)
-   inline operator bool(void) const { return true; }
+   inline operator bool() const { return true; }
 };
 
 }

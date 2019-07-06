@@ -53,7 +53,7 @@ inline
       is_floating<T>::result,
       T
    >::result
-mincolor(void)
+mincolor()
 {
    return T(0);
 }
@@ -68,7 +68,7 @@ inline
      !std::numeric_limits<T>::is_signed,
       T
    >::result
-maxcolor(void)
+maxcolor()
 {
    return std::numeric_limits<T>::max();
 }
@@ -80,7 +80,7 @@ inline
       is_floating<T>::result,
       T
    >::result
-maxcolor(void)
+maxcolor()
 {
    return T(1);
 }
@@ -90,7 +90,7 @@ maxcolor(void)
 // midcolor, for unsigned integral
 // midcolor, for floating
 template<class T>
-inline T midcolor(void)
+inline T midcolor()
 {
    return T(
       (internal::maxcolor<T>() -
@@ -111,7 +111,7 @@ inline
       T,
       to
    >::result
-endcolor(void)
+endcolor()
 {
    // e.g., 256 (not 255) for 8-bit unsigned char
    return to(maxcolor<T>()) + to(1);
@@ -126,7 +126,7 @@ inline
       T,
       to
    >::result
-endcolor(void)
+endcolor()
 {
    // same as maxcolor
    return to(1);
@@ -155,7 +155,7 @@ public:
 
 
    // RGB()
-   inline explicit RGB(void) : r(0), g(0), b(0) { }
+   inline explicit RGB() : r(0), g(0), b(0) { }
 
    // RGB(r,g,b)
    inline explicit RGB(
@@ -202,14 +202,14 @@ using rgb = RGB<>;
 
 // transparent
 template<class component_t>
-inline component_t transparent(void)
+inline component_t transparent()
 {
    return internal::mincolor<component_t>();
 }
 
 // opaque
 template<class component_t>
-inline component_t opaque(void)
+inline component_t opaque()
 {
    return internal::maxcolor<component_t>();
 }
@@ -232,7 +232,7 @@ public:
 
 
    // RGBA()
-   inline explicit RGBA(void) { }
+   inline explicit RGBA() { }
 
    // RGBA(r,g,b[,a])
    inline explicit RGBA(
@@ -294,7 +294,7 @@ public:
 
 
    // background
-   static inline RGBA background(void)
+   static inline RGBA background()
    {
       const value_t mid = internal::midcolor<value_t>();
       return RGBA(mid,mid,mid);
@@ -322,7 +322,7 @@ public:
    }
 
    // border
-   static inline RGBA border(void)
+   static inline RGBA border()
    {
       const value_t max = internal::maxcolor<value_t>();
       return RGBA(max,max,0);

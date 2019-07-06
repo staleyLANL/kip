@@ -78,18 +78,18 @@ public:
    // ------------------------
 
 private:
-   inline void newline(void) { line++;  begin = tell(); }
-   inline void mark(void) { themark = tell(); }
+   inline void newline() { line++;  begin = tell(); }
+   inline void mark() { themark = tell(); }
 
 public:
    // stream-state stuff
-   inline bool bad (void) const { return stream.bad (); }
-   inline bool fail(void) const { return stream.fail(); }
-   inline bool eof (void) const { return stream.eof (); }
-   inline bool good(void) const { return stream.good(); }
+   inline bool bad () const { return stream.bad (); }
+   inline bool fail() const { return stream.fail(); }
+   inline bool eof () const { return stream.eof (); }
+   inline bool good() const { return stream.good(); }
 
    // clear: clear all flags (equivalently, set state to good)
-   inline void clear(void) const
+   inline void clear() const
    {
       stream.clear();
    }
@@ -107,7 +107,7 @@ public:
    }
 
    // state: return the state
-   inline iostate state(void) const
+   inline iostate state() const
    {
       return stream.rdstate();
    }
@@ -120,7 +120,7 @@ public:
    }
 
    // tell: return the present position
-   inline streampos tell(void) const
+   inline streampos tell() const
    {
       return stream.tellg();
    }
@@ -147,14 +147,14 @@ public:
 
 
    // get, unget, peek, void *
-   inline int get(void) const { return stream.get(); }
-   inline const istream &unget(void) const { stream.unget();  return *this; }
-   inline int peek(void) { return stream.peek(); }
+   inline int get() const { return stream.get(); }
+   inline const istream &unget() const { stream.unget();  return *this; }
+   inline int peek() { return stream.peek(); }
    /*
-   inline operator void *(void) { return stream; } // null iff failbit or badbit
+   inline operator void *() { return stream; } // null iff failbit or badbit
    */
-   inline operator bool(void) const { return bool(stream); }
-   inline bool operator !(void) const { return !stream; }
+   inline operator bool() const { return bool(stream); }
+   inline bool operator !() const { return !stream; }
 
 
 
@@ -249,7 +249,7 @@ public:
    // ------------------------
 
    // indent
-   inline ostream &indent(void)
+   inline ostream &indent()
    {
       for (int i = 0;  i < level;  ++i)
          stream << "   ";
@@ -258,17 +258,17 @@ public:
 
    /*
    // void *
-   inline operator void *(void) const { return stream; }
+   inline operator void *() const { return stream; }
 
    // bool
-   inline operator bool  (void) const { return 0 != stream; }
+   inline operator bool  () const { return 0 != stream; }
    */
-   inline operator bool(void) const { return bool(stream); }
-   inline bool operator !(void) const { return !stream; }
+   inline operator bool() const { return bool(stream); }
+   inline bool operator !() const { return !stream; }
 
    // endl, flush
-   inline void endl (void) const { stream << std::endl ; }
-   inline void flush(void) const { stream << std::flush; }
+   inline void endl () const { stream << std::endl ; }
+   inline void flush() const { stream << std::flush; }
 };
 
 

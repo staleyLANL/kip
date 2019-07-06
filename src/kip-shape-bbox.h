@@ -29,15 +29,15 @@ public:
       { return value = _value, *this; }
 
    // conversion to real
-   inline operator       real&(void)       { return value; }
-   inline operator const real&(void) const { return value; }
+   inline operator       real&()       { return value; }
+   inline operator const real&() const { return value; }
 
    // tight()
-   inline       bool &tight(void)       { return _tight; }
-   inline const bool &tight(void) const { return _tight; }
+   inline       bool &tight()       { return _tight; }
+   inline const bool &tight() const { return _tight; }
 
    // finite()
-   inline bool finite(void) const
+   inline bool finite() const
    {
       return
          value != -std::numeric_limits<real>::max() &&
@@ -72,9 +72,9 @@ public:
    { }
 
    // tight, finite, valid
-   inline bool tight (void) const { return min.tight () && max.tight (); }
-   inline bool finite(void) const { return min.finite() && max.finite(); }
-   inline bool valid (void) const { return min <= max; }
+   inline bool tight () const { return min.tight () && max.tight (); }
+   inline bool finite() const { return min.finite() && max.finite(); }
+   inline bool valid () const { return min <= max; }
 };
 
 
@@ -162,17 +162,17 @@ public:
 
 
    // tight, finite, valid
-   inline bool tight (void) const
+   inline bool tight () const
       { return x.tight () && y.tight () && z.tight (); }
-   inline bool finite(void) const
+   inline bool finite() const
       { return x.finite() && y.finite() && z.finite(); }
-   inline bool valid (void) const
+   inline bool valid () const
       { return x.valid () && y.valid () && z.valid (); }
 
    // min, max
-   inline point<real> min(void) const
+   inline point<real> min() const
       { return point<real>(x.min, y.min, z.min); }
-   inline point<real> max(void) const
+   inline point<real> max() const
       { return point<real>(x.max, y.max, z.max); }
 };
 
@@ -203,7 +203,7 @@ namespace internal {
 
 // op_leq
 class op_leq { public:
-   inline explicit op_leq(void) { }
+   inline explicit op_leq() { }
 
    template<class T>
    inline bool operator()(const T &a, const T &b) const { return a <= b; }
@@ -211,7 +211,7 @@ class op_leq { public:
 
 // op_less
 class op_less { public:
-   inline explicit op_less(void) { }
+   inline explicit op_less() { }
 
    template<class T>
    inline bool operator()(const T &a, const T &b) const { return a < b; }

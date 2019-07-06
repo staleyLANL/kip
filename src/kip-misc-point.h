@@ -15,7 +15,7 @@ public:
    real x, y, z;
 
    // point()
-   inline explicit point(void)
+   inline explicit point()
    { }
 
    // point(x,y,z)

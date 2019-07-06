@@ -83,8 +83,8 @@ public:
    size_t next;  // running next-position
    bool in_now;  // status as we move along the ray
 
-   inline       INQ &q(void)       { return points[next]; }
-   inline const INQ &q(void) const { return points[next]; }
+   inline       INQ &q()       { return points[next]; }
+   inline const INQ &q() const { return points[next]; }
 };
 
 
@@ -97,7 +97,7 @@ class grower {
 
 public:
    // grower()
-   inline grower(void) : position(0) { }
+   inline grower() : position(0) { }
 
    // more(count)
    inline T *more(const size_t count)

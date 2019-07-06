@@ -32,7 +32,7 @@ public:
 private:
 
    // propagate_base_last
-   inline shape<real,tag> &propagate_base_last(void) const
+   inline shape<real,tag> &propagate_base_last() const
    {
       shape<real,tag> &ref = *kip_data.vec().back().op;
       if (!ref.baseset) {
@@ -65,7 +65,7 @@ private:
 public:
 
    // size
-   inline size_t size(void) const
+   inline size_t size() const
       { return kip_data.vec().size(); }
 
    // back
@@ -77,7 +77,7 @@ public:
       { internal::propagate_nary(kip_data.vec(), base(), force); }
 
    // clear
-   inline void clear(void)
+   inline void clear()
    {
       for (size_t n = size();  n ; )
          delete kip_data.vec()[--n].op;
@@ -93,7 +93,7 @@ public:
    // ------------------------
 
    // kip_class()
-   inline explicit kip_class(void) : shape<real,tag>(this)
+   inline explicit kip_class() : shape<real,tag>(this)
    {
       kip_counter_ctor(kip_class);
       new (&kip_data.vec()) vec_t;
@@ -126,7 +126,7 @@ public:
 
 
    // destructor
-   inline ~kip_class(void)
+   inline ~kip_class()
    {
       clear();
       kip_data.vec().~vec_t();
