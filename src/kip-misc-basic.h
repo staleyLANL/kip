@@ -149,24 +149,10 @@ enum format_t {
    format_one,   // one-line       one-line
    format_op,    // one-line       multi-line
    format_full,  // multi-line     multi-line
-
-   // default
-   format_default = format_op
 };
 
-
-// format_function
-namespace internal {
-   inline format_t &format_function()
-   {
-      static format_t value = format_default;
-      return value;
-   }
-}
-
-
 // for the user
-namespace { format_t &format = internal:: format_function(); }
+inline format_t format = format_op;
 
 
 // pform (for primitives)
@@ -223,20 +209,13 @@ namespace internal {
       }
       inline operator bool() const { return true; }
    };
-
-   // warnings, notes, addenda
-   inline bool &warnings_function() {static bool value=true; return value;}
-   inline bool &   notes_function() {static bool value=true; return value;}
-   inline bool & addenda_function() {static bool value=true; return value;}
 }
 
-namespace {
-   // for the user
-   internal::errors_class errors;
-   bool &warnings = internal::warnings_function();
-   bool &notes    = internal::   notes_function();
-   bool &addenda  = internal:: addenda_function();
-}
+// for the user
+inline internal::errors_class errors;
+inline bool warnings = true;
+inline bool notes    = true;
+inline bool addenda  = true;
 
 }
 
@@ -684,28 +663,17 @@ max(const T &a, const T &b, const T &c, const T &d, const T &e, const T &f)
 namespace kip {
 
 // threads (user-settable)
-namespace internal {
-   inline int &threads_function()
-   {
-      static int value = 0;  // 0 = default (means to ask the system)
-      return value;
-   }
-}
-
-namespace { int &threads = internal::threads_function(); }
-
-
+inline int threads = 0; // 0 = default (means to ask the system)
 
 // get_nthreads
 // set_nthreads
 // this_thread
 #ifdef _OPENMP
-
-   inline int  get_nthreads()
+   inline int get_nthreads()
    {
-      return internal::threads_function()
+      return threads
          // IF specified, number of specified threads (clipped to #processors)
-         ? op::min(omp_get_num_procs(), internal::threads_function())
+         ? op::min(omp_get_num_procs(), threads)
          // else, default to #processors
          : omp_get_num_procs();
    }
@@ -715,10 +683,9 @@ namespace { int &threads = internal::threads_function(); }
       omp_set_num_threads(nthreads);
    }
 
-   inline int  this_thread () {
+   inline int this_thread() {
       return omp_get_thread_num();
    }
-
 #else
    inline int  get_nthreads() { return 1; }
    inline void set_nthreads(const int) { }

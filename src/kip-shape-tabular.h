@@ -4,11 +4,7 @@
 namespace kip {
 
 // ntabular
-namespace internal {
-   inline size_t &ntabular_function()
-      { static size_t value = 16;  return value; }
-}
-namespace { size_t &ntabular = internal::ntabular_function(); }
+inline size_t ntabular = 16;
 
 
 

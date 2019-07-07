@@ -13,14 +13,7 @@
 namespace kip {
 
 // diagonal (user-settable)
-namespace internal {
-   inline bool &diagonal_function()
-   {
-      static bool value = false;
-      return value;
-   }
-}
-namespace { bool &diagonal = internal::diagonal_function(); }
+inline bool diagonal = false;
 
 
 

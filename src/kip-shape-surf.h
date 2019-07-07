@@ -4,11 +4,7 @@
 namespace kip {
 
 // nsurf
-namespace internal {
-   inline size_t &nsurf_function()
-      { static size_t value = 6;  return value; }
-}
-namespace { size_t &nsurf = internal::nsurf_function(); }
+inline size_t nsurf = 6;
 
 
 

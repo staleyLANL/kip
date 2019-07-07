@@ -2,26 +2,23 @@
 #pragma once
 
 namespace kip {
-namespace internal {
-   // eps_function
-   inline long double &eps_function()
-   {
-      // 0 = default; means get_eps() will compute something reasonable
-      static long double value = 0;
-      return value;
-   }
 
-   // get_eps
+// eps
+// 0 = default; means get_eps() will compute something reasonable
+inline long double eps = 0;
+
+// get_eps
+namespace internal {
    template<class T>
    inline T get_eps()
    {
-      return eps_function()
-         ? T(eps_function())
+      return eps
+         ? T(eps)
          : std::pow(T(10), T(-0.4)*std::numeric_limits<T>::digits10);
    }
-}
+} // namespace internal
 
-namespace { long double &eps = internal::eps_function(); }
+
 
 /*
     +------------+                                             +------------+
@@ -1055,8 +1052,8 @@ void trace_bin(
    }
 }
 
-}
-}
+} // namespace internal
+} // namespace kip
 
 #undef kip_action_plain
 #undef kip_action_lean
