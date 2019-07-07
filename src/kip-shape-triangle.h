@@ -210,7 +210,7 @@ kip_infirst(triangle)
       0 <=  dx + dy + dz && aff.den < dz*qmin && (
 
       q.point<real>::operator=(eyeball - real(q = aff.den/dz)*diff),
-      q(ghi(), this, yesnorm), true);
+      q(ghi(), this, normalized_t::yesnorm), true);
 } kip_end
 
 
@@ -230,7 +230,7 @@ kip_check(triangle)
 {
    static const char *const badvert = "Triangle has coincident vertices ";
    using ostr_t = std::ostringstream;
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    if (u == v) { ostr_t oss;  oss << badvert << "u=v=" << u;  rv = error(oss); }
    if (u == w) { ostr_t oss;  oss << badvert << "u=w=" << u;  rv = error(oss); }
@@ -289,7 +289,7 @@ kip_read_value(triangle) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -301,13 +301,13 @@ kip_ostream(triangle) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "triangle()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << "triangle("
                << obj.u << ", "
                << obj.v << ", "

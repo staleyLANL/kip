@@ -256,7 +256,7 @@ kip_check(ellipsoid)
 {
    static const char *const err = "Ellipsoid has non-positive radius r.";
    using ostr_t = std::ostringstream;
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    if (r.x <= real(0)) { ostr_t oss; oss << err << "x=" << r.x; rv=error(oss); }
    if (r.y <= real(0)) { ostr_t oss; oss << err << "y=" << r.y; rv=error(oss); }
@@ -320,7 +320,7 @@ kip_infirst(ellipsoid)
    q.y = eye.y - q*dy;
    q.z = eye.z - q*dz;
 
-   return q(irsq.x*q.x, irsq.y*q.y, irsq.z*q.z, this, nonorm), true;
+   return q(irsq.x*q.x, irsq.y*q.y, irsq.z*q.z, this, normalized_t::nonorm), true;
 } kip_end
 
 
@@ -346,7 +346,7 @@ inline bool ellipsoid<real,tag>::get_curve(
    info.z = basic.eye().z - info.q*dz;
 
    // normal
-   return info(irsq.x*info.x, irsq.y*info.y, irsq.z*info.z, this, nonorm), true;
+   return info(irsq.x*info.x, irsq.y*info.y, irsq.z*info.z, this, normalized_t::nonorm), true;
 }
 
 
@@ -412,7 +412,7 @@ kip_read_value(ellipsoid) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
 
    obj.a *= real(kip_pi)/180;
@@ -426,13 +426,13 @@ kip_ostream(ellipsoid) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "ellipsoid()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << "ellipsoid("
                <<  obj.c << ", "
                << (180/real(kip_pi))*obj.a << ", "

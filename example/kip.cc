@@ -84,7 +84,7 @@ void initialize()
 
    // engine
    // Know what you're doing if you change any of these
-   engine.method    = kip::uniform;
+   engine.method    = kip::method_t::uniform;
    engine.hzone     = 50;
    engine.vzone     = 50;
    engine.hsub      = 4;
@@ -214,21 +214,21 @@ void putimage()
 // Return value: does image need to be re-rendered?
 // -----------------------------------------------------------------------------
 
-enum class sampling_t {
-   sampling_coarser,
-   sampling_finer
+enum class sampling {
+   coarser,
+   finer
 };
 
 
 
-bool sample(const sampling_t samp)
+bool sample(const sampling samp)
 {
    const int current_downsize = downsize;
 
    // change
-   if (samp == sampling_t::sampling_coarser)
+   if (samp == sampling::coarser)
       downsize++;
-   if (samp == sampling_t::sampling_finer)
+   if (samp == sampling::finer)
       downsize--;
 
    // clip
@@ -295,8 +295,8 @@ bool move(const int key)
       case XK_Page_Up   : view.target.z += delta_target;  break;
 
       // sampling
-      case ',' : case '<' : return sample(sampling_t::sampling_coarser);
-      case '.' : case '>' : return sample(sampling_t::sampling_finer);
+      case ',' : case '<' : return sample(sampling::coarser);
+      case '.' : case '>' : return sample(sampling::finer);
 
       // toggle print, low(er)-memory mode
       case XK_p : vars::print = !vars::print;  break;

@@ -96,7 +96,7 @@ kip_infirst(circle)
 
    return op::sq(q.y) + op::sq(q.z) <= rsq
       ? q.x = real(0),
-        q(rot.ex < 0 ? real(-1) : real(1), 0, 0, this, yesnorm), true
+        q(rot.ex < 0 ? real(-1) : real(1), 0, 0, this, normalized_t::yesnorm), true
       : false;
 } kip_end
 
@@ -115,7 +115,7 @@ kip_inall(circle)
 // check
 kip_check(circle)
 {
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    // require n != 0
    if (n == point<real>(0,0,0))
@@ -179,7 +179,7 @@ kip_read_value(circle) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }

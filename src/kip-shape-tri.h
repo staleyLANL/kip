@@ -148,7 +148,7 @@ public:
 // Shouldn't call these; call enclosing surf's instead
 kip_process(tri) { assert(false); return real(0);         } kip_end
 kip_dry    (tri) { assert(false); return false;           } kip_end
-kip_check  (tri) { assert(false); return diagnostic_good; } kip_end
+kip_check  (tri) { assert(false); return diagnostic_t::diagnostic_good; } kip_end
 kip_inall  (tri) { assert(false); return false;           } kip_end
 
 kip_aabb  (tri) {
@@ -231,7 +231,7 @@ kip_infirst(tri)
       0 <=  dx + dy + dz && aff.den < dz*qmin && (
 
       q.point<real>::operator=(eyeball - real(q = aff.den/dz)*diff),
-      q(ghi(), this, yesnorm), true);
+      q(ghi(), this, normalized_t::yesnorm), true);
 } kip_end
 
 
@@ -252,7 +252,7 @@ kip_read_value(tri) {
       read_value(s, obj.w())
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
 
    return !s.fail();

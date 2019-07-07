@@ -204,7 +204,7 @@ kip_infirst(spheroid)
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
 
-   return q(ihsq*q.x, irsq*q.y, irsq*q.z, this, nonorm), true;
+   return q(ihsq*q.x, irsq*q.y, irsq*q.z, this, normalized_t::nonorm), true;
 } kip_end
 
 
@@ -229,7 +229,7 @@ inline bool spheroid<real,tag>::get_curve(
    info.z = info.q*tar.z;
 
    // normal
-   return info(ihsq*info.x, irsq*info.y, irsq*info.z, this, nonorm), true;
+   return info(ihsq*info.x, irsq*info.y, irsq*info.z, this, normalized_t::nonorm), true;
 }
 
 
@@ -292,7 +292,7 @@ kip_read_value(spheroid) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }

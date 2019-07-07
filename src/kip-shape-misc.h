@@ -115,7 +115,7 @@ public:
 // -----------------------------------------------------------------------------
 
 // normalized_t
-enum normalized_t { yesnorm, nonorm };
+enum class normalized_t { yesnorm, nonorm };
 
 
 

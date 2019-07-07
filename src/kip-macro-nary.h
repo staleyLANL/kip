@@ -162,7 +162,7 @@ public:
 
    kip_functions(kip_class)  // ends with check() header
    {
-      diagnostic_t d = diagnostic_good;
+      diagnostic_t d = diagnostic_t::diagnostic_good;
       kip_data.nop = size();
 
       for (size_t n = 0;  n < kip_data.nop;  ++n) {

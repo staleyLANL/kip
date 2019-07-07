@@ -26,7 +26,7 @@ bool read_value(
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    } else if (s.level == 0)
       obj.propagate_base();
 
@@ -46,13 +46,13 @@ kip::ostream &operator<<(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << kip_quote(kip_brief) "(" &&
              obj.binary.a->write(k) << ", " &&
              obj.binary.b->write(k) << ')';
 
    // one
-   else if (kip::format == kip::format_one) {
+   else if (kip::format == kip::format_t::format_one) {
       okay = k << kip_quote(kip_brief) "(" &&
              obj.binary.a->write(k) << ", " &&
              obj.binary.b->write(k);

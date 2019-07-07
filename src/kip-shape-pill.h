@@ -139,7 +139,7 @@ kip_infirst(pill)
             if (q.x <= 0) {
                q.y = rot.ey + q*dy;
                q.z = q*tar.z;
-               return q(q, this, nonorm), true;
+               return q(q, this, normalized_t::nonorm), true;
             }
          }
       }
@@ -155,7 +155,7 @@ kip_infirst(pill)
             if (q.x >= rot.h) {
                q.y = rot.ey + q*dy;
                q.z = q*tar.z;
-               return q(q.x-rot.h, q.y, q.z, this, nonorm), true;
+               return q(q.x-rot.h, q.y, q.z, this, normalized_t::nonorm), true;
             }
          }
       }
@@ -189,7 +189,7 @@ kip_infirst(pill)
             if (!(q < qmin)) return false;
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(q, this, nonorm), true;
+            return q(q, this, normalized_t::nonorm), true;
          }
       }
 
@@ -205,7 +205,7 @@ kip_infirst(pill)
             if (!(q < qmin)) return false;
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(q.x-rot.h, q.y, q.z, this, nonorm), true;
+            return q(q.x-rot.h, q.y, q.z, this, normalized_t::nonorm), true;
          }
       }
 
@@ -220,7 +220,7 @@ kip_infirst(pill)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(0, q.y, q.z, this, nonorm), true;
+   return q(0, q.y, q.z, this, normalized_t::nonorm), true;
 } kip_end
 
 
@@ -249,7 +249,7 @@ inline bool pill<real,tag>::get_hemi0(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(info, this, nonorm), true;
+   return info(info, this, normalized_t::nonorm), true;
 }
 
 
@@ -272,7 +272,7 @@ inline bool pill<real,tag>::get_hemih(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(info.x-rot.h, info.y, info.z, this, nonorm), true;
+   return info(info.x-rot.h, info.y, info.z, this, normalized_t::nonorm), true;
 }
 
 
@@ -295,7 +295,7 @@ inline bool pill<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(0, info.y, info.z, this, nonorm), true;
+   return info(0, info.y, info.z, this, normalized_t::nonorm), true;
 }
 
 
@@ -388,7 +388,7 @@ kip_read_value(pill) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }

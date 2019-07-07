@@ -218,7 +218,7 @@ kip_infirst(polygon)
 
    // done
    return point_in_poly(q.x,q.y)
-      ? q.z=0, q(0,0,basic.eye().z > 0 ? real(1) : real(-1),this,yesnorm),true
+      ? q.z=0, q(0,0,basic.eye().z > 0 ? real(1) : real(-1),this,normalized_t::yesnorm),true
       : false;
 } kip_end
 
@@ -237,7 +237,7 @@ kip_inall(polygon)
 // check
 kip_check(polygon)
 {
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
    npts = size();
 
    // Require that no two successive points be equal
@@ -326,7 +326,7 @@ kip_read_value(polygon) {
 
    if (!(okay && read_done(s, obj))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -339,13 +339,13 @@ kip_ostream(polygon) {
    const size_t npts = obj.size();
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "polygon()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op) {
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op) {
       okay = k << "polygon(" << npts;
       for (size_t i = 0;  i < npts && okay;  ++i)
          okay = k << ", " << obj.table[i];

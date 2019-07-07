@@ -292,7 +292,7 @@ bool read_value(
          read_color_component(s,value.b)
    )))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
 
    if (alphabetic) {
@@ -325,7 +325,7 @@ bool read_value(
          read_color_component(s,value.a)
    )))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
 
    if (alphabetic) {
@@ -614,7 +614,7 @@ bool read_value(
       read_value(s,value.z)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -768,13 +768,13 @@ kip::ostream &onetwor_write(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << description << "()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << description << '('
                << one << ", "
                << two << ", "

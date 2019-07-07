@@ -136,7 +136,7 @@ kip_infirst(yplane)
            0, misc.plane.norm, 0, this,
           (int(op::abs(q.x/size.x)) % 2 == (q.x > 0)) ==
           (int(op::abs(q.z/size.z)) % 2 == (q.z > 0)) ? &color : this,
-           yesnorm
+           normalized_t::yesnorm
         ),
         true
       : false;
@@ -157,7 +157,7 @@ kip_inall(yplane)
 // check
 kip_check(yplane)
 {
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    // size.x
    if (size.x <= real(0)) {
@@ -222,7 +222,7 @@ kip_read_value(yplane) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }

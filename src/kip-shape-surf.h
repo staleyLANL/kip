@@ -385,7 +385,7 @@ kip_check(surf)
 {
    const size_t nnode = node.size();
    const size_t ntri  = tri .size();
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    // Check each tri...
    for (size_t t = 0;  t < ntri;  ++t) {
@@ -638,7 +638,7 @@ kip_read_value(surf) {
 
    if (!(okay && read_done(s, obj))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -653,13 +653,13 @@ kip_ostream(surf) {
    const size_t ntri  = obj.tri .size();
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "surf()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op) {
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op) {
       // nodes
       okay = k << "surf(" << nnode;
       for (size_t n = 0;  n < nnode && okay;  ++n)

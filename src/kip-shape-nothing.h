@@ -47,7 +47,7 @@ kip_aabb(nothing)
 kip_dry    (nothing) { return true;  } kip_end
 kip_infirst(nothing) { return false; } kip_end
 kip_inall  (nothing) { return false; } kip_end
-kip_check  (nothing) { return diagnostic_good; } kip_end
+kip_check  (nothing) { return diagnostic_t::diagnostic_good; } kip_end
 
 
 // random
@@ -79,7 +79,7 @@ bool read_value(
       read_done(s, obj, '\0')
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -91,13 +91,13 @@ kip_ostream(nothing) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "nothing()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << "nothing(" && kip::write_finish(k, obj, true);
 
    // full

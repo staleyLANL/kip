@@ -355,7 +355,7 @@ inline bool tabular<real,tag>::cap_lo(
    q.z = q*tar_z;
 
    return q.y*q.y + q.z*q.z <= pre[0].rsq
-      ? q.x = table[0].x, q(-1,0,0, this, yesnorm), true
+      ? q.x = table[0].x, q(-1,0,0, this, normalized_t::yesnorm), true
       : false;
 }
 
@@ -376,7 +376,7 @@ inline bool tabular<real,tag>::cap_hi(
    q.z = q*tar_z;
 
    return q.y*q.y + q.z*q.z <= pre[P].rsq
-      ? q.x = table[P].x, q( 1,0,0, this, yesnorm), true
+      ? q.x = table[P].x, q( 1,0,0, this, normalized_t::yesnorm), true
       : false;
 }
 
@@ -496,7 +496,7 @@ inline bool tabular<real,tag>::segment(
             cell.slope*(cell.slope*(table[i].x-q.x) - table[i].r),
             q.y = rot.ey + q*dy,
             q.z = q*tar.z,
-            this, nonorm
+            this, normalized_t::nonorm
          ), true;
    }
    return false;
@@ -520,7 +520,7 @@ inline void tabular<real,tag>::registerq(
             slope*(slope*(table[i].x - qtmp.x) - table[i].r),
             qtmp.y = rot.ey + q*dy,
             qtmp.z = q*tar_z,
-            this, nonorm
+            this, normalized_t::nonorm
          ) = q
       );
 }
@@ -665,7 +665,7 @@ kip_inall(tabular)
 
 kip_check(tabular)
 {
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
    npts = size();
 
    // npts
@@ -814,7 +814,7 @@ kip_read_value(tabular) {
 
    if (!(okay && read_done(s, obj))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -833,13 +833,13 @@ kip::ostream &tabular_write(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << name << "()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op) {
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op) {
       okay = k << name << '(' <<  obj.a << ", " <<  obj.b << ", " <<  npts;
       for (unsigned i = 0;  i < npts && okay;  ++i)
          okay = k << ", " << obj.table[i].x << ',' << obj.table[i].r;

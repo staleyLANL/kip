@@ -127,7 +127,7 @@ kip_dry(sphere)
 // check
 kip_check(sphere)
 {
-   if (r > real(0)) return diagnostic_good;
+   if (r > real(0)) return diagnostic_t::diagnostic_good;
    std::ostringstream oss;
    oss << "Sphere has non-positive radius r=" << r;
    return error(oss);
@@ -153,7 +153,7 @@ kip_infirst(sphere)
    if (!(0 < q && q < qmin)) return false;
 
    q.point<real>::operator=(eyeball - real(q)*diff);
-   return q(q - c, this, nonorm), true;
+   return q(q - c, this, normalized_t::nonorm), true;
 } kip_end
 
 
@@ -168,7 +168,7 @@ kip_inall(sphere)
       ints[0] = p + op::sqrt(h);
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
       ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);
-      ints[0](ints[0] - c, this, nonorm);
+      ints[0](ints[0] - c, this, normalized_t::nonorm);
       ints.setsize(1);
 
    } else {
@@ -177,12 +177,12 @@ kip_inall(sphere)
       ints[0] = p - hsqrt;
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
       ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);
-      ints[0](ints[0] - c, this, nonorm);
+      ints[0](ints[0] - c, this, normalized_t::nonorm);
 
       ints[1] = p + hsqrt;
       if (0 < ints[1] && ints[1] < qmin) {
          ints[1].point<real>::operator=(eyeball - real(ints[1])*diff);
-         ints[1](ints[1] - c, this, nonorm);
+         ints[1](ints[1] - c, this, normalized_t::nonorm);
          ints.setsize(2);
       } else
          ints.setsize(1);
@@ -250,7 +250,7 @@ kip_read_value(sphere) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -262,13 +262,13 @@ kip_ostream(sphere) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "sphere()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << "sphere("
                << obj.c << ", "
                << obj.r &&

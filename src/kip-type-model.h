@@ -887,7 +887,7 @@ bool read_value(
       if (!read_value(s,word)) {
          // unable to read keyword
          if (!s.bad() && s.eof()) { s.clear();  return false; }
-         addendum("Detected while reading "+description, diagnostic_error);
+         addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
          if (!s.recover('\0')) return false;
          continue;
       }
@@ -903,7 +903,7 @@ bool read_value(
 
       // shape input failed, or keyword wasn't recognized
       if (s.fail()) {
-         addendum("Detected while reading "+description, diagnostic_error);
+         addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
          if (!s.recover('\0')) return false;
       }
 

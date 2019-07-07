@@ -118,7 +118,7 @@ bool read_value(
       read_value(s,swirl)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
 
    value.swirl = swirl;

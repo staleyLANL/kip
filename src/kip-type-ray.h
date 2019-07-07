@@ -52,7 +52,7 @@ public:
       shape = q.shape;
 
       // is |normal| == 1 ?
-      normalized = q.normalized == yesnorm;
+      normalized = q.normalized == normalized_t::yesnorm;
    }
 };
 

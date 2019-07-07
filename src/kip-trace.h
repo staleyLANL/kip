@@ -464,9 +464,9 @@ bool trace(
    object_border_begin(model,image);
 
    // Select method...
-   if (engine.method == uniform)
+   if (engine.method == method_t::uniform)
       trace_uniform  (model,view,light,engine,image, vars,pixel);
-   else if (engine.method == recursive)
+   else if (engine.method == method_t::recursive)
       trace_recursive(model,view,light,engine,image, vars,pixel);
    else
       trace_block    (model,view,light,engine,image, vars,pixel);

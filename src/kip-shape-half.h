@@ -156,7 +156,7 @@ kip_check(half)
 {
    return normal == kip::point<real>(0,0,0)
       ? error("Half has zero normal")
-      : diagnostic_good;
+      : diagnostic_t::diagnostic_good;
 } kip_end
 
 
@@ -168,7 +168,7 @@ kip_infirst(half)
    if (den == 0 || !(0 < (q = misc.half.tmp/den) && q < qmin)) return false;
 
    q.kip::template point<real>::operator=(eyeball - real(q)*diff);
-   return q(normal, this, nonorm), true;
+   return q(normal, this, normalized_t::nonorm), true;
 } kip_end
 
 
@@ -222,7 +222,7 @@ kip_read_value(half) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -234,13 +234,13 @@ kip_ostream(half) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "half()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << "half("
                << obj.point  << ", "
                << obj.normal &&

@@ -834,7 +834,7 @@ namespace internal {
 template<class real, class OBJ>
 inline diagnostic_t onetwor_check(const char *const name, const OBJ &obj)
 {
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    // r
    if (obj.r <= real(0)) {
@@ -1019,14 +1019,14 @@ inline diagnostic_t check_operand(
    }
 
    const diagnostic_t diag = p->check();
-   if (diag != diagnostic_good) {
+   if (diag != diagnostic_t::diagnostic_good) {
       std::ostringstream oss;
       oss << "Detected while checking \"" << description
           << "\" operand of logical-" << logical;
       return addendum(oss,diag);
    }
 
-   return diagnostic_good;
+   return diagnostic_t::diagnostic_good;
 }
 
 

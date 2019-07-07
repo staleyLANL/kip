@@ -87,7 +87,7 @@ namespace kip {
    }
 
    // ray tracing method
-   enum method_t {
+   enum class method_t {
       uniform,
       recursive,
       block
@@ -142,7 +142,7 @@ namespace kip {
 namespace kip {
 
 // format_t
-enum format_t {
+enum class format_t {
    // ------------- primitives --- operators
    // -----------------------------------------
    format_stub,  // name()         one-line
@@ -152,20 +152,20 @@ enum format_t {
 };
 
 // for the user
-inline format_t format = format_op;
+inline format_t format = format_t::format_op;
 
 
 // pform (for primitives)
 inline const char *pform()
 {
-   assert(format != format_stub);  // or we shouldn't have called this function
-   return format == format_one  || format == format_op  ? " " : "\n   ";
+   assert(format != format_t::format_stub);  // or we shouldn't have called this function
+   return format == format_t::format_one  || format == format_t::format_op  ? " " : "\n   ";
 }
 
 // oform (for operators)
 inline const char *oform()
 {
-   return format == format_stub || format == format_one ? " " : "\n   ";
+   return format == format_t::format_stub || format == format_t::format_one ? " " : "\n   ";
 }
 
 }
@@ -179,7 +179,7 @@ inline const char *oform()
 namespace kip {
 
 // diagnostic_t
-enum diagnostic_t {
+enum class diagnostic_t {
    diagnostic_good    = 3,  // everything is perfect
    diagnostic_note    = 2,  // for-your-information
    diagnostic_warning = 1,  // likely problem
@@ -280,7 +280,7 @@ template<class CONTEXT, class MESSAGE>
 inline diagnostic_t error(const CONTEXT &context, const MESSAGE &message)
 {
    internal::diagnostic("error", context, message);
-   return diagnostic_error;
+   return diagnostic_t::diagnostic_error;
 }
 
 // no-context
@@ -297,8 +297,8 @@ template<class CONTEXT, class MESSAGE>
 inline diagnostic_t warning(const CONTEXT &context, const MESSAGE &message)
 {
    return warnings
-      ? internal::diagnostic("warning", context, message), diagnostic_warning
-      : diagnostic_good;
+      ? internal::diagnostic("warning", context, message), diagnostic_t::diagnostic_warning
+      : diagnostic_t::diagnostic_good;
 }
 
 // no-context
@@ -315,8 +315,8 @@ template<class CONTEXT, class MESSAGE>
 inline diagnostic_t note(const CONTEXT &context, const MESSAGE &message)
 {
    return notes
-      ? internal::diagnostic("note", context, message), diagnostic_note
-      : diagnostic_good;
+      ? internal::diagnostic("note", context, message), diagnostic_t::diagnostic_note
+      : diagnostic_t::diagnostic_good;
 }
 
 // no-context
@@ -335,9 +335,9 @@ template<class MESSAGE>
 inline diagnostic_t addendum(const MESSAGE &message, const diagnostic_t d)
 {
    if (addenda && (
-       d == diagnostic_error                ||
-      (d == diagnostic_warning && warnings) ||
-      (d == diagnostic_note    && notes   )
+       d == diagnostic_t::diagnostic_error                ||
+      (d == diagnostic_t::diagnostic_warning && warnings) ||
+      (d == diagnostic_t::diagnostic_note    && notes   )
    ))
       internal::diagnostic("", "", message);
    return d;

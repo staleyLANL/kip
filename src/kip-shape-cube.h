@@ -275,7 +275,7 @@ kip_dry(cube)
 kip_check(cube)
 {
    static const char *const err = "Cube has non-positive half-size ";
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    if (r <= real(0)) {
       std::ostringstream oss;
@@ -329,36 +329,36 @@ kip_infirst(cube)
          if (0 < (q = -eye.x/dx) && q < qmin &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-            q.x = 0;  return q(-1,0,0, this, yesnorm), true;
+            q.x = 0;  return q(-1,0,0, this, normalized_t::yesnorm), true;
          }
       } else if (dx > 0 && 0 < (q = (rot.ex - eye.x)/dx) && q < qmin &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.x = rot.ex;  return q(1,0,0, this, yesnorm), true;
+         q.x = rot.ex;  return q(1,0,0, this, normalized_t::yesnorm), true;
       }
 
       if (dy < 0) {
          if (0 < (q = -eye.y/dy) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-            q.y = 0;  return q(0,-1,0, this, yesnorm), true;
+            q.y = 0;  return q(0,-1,0, this, normalized_t::yesnorm), true;
          }
       } else if (dy > 0 && 0 < (q = (rot.ey - eye.y)/dy) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.y = rot.ey;  return q(0,1,0, this, yesnorm), true;
+         q.y = rot.ey;  return q(0,1,0, this, normalized_t::yesnorm), true;
       }
 
       if (dz < 0) {
          if (0 < (q = -eye.z/dz) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey) {
-            q.z = 0;  return q(0,0,-1, this, yesnorm), true;
+            q.z = 0;  return q(0,0,-1, this, normalized_t::yesnorm), true;
          }
       } else if (dz > 0 && 0 < (q = (rot.h  - eye.z)/dz) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey) {
-         q.z = rot.h;  return q(0,0,1, this, yesnorm), true;
+         q.z = rot.h;  return q(0,0,1, this, normalized_t::yesnorm), true;
       }
 
       return false;
@@ -373,7 +373,7 @@ kip_infirst(cube)
       if (dx <= 0 || (q = -eye.x/dx) >= qmin) return false;
       if (0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey &&
           0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.x = 0;  return q(-1,0,0, this, yesnorm), true;
+         q.x = 0;  return q(-1,0,0, this, normalized_t::yesnorm), true;
       }
    }
 
@@ -381,7 +381,7 @@ kip_infirst(cube)
       if (dy <= 0 || (q = -eye.y/dy) >= qmin) return false;
       if (0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
           0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.y = 0;  return q(0,-1,0, this, yesnorm), true;
+         q.y = 0;  return q(0,-1,0, this, normalized_t::yesnorm), true;
       }
    }
 
@@ -389,7 +389,7 @@ kip_infirst(cube)
       if (dz <= 0 || (q = -eye.z/dz) >= qmin) return false;
       if (0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
           0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey) {
-         q.z = 0;  return q(0,0,-1, this, yesnorm), true;
+         q.z = 0;  return q(0,0,-1, this, normalized_t::yesnorm), true;
       }
    }
 
@@ -428,7 +428,7 @@ kip_inall(cube)
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.x = 0;
-      if (ints.convex(inq(-1,0,0, this, yesnorm))) return true;
+      if (ints.convex(inq(-1,0,0, this, normalized_t::yesnorm))) return true;
    }
 
    // x max
@@ -436,7 +436,7 @@ kip_inall(cube)
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.x = rot.ex;
-      if (ints.convex(inq(1,0,0, this, yesnorm))) return true;
+      if (ints.convex(inq(1,0,0, this, normalized_t::yesnorm))) return true;
    }
 
    // y min
@@ -444,7 +444,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.y = 0;
-      if (ints.convex(inq(0,-1,0, this, yesnorm))) return true;
+      if (ints.convex(inq(0,-1,0, this, normalized_t::yesnorm))) return true;
    }
 
    // y max
@@ -452,7 +452,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.y = rot.ey;
-      if (ints.convex(inq(0,1,0, this, yesnorm))) return true;
+      if (ints.convex(inq(0,1,0, this, normalized_t::yesnorm))) return true;
    }
 
    // z min
@@ -460,7 +460,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey) {
       inq.z = 0;
-      if (ints.convex(inq(0,0,-1, this, yesnorm))) return true;
+      if (ints.convex(inq(0,0,-1, this, normalized_t::yesnorm))) return true;
    }
 
    // z max
@@ -468,7 +468,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey) {
       inq.z = rot.h;
-      if (ints.convex(inq(0,0,1, this, yesnorm))) return true;
+      if (ints.convex(inq(0,0,1, this, normalized_t::yesnorm))) return true;
    }
 
    return ints.size() > 0;
@@ -499,7 +499,7 @@ kip_read_value(cube) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
 
    obj.a *= real(kip_pi)/180;
@@ -513,13 +513,13 @@ kip_ostream(cube) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "cube()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << "cube("
                <<  obj.c << ", "
                << (180/real(kip_pi))*obj.a << ", "

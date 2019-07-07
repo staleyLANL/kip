@@ -136,7 +136,7 @@ kip_infirst(xplane)
            misc.plane.norm, 0, 0, this,
           (int(op::abs(q.y/size.y)) % 2 == (q.y > 0)) ==
           (int(op::abs(q.z/size.z)) % 2 == (q.z > 0)) ? &color : this,
-           yesnorm
+           normalized_t::yesnorm
         ),
         true
       : false;
@@ -157,7 +157,7 @@ kip_inall(xplane)
 // check
 kip_check(xplane)
 {
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    // size.y
    if (size.y <= real(0)) {
@@ -222,7 +222,7 @@ kip_read_value(xplane) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -240,13 +240,13 @@ kip::ostream &plane_write(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << ch << "plane()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << ch << "plane("
                << pos << ", "
                << one << ',' << two << ", "

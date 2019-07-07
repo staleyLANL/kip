@@ -460,7 +460,7 @@ inline out get_color(
       point<float>(q.n),
 
       // normal-is-normalized
-      q.normalized == yesnorm
+      q.normalized == normalized_t::yesnorm
    );
 #endif
 

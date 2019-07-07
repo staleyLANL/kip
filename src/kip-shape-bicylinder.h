@@ -255,7 +255,7 @@ kip_dry(bicylinder)
 // check
 kip_check(bicylinder)
 {
-   diagnostic_t rv = diagnostic_good;
+   diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    // r.a
    if (r.a < real(0)) {
@@ -335,7 +335,7 @@ kip_infirst(bicylinder)
             q.z = q*tar.z;
             if (op::sq(q.y) + op::sq(q.z) <= rasq) {
                q.x = real(0);
-               return q(-1,0,0, this, yesnorm), true;
+               return q(-1,0,0, this, normalized_t::yesnorm), true;
             }
          }
       }
@@ -348,7 +348,7 @@ kip_infirst(bicylinder)
             q.z = q*tar.z;
             if (op::sq(q.y) + op::sq(q.z) <= rbsq) {
                q.x = rot.h;
-               return q(1,0,0, this, yesnorm), true;
+               return q(1,0,0, this, normalized_t::yesnorm), true;
             }
          }
       }
@@ -380,7 +380,7 @@ kip_infirst(bicylinder)
 
          if (op::sq(q.y) + op::sq(q.z) <= rasq) {
             q.x = real(0);
-            return q(-1,0,0, this, yesnorm), true;
+            return q(-1,0,0, this, normalized_t::yesnorm), true;
          }
       }
 
@@ -395,7 +395,7 @@ kip_infirst(bicylinder)
 
          if (op::sq(q.y) + op::sq(q.z) <= rbsq) {
             q.x = rot.h;
-            return q(1,0,0, this, yesnorm), true;
+            return q(1,0,0, this, normalized_t::yesnorm), true;
          }
       }
 
@@ -411,7 +411,7 @@ kip_infirst(bicylinder)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(-slope*(r.a + slope*q.x), q.y, q.z, this, nonorm), true;
+   return q(-slope*(r.a + slope*q.x), q.y, q.z, this, normalized_t::nonorm), true;
 } kip_end
 
 
@@ -440,7 +440,7 @@ inline bool bicylinder<real,tag>::get_base0(
    info.z = tar.z*info.q;
    if (op::sq(info.y) + op::sq(info.z) <= rasq) {
       info.x = real(0);
-      return info(-1,0,0, this, yesnorm), true;
+      return info(-1,0,0, this, normalized_t::yesnorm), true;
    }
    return false;
 }
@@ -465,7 +465,7 @@ inline bool bicylinder<real,tag>::get_baseh(
    info.z = tar.z*info.q;
    if (op::sq(info.y) + op::sq(info.z) <= rbsq) {
       info.x = rot.h;
-      return info(1,0,0, this, yesnorm), true;
+      return info(1,0,0, this, normalized_t::yesnorm), true;
    }
    return false;
 }
@@ -490,7 +490,7 @@ inline bool bicylinder<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(-slope*(r.a + slope*info.x), info.y, info.z, this, nonorm), true;
+   return info(-slope*(r.a + slope*info.x), info.y, info.z, this, normalized_t::nonorm), true;
 }
 
 
@@ -564,7 +564,7 @@ kip_read_value(bicylinder) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }
@@ -576,13 +576,13 @@ kip_ostream(bicylinder) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_stub)
+   if (kip::format == kip::format_t::format_stub)
       okay = k << "bicylinder()";
 
    // one
    // op
-   else if (kip::format == kip::format_one ||
-            kip::format == kip::format_op)
+   else if (kip::format == kip::format_t::format_one ||
+            kip::format == kip::format_t::format_op)
       okay = k << "bicylinder("
                << obj.a << ", "
                << obj.b << ", "

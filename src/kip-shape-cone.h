@@ -143,7 +143,7 @@ kip_infirst(cone)
             q.z = q*tar.z;
             if (op::sq(q.y) + op::sq(q.z) <= rsq) {
                q.x = rot.h;
-               return q(1,0,0, this, yesnorm), true;
+               return q(1,0,0, this, normalized_t::yesnorm), true;
             }
          }
       }
@@ -172,7 +172,7 @@ kip_infirst(cone)
 
          if (op::sq(q.y) + op::sq(q.z) <= rsq) {
             q.x = rot.h;
-            return q(1,0,0, this, yesnorm), true;
+            return q(1,0,0, this, normalized_t::yesnorm), true;
          }
       }
 
@@ -189,7 +189,7 @@ kip_infirst(cone)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(h1*q.x, q.y, q.z, this, nonorm), true;
+   return q(h1*q.x, q.y, q.z, this, normalized_t::nonorm), true;
 } kip_end
 
 
@@ -217,7 +217,7 @@ inline bool cone<real,tag>::get_baseh(
    info.z = tar.z*info.q;
    if (op::sq(info.y) + op::sq(info.z) <= rsq) {
       info.x = rot.h;
-      return info(1,0,0, this, yesnorm), true;
+      return info(1,0,0, this, normalized_t::yesnorm), true;
    }
    return false;
 }
@@ -242,7 +242,7 @@ inline bool cone<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(h1*info.x, info.y, info.z, this, nonorm), true;
+   return info(h1*info.x, info.y, info.z, this, normalized_t::nonorm), true;
 }
 
 
@@ -307,7 +307,7 @@ kip_read_value(cone) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_error);
+      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
    }
    return !s.fail();
 }

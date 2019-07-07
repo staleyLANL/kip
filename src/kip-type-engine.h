@@ -14,7 +14,7 @@ namespace kip {
 namespace internal {
 
 // method
-inline method_t default_method() { return uniform; }
+inline method_t default_method() { return method_t::uniform; }
 
    // For method==uniform: hzone, hsub, vzone, vsub
    // Comment, 2017-04-08:
@@ -191,11 +191,11 @@ inline void fix_engine(
    engine<real> &obj, const size_t hpixel, const size_t vpixel
 ) {
    // method
-   if (obj.method != uniform && obj.method != recursive && obj.method != block)
+   if (obj.method != method_t::uniform && obj.method != method_t::recursive && obj.method != method_t::block)
       obj.method = internal::default_method();
 
    // uniform fix
-   if (obj.method == uniform) {
+   if (obj.method == method_t::uniform) {
       // hzone, vzone
       fix_zone_hv(obj.hzone, hpixel);
       fix_zone_hv(obj.vzone, vpixel);
@@ -206,7 +206,7 @@ inline void fix_engine(
    }
 
    // recursive fix
-   else if (obj.method == recursive) {
+   else if (obj.method == method_t::recursive) {
       // hdivision
       if (obj.hdivision < 2)
          obj.hdivision = 2;
