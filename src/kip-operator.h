@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // propagate_*
 // -----------------------------------------------------------------------------
@@ -59,7 +57,7 @@ void propagate_nary(const VEC &vec, const tag &base, const bool force)
    }
 }
 
-}
+} // namespace internal
 
 
 
@@ -121,5 +119,3 @@ public:
       position -= count;
    }
 };
-
-}

@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // pill
 // -----------------------------------------------------------------------------
@@ -398,8 +396,6 @@ kip_read_value(pill) {
 // kip::ostream
 kip_ostream(pill) {
    return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "pill");
-}
-
 }
 
 #define   kip_class pill

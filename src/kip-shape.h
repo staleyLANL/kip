@@ -4,8 +4,6 @@
 // This file defines the shape class template, related functions, and other
 // functionality for use by shape and by classes derived from shape.
 
-namespace kip {
-
 // vars
 namespace internal {
    template<class real = default_real_t, class tag = default_tag_t>
@@ -72,7 +70,7 @@ namespace internal {
 
    template<template<class,class> class SHAPE>
    const shape_id_t get_shape_id<SHAPE>::result = unique_number<shape_id_t>();
-}
+} // namespace internal
 
 
 
@@ -111,7 +109,7 @@ namespace internal {
          i(_i), j(_j), nzone(_nzone)
       { }
    };
-}
+} // namespace internal
 
 
 
@@ -247,12 +245,6 @@ public:
       mutable size_t total_in;
    };
 
-
-
-
-
-
-
    /*
    // union'd data, as we only need one-at-a-time
    union {
@@ -373,10 +365,6 @@ public:
       union_tridata  tridata;   // for triangle
       union_surfdata surfdata;  // for surf
    };
-
-
-
-
 
 
 
@@ -870,7 +858,7 @@ inline void bound_abr(
    max(a.x+dx, a.y+dy, a.z+dz);
 }
 
-}
+} // namespace internal
 
 
 
@@ -957,7 +945,7 @@ real bbox_minimum(
             return mod(e - point<real>(xsize,ysize,zsize));
 }
 
-}
+} // namespace internal
 
 
 
@@ -992,7 +980,7 @@ SHAPE &random_abr(SHAPE &obj)
    return obj;
 }
 
-}
+} // namespace internal
 
 
 
@@ -1057,7 +1045,7 @@ inline bool op_all(
    const real &, afew<inq<real,tag>> &, const subinfo &
 );
 
-}
+} // namespace internal
 
 
 
@@ -1183,5 +1171,4 @@ public:
    inline bool operator()(const real &a, const real &b) const { return a > b; }
 };
 
-}
-}
+} // namespace internal

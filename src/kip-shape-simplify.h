@@ -3,8 +3,6 @@
 
 // This file provides simplify() functions for each shape.
 
-namespace kip {
-
 // kip_simplify
 //    (1) pointer (calls (2))
 //    (2) reference
@@ -968,8 +966,6 @@ kip_simplify(ors)
 
    assert(false);
    return internal::pNULL(obj);
-}
-
 }
 
 #undef kip_simplify

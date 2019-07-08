@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // kipnot
 // -----------------------------------------------------------------------------
@@ -236,8 +234,6 @@ kip_ostream(kipnot) {
    if (!okay)
       (void)kip::error("Could not write logical-not operator");
    return k;
-}
-
 }
 
 #define   kip_class kipnot

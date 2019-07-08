@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 #define kip_dry_function(name)\
    template<class real, class base>\
    inline rotate<-3,real> name(\
@@ -333,8 +331,6 @@ kip_dry_function(dry_sw15) {
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h+vars.heps+1,v+vars.veps-b));
-}
-
 }
 
 #undef kip_dry_function

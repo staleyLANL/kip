@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // cube
 // -----------------------------------------------------------------------------
@@ -535,8 +533,6 @@ kip_ostream(cube) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(cube);
-}
-
 }
 
 #define   kip_class cube

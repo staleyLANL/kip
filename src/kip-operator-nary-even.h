@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // even
 // -----------------------------------------------------------------------------
@@ -283,8 +281,6 @@ kip_inall(even)
 
    return kip_less, false;  // unreachable; presence silences g++ warning
 } kip_end
-
-}
 
 
 

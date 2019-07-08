@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // bicylinder
 // -----------------------------------------------------------------------------
@@ -598,8 +596,6 @@ kip_ostream(bicylinder) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(bicylinder);
-}
-
 }
 
 #define   kip_class bicylinder

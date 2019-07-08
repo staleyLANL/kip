@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // xplane
 // -----------------------------------------------------------------------------
@@ -267,15 +265,13 @@ kip::ostream &plane_write(
    return k;
 }
 
-}
+} // namespace internal
 
 
 
 // kip::ostream
 kip_ostream(xplane) {
    return kip::internal::plane_write(k, obj, 'x', obj.x, obj.size.y, obj.size.z);
-}
-
 }
 
 #define   kip_class xplane

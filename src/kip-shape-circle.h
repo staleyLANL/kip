@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // circle
 // -----------------------------------------------------------------------------
@@ -189,8 +187,6 @@ kip_read_value(circle) {
 // kip::ostream
 kip_ostream(circle) {
    return kip::internal::onetwor_write(k,obj, obj.c,obj.n,obj.r, "circle");
-}
-
 }
 
 #define   kip_class circle

@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // sphere
 // -----------------------------------------------------------------------------
@@ -282,8 +280,6 @@ kip_ostream(sphere) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(sphere);
-}
-
 }
 
 #define   kip_class sphere

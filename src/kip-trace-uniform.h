@@ -10,8 +10,6 @@
 //    If binary : uses binary
 //    If both   : uses binary for [hv]min, linear for [hv]max
 
-namespace kip {
-
 // diagonal (user-settable)
 inline bool diagonal = false;
 
@@ -834,5 +832,4 @@ void utrace(
    }
 }
 
-}
-}
+} // namespace internal

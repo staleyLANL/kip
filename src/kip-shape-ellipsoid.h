@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // ellipsoid
 // -----------------------------------------------------------------------------
@@ -448,8 +446,6 @@ kip_ostream(ellipsoid) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(ellipsoid);
-}
-
 }
 
 #define   kip_class ellipsoid

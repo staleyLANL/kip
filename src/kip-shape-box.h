@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // box
 // -----------------------------------------------------------------------------
@@ -575,8 +573,6 @@ kip_ostream(box) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(box);
-}
-
 }
 
 #define   kip_class box

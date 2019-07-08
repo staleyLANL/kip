@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // yplane
 // -----------------------------------------------------------------------------
@@ -232,8 +230,6 @@ kip_read_value(yplane) {
 // kip::ostream
 kip_ostream(yplane) {
    return kip::internal::plane_write(k, obj, 'y', obj.y, obj.size.x, obj.size.z);
-}
-
 }
 
 #define   kip_class yplane

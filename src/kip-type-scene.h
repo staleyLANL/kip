@@ -4,24 +4,20 @@
 // This file provides the "scene" class, which derives from the other
 // major classes: model, view, light, engine, image.
 
-namespace kip {
-   // forward declarations: scene, trace(scene), trace(scene,array)
-   template<class real, class tag, class color> class scene;
+// forward declarations: scene, trace(scene), trace(scene,array)
+template<class real, class tag, class color> class scene;
 
-   template<class real, class tag, class color>
-   bool trace(scene<real,tag,color> &);
+template<class real, class tag, class color>
+bool trace(scene<real,tag,color> &);
 
-   template<class real, class tag, class color, class pix>
-   bool trace(scene<real,tag,color> &, array<2,pix> &);
-}
+template<class real, class tag, class color, class pix>
+bool trace(scene<real,tag,color> &, array<2,pix> &);
 
 
 
 // -----------------------------------------------------------------------------
 // scene
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 template<
    class real  = default_real_t,
@@ -57,5 +53,3 @@ public:
    template<class pix>
    inline bool trace(array<2,pix> &pixel) { return kip::trace(*this,pixel); }
 };
-
-}

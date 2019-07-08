@@ -3,8 +3,6 @@
 
 // This file provides miscellaneous functionality related to shapes.
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // allshape
 // rshhhd
@@ -40,7 +38,7 @@ public:
    real dmins;
 };
 
-}
+} // namespace internal
 
 
 
@@ -441,8 +439,6 @@ public:
    // conversion to bool (always returns true)
    inline operator bool() const { return true; }
 };
-
-}
 
 
 

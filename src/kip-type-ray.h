@@ -4,13 +4,9 @@
 // This file provides the "indsn" (intersection, normal, distance, shape,
 // normalized) class template.
 
-
-
 // -----------------------------------------------------------------------------
 // indsn
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 template<class real, class base>
 class indsn {
@@ -55,5 +51,3 @@ public:
       normalized = q.normalized == normalized_t::yesnorm;
    }
 };
-
-}

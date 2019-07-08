@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // silo
 // -----------------------------------------------------------------------------
@@ -407,8 +405,6 @@ kip_read_value(silo) {
 // kip::ostream
 kip_ostream(silo) {
    return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "silo");
-}
-
 }
 
 #define   kip_class silo

@@ -4,8 +4,6 @@
 
 #define kip_class kip_paste(kip,kip_brief)
 
-namespace kip {
-
 // read_value
 template<class ISTREAM, class real, class tag>
 bool read_value(
@@ -80,8 +78,6 @@ kip::ostream &operator<<(
    if (!okay)
       (void)kip::error("Could not write " kip_description(kip_brief));
    return k;
-}
-
 }
 
 #include "kip-macro-io.h"

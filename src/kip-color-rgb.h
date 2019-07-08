@@ -3,8 +3,6 @@
 
 // This file defines the RGB and RGBA class templates, and related functions.
 
-namespace kip {
-
 // Default type for red, green, and blue (and alpha)
 using default_rgb_t = unsigned char;
 class crayola;
@@ -132,7 +130,7 @@ endcolor()
    return to(1);
 }
 
-}
+} // namespace internal
 
 
 
@@ -386,8 +384,6 @@ inline RGB<
    return obj;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
@@ -420,9 +416,7 @@ inline kip::RGBA<
 
 
 // op::div(RGBA,den)
-namespace kip {
 namespace op {
-
    template<class A, class B>
    inline RGBA<A> div(const RGBA<B> &value, const unsigned den)
    {
@@ -433,11 +427,7 @@ namespace op {
          A((value.a + den/2) / den)
       );
    }
-
 }
-}
-
-
 
 /*
 // RGBA<A> += RGBA<B>
@@ -457,8 +447,6 @@ inline kip::RGBA<
    return lhs;
 }
 
-
-
 // RGBA<A> * B
 template<class A, class B>
 inline kip::RGBA<
@@ -472,7 +460,6 @@ inline kip::RGBA<
 
 
 // op::round(RGBA)
-namespace kip {
 namespace op {
    template<class INTEGER, class rgb_t>
    inline RGBA<INTEGER> round(const RGBA<rgb_t> &val)
@@ -484,6 +471,5 @@ namespace op {
          rnd<INTEGER>(val.a)
       );
    }
-}
 }
 */

@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // spheroid
 // -----------------------------------------------------------------------------
@@ -302,8 +300,6 @@ kip_read_value(spheroid) {
 // kip::ostream
 kip_ostream(spheroid) {
    return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "spheroid");
-}
-
 }
 
 #define   kip_class spheroid

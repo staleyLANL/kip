@@ -5,22 +5,16 @@
 // colormap
 // -----------------------------------------------------------------------------
 
-namespace kip {
-
 class colormap {
 public:
    // zzz Use as base class for colormap_jet, etc., in some way
 };
-
-}
 
 
 
 // -----------------------------------------------------------------------------
 // jet
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // colormap_jet
 template<class unused>
@@ -190,7 +184,7 @@ public:
       const real a = 255*(1-f);
       const real b = 255*f;
 
-      const kip::RGB<> color(
+      const RGB<> color(
          uchar(a*spectrum[icolor][0] + b*spectrum[icolor+1][0]),
          uchar(a*spectrum[icolor][1] + b*spectrum[icolor+1][1]),
          uchar(a*spectrum[icolor][2] + b*spectrum[icolor+1][2])
@@ -203,9 +197,5 @@ public:
 template<class unused>
 std::vector<typename colormap_jet<unused>::color> colormap_jet<unused>::vec;
 
-
-
 // jet
 namespace { const colormap_jet<char> jet; }
-
-}

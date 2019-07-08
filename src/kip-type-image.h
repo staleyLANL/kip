@@ -3,8 +3,6 @@
 
 // This file provides the "image" class template.
 
-namespace kip {
-
 // Default type: color
 using default_color_t = kip::rgba;
 
@@ -54,7 +52,7 @@ public:
    }
 };
 
-}
+} // namespace internal
 
 
 
@@ -82,7 +80,7 @@ inline unsigned default_anti() { return 1; }
 // border
 inline border_t default_border() { return border_t(); }
 
-}
+} // namespace internal
 
 
 
@@ -212,6 +210,4 @@ image<real,color> &image<real,color>::fix()
 
    // done
    return *this;
-}
-
 }

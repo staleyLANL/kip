@@ -3,8 +3,6 @@
 
 // This file defines the crayola class, which supports Crayola crayon colors.
 
-namespace kip {
-
 class crayola;
 using crayola_id_t = unsigned char;
 using crayola_rgb_t = unsigned char;
@@ -91,7 +89,7 @@ public:
 template<class unused>
 const char *const crayola_base<unused>::description = "crayola";
 
-}
+} // namespace internal
 
 
 
@@ -122,7 +120,7 @@ public:
    inline crayola &operator=(const crayola &from)
       { index = from.index;  return *this; }
 
-/*
+   /*
    // conversion to RGB<crayola_rgb_t>
    inline operator const RGB<crayola_rgb_t> &() const
       { return color_table()[index].first; }
@@ -130,7 +128,7 @@ public:
    // conversion to RGBA<crayola_rgb_t>
    inline operator RGBA<crayola_rgb_t>() const
       { return color_table()[index].first; }
-*/
+   */
 };
 
 
@@ -314,7 +312,7 @@ void color_table_initialize(
    table.push_back(pair( rgb_t(192, 192, 192), "gray_light"));
 }
 
-}
+} // namespace internal
 
 
 
@@ -560,8 +558,6 @@ bool read_value(
    return !s.fail();
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
@@ -579,8 +575,6 @@ inline bool operator==(const kip::crayola &a, const kip::crayola &b)
 // RGB(crayola)
 // RGBA(crayola)
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // RGB(crayola)
 template<class rgb_t>
@@ -601,6 +595,4 @@ inline RGBA<rgb_t>::RGBA(const crayola &from)
    g = value.g;
    b = value.b;
    a = opaque<rgb_t>();
-}
-
 }

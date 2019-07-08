@@ -3,8 +3,6 @@
 
 // This file provides the kip::istream and kip::ostream classes.
 
-namespace kip {
-
 
 
 // -----------------------------------------------------------------------------
@@ -573,29 +571,23 @@ bool istream::recover(const unused)
    return false;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // operator<< (kip::ostream, general)
 // -----------------------------------------------------------------------------
 
-namespace kip {
-
 /*
-namespace kip {
-   // default shape base
-   #ifdef KIP_DEFAULT_TAG_T
-      using default_tag_t = KIP_DEFAULT_TAG_T;
-   #else
-      using default_tag_t = kip::RGB<>;
-   #endif
+// default shape base
+#ifdef KIP_DEFAULT_TAG_T
+   using default_tag_t = KIP_DEFAULT_TAG_T;
+#else
+   using default_tag_t = kip::RGB<>;
+#endif
 
-   // ostream << kipand
-   template<class T = default_real_t, class tag = default_tag_t>
-   class kipand;
-}
+// ostream << kipand
+template<class T = default_real_t, class tag = default_tag_t>
+class kipand;
 
 template<class T, class tag>
 std::ostream &operator<<(std::ostream &, const kip::kipand<T,tag> &);
@@ -607,6 +599,4 @@ inline kip::ostream &operator<<(kip::ostream &k, const T &value)
    // Note: k.stream is a std::ostream, not a kip::ostream
    k.stream << value;
    return k;
-}
-
 }

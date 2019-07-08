@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // zplane
 // -----------------------------------------------------------------------------
@@ -232,8 +230,6 @@ kip_read_value(zplane) {
 // kip::ostream
 kip_ostream(zplane) {
    return kip::internal::plane_write(k, obj, 'z', obj.z, obj.size.x, obj.size.y);
-}
-
 }
 
 #define   kip_class zplane

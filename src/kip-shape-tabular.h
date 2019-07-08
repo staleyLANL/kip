@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // ntabular
 inline size_t ntabular = 16;
 
@@ -864,15 +862,13 @@ kip::ostream &tabular_write(
    return k;
 }
 
-}
+} // namespace internal
 
 
 
 // kip::ostream
 kip_ostream(tabular) {
    return kip::internal::tabular_write(k, obj, "tabular");
-}
-
 }
 
 #define   kip_class tabular

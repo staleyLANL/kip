@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // half
 // -----------------------------------------------------------------------------
@@ -254,8 +252,6 @@ kip_ostream(half) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(half);
-}
-
 }
 
 #define   kip_class half

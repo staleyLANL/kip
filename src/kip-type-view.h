@@ -3,10 +3,6 @@
 
 // This file provides the "view" class.
 
-namespace kip {
-
-
-
 // -----------------------------------------------------------------------------
 // Defaults
 // -----------------------------------------------------------------------------
@@ -33,7 +29,7 @@ template<class real> inline real default_roll () { return real( 0); }
 template<class real>
 inline real default_fov() { return real(16); }
 
-}
+} // namespace internal
 
 
 
@@ -110,6 +106,4 @@ const view<real> &view<real>::fix() const
 
    // done
    return *this;
-}
-
 }

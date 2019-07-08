@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // triangle
 // -----------------------------------------------------------------------------
@@ -323,8 +321,6 @@ kip_ostream(triangle) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(triangle);
-}
-
 }
 
 #define   kip_class triangle

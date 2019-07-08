@@ -1,25 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
-// eps
-// 0 = default; means get_eps() will compute something reasonable
-inline long double eps = 0;
-
-// get_eps
-namespace internal {
-   template<class T>
-   inline T get_eps()
-   {
-      return eps
-         ? T(eps)
-         : std::pow(T(10), T(-0.4)*std::numeric_limits<T>::digits10);
-   }
-} // namespace internal
-
-
-
 /*
     +------------+                                             +------------+
     | .infirst   |                                             | .inall     |
@@ -87,14 +68,32 @@ namespace internal {
                           +----------+     +----------+
 */
 
+
+
+// -----------------------------------------------------------------------------
+// misc
+// -----------------------------------------------------------------------------
+
+// eps
+// 0 = default; means get_eps() will compute something reasonable
+inline long double eps = 0;
+
+// for the rest of this file...
 namespace internal {
 
+// get_eps
+template<class T>
+inline T get_eps()
+{
+   // fixme 2019-07-07.
+   // Look more closely, but this may be called in a loop;
+   // we should handle it more efficiently
+   return eps
+      ? T(eps)
+      : std::pow(T(10), T(-0.4)*std::numeric_limits<T>::digits10);
+}
 
-
-// -----------------------------------------------------------------------------
 // ttclass
-// -----------------------------------------------------------------------------
-
 template<template<class,class> class T>
 class ttclass { };
 
@@ -1053,7 +1052,6 @@ void trace_bin(
 }
 
 } // namespace internal
-} // namespace kip
 
 #undef kip_action_plain
 #undef kip_action_lean

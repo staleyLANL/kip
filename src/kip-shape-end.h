@@ -8,8 +8,6 @@
 // id-related constructs
 // -----------------------------------------------------------------------------
 
-namespace kip {
-
 // users may prefer the shorter name, "shape_id", without the "_t" suffix
 using shape_id = shape_id_t;
 
@@ -46,8 +44,6 @@ kip_expand_semi(kip_make_id)
 kip_extra_semi (kip_make_id)
 #undef kip_make_id
 
-}
+} // namespace internal
 
 using id = internal::id_t<char>;
-
-}

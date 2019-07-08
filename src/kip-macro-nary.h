@@ -2,7 +2,6 @@
 // This file is #included in various places, to create member functions
 // for nary operator classes.
 
-
 // for ands: misc_type::ands_type
 #ifndef kip_type
 #define kip_type nary_type

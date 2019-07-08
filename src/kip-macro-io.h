@@ -1,6 +1,4 @@
 
-namespace kip {
-
 // kip::istream >> shape
 template<class real, class tag>
 inline kip::istream &operator>>(kip::istream &k, kip::kip_class<real,tag> &obj)
@@ -27,8 +25,6 @@ inline std::ostream &operator<<(
    kip::ostream k(s);
    k << obj;
    return s;
-}
-
 }
 
 #undef kip_brief

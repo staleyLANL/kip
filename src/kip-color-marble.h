@@ -3,8 +3,6 @@
 
 // This file defines the marble class template and related functions.
 
-namespace kip {
-
 
 
 // -----------------------------------------------------------------------------
@@ -123,8 +121,6 @@ bool read_value(
 
    value.swirl = swirl;
    return !s.fail();
-}
-
 }
 
 /*

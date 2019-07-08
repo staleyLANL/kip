@@ -1,18 +1,16 @@
 
 #pragma once
 
-namespace kip {
-   // default shape base
-   #ifdef KIP_DEFAULT_TAG_T
-      using default_tag_t = KIP_DEFAULT_TAG_T;
-   #else
-      using default_tag_t = kip::rgb;
-   #endif
+// default shape base
+#ifdef KIP_DEFAULT_TAG_T
+   using default_tag_t = KIP_DEFAULT_TAG_T;
+#else
+   using default_tag_t = kip::rgb;
+#endif
 
-   // shape - forward declaration
-   template<class = default_real_t, class = default_tag_t>
-   class shape;
-}
+// shape - forward declaration
+template<class = default_real_t, class = default_tag_t>
+class shape;
 
 
 
@@ -26,30 +24,28 @@ namespace kip {
 // read_right
 // -----------------------------------------------------------------------------
 
-namespace kip {
+// read_specific_character: helper function
+namespace internal {
+   template<class ISTREAM>
+   bool read_specific_character(
+      ISTREAM &s, const std::string &description,
+      const char want, char want2 = '\0'
+   ) {
+      if (want2 == '\0')
+         want2 = want;
 
-   // read_specific_character: helper function
-   namespace internal {
-      template<class ISTREAM>
-      bool read_specific_character(
-         ISTREAM &s, const std::string &description,
-         const char want, char want2 = '\0'
-      ) {
-         if (want2 == '\0')
-            want2 = want;
-
-         if (s.prefix('\0', description, false)) {  // false: eof not okay
-            char value = 0;
-            s.input(value);
-            if (s.verify('\0', description, value == want || value == want2))
-               return true;
-         }
-
-         if (want == '(') s.level++; else
-         if (want == ')') s.level--;
-         return false;
+      if (s.prefix('\0', description, false)) {  // false: eof not okay
+         char value = 0;
+         s.input(value);
+         if (s.verify('\0', description, value == want || value == want2))
+            return true;
       }
+
+      if (want == '(') s.level++; else
+      if (want == ')') s.level--;
+      return false;
    }
+}
 
 
 // comma ,
@@ -75,14 +71,14 @@ inline bool read_comma_or(ISTREAM &s)
 
 
 
-   /*
+/*
 // semicolon ;
 template<class ISTREAM>
 inline bool read_semi(ISTREAM &s)
 {
    return internal::read_specific_character(s, "semicolon ';'", ';');
 }
-   */
+*/
 
 // semicolon ;
 // BUT print that right parenthesis could have been there
@@ -109,8 +105,6 @@ inline bool read_right(ISTREAM &s)
    return internal::read_specific_character(s, "right parenthesis ')'", ')');
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
@@ -118,22 +112,20 @@ inline bool read_right(ISTREAM &s)
 // For various basic types
 // -----------------------------------------------------------------------------
 
-namespace kip {
-
-   // read_specific_pod: helper function
-   namespace internal {
-      template<class ISTREAM, class T>
-      bool read_specific_pod(
-         ISTREAM &s, T &value,
-         const std::string &description
-      ) {
-         if (!s.prefix('\0', description, false))  // false: eof not okay
-            return false;
-         s.input(value);
-         return s.verify
-            ('\0', description, true);  // true: no specific value wanted
-      }
+// read_specific_pod: helper function
+namespace internal {
+   template<class ISTREAM, class T>
+   bool read_specific_pod(
+      ISTREAM &s, T &value,
+      const std::string &description
+   ) {
+      if (!s.prefix('\0', description, false))  // false: eof not okay
+         return false;
+      s.input(value);
+      return s.verify
+         ('\0', description, true);  // true: no specific value wanted
    }
+}
 
 
 #define kip_make_read_value(T,_description)\
@@ -164,15 +156,11 @@ kip_make_read_value(long double, "long double")
 
 #undef kip_make_read_value
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // read_value(string)
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 template<class ISTREAM>
 bool read_value(
@@ -204,8 +192,6 @@ bool read_value(
    return s.verify('\0', description, value != "");  // non-empty expected
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
@@ -215,8 +201,6 @@ bool read_value(
 // read_value(RGB)
 // read_value(RGBA)
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // read_color_component
 // We don't simply use read_value(unsigned char), because in this context
@@ -336,15 +320,12 @@ bool read_value(
    return !s.fail();
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // component_traits
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace internal {
 
 template<
@@ -370,7 +351,6 @@ public:
 };
 
 }
-}
 
 
 
@@ -378,8 +358,6 @@ public:
 // istream >> crayola
 // ostream << crayola
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // kip::istream >> crayola
 inline kip::istream &operator>>(kip::istream &k, kip::crayola &obj)
@@ -430,16 +408,12 @@ inline std::ostream &operator<<(std::ostream &s, const kip::crayola &obj)
    return s;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // istream >> RGB
 // ostream << RGB
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // kip::istream >> RGB
 template<class T>
@@ -480,16 +454,12 @@ inline std::ostream &operator<<(std::ostream &s, const kip::RGB<T> &obj)
    return s;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // istream >> RGBA
 // ostream << RGBA
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // kip::istream >> RGBA
 template<class T>
@@ -531,16 +501,12 @@ inline std::ostream &operator<<(std::ostream &s, const kip::RGBA<T> &obj)
    return s;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // istream >> marble
 // ostream << marble
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // kip::istream >> marble
 template<class T, class real>
@@ -590,15 +556,11 @@ inline std::ostream &operator<<(std::ostream &s, const kip::marble<T,real> &obj)
    return s;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // read_value(point)
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 template<class ISTREAM, class T>
 bool read_value(
@@ -619,16 +581,12 @@ bool read_value(
    return !s.fail();
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // istream >> point
 // ostream << point
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // kip::istream >> point
 template<class T>
@@ -665,16 +623,12 @@ inline std::ostream &operator<<(std::ostream &s, const kip::point<T> &obj)
    return s;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // read_done
 // write_finish
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // read_done: reads either
 //    )
@@ -746,15 +700,12 @@ inline bool write_finish(
    }
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // onetwor_write
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace internal {
 
 template<class T, class tag>
@@ -795,5 +746,4 @@ kip::ostream &onetwor_write(
    return k;
 }
 
-}
 }

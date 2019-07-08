@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // nothing
 // -----------------------------------------------------------------------------
@@ -108,8 +106,6 @@ kip_ostream(nothing) {
    if (!okay)
       (void)kip::error("Could not write \"nothing\" object");
    return k;
-}
-
 }
 
 #define   kip_class nothing

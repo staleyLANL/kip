@@ -7,7 +7,6 @@
 // vars
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace internal {
 
 template<class real, class tag>  // template arguments defaulted elsewhere
@@ -49,5 +48,4 @@ public:
          float &rec_anti2(const       float) const { return f_rec_anti2; }
 };
 
-}
 }

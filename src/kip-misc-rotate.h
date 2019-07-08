@@ -4,9 +4,8 @@
 // This file provides the rotate class template, which supports certain
 // translations/rotations.
 
-namespace kip {
-   template<signed char, class, bool = false>
-   class rotate { };
+template<signed char, class, bool = false>
+class rotate { };
 
 
 
@@ -344,5 +343,3 @@ public:
    inline point<real> back(const point<real> &p) const
       { return o + p.x*f1 + p.y*f2 + p.z*f3;  }
 };
-
-}

@@ -4,8 +4,6 @@
 // This file provides the "model" class, objects of which are designed
 // to contain models for ray tracing.
 
-namespace kip {
-
 
 
 // -----------------------------------------------------------------------------
@@ -964,10 +962,6 @@ kip::ostream &operator<<(
    true;
    return k;
 }
-
-}  // namespace kip
-
-
 
 // model isn't a shape, but the following does the right thing
 #define   kip_class model

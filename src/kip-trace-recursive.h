@@ -1,7 +1,6 @@
 
 #pragma once
 
-namespace kip {
 namespace internal {
 
 // -----------------------------------------------------------------------------
@@ -492,5 +491,4 @@ void rtrace(
    }
 }
 
-}
-}
+} // namespace internal

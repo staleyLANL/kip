@@ -7,8 +7,6 @@
 // point
 // -----------------------------------------------------------------------------
 
-namespace kip {
-
 template<class real = default_real_t>
 class point {
 public:
@@ -53,8 +51,6 @@ public:
       return *this;
    }
 };
-
-}
 
 
 

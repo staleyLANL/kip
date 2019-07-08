@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // nsurf
 inline size_t nsurf = 6;
 
@@ -50,7 +48,7 @@ public:
    }
 };
 
-}
+} // namespace internal
 
 
 
@@ -691,8 +689,6 @@ kip_ostream(surf) {
    }
 
    kip_ostream_end(surf);
-}
-
 }
 
 #define   kip_class surf

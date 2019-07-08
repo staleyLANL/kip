@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // biwasher
 // -----------------------------------------------------------------------------
@@ -718,8 +716,6 @@ kip_ostream(biwasher) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(biwasher);
-}
-
 }
 
 #define   kip_class biwasher

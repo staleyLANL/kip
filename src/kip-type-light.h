@@ -3,10 +3,6 @@
 
 // This file provides the "light" class.
 
-namespace kip {
-
-
-
 // -----------------------------------------------------------------------------
 // Defaults
 // -----------------------------------------------------------------------------
@@ -60,6 +56,4 @@ inline const light<real> &light<real>::fix() const
 {
    // currently, nothing needs fixing
    return *this;
-}
-
 }

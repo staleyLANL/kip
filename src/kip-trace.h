@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // misc
 // -----------------------------------------------------------------------------
@@ -478,7 +476,7 @@ bool trace(
    return true;
 }
 
-}
+} // namespace internal
 
 
 
@@ -556,6 +554,4 @@ inline bool trace(scene<real,base,color> &s, array<2,pix> &pixel)
       s, s, s, s, s,  // model, view, light, engine, image
       pixel
    );
-}
-
 }

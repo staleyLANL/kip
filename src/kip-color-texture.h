@@ -6,8 +6,6 @@
 #define KIP_COSINE
 #define KIP_SMOOTH
 
-namespace kip {
-
 class nothing_per_pixel {
 public:
    inline void initialize() const
@@ -124,7 +122,7 @@ inline real smooth(const unsigned i, const int x, const int y, const int z)
    ));
 }
 
-}
+} // namespace internal
 
 
 
@@ -197,7 +195,7 @@ inline real noise(
    );
 }
 
-}
+} // namespace internal
 
 
 
@@ -298,7 +296,7 @@ inline outcolor diffuse_specular(
 #endif
 }
 
-}
+} // namespace internal
 
 
 
@@ -469,5 +467,4 @@ inline out get_color(
    return rv;
 }
 
-}
-}
+} // namespace internal

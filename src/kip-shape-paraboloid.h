@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // paraboloid
 // -----------------------------------------------------------------------------
@@ -356,8 +354,6 @@ kip_read_value(paraboloid) {
 // kip::ostream
 kip_ostream(paraboloid) {
    return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "paraboloid");
-}
-
 }
 
 #define   kip_class paraboloid

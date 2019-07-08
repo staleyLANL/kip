@@ -5,8 +5,6 @@
 // by the RGB and RGBA classes. What we have here right now is overkill,
 // at least for the present time.
 
-namespace kip {
-
 template<class A, class B>
 class if_same { /* nothing */ };
 
@@ -281,7 +279,7 @@ namespace internal {
 
 #undef kip_make_pro
 
-}
+} // namespace internal
 
 
 
@@ -299,5 +297,3 @@ public:
       typename internal::pro<A,B>::result, at_least
    >::result;
 };
-
-}

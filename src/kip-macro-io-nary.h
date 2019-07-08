@@ -2,8 +2,6 @@
 // This file is #included in various places to help create stream i/o
 // for nary operator shapes.
 
-namespace kip {
-
 // read_value
 template<class ISTREAM, class real, class tag>
 bool read_value(
@@ -32,11 +30,7 @@ bool read_value(
    return !s.fail();
 }
 
-}
 
-
-
-namespace kip {
 
 // kip::ostream
 template<class real, class tag>
@@ -91,8 +85,6 @@ kip::ostream &operator<<(
    if (!okay)
       (void)kip::error("Could not write " kip_description(kip_class));
    return k;
-}
-
 }
 
 #undef kip_type

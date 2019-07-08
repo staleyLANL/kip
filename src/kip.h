@@ -62,6 +62,7 @@
 #define _kip_description(one,two,three) one #two three
 #define  kip_description(arg) _kip_description("logical-", arg, " operator")
 
+namespace kip {
 
 // ----------------
 // basic
@@ -226,6 +227,8 @@
 #undef  kip_extra_plain
 #undef  kip_extra_semi
 */
+
+} // namespace kip
 
 
 

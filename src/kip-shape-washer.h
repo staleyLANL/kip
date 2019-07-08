@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // washer
 // -----------------------------------------------------------------------------
@@ -669,8 +667,6 @@ kip_ostream(washer) {
              kip::write_finish(k, obj, false);
 
    kip_ostream_end(washer);
-}
-
 }
 
 #define   kip_class washer

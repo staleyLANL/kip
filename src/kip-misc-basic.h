@@ -7,41 +7,39 @@
 // Miscellaneous
 // -----------------------------------------------------------------------------
 
-namespace kip {
-   // Default type: real
-   using default_real_t = double;
+// Default type: real
+using default_real_t = double;
 
-   // Key - like key() below, but always on (not turned off by KIP_NOKEY)
-   inline void Key()
-   {
-      std::cout << "press <enter> to continue...";
-      char ch;
-      std::cin.get(ch);
-   }
+// Key - like key() below, but always on (not turned off by KIP_NOKEY)
+inline void Key()
+{
+   std::cout << "press <enter> to continue...";
+   char ch;
+   std::cin.get(ch);
+}
 
-   // key
-   inline void key()
-   {
-      #ifndef KIP_NOKEY
-         Key();
-      #endif
-   }
+// key
+inline void key()
+{
+   #ifndef KIP_NOKEY
+      Key();
+   #endif
+}
 
-   // default_parameter
-   namespace internal { template<class T> class tclass; }
-   template<class T>
-   inline T &default_parameter(const internal::tclass<T> &)
-   {
-      static T value;
-      return value;
-   }
+// default_parameter
+namespace internal { template<class T> class tclass; }
+template<class T>
+inline T &default_parameter(const internal::tclass<T> &)
+{
+   static T value;
+   return value;
+}
 
-   // random
-   template<class real>
-   inline real random()
-   {
-      return real(rand())*(1/real(RAND_MAX));
-   }
+// random
+template<class real>
+inline real random()
+{
+   return real(rand())*(1/real(RAND_MAX));
 }
 
 
@@ -54,10 +52,10 @@ namespace kip {
 // kip::cerr
 #ifdef kip_cerr_is_not_cout
    // cerr is cerr
-   namespace kip { namespace { std::ostream &cerr = std::cerr; } }
+   namespace { std::ostream &cerr = std::cerr; }
 #else
    // cerr is cout
-   namespace kip { namespace { std::ostream &cerr = std::cout; } }
+   namespace { std::ostream &cerr = std::cout; }
 #endif
 
 
@@ -76,8 +74,6 @@ namespace kip {
    #define if_kip_assert_index(test)
 #endif
 
-
-namespace kip {
 
    // print
    template<class T>
@@ -117,7 +113,6 @@ namespace kip {
          inline bool operator()(const bool b) const { return b; }
       };
       */
-
    }
 
    namespace op {
@@ -131,15 +126,12 @@ namespace kip {
           : value;
       }
    }
-}
 
 
 
 // -----------------------------------------------------------------------------
 // Formatting (of shape output)
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // format_t
 enum class format_t {
@@ -168,15 +160,11 @@ inline const char *oform()
    return format == format_t::format_stub || format == format_t::format_one ? " " : "\n   ";
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // Diagnostics - miscellaneous
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // diagnostic_t
 enum class diagnostic_t {
@@ -217,23 +205,18 @@ inline bool warnings = true;
 inline bool notes    = true;
 inline bool addenda  = true;
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // Diagnostics - functions
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace internal {
 
 // tostring: helper function
 inline std::string tostring(const char *const         str) { return str; }
 inline std::string tostring(const std::string        &str) { return str; }
 inline std::string tostring(const std::ostringstream &oss) { return oss.str(); }
-
-
 
 // diagnostic: helper function
 template<class CONTEXT, class MESSAGE>
@@ -271,7 +254,7 @@ void diagnostic(
    kip::cerr << std::endl;
 }
 
-}
+} // namespace internal
 
 
 
@@ -343,15 +326,12 @@ inline diagnostic_t addendum(const MESSAGE &message, const diagnostic_t d)
    return d;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // Miscellaneous arithmetic functions
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace op {
 
 // sgn
@@ -500,8 +480,7 @@ inline T sq(const T &val)
    return val*val;
 }
 
-}
-}
+} // namespace op
 
 
 
@@ -509,7 +488,6 @@ inline T sq(const T &val)
 // Multi-argument (up to 6) min, max
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace op {
 
 // min
@@ -554,8 +532,7 @@ template<class T> inline T
 max(const T &a, const T &b, const T &c, const T &d, const T &e, const T &f)
    { return op::max(a,op::max(b,c,d,e,f)); }
 
-}
-}
+} // namespace op
 
 
 
@@ -631,20 +608,18 @@ max(const T &a, const T &b, const T &c, const T &d, const T &e, const T &f)
 // -----------------------------------------------------------------------------
 
 #ifdef KIP_CONSTRUCT_COUNTER
-   namespace kip {
-      class counter {
-      public:
-         #define kip_construct_counter(type) static long int type
-         kip_expand_semi(kip_construct_counter)
-         kip_extra_semi (kip_construct_counter)
-         #undef  kip_construct_counter
-      };
-
-      #define kip_construct_counter(type) long int counter::type = 0
+   class counter {
+   public:
+      #define kip_construct_counter(type) static long int type
       kip_expand_semi(kip_construct_counter)
       kip_extra_semi (kip_construct_counter)
       #undef  kip_construct_counter
-   }
+   };
+
+   #define kip_construct_counter(type) long int counter::type = 0
+   kip_expand_semi(kip_construct_counter)
+   kip_extra_semi (kip_construct_counter)
+   #undef  kip_construct_counter
 
    #define kip_counter_ctor(type) counter::type++
    #define kip_counter_dtor(type) counter::type--
@@ -659,8 +634,6 @@ max(const T &a, const T &b, const T &c, const T &d, const T &e, const T &f)
 // -----------------------------------------------------------------------------
 // threads etc.
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 // threads (user-settable)
 inline int threads = 0; // 0 = default (means to ask the system)
@@ -691,5 +664,3 @@ inline int threads = 0; // 0 = default (means to ask the system)
    inline void set_nthreads(const int) { }
    inline int  this_thread () { return 0; }
 #endif
-
-}

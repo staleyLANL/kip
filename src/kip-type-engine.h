@@ -3,8 +3,6 @@
 
 // This file provides the "engine" class.
 
-namespace kip {
-
 
 
 // -----------------------------------------------------------------------------
@@ -52,7 +50,7 @@ inline real default_fudge() { return real(0.99999); }
 // Lean[er] memory usage?
 inline bool default_lean() { return true; }
 
-}
+} // namespace internal
 
 
 
@@ -92,8 +90,6 @@ public:
    real fudge;
    bool lean;
 
-
-
    // ------------------------
    // Constructors
    // ------------------------
@@ -114,8 +110,6 @@ public:
       fudge    (internal::default_fudge<real>()),
       lean     (internal::default_lean())
    { }
-
-
 
    // ------------------------
    // Functions
@@ -247,7 +241,7 @@ inline void fix_engine(
       obj.fudge = internal::default_fudge<real>();
 }
 
-}
+} // namespace internal
 
 
 
@@ -263,6 +257,4 @@ inline engine<real> engine<real>::fix(
    engine<real> rv = *this;
    internal::fix_engine(rv, hpixel,vpixel);
    return rv;
-}
-
 }

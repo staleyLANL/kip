@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // cone
 // -----------------------------------------------------------------------------
@@ -317,8 +315,6 @@ kip_read_value(cone) {
 // kip::ostream
 kip_ostream(cone) {
    return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cone");
-}
-
 }
 
 #define   kip_class cone

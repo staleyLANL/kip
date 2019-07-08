@@ -3,10 +3,7 @@
 
 // zzz Need to consider shape.on in this algorithm.
 
-namespace kip {
 namespace internal {
-
-
 
 // -----------------------------------------------------------------------------
 // block_setup_shape
@@ -339,5 +336,4 @@ void btrace(
 #endif
 }
 
-}
-}
+} // namespace internal

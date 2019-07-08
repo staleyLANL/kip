@@ -3,8 +3,6 @@
 
 // This file defines the array class template and related functions.
 
-namespace kip {
-
 // default
 template<unsigned rank, class element>
 class array { };
@@ -263,5 +261,3 @@ public:
       return (*this)[i + inum*(j + jnum*k)];
    }
 };
-
-}

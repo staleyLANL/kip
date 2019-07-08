@@ -1,8 +1,6 @@
 
 #pragma once
 
-namespace kip {
-
 // -----------------------------------------------------------------------------
 // cylinder
 // -----------------------------------------------------------------------------
@@ -374,8 +372,6 @@ kip_read_value(cylinder) {
 // kip::ostream
 kip_ostream(cylinder) {
    return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cylinder");
-}
-
 }
 
 #define   kip_class cylinder

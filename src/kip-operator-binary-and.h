@@ -5,8 +5,6 @@
 // kipand
 // -----------------------------------------------------------------------------
 
-namespace kip {
-
 template<class real, class tag>
 class kipand : public shape<real,tag> {
    using shape<real,tag>::interior;
@@ -336,8 +334,6 @@ kip_random(kipand)
    random(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
-
-}
 
 
 

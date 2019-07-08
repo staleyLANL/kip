@@ -7,7 +7,6 @@
 // bbox - helpers
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace internal {
 
 // and_tight
@@ -45,16 +44,13 @@ public:
    }
 };
 
-}
-}
+} // namespace internal
 
 
 
 // -----------------------------------------------------------------------------
 // bbox_component
 // -----------------------------------------------------------------------------
-
-namespace kip {
 
 template<class real>
 class bbox_component {
@@ -91,8 +87,6 @@ inline std::ostream &operator<<(
       << (obj.max.tight() ? ']' : ')');
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
@@ -121,10 +115,6 @@ Then, you can do the following with obj:
    obj.finite()         // obj's {x,y,z} all finite
    obj.valid ()         // obj's {x,y,z} all valid
 */
-
-
-
-namespace kip {
 
 template<class real = default_real_t>
 class bbox {
@@ -159,8 +149,6 @@ public:
    ) : x(_x), y(_y), z(_z)
    { }
 
-
-
    // tight, finite, valid
    inline bool tight () const
       { return x.tight () && y.tight () && z.tight (); }
@@ -190,15 +178,12 @@ inline std::ostream &operator<<(
    ;
 }
 
-}
-
 
 
 // -----------------------------------------------------------------------------
 // bound_combine
 // -----------------------------------------------------------------------------
 
-namespace kip {
 namespace internal {
 
 // op_leq
@@ -267,5 +252,4 @@ inline bbox<real> bound_combine(
    );
 }
 
-}
-}
+} // namespace internal
