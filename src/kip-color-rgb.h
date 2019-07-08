@@ -392,7 +392,7 @@ inline RGB<
 
 // RGBA<A> += RGBA<B>
 template<class A, class B>
-inline kip::RGBA<A> &operator+=(kip::RGBA<A> &lhs, const kip::RGBA<B> &rhs)
+inline RGBA<A> &operator+=(RGBA<A> &lhs, const RGBA<B> &rhs)
 {
    lhs.r += A(rhs.r);
    lhs.g += A(rhs.g);
@@ -405,12 +405,12 @@ inline kip::RGBA<A> &operator+=(kip::RGBA<A> &lhs, const kip::RGBA<B> &rhs)
 /*
 // RGBA<A> * B
 template<class A, class B>
-inline kip::RGBA<
-   typename kip::promote<A,B,float>::result  // at least float
-> operator*(const kip::RGBA<A> &lhs, const B &rhs)
+inline RGBA<
+   typename promote<A,B,float>::result  // at least float
+> operator*(const RGBA<A> &lhs, const B &rhs)
 {
-   using T = typename kip::promote<A,B,float>::result;
-   return kip::RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
+   using T = typename promote<A,B,float>::result;
+   return RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
 }
 */
 
@@ -432,13 +432,13 @@ namespace op {
 /*
 // RGBA<A> += RGBA<B>
 template<class A, class B>
-inline kip::RGBA<
+inline RGBA<
    // or we shouldn't be doing this RGBA<A> += RGBA<B>...
-   typename kip::if_same<
+   typename if_same<
       A,
-      typename kip::promote<A,B,float>::result
+      typename promote<A,B,float>::result
    >::result
-> &operator+=(kip::RGBA<A> &lhs, const kip::RGBA<B> &rhs)
+> &operator+=(RGBA<A> &lhs, const RGBA<B> &rhs)
 {
    lhs.r += A(rhs.r);
    lhs.g += A(rhs.g);
@@ -449,12 +449,12 @@ inline kip::RGBA<
 
 // RGBA<A> * B
 template<class A, class B>
-inline kip::RGBA<
-   typename kip::promote<A,B,float>::result  // at least float
-> operator*(const kip::RGBA<A> &lhs, const B &rhs)
+inline RGBA<
+   typename promote<A,B,float>::result  // at least float
+> operator*(const RGBA<A> &lhs, const B &rhs)
 {
-   using T = typename kip::promote<A,B,float>::result;
-   return kip::RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
+   using T = typename promote<A,B,float>::result;
+   return RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
 }
 
 

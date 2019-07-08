@@ -17,16 +17,16 @@ class ostream;
    class type;\
    \
    template<class real, class tag>\
-   kip::istream &operator>>(kip::istream &, kip::type<real,tag> &);\
+   kip::istream &operator>>(kip::istream &, type<real,tag> &);\
    \
    template<class real, class tag>\
-   std::istream &operator>>(std::istream &, kip::type<real,tag> &);\
+   std::istream &operator>>(std::istream &, type<real,tag> &);\
    \
    template<class real, class tag>\
-   kip::ostream &operator<<(kip::ostream &, const kip::type<real,tag> &);\
+   kip::ostream &operator<<(kip::ostream &, const type<real,tag> &);\
    \
    template<class real, class tag>\
-   std::ostream &operator<<(std::ostream &, const kip::type<real,tag> &);\
+   std::ostream &operator<<(std::ostream &, const type<real,tag> &);\
 
    kip_expand_plain(kip_forward)
    kip_extra_plain(kip_forward)

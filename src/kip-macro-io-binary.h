@@ -7,7 +7,7 @@
 // read_value
 template<class ISTREAM, class real, class tag>
 bool read_value(
-   ISTREAM &s, kip::kip_class<real,tag> &obj,
+   ISTREAM &s, kip_class<real,tag> &obj,
    const std::string &description = kip_description(kip_brief)
 ) {
    // For whatever reason, writing this directly for kip_class gives smaller
@@ -36,7 +36,7 @@ bool read_value(
 // kip::ostream
 template<class real, class tag>
 kip::ostream &operator<<(
-   kip::ostream &k, const kip::kip_class<real,tag> &obj
+   kip::ostream &k, const kip_class<real,tag> &obj
 ) {
    // For whatever reason, writing this directly for kip_class gives smaller
    // code (in g++, at least) than forwarding.
@@ -44,13 +44,13 @@ kip::ostream &operator<<(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << kip_quote(kip_brief) "(" &&
              obj.binary.a->write(k) << ", " &&
              obj.binary.b->write(k) << ')';
 
    // one
-   else if (kip::format == kip::format_t::format_one) {
+   else if (format == format_t::format_one) {
       okay = k << kip_quote(kip_brief) "(" &&
              obj.binary.a->write(k) << ", " &&
              obj.binary.b->write(k);
@@ -76,7 +76,7 @@ kip::ostream &operator<<(
 
    // done
    if (!okay)
-      (void)kip::error("Could not write " kip_description(kip_brief));
+      (void)error("Could not write " kip_description(kip_brief));
    return k;
 }
 

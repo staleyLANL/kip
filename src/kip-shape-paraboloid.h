@@ -108,7 +108,7 @@ kip_aabb(paraboloid)
    bound_paraboloid(rot2.m1.y, rot2.m2y, rot2.m3.y, rot2.h,r, a.y,b.y, ymin,ymax);
    bound_paraboloid(rot2.m1.z, real(0),     rot2.m3.z, rot2.h,r, a.z,b.z, zmin,zmax);
 
-   return kip::bbox<real>(
+   return bbox<real>(
       true,xmin, xmax,true,
       true,ymin, ymax,true,
       true,zmin, zmax,true
@@ -353,7 +353,7 @@ kip_read_value(paraboloid) {
 
 // kip::ostream
 kip_ostream(paraboloid) {
-   return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "paraboloid");
+   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "paraboloid");
 }
 
 #define   kip_class paraboloid

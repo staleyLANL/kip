@@ -5,7 +5,7 @@
 #ifdef KIP_DEFAULT_TAG_T
    using default_tag_t = KIP_DEFAULT_TAG_T;
 #else
-   using default_tag_t = kip::rgb;
+   using default_tag_t = rgb;
 #endif
 
 // shape - forward declaration
@@ -360,14 +360,14 @@ public:
 // -----------------------------------------------------------------------------
 
 // kip::istream >> crayola
-inline kip::istream &operator>>(kip::istream &k, kip::crayola &obj)
+inline kip::istream &operator>>(kip::istream &k, crayola &obj)
 {
    read_value(k,obj);
    return k;
 }
 
 // std::istream >> crayola
-inline std::istream &operator>>(std::istream &s, kip::crayola &obj)
+inline std::istream &operator>>(std::istream &s, crayola &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -378,9 +378,9 @@ inline std::istream &operator>>(std::istream &s, kip::crayola &obj)
 
 // kip::ostream << crayola
 template<class>
-kip::ostream &crayola_write(kip::ostream &k, const kip::crayola &obj)
+kip::ostream &crayola_write(kip::ostream &k, const crayola &obj)
 {
-   const size_t size = kip::crayola::color_table().size();
+   const size_t size = crayola::color_table().size();
    using print_as = unsigned;
 
    if (obj.id() >= size) {
@@ -388,20 +388,20 @@ kip::ostream &crayola_write(kip::ostream &k, const kip::crayola &obj)
       oss << "Index " << print_as(obj.id()) << " for crayola color"
          " is outside allowable range [0,"
           << size-1 << "]\nWriting as \"unknown\"";
-      kip::warning(oss);
-      return k << kip::crayola::color_table()[0].second;
+      warning(oss);
+      return k << crayola::color_table()[0].second;
    }
 
-   return k << kip::crayola::color_table()[obj.id()].second;
+   return k << crayola::color_table()[obj.id()].second;
 }
 
-inline kip::ostream &operator<<(kip::ostream &k, const kip::crayola &obj)
+inline kip::ostream &operator<<(kip::ostream &k, const crayola &obj)
 {
    return crayola_write<char>(k,obj);
 }
 
 // std::ostream << crayola
-inline std::ostream &operator<<(std::ostream &s, const kip::crayola &obj)
+inline std::ostream &operator<<(std::ostream &s, const crayola &obj)
 {
    kip::ostream k(s);
    k << obj;
@@ -417,7 +417,7 @@ inline std::ostream &operator<<(std::ostream &s, const kip::crayola &obj)
 
 // kip::istream >> RGB
 template<class T>
-inline kip::istream &operator>>(kip::istream &k, kip::RGB<T> &obj)
+inline kip::istream &operator>>(kip::istream &k, RGB<T> &obj)
 {
    read_value(k,obj);
    return k;
@@ -425,7 +425,7 @@ inline kip::istream &operator>>(kip::istream &k, kip::RGB<T> &obj)
 
 // std::istream >> RGB
 template<class T>
-inline std::istream &operator>>(std::istream &s, kip::RGB<T> &obj)
+inline std::istream &operator>>(std::istream &s, RGB<T> &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -436,9 +436,9 @@ inline std::istream &operator>>(std::istream &s, kip::RGB<T> &obj)
 
 // kip::ostream << RGB
 template<class T>
-inline kip::ostream &operator<<(kip::ostream &k, const kip::RGB<T> &obj)
+inline kip::ostream &operator<<(kip::ostream &k, const RGB<T> &obj)
 {
-   using print_as = typename kip::internal::component_traits<T>::result;
+   using print_as = typename internal::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -447,7 +447,7 @@ inline kip::ostream &operator<<(kip::ostream &k, const kip::RGB<T> &obj)
 
 // std::ostream << RGB
 template<class T>
-inline std::ostream &operator<<(std::ostream &s, const kip::RGB<T> &obj)
+inline std::ostream &operator<<(std::ostream &s, const RGB<T> &obj)
 {
    kip::ostream k(s);
    k << obj;
@@ -463,7 +463,7 @@ inline std::ostream &operator<<(std::ostream &s, const kip::RGB<T> &obj)
 
 // kip::istream >> RGBA
 template<class T>
-inline kip::istream &operator>>(kip::istream &k, kip::RGBA<T> &obj)
+inline kip::istream &operator>>(istream &k, RGBA<T> &obj)
 {
    read_value(k,obj);
    return k;
@@ -471,7 +471,7 @@ inline kip::istream &operator>>(kip::istream &k, kip::RGBA<T> &obj)
 
 // std::istream >> RGBA
 template<class T>
-inline std::istream &operator>>(std::istream &s, kip::RGBA<T> &obj)
+inline std::istream &operator>>(std::istream &s, RGBA<T> &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -482,9 +482,9 @@ inline std::istream &operator>>(std::istream &s, kip::RGBA<T> &obj)
 
 // kip::ostream << RGBA
 template<class T>
-inline kip::ostream &operator<<(kip::ostream &k, const kip::RGBA<T> &obj)
+inline kip::ostream &operator<<(kip::ostream &k, const RGBA<T> &obj)
 {
-   using print_as = typename kip::internal::component_traits<T>::result;
+   using print_as = typename internal::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -494,7 +494,7 @@ inline kip::ostream &operator<<(kip::ostream &k, const kip::RGBA<T> &obj)
 
 // std::ostream << RGBA
 template<class T>
-inline std::ostream &operator<<(std::ostream &s, const kip::RGBA<T> &obj)
+inline std::ostream &operator<<(std::ostream &s, const RGBA<T> &obj)
 {
    kip::ostream k(s);
    k << obj;
@@ -510,7 +510,7 @@ inline std::ostream &operator<<(std::ostream &s, const kip::RGBA<T> &obj)
 
 // kip::istream >> marble
 template<class T, class real>
-inline kip::istream &operator>>(kip::istream &k, kip::marble<T,real> &obj)
+inline kip::istream &operator>>(kip::istream &k, marble<T,real> &obj)
 {
    read_value(k,obj);
    return k;
@@ -518,7 +518,7 @@ inline kip::istream &operator>>(kip::istream &k, kip::marble<T,real> &obj)
 
 // std::istream >> marble
 template<class T, class real>
-inline std::istream &operator>>(std::istream &s, kip::marble<T,real> &obj)
+inline std::istream &operator>>(std::istream &s, marble<T,real> &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -529,9 +529,9 @@ inline std::istream &operator>>(std::istream &s, kip::marble<T,real> &obj)
 
 // kip::ostream << marble
 template<class T, class real>
-kip::ostream &operator<<(kip::ostream &k, const kip::marble<T,real> &obj)
+kip::ostream &operator<<(kip::ostream &k, const marble<T,real> &obj)
 {
-   using print_as = typename kip::internal::component_traits<T>::result;
+   using print_as = typename internal::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -549,7 +549,7 @@ kip::ostream &operator<<(kip::ostream &k, const kip::marble<T,real> &obj)
 
 // std::ostream << marble
 template<class T, class real>
-inline std::ostream &operator<<(std::ostream &s, const kip::marble<T,real> &obj)
+inline std::ostream &operator<<(std::ostream &s, const marble<T,real> &obj)
 {
    kip::ostream k(s);
    k << obj;
@@ -590,7 +590,7 @@ bool read_value(
 
 // kip::istream >> point
 template<class T>
-inline kip::istream &operator>>(kip::istream &k, kip::point<T> &obj)
+inline kip::istream &operator>>(kip::istream &k, point<T> &obj)
 {
    read_value(k,obj);
    return k;
@@ -598,7 +598,7 @@ inline kip::istream &operator>>(kip::istream &k, kip::point<T> &obj)
 
 // std::istream >> point
 template<class T>
-inline std::istream &operator>>(std::istream &s, kip::point<T> &obj)
+inline std::istream &operator>>(std::istream &s, point<T> &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -609,14 +609,14 @@ inline std::istream &operator>>(std::istream &s, kip::point<T> &obj)
 
 // kip::ostream << point
 template<class T>
-inline kip::ostream &operator<<(kip::ostream &k, const kip::point<T> &obj)
+inline kip::ostream &operator<<(kip::ostream &k, const point<T> &obj)
 {
    return k << obj.x << ',' << obj.y << ',' << obj.z;
 }
 
 // std::ostream << point
 template<class T>
-inline std::ostream &operator<<(std::ostream &s, const kip::point<T> &obj)
+inline std::ostream &operator<<(std::ostream &s, const point<T> &obj)
 {
    kip::ostream k(s);
    k << obj;
@@ -719,18 +719,18 @@ kip::ostream &onetwor_write(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << description << "()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << description << '('
                << one << ", "
                << two << ", "
                << r &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
@@ -738,7 +738,7 @@ kip::ostream &onetwor_write(
              k.indent() << one << ",\n   " &&
              k.indent() << two << ",\n   " &&
              k.indent() << r &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    // done
    if (!okay)

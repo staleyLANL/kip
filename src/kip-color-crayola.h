@@ -157,7 +157,7 @@ void color_table_initialize(
 ) {
    assert(table.size() == 0);  // should visit this function only once
 
-   using rgb_t = kip::RGB<crayola_rgb_t>;
+   using rgb_t = RGB<crayola_rgb_t>;
    using pair = std::pair<rgb_t,std::string>;
 
    table.push_back(pair( rgb_t(0x00, 0x00, 0x00), "unknown"));
@@ -564,7 +564,7 @@ bool read_value(
 // crayola::operator==
 // -----------------------------------------------------------------------------
 
-inline bool operator==(const kip::crayola &a, const kip::crayola &b)
+inline bool operator==(const crayola &a, const crayola &b)
 {
    return a.id() == b.id();
 }

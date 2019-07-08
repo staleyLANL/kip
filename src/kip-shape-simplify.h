@@ -216,8 +216,8 @@ kip_simplify(box)
 
    // if one radius == 0: polygon
    if (nzero == 1) {
-      using polygon = kip::polygon<real,base>;
-      polygon *const s = new polygon(obj.base());  s->table.reserve(4);
+      using poly = polygon<real,base>;
+      poly *const s = new poly(obj.base());  s->table.reserve(4);
       obj.compute_corners();
 
       s->push(obj.p[0]);

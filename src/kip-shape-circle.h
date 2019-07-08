@@ -61,7 +61,7 @@ kip_aabb(circle)
    point<real> min, max;
    internal::bound_abr(c,c+n,r, min,max);
 
-   return kip::bbox<real>(
+   return bbox<real>(
       true,min.x, max.x,true,
       true,min.y, max.y,true,
       true,min.z, max.z,true
@@ -186,7 +186,7 @@ kip_read_value(circle) {
 
 // kip::ostream
 kip_ostream(circle) {
-   return kip::internal::onetwor_write(k,obj, obj.c,obj.n,obj.r, "circle");
+   return internal::onetwor_write(k,obj, obj.c,obj.n,obj.r, "circle");
 }
 
 #define   kip_class circle

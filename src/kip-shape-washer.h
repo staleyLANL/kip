@@ -645,18 +645,18 @@ kip_ostream(washer) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "washer()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << "washer("
                << obj.a << ", "
                << obj.b << ", "
                << obj.i << ',' << obj.o &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
@@ -664,7 +664,7 @@ kip_ostream(washer) {
              k.indent() << obj.a << ",\n   " &&
              k.indent() << obj.b << ",\n   " &&
              k.indent() << obj.i << ',' << obj.o &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    kip_ostream_end(washer);
 }

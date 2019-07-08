@@ -245,12 +245,12 @@ namespace { const char &stupid = nonsense(); }
 
 inline const char &nonsense()
 {
-   (void)kip::notes;
-   (void)kip::warnings;
-   (void)kip::addenda;
-   (void)kip::threads;
-   (void)kip::eps;
-   (void)kip::internal::stupid;
+   (void)notes;
+   (void)warnings;
+   (void)addenda;
+   (void)threads;
+   (void)eps;
+   (void)stupid;
 
    static const char _stupid = '\0';
    return _stupid;

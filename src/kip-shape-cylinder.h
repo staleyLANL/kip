@@ -78,7 +78,7 @@ namespace internal {
       const real dy = obj.b.y - obj.a.y;
       const real dz = obj.b.z - obj.a.z;
 
-      return kip::bbox<real>(
+      return bbox<real>(
          true, op::min(min.x, min.x+dx),   op::max(max.x, max.x+dx), true,
          true, op::min(min.y, min.y+dy),   op::max(max.y, max.y+dy), true,
          true, op::min(min.z, min.z+dz),   op::max(max.z, max.z+dz), true
@@ -371,7 +371,7 @@ kip_read_value(cylinder) {
 
 // kip::ostream
 kip_ostream(cylinder) {
-   return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cylinder");
+   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cylinder");
 }
 
 #define   kip_class cylinder

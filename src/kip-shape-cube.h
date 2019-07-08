@@ -419,7 +419,7 @@ kip_inall(cube)
 
    // check each plane...
    ints.convex();
-   kip::inq<real,tag> inq;  // try static[nthreads], here and elsewhere
+   inq<real,tag> inq;  // try static[nthreads], here and elsewhere
 
    // x min
    if (0 < (inq.q = -eye.x/dx) && inq.q < qmin &&
@@ -511,18 +511,18 @@ kip_ostream(cube) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "cube()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << "cube("
                <<  obj.c << ", "
                << (180/real(kip_pi))*obj.a << ", "
                <<  obj.r &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
@@ -530,7 +530,7 @@ kip_ostream(cube) {
              k.indent() <<  obj.c << ",\n   " &&
              k.indent() << (180/real(kip_pi))*obj.a << ",\n   " &&
              k.indent() <<  obj.r &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    kip_ostream_end(cube);
 }

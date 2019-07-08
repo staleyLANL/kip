@@ -69,7 +69,7 @@ kip_process(pill)
 // aabb
 kip_aabb(pill)
 {
-   return kip::bbox<real>(
+   return bbox<real>(
       true, op::min(a.x-r, b.x-r),   op::max(a.x+r, b.x+r), true,
       true, op::min(a.y-r, b.y-r),   op::max(a.y+r, b.y+r), true,
       true, op::min(a.z-r, b.z-r),   op::max(a.z+r, b.z+r), true
@@ -395,7 +395,7 @@ kip_read_value(pill) {
 
 // kip::ostream
 kip_ostream(pill) {
-   return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "pill");
+   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "pill");
 }
 
 #define   kip_class pill

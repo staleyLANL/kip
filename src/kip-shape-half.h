@@ -104,7 +104,7 @@ kip_aabb(half)
    return
       // x is partially bounded; normal.x != 0, by context
       normal.y == 0 && normal.z == 0
-    ? kip::bbox<real>(
+    ? bbox<real>(
          normal.x < 0, normal.x < 0 ? point.x : -infinity,  // [x or (-infinity
          normal.x > 0 ? point.x : infinity, normal.x > 0,  //  x] or infinity)
          false,-infinity, infinity,false,
@@ -113,7 +113,7 @@ kip_aabb(half)
 
       // y is partially bounded; normal.y != 0, by context
     : normal.x == 0 && normal.z == 0
-    ? kip::bbox<real>(
+    ? bbox<real>(
          false,-infinity, infinity,false,
          normal.y < 0, normal.y < 0 ? point.y : -infinity,  // [y or (-infinity
          normal.y > 0 ? point.y : infinity, normal.y > 0,  //  y] or infinity)
@@ -122,7 +122,7 @@ kip_aabb(half)
 
       // z is partially bounded; normal.z != 0, by context
     : normal.x == 0 && normal.y == 0
-    ? kip::bbox<real>(
+    ? bbox<real>(
          false,-infinity, infinity,false,
          false,-infinity, infinity,false,
          normal.z < 0, normal.z < 0 ? point.z : -infinity,  // [z or (-infinity
@@ -130,7 +130,7 @@ kip_aabb(half)
       )
 
       // entirely unbounded
-    : kip::bbox<real>(
+    : bbox<real>(
          false,-infinity, infinity,false,
          false,-infinity, infinity,false,
          false,-infinity, infinity,false
@@ -232,24 +232,24 @@ kip_ostream(half) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "half()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << "half("
                << obj.point  << ", "
                << obj.normal &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
       okay = k << "half(\n   " &&
              k.indent() << obj.point << ",\n   " &&
              k.indent() << obj.normal &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    kip_ostream_end(half);
 }

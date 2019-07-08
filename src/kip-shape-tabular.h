@@ -726,9 +726,9 @@ kip_check(tabular)
 kip_random(tabular)
 {
    // number of segments (+1 == number of (x,r) points)
-   const size_t nseg = (kip::ntabular < 2)
+   const size_t nseg = (ntabular < 2)
       ? 1
-      : 1 + size_t(real(kip::ntabular)*random<real>());
+      : 1 + size_t(real(ntabular)*random<real>());
    const size_t npts = nseg+1;
 
    // a
@@ -831,17 +831,17 @@ kip::ostream &tabular_write(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << name << "()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op) {
+   else if (format == format_t::format_one ||
+            format == format_t::format_op) {
       okay = k << name << '(' <<  obj.a << ", " <<  obj.b << ", " <<  npts;
       for (unsigned i = 0;  i < npts && okay;  ++i)
          okay = k << ", " << obj.table[i].x << ',' << obj.table[i].r;
-      okay = okay && kip::write_finish(k, obj, true);
+      okay = okay && write_finish(k, obj, true);
    }
 
    // full
@@ -853,12 +853,12 @@ kip::ostream &tabular_write(
       for (unsigned i = 0;  i < npts && okay;  ++i)
          okay = k << ",\n   " &&
                 k.indent() << obj.table[i].x << ',' << obj.table[i].r;
-      okay = okay && kip::write_finish(k, obj, false);
+      okay = okay && write_finish(k, obj, false);
    }
 
    // done
    if (!okay)
-      (void)kip::error(std::string("Could not write ") + name);
+      (void)error(std::string("Could not write ") + name);
    return k;
 }
 
@@ -868,7 +868,7 @@ kip::ostream &tabular_write(
 
 // kip::ostream
 kip_ostream(tabular) {
-   return kip::internal::tabular_write(k, obj, "tabular");
+   return internal::tabular_write(k, obj, "tabular");
 }
 
 #define   kip_class tabular

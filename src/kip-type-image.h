@@ -4,7 +4,7 @@
 // This file provides the "image" class template.
 
 // Default type: color
-using default_color_t = kip::rgba;
+using default_color_t = rgba;
 
 
 

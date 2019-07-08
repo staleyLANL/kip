@@ -106,7 +106,7 @@ kip_process(yplane)
 kip_aabb(yplane)
 {
    const real infinity = std::numeric_limits<real>::max();
-   return kip::bbox<real>(
+   return bbox<real>(
       false,-infinity, infinity,false,
       true,y, y,true,
       false,-infinity, infinity,false
@@ -229,7 +229,7 @@ kip_read_value(yplane) {
 
 // kip::ostream
 kip_ostream(yplane) {
-   return kip::internal::plane_write(k, obj, 'y', obj.y, obj.size.x, obj.size.z);
+   return internal::plane_write(k, obj, 'y', obj.y, obj.size.x, obj.size.z);
 }
 
 #define   kip_class yplane

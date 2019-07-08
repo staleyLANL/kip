@@ -242,7 +242,7 @@ namespace internal {
 
 template<class outcolor, class T>
 inline outcolor diffuse_specular(
-   const kip::RGB<unsigned char> &rgbval,
+   const RGB<unsigned char> &rgbval,
    const T &q,
    const point<T> &eyeball,
    const point<T> &light,
@@ -412,12 +412,12 @@ inline out get_color(
    // flat
    (void)eyeball; (void)light; (void)pixel;
    const RGB<unsigned char> c = *q.color;
-   ///kip::kipcolor<out>(q, q.fac > 0 ? q.fac*q : point<real>(q));
+   ///kipcolor<out>(q, q.fac > 0 ? q.fac*q : point<real>(q));
    const out rv(c.r, c.g, c.b);
 
 #else
    // diffuse or specular
-   //    const kip::RGB<unsigned char> &rgbval,
+   //    const RGB<unsigned char> &rgbval,
    //    const T &q,
    //    const point<T> &eyeball,
    //    const point<T> &light,
@@ -432,7 +432,7 @@ inline out get_color(
 
    const out rv = diffuse_specular<out>(
       // RGB
-      kip::kipcolor<RGB<unsigned char>>(
+      kipcolor<RGB<unsigned char>>(
          q.shape,
         *q.color,
          q.fac > 0 ? q.fac*q : point<real>(q)  // true intersection

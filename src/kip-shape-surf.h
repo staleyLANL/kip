@@ -461,8 +461,8 @@ kip_random(surf)
 
    // Number of longitude and latitude segments
    const unsigned
-      nlong = 3+unsigned(real(kip::nsurf)*random<real>()),  // want >= 3
-      nlat  = 2+unsigned(real(kip::nsurf)*random<real>());  // want >= 2
+      nlong = 3+unsigned(real(nsurf)*random<real>()),  // want >= 3
+      nlat  = 2+unsigned(real(nsurf)*random<real>());  // want >= 2
 
    // Nodes
    const unsigned nnode = nlong*(nlat-1) + 2;   // 2 is for poles
@@ -651,13 +651,13 @@ kip_ostream(surf) {
    const size_t ntri  = obj.tri .size();
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "surf()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op) {
+   else if (format == format_t::format_one ||
+            format == format_t::format_op) {
       // nodes
       okay = k << "surf(" << nnode;
       for (size_t n = 0;  n < nnode && okay;  ++n)
@@ -669,7 +669,7 @@ kip_ostream(surf) {
          okay = k << ", " << obj.tri [t];
 
       // finish
-      okay = okay && kip::write_finish(k, obj, true);
+      okay = okay && write_finish(k, obj, true);
    }
 
    // full
@@ -685,7 +685,7 @@ kip_ostream(surf) {
          okay = k << ",\n   " && k.indent() << obj.tri [t];
 
       // finish
-      okay = okay && kip::write_finish(k, obj, false);
+      okay = okay && write_finish(k, obj, false);
    }
 
    kip_ostream_end(surf);

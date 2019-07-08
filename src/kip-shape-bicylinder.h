@@ -210,7 +210,7 @@ namespace internal {
       point<real> amin, amax;  internal::bound_abr(obj.a, obj.b, ra, amin,amax);
       point<real> bmin, bmax;  internal::bound_abr(obj.b, obj.a, rb, bmin,bmax);
 
-      return kip::bbox<real>(
+      return bbox<real>(
          true, op::min(amin.x, bmin.x),   op::max(amax.x, bmax.x), true,
          true, op::min(amin.y, bmin.y),   op::max(amax.y, bmax.y), true,
          true, op::min(amin.z, bmin.z),   op::max(amax.z, bmax.z), true
@@ -574,18 +574,18 @@ kip_ostream(bicylinder) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "bicylinder()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << "bicylinder("
                << obj.a << ", "
                << obj.b << ", "
                << obj.r.a << ',' << obj.r.b &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
@@ -593,7 +593,7 @@ kip_ostream(bicylinder) {
              k.indent() << obj.a << ",\n   " &&
              k.indent() << obj.b << ",\n   " &&
              k.indent() << obj.r.a << ',' << obj.r.b &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    kip_ostream_end(bicylinder);
 }

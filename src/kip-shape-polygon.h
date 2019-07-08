@@ -337,17 +337,17 @@ kip_ostream(polygon) {
    const size_t npts = obj.size();
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "polygon()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op) {
+   else if (format == format_t::format_one ||
+            format == format_t::format_op) {
       okay = k << "polygon(" << npts;
       for (size_t i = 0;  i < npts && okay;  ++i)
          okay = k << ", " << obj.table[i];
-      okay = okay && kip::write_finish(k, obj, true);
+      okay = okay && write_finish(k, obj, true);
    }
 
    // full
@@ -355,7 +355,7 @@ kip_ostream(polygon) {
       okay = k << "polygon(\n   " && k.indent() << npts;
       for (size_t i = 0;  i < npts && okay;  ++i)
          okay = k << ",\n   " && k.indent() << obj.table[i];
-      okay = okay && kip::write_finish(k, obj, false);
+      okay = okay && write_finish(k, obj, false);
    }
 
    kip_ostream_end(polygon);

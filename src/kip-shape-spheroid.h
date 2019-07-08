@@ -134,7 +134,7 @@ kip_aabb(spheroid)
    const real zval =
       internal::bound_spheroid(rot2.m1.z, real(0),  rot2.m3.z, hsq,rsq);
 
-   return kip::bbox<real>(
+   return bbox<real>(
       true, rot2.o.x-xval,   rot2.o.x+xval, true,
       true, rot2.o.y-yval,   rot2.o.y+yval, true,
       true, rot2.o.z-zval,   rot2.o.z+zval, true
@@ -299,7 +299,7 @@ kip_read_value(spheroid) {
 
 // kip::ostream
 kip_ostream(spheroid) {
-   return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "spheroid");
+   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "spheroid");
 }
 
 #define   kip_class spheroid

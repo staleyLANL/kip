@@ -179,7 +179,7 @@ kip_process(triangle)
 // aabb
 kip_aabb(triangle)
 {
-   return kip::bbox<real>(
+   return bbox<real>(
       true, op::min(u.x, v.x, w.x),   op::max(u.x, v.x, w.x), true,
       true, op::min(u.y, v.y, w.y),   op::max(u.y, v.y, w.y), true,
       true, op::min(u.z, v.z, w.z),   op::max(u.z, v.z, w.z), true
@@ -299,18 +299,18 @@ kip_ostream(triangle) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "triangle()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << "triangle("
                << obj.u << ", "
                << obj.v << ", "
                << obj.w &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
@@ -318,7 +318,7 @@ kip_ostream(triangle) {
              k.indent() << obj.u << ",\n   " &&
              k.indent() << obj.v << ",\n   " &&
              k.indent() << obj.w &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    kip_ostream_end(triangle);
 }

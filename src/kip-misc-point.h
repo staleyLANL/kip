@@ -60,14 +60,14 @@ public:
 
 // operator==
 template<class real>
-inline bool operator==(const kip::point<real> &a, const kip::point<real> &b)
+inline bool operator==(const point<real> &a, const point<real> &b)
 {
    return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
 // operator!=
 template<class real>
-inline bool operator!=(const kip::point<real> &a, const kip::point<real> &b)
+inline bool operator!=(const point<real> &a, const point<real> &b)
 {
    return !(a == b);
 }
@@ -76,14 +76,14 @@ inline bool operator!=(const kip::point<real> &a, const kip::point<real> &b)
 
 // real*point
 template<class real>
-inline kip::point<real> operator*(const real &c, const kip::point<real> &u)
+inline point<real> operator*(const real &c, const point<real> &u)
 {
-   return kip::point<real>(c*u.x, c*u.y, c*u.z);
+   return point<real>(c*u.x, c*u.y, c*u.z);
 }
 
 // point *= real
 template<class real>
-inline kip::point<real> &operator*=(kip::point<real> &u, const real &c)
+inline point<real> &operator*=(point<real> &u, const real &c)
 {
    u.x *= c;
    u.y *= c;
@@ -96,19 +96,19 @@ inline kip::point<real> &operator*=(kip::point<real> &u, const real &c)
 // dot(u,v)
 template<class real>
 inline real dot(
-   const kip::point<real> &u,
-   const kip::point<real> &v
+   const point<real> &u,
+   const point<real> &v
 ) {
    return u.x*v.x + u.y*v.y + u.z*v.z;
 }
 
 // cross(u,v)
 template<class real>
-inline kip::point<real> cross(
-   const kip::point<real> &u,
-   const kip::point<real> &v
+inline point<real> cross(
+   const point<real> &u,
+   const point<real> &v
 ) {
-   return kip::point<real>(
+   return point<real>(
       u.y*v.z - u.z*v.y,
       u.z*v.x - u.x*v.z,
       u.x*v.y - u.y*v.x
@@ -119,51 +119,51 @@ inline kip::point<real> cross(
 
 // -u
 template<class real>
-inline kip::point<real> operator-(
-   const kip::point<real> &u
+inline point<real> operator-(
+   const point<real> &u
 ) {
-   return kip::point<real>(-u.x, -u.y, -u.z);
+   return point<real>(-u.x, -u.y, -u.z);
 }
 
 // u-v
 template<class real>
-inline kip::point<real> operator-(
-   const kip::point<real> &u,
-   const kip::point<real> &v
+inline point<real> operator-(
+   const point<real> &u,
+   const point<real> &v
 ) {
-   return kip::point<real>(u.x-v.x, u.y-v.y, u.z-v.z);
+   return point<real>(u.x-v.x, u.y-v.y, u.z-v.z);
 }
 
 // u+v
 template<class real>
-inline kip::point<real> operator+(
-   const kip::point<real> &u,
-   const kip::point<real> &v
+inline point<real> operator+(
+   const point<real> &u,
+   const point<real> &v
 ) {
-   return kip::point<real>(u.x+v.x, u.y+v.y, u.z+v.z);
+   return point<real>(u.x+v.x, u.y+v.y, u.z+v.z);
 }
 
 
 
 // mod2(u)   ("mod2" as in "mod squared")
 template<class real>
-inline real mod2(const kip::point<real> &u)
+inline real mod2(const point<real> &u)
 {
    return dot(u,u);
 }
 
 // mod(u)
 template<class real>
-inline real mod(const kip::point<real> &u)
+inline real mod(const point<real> &u)
 {
-   return kip::op::sqrt(mod2(u));
+   return op::sqrt(mod2(u));
 }
 
 
 
 // normalize(u)
 template<class real>
-inline kip::point<real> normalize(const kip::point<real> &u)
+inline point<real> normalize(const point<real> &u)
 {
    // this tests as somewhat faster than u/mod(u)...
    const real fac = real(1)/mod(u);
@@ -175,8 +175,8 @@ inline kip::point<real> normalize(const kip::point<real> &u)
 // pdistance2(u,v): distance squared between the points u and v
 template<class real>
 inline real pdistance2(
-   const kip::point<real> &u,
-   const kip::point<real> &v
+   const point<real> &u,
+   const point<real> &v
 ) {
    return mod2(u-v);
 }
@@ -184,10 +184,10 @@ inline real pdistance2(
 // pdistance(u,v): distance between the points u and v
 template<class real>
 inline real pdistance(
-   const kip::point<real> &u,
-   const kip::point<real> &v
+   const point<real> &u,
+   const point<real> &v
 ) {
-   return kip::op::sqrt(pdistance2(u,v));
+   return op::sqrt(pdistance2(u,v));
 }
 
 
@@ -195,8 +195,8 @@ inline real pdistance(
 // pline2(p,u,v)
 template<class real>
 inline real pline2(
-   const kip::point<real> &p,
-   const kip::point<real> &u, const kip::point<real> &v
+   const point<real> &p,
+   const point<real> &u, const point<real> &v
 ) {
    return mod2(cross(v-u,u-p)) / mod2(v-u);
 }
@@ -205,10 +205,10 @@ inline real pline2(
 // the points u and v. Must have u != v, which is NOT verified here.
 template<class real>
 inline real pline(
-   const kip::point<real> &p,
-   const kip::point<real> &u, const kip::point<real> &v
+   const point<real> &p,
+   const point<real> &u, const point<real> &v
 ) {
-   return kip::op::sqrt(pline2(p,u,v));
+   return op::sqrt(pline2(p,u,v));
 }
 
 
@@ -220,11 +220,11 @@ inline real pline(
 
 template<class real>
 inline real skewd2(
-   const kip::point<real> &x1, const kip::point<real> &x2,
-   const kip::point<real> &x3, const kip::point<real> &x4
+   const point<real> &x1, const point<real> &x2,
+   const point<real> &x3, const point<real> &x4
 ) {
-   const kip::point<real> a = x2 - x1;
-   const kip::point<real> b = x4 - x3, c = cross(a,b);
+   const point<real> a = x2 - x1;
+   const point<real> b = x4 - x3, c = cross(a,b);
 
 /*
 zzz think about these...
@@ -250,5 +250,5 @@ pline2(x3, x1,x2)
 */
 
    const real den = mod2(c);
-   return den == 0 ? pline2(x1, x3,x4) : kip::op::sq(dot(x3-x1, c)) / den;
+   return den == 0 ? pline2(x1, x3,x4) : op::sq(dot(x3-x1, c)) / den;
 }

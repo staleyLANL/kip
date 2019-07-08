@@ -216,7 +216,7 @@ kip_aabb(ellipsoid)
    const real yval = internal::bound_ellipsoid(rot.f1.y, rot.f2.y, rot.f3.y, r);
    const real zval = internal::bound_ellipsoid(rot.f1.z, rot.f2.z, rot.f3.z, r);
 
-   return kip::bbox<real>(
+   return bbox<real>(
       true, c.x-xval,   c.x+xval, true,
       true, c.y-yval,   c.y+yval, true,
       true, c.z-zval,   c.z+zval, true
@@ -424,18 +424,18 @@ kip_ostream(ellipsoid) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "ellipsoid()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << "ellipsoid("
                <<  obj.c << ", "
                << (180/real(kip_pi))*obj.a << ", "
                <<  obj.r &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
@@ -443,7 +443,7 @@ kip_ostream(ellipsoid) {
              k.indent() <<  obj.c << ",\n   " &&
              k.indent() << (180/real(kip_pi))*obj.a << ",\n   " &&
              k.indent() <<  obj.r &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    kip_ostream_end(ellipsoid);
 }

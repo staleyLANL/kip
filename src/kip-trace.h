@@ -222,13 +222,13 @@ inline void trace_bitmap(
 template<class real, class color, class pix>
 inline void trace_pixel(
    image<real,color> &image,   // input/output
-   kip::array<2,pix> &pixel    // per-pixel information
+   array<2,pix> &pixel    // per-pixel information
 ) {
    // quick-initialize shape pointers to NULL
    const size_t hpixel = image.hpixel;
    const size_t vpixel = image.vpixel;
 
-   kip::initialize_pixel(pixel, hpixel, vpixel);
+   initialize_pixel(pixel, hpixel, vpixel);
 }
 
 
@@ -325,7 +325,7 @@ inline void trace_uniform(
    const engine<real      > &engine,  // input
          image <real,color> &image,   // input/output
          vars  <real,base > &vars,    // auxiliary
-         kip::array<2,pix>  &pixel    // per-pixel information
+         array<2,pix>  &pixel    // per-pixel information
 ) {
    // clear *all* bins (each contains an array; could be lots of memory
    // waste if we cleared *only* up to the currently needed size)
@@ -361,7 +361,7 @@ inline void trace_recursive(
    const engine<real      > &engine,  // input
          image <real,color> &image,   // input/output
          vars  <real,base > &vars,    // auxiliary
-         kip::array<2,pix>  &pixel    // per-pixel information
+         array<2,pix>  &pixel    // per-pixel information
 ) {
    const size_t hpixel = image.hpixel;
    const size_t vpixel = image.vpixel;
@@ -398,7 +398,7 @@ inline void trace_block(
    const engine<real      > &engine,  // input
          image <real,color> &image,   // input/output
          vars  <real,base > &vars,    // auxiliary
-         kip::array<2,pix>  &pixel    // per-pixel information
+         array<2,pix>  &pixel    // per-pixel information
 ) {
    (void)model;  (void)view;  (void)light;  (void)engine;
    (void)image;  (void)vars;  (void)pixel;
@@ -446,7 +446,7 @@ bool trace(
    const engine<real      > &engine,  // input
          image <real,color> &image,   // input/output
          vars  <real,base > &vars,    // auxiliary
-         kip::array<2,pix>  &pixel    // per-pixel information
+         array<2,pix>  &pixel    // per-pixel information
 ) {
    // Set number of threads
    set_nthreads(get_nthreads());
@@ -519,7 +519,7 @@ inline bool trace(
    const light <real      > &light,   // input
    const engine<real      > &engine,  // input
          image <real,color> &image,   // input/output
-         kip::array<2,pix>  &pixel    // per-pixel information
+         array<2,pix>  &pixel    // per-pixel information
 ) {
    // qqq See above remark
    static internal::vars<real,base> vars;
@@ -541,7 +541,7 @@ inline bool trace(
 template<class real, class base, class color>
 inline bool trace(scene<real,base,color> &s)
 {
-   return kip::trace(
+   return trace(
       s, s, s, s, s  // model, view, light, engine, image
    );
 }
@@ -550,7 +550,7 @@ inline bool trace(scene<real,base,color> &s)
 template<class real, class base, class color, class pix>
 inline bool trace(scene<real,base,color> &s, array<2,pix> &pixel)
 {
-   return kip::trace(
+   return trace(
       s, s, s, s, s,  // model, view, light, engine, image
       pixel
    );

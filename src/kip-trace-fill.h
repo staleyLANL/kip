@@ -218,7 +218,7 @@ inline bool get_first(
    const size_t zone,
 
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> &etd,
+   const eyetardiff<real> &etd,
 #else
    const point<real> &eyeball,
    const point<real> &target,
@@ -282,7 +282,7 @@ inline bool op_first(
 
    // eyeball, target, diff
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> &etd,
+   const eyetardiff<real> &etd,
 #else
    const point<real> &eyeball,
    const point<real> &target,
@@ -326,7 +326,7 @@ inline bool op_all(
 
    // eyeball, target, diff
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> &etd,
+   const eyetardiff<real> &etd,
 #else
    const point<real> &eyeball,
    const point<real> &target,
@@ -448,7 +448,7 @@ inline bool op_all(
 kip_fill_plain(one_plain) {
 
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> etd(vars.eyeball, target, diff);
+   const eyetardiff<real> etd(vars.eyeball, target, diff);
 #endif
 
    get_first(kip_param(0,maximum,qa))
@@ -463,7 +463,7 @@ kip_fill_plain(one_plain) {
 kip_fill_plain(two_plain) {
 
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> etd(vars.eyeball, target, diff);
+   const eyetardiff<real> etd(vars.eyeball, target, diff);
 #endif
 
    get_first(kip_param(0,maximum,qa))
@@ -483,7 +483,7 @@ kip_fill_plain(two_plain) {
 kip_fill_plain(max_plain) {
 
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> etd(vars.eyeball, target, diff);
+   const eyetardiff<real> etd(vars.eyeball, target, diff);
 #endif
 
    for (unsigned s = 0;  s < binsize;  ++s)
@@ -503,7 +503,7 @@ kip_fill_plain(max_plain) {
 kip_fill_plain(any_plain) {
 
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> etd(vars.eyeball, target, diff);
+   const eyetardiff<real> etd(vars.eyeball, target, diff);
 #endif
 
    unsigned s = 0;  bool found;  qa = maximum;
@@ -587,7 +587,7 @@ kip_fill_anti(one_anti) {
       ),
       target = vars.eyeball - diff;
       #ifdef KIP_TOGETHER
-         const kip::eyetardiff<real> etd(vars.eyeball, target, diff);
+         const eyetardiff<real> etd(vars.eyeball, target, diff);
       #endif
 
       // examine object
@@ -615,7 +615,7 @@ kip_fill_anti(two_anti) {
       ),
       target = vars.eyeball - diff;
       #ifdef KIP_TOGETHER
-         const kip::eyetardiff<real> etd(vars.eyeball, target, diff);
+         const eyetardiff<real> etd(vars.eyeball, target, diff);
       #endif
 
       // examine objects
@@ -687,7 +687,7 @@ kip_fill_anti(any_anti) {
          )),
          target = vars.eyeball - diff;
       #ifdef KIP_TOGETHER
-      const kip::eyetardiff<real> etd(vars.eyeball, target, diff);
+      const eyetardiff<real> etd(vars.eyeball, target, diff);
       #endif
 
       // loop over objects in this bin

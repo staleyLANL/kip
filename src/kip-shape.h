@@ -546,7 +546,7 @@ public:
 // kip_virtual_id
 #define kip_virtual_id(kip_class)\
    inline shape_id_t id() const\
-      { return internal::get_shape_id<kip::kip_class>::result; }
+      { return internal::get_shape_id<kip_class>::result; }
 
 // kip_destructor
 #ifdef KIP_CONSTRUCT_COUNTER
@@ -586,18 +586,18 @@ public:
       const internal::vars<real,tag> &\
    ) const;\
    \
-   inline kip::bbox<real> aabb() const;\
+   inline bbox<real> aabb() const;\
    inline bool dry(const rotate<-3,real> &) const;\
    \
    inline bool infirst(\
-      const kip::eyetardiff<real> &,\
+      const eyetardiff<real> &,\
       const real,\
       inq<real,tag> &,\
       const internal::subinfo &\
    ) const;\
    \
    inline bool inall(\
-      const kip::eyetardiff<real> &,\
+      const eyetardiff<real> &,\
       const real,\
       afew<inq<real,tag>> &,\
       const internal::subinfo &\
@@ -628,7 +628,7 @@ public:
       const internal::vars<real,tag> &\
    ) const;\
    \
-   inline kip::bbox<real> aabb() const;\
+   inline bbox<real> aabb() const;\
    inline bool dry(const rotate<-3,real> &) const;\
    \
    inline bool infirst(\
@@ -705,7 +705,7 @@ public:
 #define kip_infirst(type)\
    template<class real, class tag>\
    inline bool type<real,tag>::infirst(\
-      const kip::eyetardiff<real> &etd,\
+      const eyetardiff<real> &etd,\
       const real qmin,\
       inq<real,tag> &q,\
       const internal::subinfo &insub\
@@ -721,7 +721,7 @@ public:
 #define kip_inall(type)\
    template<class real, class tag>\
    inline bool type<real,tag>::inall(\
-      const kip::eyetardiff<real> &etd,\
+      const eyetardiff<real> &etd,\
       const real qmin,\
       afew<inq<real,tag>> &ints,\
       const internal::subinfo &insub\
@@ -800,14 +800,14 @@ public:
 #define kip_ostream(type)\
    template<class real, class tag>\
    kip::ostream &operator<<(\
-      kip::ostream &k, const kip::type<real,tag> &obj\
+      kip::ostream &k, const type<real,tag> &obj\
    )
 
 
 // kip_ostream_end
 #define kip_ostream_end(type)\
    if (!okay)\
-      (void)kip::error("Could not write " #type);\
+      (void)error("Could not write " #type);\
    return k
 
 
@@ -1024,7 +1024,7 @@ template<class real, class tag>
 inline bool op_first(
    const shape<real,tag> *const,
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> &,
+   const eyetardiff<real> &,
 #else
    const point<real> &, const point<real> &, const point<real> &,
 #endif
@@ -1038,7 +1038,7 @@ template<class real, class tag>
 inline bool op_all(
    const shape<real,tag> *const,
 #ifdef KIP_TOGETHER
-   const kip::eyetardiff<real> &,
+   const eyetardiff<real> &,
 #else
    const point<real> &, const point<real> &, const point<real> &,
 #endif
@@ -1072,12 +1072,12 @@ public:
 
 // minimum_and_shape
 template<class real, class base>
-class minimum_and_shape : public minimum_and_ptr<real,kip::shape<real,base>> {
+class minimum_and_shape : public minimum_and_ptr<real,shape<real,base>> {
 public:
    inline explicit minimum_and_shape() { }
    inline explicit minimum_and_shape(
-      const real &_minimum, kip::shape<real,base> &_shape
-   ) : minimum_and_ptr<real, kip::shape<real,base>>(_minimum,_shape) { }
+      const real &_minimum, shape<real,base> &_shape
+   ) : minimum_and_ptr<real, shape<real,base>>(_minimum,_shape) { }
 };
 
 

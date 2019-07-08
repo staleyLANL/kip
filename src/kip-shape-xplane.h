@@ -106,7 +106,7 @@ kip_process(xplane)
 kip_aabb(xplane)
 {
    const real infinity = std::numeric_limits<real>::max();
-   return kip::bbox<real>(
+   return bbox<real>(
       true,x, x,true,
       false,-infinity, infinity,false,
       false,-infinity, infinity,false
@@ -238,18 +238,18 @@ kip::ostream &plane_write(
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << ch << "plane()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << ch << "plane("
                << pos << ", "
                << one << ',' << two << ", "
                << obj.color &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
@@ -257,11 +257,11 @@ kip::ostream &plane_write(
              k.indent() << pos << ",\n   " &&
              k.indent() << one << ',' << two << ",\n   " &&
              k.indent() << obj.color &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    // done
    if (!okay)
-      (void)kip::error(std::string("Could not write ") + ch + "plane");
+      (void)error(std::string("Could not write ") + ch + "plane");
    return k;
 }
 
@@ -271,7 +271,7 @@ kip::ostream &plane_write(
 
 // kip::ostream
 kip_ostream(xplane) {
-   return kip::internal::plane_write(k, obj, 'x', obj.x, obj.size.y, obj.size.z);
+   return internal::plane_write(k, obj, 'x', obj.x, obj.size.y, obj.size.z);
 }
 
 #define   kip_class xplane

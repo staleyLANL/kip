@@ -199,9 +199,9 @@ private:
       const real & = real(0),  // scale
 
       // bases
-      const base & = default_parameter(kip::internal::tclass<base>()),
-      const base & = default_parameter(kip::internal::tclass<base>()),
-      const base & = default_parameter(kip::internal::tclass<base>())
+      const base & = default_parameter(internal::tclass<base>()),
+      const base & = default_parameter(internal::tclass<base>()),
+      const base & = default_parameter(internal::tclass<base>())
    );
 
 public:
@@ -214,9 +214,9 @@ public:
       const real & = real(0),  // scale
 
       // for tight/partial/loose bbox representation
-      const base & = default_parameter(kip::internal::tclass<base>()),
-      const base & = default_parameter(kip::internal::tclass<base>()),
-      const base & = default_parameter(kip::internal::tclass<base>())
+      const base & = default_parameter(internal::tclass<base>()),
+      const base & = default_parameter(internal::tclass<base>()),
+      const base & = default_parameter(internal::tclass<base>())
    );
 
 
@@ -238,9 +238,9 @@ public:
       const bool = false,  // each
       const bool = false,  // overall
       const real & = real(0),  // scale
-      const base & = default_parameter(kip::internal::tclass<base>()),  // tight
-      const base & = default_parameter(kip::internal::tclass<base>()),  // partial
-      const base & = default_parameter(kip::internal::tclass<base>())   // loose
+      const base & = default_parameter(internal::tclass<base>()),  // tight
+      const base & = default_parameter(internal::tclass<base>()),  // partial
+      const base & = default_parameter(internal::tclass<base>())   // loose
    );
 };
 
@@ -400,7 +400,7 @@ void model<real,base>::rpush(
 template<class real, class base>
 typename model<real,base>::bbox_representation_t &
 model<real,base>::push_bbox_ptr(
-   const kip::bbox<real> &b,
+   const bbox<real> &b,
    const shape<real,base> *const shape,
 
    const real &scale,
@@ -486,7 +486,7 @@ model<real,base>::push_bbox_ptr(
 template<class real, class base>
 inline typename model<real,base>::bbox_representation_t &
 model<real,base>::push_bbox(
-   const kip::bbox<real> &b,
+   const bbox<real> &b,
    const shape<real,base> &shape,
 
    const real &scale,
@@ -944,7 +944,7 @@ namespace internal {
 // kip::ostream
 template<class real, class tag>
 kip::ostream &operator<<(
-   kip::ostream &k, const kip::model<real,tag> &obj
+   kip::ostream &k, const model<real,tag> &obj
 ) {
    // check
    // Actually, don't check the model as a whole. Instead, allow each object
@@ -952,9 +952,9 @@ kip::ostream &operator<<(
    // the whole model because of specific bad objects.
 
    // write...
-   kip::internal::write_shape_start() = true;
+   internal::write_shape_start() = true;
 
-#define kip_write_shape(shape) kip::internal::write_shape(k, obj.shape) &&
+#define kip_write_shape(shape) internal::write_shape(k, obj.shape) &&
    kip_expand_plain(kip_write_shape)
 #undef  kip_write_shape
 

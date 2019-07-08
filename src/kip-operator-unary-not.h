@@ -104,7 +104,7 @@ kip_process(kipnot)
 kip_aabb(kipnot)
 {
    const real infinity = std::numeric_limits<real>::max();
-   return kip::bbox<real>(
+   return bbox<real>(
       false,-infinity, infinity,false,
       false,-infinity, infinity,false,
       false,-infinity, infinity,false

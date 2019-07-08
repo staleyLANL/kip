@@ -449,15 +449,15 @@ public:
 // for point_xy
 template<class real>
 inline bool operator==(
-   const kip::point_xy<real> &a,
-   const kip::point_xy<real> &b
+   const point_xy<real> &a,
+   const point_xy<real> &b
 )
    { return a.x == b.x && a.y == b.y; }
 
 template<class real>
 inline bool operator!=(
-   const kip::point_xy<real> &a,
-   const kip::point_xy<real> &b
+   const point_xy<real> &a,
+   const point_xy<real> &b
 )
    { return !(a == b); }
 
@@ -466,14 +466,14 @@ inline bool operator!=(
 // for point_xr
 template<class real>
 inline bool operator==(
-   const kip::point_xr<real> &a,
-   const kip::point_xr<real> &b
+   const point_xr<real> &a,
+   const point_xr<real> &b
 )
    { return a.x == b.x && a.r == b.r; }
 
 template<class real>
 inline bool operator!=(
-   const kip::point_xr<real> &a,
-   const kip::point_xr<real> &b
+   const point_xr<real> &a,
+   const point_xr<real> &b
 )
    { return !(a == b); }

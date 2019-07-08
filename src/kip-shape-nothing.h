@@ -89,22 +89,22 @@ kip_ostream(nothing) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "nothing()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
-      okay = k << "nothing(" && kip::write_finish(k, obj, true);
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
+      okay = k << "nothing(" && write_finish(k, obj, true);
 
    // full
    else
-      okay = k << "nothing(" && kip::write_finish(k, obj, false);
+      okay = k << "nothing(" && write_finish(k, obj, false);
 
    // done
    if (!okay)
-      (void)kip::error("Could not write \"nothing\" object");
+      (void)error("Could not write \"nothing\" object");
    return k;
 }
 

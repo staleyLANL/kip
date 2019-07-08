@@ -99,7 +99,7 @@ kip_process(sphere)
 // aabb
 kip_aabb(sphere)
 {
-   return kip::bbox<real>(
+   return bbox<real>(
       true, c.x-r,   c.x+r, true,
       true, c.y-r,   c.y+r, true,
       true, c.z-r,   c.z+r, true
@@ -260,24 +260,24 @@ kip_ostream(sphere) {
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub)
+   if (format == format_t::format_stub)
       okay = k << "sphere()";
 
    // one
    // op
-   else if (kip::format == kip::format_t::format_one ||
-            kip::format == kip::format_t::format_op)
+   else if (format == format_t::format_one ||
+            format == format_t::format_op)
       okay = k << "sphere("
                << obj.c << ", "
                << obj.r &&
-             kip::write_finish(k, obj, true);
+             write_finish(k, obj, true);
 
    // full
    else
       okay = k << "sphere(\n   " &&
              k.indent() << obj.c << ",\n   " &&
              k.indent() << obj.r &&
-             kip::write_finish(k, obj, false);
+             write_finish(k, obj, false);
 
    kip_ostream_end(sphere);
 }

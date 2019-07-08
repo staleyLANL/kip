@@ -582,7 +582,7 @@ bool istream::recover(const unused)
 #ifdef KIP_DEFAULT_TAG_T
    using default_tag_t = KIP_DEFAULT_TAG_T;
 #else
-   using default_tag_t = kip::RGB<>;
+   using default_tag_t = RGB<>;
 #endif
 
 // ostream << kipand
@@ -590,7 +590,7 @@ template<class T = default_real_t, class tag = default_tag_t>
 class kipand;
 
 template<class T, class tag>
-std::ostream &operator<<(std::ostream &, const kip::kipand<T,tag> &);
+std::ostream &operator<<(std::ostream &, const kipand<T,tag> &);
 */
 
 template<class T>

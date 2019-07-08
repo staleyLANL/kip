@@ -160,7 +160,7 @@ kip_aabb(kipand)
 
    // By construction, if !a.valid() or !b.valid(),
    // then the return value is !valid()
-   return kip::bbox<real>(
+   return bbox<real>(
       false, op::max(a.x.min, b.x.min),   op::min(a.x.max, b.x.max), false,
       false, op::max(a.y.min, b.y.min),   op::min(a.y.max, b.y.max), false,
       false, op::max(a.z.min, b.z.min),   op::min(a.z.max, b.z.max), false

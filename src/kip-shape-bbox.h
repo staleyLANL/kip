@@ -78,7 +78,7 @@ public:
 // operator<<
 template<class real>
 inline std::ostream &operator<<(
-   std::ostream &s, const kip::bbox_component<real> &obj
+   std::ostream &s, const bbox_component<real> &obj
 ) {
    return s
       << (obj.min.tight() ? '[' : '(')
@@ -94,7 +94,7 @@ inline std::ostream &operator<<(
 // -----------------------------------------------------------------------------
 
 /*
-Consider a kip::bbox<real> object called obj, and let q = x, y, or z.
+Consider a bbox<real> object called obj, and let q = x, y, or z.
 Then, you can do the following with obj:
 
    obj.q                // q component (of type bbox_component<real>)
@@ -169,7 +169,7 @@ public:
 // operator<<
 template<class real>
 inline std::ostream &operator<<(
-   std::ostream &s, const kip::bbox<real> &obj
+   std::ostream &s, const bbox<real> &obj
 ) {
    return s
       << "   x: " << obj.x << '\n'
@@ -245,7 +245,7 @@ template<class real, class COMP>
 inline bbox<real> bound_combine(
    const bbox<real> &a, const bbox<real> &b, const COMP &comp
 ) {
-   return kip::bbox<real>(
+   return bbox<real>(
       bound_combine_component(a.x, b.x, comp),
       bound_combine_component(a.y, b.y, comp),
       bound_combine_component(a.z, b.z, comp)

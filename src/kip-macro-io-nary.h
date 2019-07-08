@@ -5,7 +5,7 @@
 // read_value
 template<class ISTREAM, class real, class tag>
 bool read_value(
-   ISTREAM &s, kip::kip_class<real,tag> &obj,
+   ISTREAM &s, kip_class<real,tag> &obj,
    const std::string &description = kip_description(kip_class)
 ) {
    // Note: for binary types, we allowed:
@@ -35,13 +35,13 @@ bool read_value(
 // kip::ostream
 template<class real, class tag>
 kip::ostream &operator<<(
-   kip::ostream &k, const kip::kip_class<real,tag> &obj
+   kip::ostream &k, const kip_class<real,tag> &obj
 ) {
    const size_t nop = obj.size();
    bool okay;
 
    // stub
-   if (kip::format == kip::format_t::format_stub) {
+   if (format == format_t::format_stub) {
       okay = k << kip_quote(kip_class) "(";
       for (size_t n = 0;  n < nop && okay;  ++n)
          okay = (n ? bool(k << ", ") : true) &&
@@ -50,7 +50,7 @@ kip::ostream &operator<<(
    }
 
    // one
-   else if (kip::format == kip::format_t::format_one) {
+   else if (format == format_t::format_one) {
       okay = k << kip_quote(kip_class) "(";
 
       for (size_t n = 0;  n < nop && okay;  ++n)
@@ -83,7 +83,7 @@ kip::ostream &operator<<(
 
    // done
    if (!okay)
-      (void)kip::error("Could not write " kip_description(kip_class));
+      (void)error("Could not write " kip_description(kip_class));
    return k;
 }
 

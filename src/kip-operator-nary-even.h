@@ -114,7 +114,7 @@ kip_aabb(even)
    twosort(ymin,internal::less<real,tag>()), twosort(ymax,internal::more<real,tag>());
    twosort(zmin,internal::less<real,tag>()), twosort(zmax,internal::more<real,tag>());
 
-   return kip::bbox<real>(
+   return bbox<real>(
       false, xmin.size() > 1 ? xmin[1] : +std::numeric_limits<real>::max(),
              xmax.size() > 1 ? xmax[1] : -std::numeric_limits<real>::max(), false,
       false, ymin.size() > 1 ? ymin[1] : +std::numeric_limits<real>::max(),

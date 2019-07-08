@@ -153,7 +153,7 @@ kip_aabb(kipcut)
    const bbox<real> a = binary.a->aabb();
    const bbox<real> b = binary.b->aabb();
 
-   return kip::bbox<real>(
+   return bbox<real>(
       // x
       a.x.min < b.x.min && a.x.min.tight(),
       a.x.min,

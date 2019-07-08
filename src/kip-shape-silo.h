@@ -79,7 +79,7 @@ kip_aabb(silo)
    point<real> min, max;
    internal::bound_abr(b,a,r, min,max);
 
-   return kip::bbox<real>(
+   return bbox<real>(
       true, op::min(a.x-r, min.x),   op::max(a.x+r, max.x), true,
       true, op::min(a.y-r, min.y),   op::max(a.y+r, max.y), true,
       true, op::min(a.z-r, min.z),   op::max(a.z+r, max.z), true
@@ -404,7 +404,7 @@ kip_read_value(silo) {
 
 // kip::ostream
 kip_ostream(silo) {
-   return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "silo");
+   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "silo");
 }
 
 #define   kip_class silo

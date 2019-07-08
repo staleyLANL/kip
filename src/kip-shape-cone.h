@@ -78,7 +78,7 @@ kip_aabb(cone)
    point<real> min, max;
    internal::bound_abr(b,a,r, min,max);
 
-   return kip::bbox<real>(
+   return bbox<real>(
       true, op::min(a.x,min.x),   op::max(a.x,max.x), true,
       true, op::min(a.y,min.y),   op::max(a.y,max.y), true,
       true, op::min(a.z,min.z),   op::max(a.z,max.z), true
@@ -314,7 +314,7 @@ kip_read_value(cone) {
 
 // kip::ostream
 kip_ostream(cone) {
-   return kip::internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cone");
+   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cone");
 }
 
 #define   kip_class cone
