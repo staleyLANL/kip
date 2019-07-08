@@ -359,7 +359,7 @@ namespace internal {
          template<class unused>\
          const crayola crayola_base<unused>::name = crayola_lookup(#name);\
       }\
-      namespace { const crayola &name = crayola::name; }
+      inline const crayola &name = crayola::name;
 #else
    #define kip_make_color(name)\
       namespace internal {\

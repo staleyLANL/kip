@@ -198,4 +198,4 @@ template<class unused>
 std::vector<typename colormap_jet<unused>::color> colormap_jet<unused>::vec;
 
 // jet
-namespace { const colormap_jet<char> jet; }
+inline const colormap_jet<char> jet;

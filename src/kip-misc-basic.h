@@ -52,10 +52,10 @@ inline real random()
 // kip::cerr
 #ifdef kip_cerr_is_not_cout
    // cerr is cerr
-   namespace { std::ostream &cerr = std::cerr; }
+   inline std::ostream &cerr = std::cerr;
 #else
    // cerr is cout
-   namespace { std::ostream &cerr = std::cout; }
+   inline std::ostream &cerr = std::cout;
 #endif
 
 
