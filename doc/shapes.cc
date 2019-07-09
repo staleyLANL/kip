@@ -62,7 +62,7 @@ int main(const int, const char *const *const argv)
    s.theta=75, s.phi=15, s.d=250;
    s.background = crayola::black;
 
-a
+
    // ------------------------
    // Primitives
    // ------------------------

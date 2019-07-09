@@ -41,12 +41,14 @@ namespace vars {
    int hpos = 50;
    int vpos = 0;
 
-   // initial #renders prior to user control;
-   // useful for timing
+   // initial #renders prior to user control
    int nrender = 0;
 
    // if timing: no window; render, exit
    bool timing = false;
+
+   // if Exit: window, then render, exit
+   bool Exit = false;
 
    // print mode: print various parameters
    bool print = false;
@@ -425,6 +427,7 @@ int interactive(const std::string &title)
             putimage();
       }
    }
+   if (vars::Exit) return 0;
 
    if (!vars::timing) {
       // start
@@ -539,6 +542,14 @@ inline bool vwindow(const int n)
    return true;
 }
 
+// window
+inline bool window(const int n)
+{
+   vars::hwindow =
+   vars::vwindow = std::max(100,std::abs(n));
+   return true;
+}
+
 // hpos
 inline bool hpos(const int n)
 {
@@ -570,6 +581,13 @@ inline bool render(const int n)
 inline bool timing(const int)
 {
    vars::timing = true;
+   return true;
+}
+
+// exit
+inline bool Exit(const int)
+{
+   vars::Exit = true;
    return true;
 }
 
@@ -629,12 +647,14 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    // window
    { "-hwindow", { args::hwindow, true  } },
    { "-vwindow", { args::vwindow, true  } },
+   { "-window",  { args::window,  true  } },
    { "-hpos",    { args::hpos,    true  } },
    { "-vpos",    { args::vpos,    true  } },
 
    // misc
    { "-render",  { args::render,  true  } },
    { "-timing",  { args::timing,  false } },
+   { "-exit",    { args::Exit,    false } },
    { "-print",   { args::print,   false } },
    { "-debug",   { args::debug,   false } },
 
