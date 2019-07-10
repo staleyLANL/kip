@@ -24,7 +24,7 @@ public:
 
    // xplane([x[,size.y,size.z[,color[,base]]]])
    inline explicit xplane(
-      const real &_x = real(0)
+      const real _x = real(0)
    ) :
       shape<real,tag>(this),
       x(_x),
@@ -36,8 +36,8 @@ public:
    }
 
    inline explicit xplane(
-      const real &_x,
-      const real &_ysize, const real &_zsize,
+      const real _x,
+      const real _ysize, const real _zsize,
       const tag &_color = tag()
    ) :
       shape<real,tag>(this),
@@ -50,8 +50,8 @@ public:
    }
 
    inline explicit xplane(
-      const real &_x,
-      const real &_ysize, const real &_zsize,
+      const real _x,
+      const real _ysize, const real _zsize,
       const tag &_color, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
@@ -233,7 +233,7 @@ namespace internal {
 template<class real, class tag, template<class,class> class OBJ>
 kip::ostream &plane_write(
    kip::ostream &k, const OBJ<real,tag> &obj, const char ch,
-   const real &pos, const real &one, const real &two
+   const real pos, const real one, const real two
 ) {
    bool okay;
 

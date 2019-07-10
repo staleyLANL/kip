@@ -69,7 +69,7 @@ kip_process(cylinder)
 // bound_cylinder - helper
 namespace internal {
    template<template<class,class> class shape, class real, class tag>
-   bbox<real> bound_cylinder(const shape<real,tag> &obj, const real &r)
+   bbox<real> bound_cylinder(const shape<real,tag> &obj, const real r)
    {
       point<real> min, max;
       internal::bound_abr(obj.a,obj.b,r, min,max);

@@ -40,9 +40,9 @@ public:
 
    // marble(r,g,b[, amp[,ampfac[, per[,perfac[, nfun[,seed[, swirl]]]]]]])
    inline explicit marble(
-      const value_t &_r, const value_t &_g, const value_t &_b,
-      const real &_amp = 1, const real &_ampfac = 0.5,
-      const real &_per = 1, const real &_perfac = 0.5,
+      const value_t _r, const value_t _g, const value_t _b,
+      const real _amp = 1, const real _ampfac = 0.5,
+      const real _per = 1, const real _perfac = 0.5,
       const unsigned _nfun = 1,
       const unsigned _seed = 0,
       const bool _swirl = false
@@ -124,8 +124,8 @@ bool read_value(
 }
 
 /*
-   const real &_amp = 1, const real &_ampfac = 0.5,
-   const real &_per = 1, const real &_perfac = 0.5,
+   const real _amp = 1, const real _ampfac = 0.5,
+   const real _per = 1, const real _perfac = 0.5,
    const unsigned _nfun = 1,
    const unsigned _seed = 0,
    const bool _swirl = false

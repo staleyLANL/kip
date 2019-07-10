@@ -61,11 +61,11 @@ public:
    inline point<real> &push(const point<real> &xyz)
       { return table.push_back(xyz), table.back(); }
 
-   inline point<real> &push(const real &x, const real &y, const real &z)
+   inline point<real> &push(const real x, const real y, const real z)
       { return push(point<real>(x,y,z)); }
 
    // point_in_poly
-   inline bool point_in_poly(const real &x, const real &y) const
+   inline bool point_in_poly(const real x, const real y) const
    {
       if (x < xlo || x > xhi || y < ylo || y > yhi)
          return false;

@@ -24,7 +24,7 @@ public:
 
    // zplane([z[,size.x,size.y[,color[,base]]]])
    inline explicit zplane(
-      const real &_z = real(0)
+      const real _z = real(0)
    ) :
       shape<real,tag>(this),
       z(_z),
@@ -36,8 +36,8 @@ public:
    }
 
    inline explicit zplane(
-      const real &_z,
-      const real &_xsize, const real &_ysize,
+      const real _z,
+      const real _xsize, const real _ysize,
       const tag &_color = tag()
    ) :
       shape<real,tag>(this),
@@ -50,8 +50,8 @@ public:
    }
 
    inline explicit zplane(
-      const real &_z,
-      const real &_xsize, const real &_ysize,
+      const real _z,
+      const real _xsize, const real _ysize,
       const tag &_color, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),

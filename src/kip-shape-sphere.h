@@ -28,7 +28,7 @@ public:
    // sphere([c[,r[,base]]])
    inline explicit sphere(
       const point<real> &_c = point<real>(real(0),real(0),real(0)),
-      const real &_r = real(1)
+      const real _r = real(1)
    ) :
       shape<real,tag>(this),
       c(_c), r(_r)
@@ -36,7 +36,7 @@ public:
 
    inline explicit sphere(
       const point<real> &_c,
-      const real &_r, const tag &thebase
+      const real _r, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       c(_c), r(_r)
@@ -44,16 +44,16 @@ public:
 
    // sphere(c.x,c.y,c.z[,r[,base]])
    inline explicit sphere(
-      const real &cx, const real &cy, const real &cz,
-      const real &_r = real(1)
+      const real cx, const real cy, const real cz,
+      const real _r = real(1)
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz), r(_r)
    { this->eyelie = false; }
 
    inline explicit sphere(
-      const real &cx, const real &cy, const real &cz,
-      const real &_r, const tag &thebase
+      const real cx, const real cy, const real cz,
+      const real _r, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       c(cx,cy,cz), r(_r)

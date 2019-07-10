@@ -114,8 +114,8 @@ kip_process(spheroid)
 namespace internal {
    template<class real>
    inline real bound_spheroid(
-      const real &a, const real &b, const real &c,
-      const real &hsq, const real &rsq
+      const real a, const real b, const real c,
+      const real hsq, const real rsq
    ) {
       return op::sqrt(a*a*hsq + (b*b + c*c)*rsq);
    }

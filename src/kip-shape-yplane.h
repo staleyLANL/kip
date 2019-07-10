@@ -24,7 +24,7 @@ public:
 
    // yplane([y[,size.x,size.z[,color[,base]]]])
    inline explicit yplane(
-      const real &_y = real(0)
+      const real _y = real(0)
    ) :
       shape<real,tag>(this),
       y(_y),
@@ -36,8 +36,8 @@ public:
    }
 
    inline explicit yplane(
-      const real &_y,
-      const real &_xsize, const real &_zsize,
+      const real _y,
+      const real _xsize, const real _zsize,
       const tag &_color = tag()
    ) :
       shape<real,tag>(this),
@@ -50,8 +50,8 @@ public:
    }
 
    inline explicit yplane(
-      const real &_y,
-      const real &_xsize, const real &_zsize,
+      const real _y,
+      const real _xsize, const real _zsize,
       const tag &_color, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),

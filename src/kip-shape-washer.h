@@ -55,8 +55,8 @@ public:
    inline explicit washer(
       const point<real> &_a,
       const point<real> &_b,
-      const real &_i,
-      const real &_o
+      const real _i,
+      const real _o
    ) :
       shape<real,tag>(this),
       a(_a),
@@ -67,8 +67,8 @@ public:
    inline explicit washer(
       const point<real> &_a,
       const point<real> &_b,
-      const real &_i,
-      const real &_o, const tag &thebase
+      const real _i,
+      const real _o, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       a(_a),
@@ -80,7 +80,7 @@ public:
 
    // washer(a.x,a.y,a.z[,b.x,b.y,b.z[,i,o[,base]]])
    inline explicit washer(
-      const real &ax, const real &ay, const real &az
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -89,8 +89,8 @@ public:
    { }
 
    inline explicit washer(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -99,9 +99,9 @@ public:
    { }
 
    inline explicit washer(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
-      const real &_i, const real &_o
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
+      const real _i, const real _o
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -110,9 +110,9 @@ public:
    { }
 
    inline explicit washer(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
-      const real &_i, const real &_o, const tag &thebase
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
+      const real _i, const real _o, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       a(ax,ay,az),

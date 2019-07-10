@@ -18,13 +18,13 @@ class and_tight {
 public:
 
    // and_tight(value,tight)
-   inline explicit and_tight(const real &_value, const bool tight_) :
+   inline explicit and_tight(const real _value, const bool tight_) :
       value(_value),
      _tight(tight_)
    { }
 
    // assignment = real
-   inline and_tight &operator=(const real &_value)
+   inline and_tight &operator=(const real _value)
       { return value = _value, *this; }
 
    // conversion to real
@@ -60,8 +60,8 @@ public:
 
    // bbox_component(min_tight,min, max,max_tight)
    inline explicit bbox_component(
-      const bool _min_tight, const real &_min,
-      const real &_max, const bool _max_tight
+      const bool _min_tight, const real _min,
+      const real _max, const bool _max_tight
    ) :
       min(_min,_min_tight),
       max(_max,_max_tight)
@@ -129,12 +129,12 @@ public:
    //    zmin_tight,zmin, zmax,zmax_tight
    // )
    inline explicit bbox(
-      const bool _xmin_tight, const real &_xmin,
-      const real &_xmax, const bool _xmax_tight,
-      const bool _ymin_tight, const real &_ymin,
-      const real &_ymax, const bool _ymax_tight,
-      const bool _zmin_tight, const real &_zmin,
-      const real &_zmax, const bool _zmax_tight
+      const bool _xmin_tight, const real _xmin,
+      const real _xmax, const bool _xmax_tight,
+      const bool _ymin_tight, const real _ymin,
+      const real _ymax, const bool _ymax_tight,
+      const bool _zmin_tight, const real _zmin,
+      const real _zmax, const bool _zmax_tight
    ) :
       x(_xmin_tight,_xmin, _xmax,_xmax_tight),
       y(_ymin_tight,_ymin, _ymax,_ymax_tight),

@@ -40,23 +40,23 @@ public:
 
    // half(px,py,pz[,nx,ny,nz[,base]])
    inline explicit half(
-      const real &px, const real &py, const real &pz
+      const real px, const real py, const real pz
    ) :
       shape<real,tag>(this),
       point(px,py,pz), normal(kip::point<real>(real(1), real(0), real(0)))
    { this->eyelie = false; }
 
    inline explicit half(
-      const real &px, const real &py, const real &pz,
-      const real &nx, const real &ny, const real &nz
+      const real px, const real py, const real pz,
+      const real nx, const real ny, const real nz
    ) :
       shape<real,tag>(this),
       point(px,py,pz), normal(nx,ny,nz)
    { this->eyelie = false; }
 
    inline explicit half(
-      const real &px, const real &py, const real &pz,
-      const real &nx, const real &ny, const real &nz, const tag &thebase
+      const real px, const real py, const real pz,
+      const real nx, const real ny, const real nz, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       point(px,py,pz), normal(nx,ny,nz)

@@ -41,7 +41,7 @@ namespace internal {
 
 // angle_tweak
 template<class real>
-inline real angle_tweak(const real &angle)
+inline real angle_tweak(const real angle)
 {
    static const real fac = std::pow(
       real(10),

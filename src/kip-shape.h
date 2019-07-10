@@ -846,7 +846,7 @@ inline diagnostic_t onetwor_check(const char *const name, const OBJ &obj)
 // bound_abr
 template<class real>
 inline void bound_abr(
-   const point<real> &a, const point<real> &b, const real &r,
+   const point<real> &a, const point<real> &b, const real r,
    point<real> &min, point<real> &max  // output
 ) {
    const rotate<2,real> m(a,b);
@@ -871,7 +871,7 @@ namespace internal {
 template<class real>
 real bbox_minimum(
    const point<real> &e,
-   const real &xsize, const real &ysize, const real &zsize
+   const real xsize, const real ysize, const real zsize
 ) {
    if (e.y < 0)
       if (e.z < 0)
@@ -1028,7 +1028,7 @@ inline bool op_first(
 #else
    const point<real> &, const point<real> &, const point<real> &,
 #endif
-   const real &, inq<real,tag> &, const subinfo &
+   const real, inq<real,tag> &, const subinfo &
 );
 
 
@@ -1042,7 +1042,7 @@ inline bool op_all(
 #else
    const point<real> &, const point<real> &, const point<real> &,
 #endif
-   const real &, afew<inq<real,tag>> &, const subinfo &
+   const real, afew<inq<real,tag>> &, const subinfo &
 );
 
 } // namespace internal
@@ -1066,7 +1066,7 @@ public:
    SHAPE *shape;
 
    inline explicit minimum_and_ptr() { }
-   inline explicit minimum_and_ptr(const real &_minimum, SHAPE &_ptr) :
+   inline explicit minimum_and_ptr(const real _minimum, SHAPE &_ptr) :
       minimum(minimum_t(_minimum)), shape(&_ptr) { }
 };
 
@@ -1076,7 +1076,7 @@ class minimum_and_shape : public minimum_and_ptr<real,shape<real,base>> {
 public:
    inline explicit minimum_and_shape() { }
    inline explicit minimum_and_shape(
-      const real &_minimum, shape<real,base> &_shape
+      const real _minimum, shape<real,base> &_shape
    ) : minimum_and_ptr<real, shape<real,base>>(_minimum,_shape) { }
 };
 
@@ -1113,7 +1113,7 @@ public:
    }
 
    // for real
-   inline bool operator()(const real &a, const real &b) const { return a < b; }
+   inline bool operator()(const real a, const real b) const { return a < b; }
 
    // for inq
    inline bool operator()(const inq<real,tag> &a, const inq<real,tag> &b) const
@@ -1168,7 +1168,7 @@ public:
    }
 
    // for real
-   inline bool operator()(const real &a, const real &b) const { return a > b; }
+   inline bool operator()(const real a, const real b) const { return a > b; }
 };
 
 } // namespace internal

@@ -54,7 +54,7 @@ public:
 
    // ellipsoid(c.x,c.y,c.z[,a.x,a.y,a.z[,r.x,r.y,r.z[,base]]])
    inline explicit ellipsoid(
-      const real &cx, const real &cy, const real &cz
+      const real cx, const real cy, const real cz
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -63,8 +63,8 @@ public:
    { }
 
    inline explicit ellipsoid(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -73,9 +73,9 @@ public:
    { }
 
    inline explicit ellipsoid(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az,
-      const real &rx, const real &ry, const real &rz
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az,
+      const real rx, const real ry, const real rz
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -84,9 +84,9 @@ public:
    { }
 
    inline explicit ellipsoid(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az,
-      const real &rx, const real &ry, const real &rz, const tag &thebase
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az,
+      const real rx, const real ry, const real rz, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       c(cx,cy,cz),
@@ -200,7 +200,7 @@ kip_process(ellipsoid)
 namespace internal {
    template<class real>
    inline real bound_ellipsoid(
-      const real &a, const real &b, const real &c,
+      const real a, const real b, const real c,
       const point<real> &r
    ) {
       return op::sqrt(op::sq(a*r.x) + op::sq(b*r.y) + op::sq(c*r.z));

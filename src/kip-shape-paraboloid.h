@@ -83,8 +83,8 @@ kip_process(paraboloid)
 namespace internal {
    template<class real>
    inline void bound_paraboloid(
-      const real &a, const real &b, const real &c, const real &h, const real &r,
-      const real &one, const real &two, real &min, real &max
+      const real a, const real b, const real c, const real h, const real r,
+      const real one, const real two, real &min, real &max
    ) {
       const real v = r * op::sqrt(b*b + c*c);  min = two - v;
       const real u = op::twice(op::abs(a)*h);  max = two + v;

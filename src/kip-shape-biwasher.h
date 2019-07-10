@@ -57,8 +57,8 @@ public:
    inline explicit biwasher(
       const point<real> &_a,
       const point<real> &_b,
-      const real &_ia, const real &_ib,
-      const real &_oa, const real &_ob
+      const real _ia, const real _ib,
+      const real _oa, const real _ob
    ) :
       shape<real,tag>(this),
       a(_a), b(_b)
@@ -70,8 +70,8 @@ public:
    inline explicit biwasher(
       const point<real> &_a,
       const point<real> &_b,
-      const real &_ia, const real &_ib,
-      const real &_oa, const real &_ob, const tag &thebase
+      const real _ia, const real _ib,
+      const real _oa, const real _ob, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       a(_a), b(_b)
@@ -84,7 +84,7 @@ public:
 
    // biwasher(a.x,a.y,a.z[,b.x,b.y,b.z[,i.a,i.b,o.a,o.b[,base]]])
    inline explicit biwasher(
-      const real &ax, const real &ay, const real &az
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -95,8 +95,8 @@ public:
    }
 
    inline explicit biwasher(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -107,10 +107,10 @@ public:
    }
 
    inline explicit biwasher(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
-      const real &_ia, const real &_ib,
-      const real &_oa, const real &_ob
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
+      const real _ia, const real _ib,
+      const real _oa, const real _ob
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -121,10 +121,10 @@ public:
    }
 
    inline explicit biwasher(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
-      const real &_ia, const real &_ib,
-      const real &_oa, const real &_ob, const tag &thebase
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
+      const real _ia, const real _ib,
+      const real _oa, const real _ob, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       a(ax,ay,az),

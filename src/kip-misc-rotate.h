@@ -154,7 +154,7 @@ public:
    //    clockwise about z by angle gam,
    // and finally translates by (p.x, p.y, p.z).
    inline explicit rotate(
-      const real &alpha, const real &beta, const real &gam, const point<real> &p
+      const real alpha, const real beta, const real gam, const point<real> &p
    ) : o(p) {
 
       // Note: h, ex, and ey are not initialized by this constructor!
@@ -186,7 +186,7 @@ public:
    // back
    // --------------------------------
 
-   inline point<real> back(const real &px, const real &py, const real &pz) const
+   inline point<real> back(const real px, const real py, const real pz) const
       { return o + px*f1 + py*f2 + pz*f3; }
 
    inline point<real> back(const point<real> &p) const
@@ -200,17 +200,17 @@ public:
    //    back_00n (px=0, py=0)   back_01n (px=0, py=1)   back_0nn (px=0)
    // --------------------------------
 
-   inline point<real> back_n00(const real &px) const { return o + px*f1; }
-   inline point<real> back_0n0(const real &py) const { return o + py*f2; }
-   inline point<real> back_00n(const real &pz) const { return o + pz*f3; }
+   inline point<real> back_n00(const real px) const { return o + px*f1; }
+   inline point<real> back_0n0(const real py) const { return o + py*f2; }
+   inline point<real> back_00n(const real pz) const { return o + pz*f3; }
 
-   inline point<real> back_n01(const real &px) const { return o + px*f1 + f3; }
-   inline point<real> back_0n1(const real &py) const { return o + py*f2 + f3; }
-   inline point<real> back_01n(const real &pz) const { return o + pz*f3 + f2; }
+   inline point<real> back_n01(const real px) const { return o + px*f1 + f3; }
+   inline point<real> back_0n1(const real py) const { return o + py*f2 + f3; }
+   inline point<real> back_01n(const real pz) const { return o + pz*f3 + f2; }
 
-   inline point<real> back_nm0(const real &px) const { return o + px*f1 - f2; }
+   inline point<real> back_nm0(const real px) const { return o + px*f1 - f2; }
 
-   inline point<real> back_0nn(const real &py, const real &pz) const
+   inline point<real> back_0nn(const real py, const real pz) const
       { return o + py*f2 + pz*f3; }
 };
 
@@ -302,7 +302,7 @@ public:
    // rotate(one,two,three, factor)
    inline explicit rotate(
       const point<real> &one, const point<real> &two, const point<real> &three,
-      const real &factor
+      const real factor
    ) : o(one)
    {
       const rotate<2,real> t(one,two);

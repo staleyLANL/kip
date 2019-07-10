@@ -4,7 +4,7 @@
 #define kip_dry_function(name)\
    template<class real, class base>\
    inline rotate<-3,real> name(\
-      const internal::vars<real,base> &vars, const real &h, const real &v\
+      const internal::vars<real,base> &vars, const real h, const real v\
    )
 
 
@@ -19,7 +19,7 @@
 // n
 template<class real, class base>
 inline rotate<-3,real> dry_n
-  (const internal::vars<real,base> &vars, const real &v)
+  (const internal::vars<real,base> &vars, const real v)
 {
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_01n(v-vars.veps),   // (1,v)
@@ -29,7 +29,7 @@ inline rotate<-3,real> dry_n
 // s
 template<class real, class base>
 inline rotate<-3,real> dry_s
-  (const internal::vars<real,base> &vars, const real &v)
+  (const internal::vars<real,base> &vars, const real v)
 {
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_00n(v+vars.veps),   // (0,v)
@@ -39,7 +39,7 @@ inline rotate<-3,real> dry_s
 // e
 template<class real, class base>
 inline rotate<-3,real> dry_e
-  (const internal::vars<real,base> &vars, const real &h)
+  (const internal::vars<real,base> &vars, const real h)
 {
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0n0(h-vars.heps),   // (h,0)
@@ -49,7 +49,7 @@ inline rotate<-3,real> dry_e
 // w
 template<class real, class base>
 inline rotate<-3,real> dry_w
-  (const internal::vars<real,base> &vars, const real &h)
+  (const internal::vars<real,base> &vars, const real h)
 {
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0n1(h+vars.heps),   // (h,1)

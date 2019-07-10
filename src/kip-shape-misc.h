@@ -53,7 +53,7 @@ class point_xy {
 public:
    real x, y;
    inline explicit point_xy() { }
-   inline explicit point_xy(const real &_x, const real &_y) : x(_x), y(_y) { }
+   inline explicit point_xy(const real _x, const real _y) : x(_x), y(_y) { }
 };
 
 
@@ -63,7 +63,7 @@ class point_xr {
 public:
    real x, r;
    inline explicit point_xr() { }
-   inline explicit point_xr(const real &_x, const real &_r) : x(_x), r(_r) { }
+   inline explicit point_xr(const real _x, const real _r) : x(_x), r(_r) { }
 };
 
 
@@ -135,10 +135,10 @@ public:
    // inq()
    // inq(real)
    inline explicit inq() { }
-   inline explicit inq(const real &_q) : q(_q) { }
+   inline explicit inq(const real _q) : q(_q) { }
 
    // assignment from real
-   inline inq &operator=(const real &from)
+   inline inq &operator=(const real from)
    {
       q = from;
       return *this;
@@ -156,10 +156,10 @@ public:
    // operator()(n,        shape, color, normalized [, fac = default])
 
    inline inq &operator()(
-      const real &nx, const real &ny, const real &nz,
+      const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
       const normalized_t _normalized,
-      const real &_fac = real(-1)
+      const real _fac = real(-1)
    ) {
       n.x = nx;  shape = _shape;
       n.y = ny;  color = _shape;
@@ -172,7 +172,7 @@ public:
       const point<real> &_n,
       const kip::shape<real,base> *const _shape,
       const normalized_t _normalized,
-      const real &_fac = real(-1)
+      const real _fac = real(-1)
    ) {
       shape = _shape;  n = _n;
       color = _shape;  normalized = _normalized;
@@ -181,11 +181,11 @@ public:
    }
 
    inline inq &operator()(
-      const real &nx, const real &ny, const real &nz,
+      const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
       const base *const _color,
       const normalized_t _normalized,
-      const real &_fac = real(-1)
+      const real _fac = real(-1)
    ) {
       n.x = nx;  shape = _shape;
       n.y = ny;  color = _color;
@@ -199,7 +199,7 @@ public:
       const kip::shape<real,base> *const _shape,
       const base *const _color,
       const normalized_t _normalized,
-      const real &_fac = real(-1)
+      const real _fac = real(-1)
    ) {
       shape = _shape;  n = _n;
       color = _color;  normalized = _normalized;

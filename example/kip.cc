@@ -500,13 +500,15 @@ inline bool sphere(const int n)
    { return shape<kip::sphere<real,base>>(n); }
 inline bool spheroid(const int n)
    { return shape<kip::spheroid<real,base>>(n); }
+inline bool tabular(const int n)
+   { return shape<kip::tabular<real,base>>(n); }
+inline bool triangle(const int n)
+   { return shape<kip::triangle<real,base>>(n); }
 inline bool washer(const int n)
    { return shape<kip::washer<real,base>>(n); }
 
 /*
 surf
-tabular
-triangle
 tri
 xplane
 yplane
@@ -642,6 +644,8 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    make_shape(silo),
    make_shape(sphere),
    make_shape(spheroid),
+   make_shape(tabular),
+   make_shape(triangle),
    make_shape(washer),
 
    // window

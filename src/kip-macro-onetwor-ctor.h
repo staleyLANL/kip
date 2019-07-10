@@ -14,7 +14,7 @@
    inline explicit kip_class(
       const point<real> &_a = point<real>(real(0), real(0), real(0)),
       const point<real> &_b = point<real>(real(1), real(0), real(0)),
-      const real &_r = real(1)
+      const real _r = real(1)
    ) :
       shape<real,tag>(this),
       kip_aye(_a), kip_bee(_b), r(_r)
@@ -22,7 +22,7 @@
 
    inline explicit kip_class(
       const point<real> &_a,
-      const point<real> &_b, const real &_r, const tag &thebase
+      const point<real> &_b, const real _r, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       kip_aye(_a), kip_bee(_b), r(_r)
@@ -32,7 +32,7 @@
 
    // kip_class(a.x,a.y,a.z[,b.x,b.y,b.z[,r[,base]]])
    inline explicit kip_class(
-      const real &ax, const real &ay, const real &az
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
       kip_aye(ax,ay,az),
@@ -41,8 +41,8 @@
    { }
 
    inline explicit kip_class(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz
    ) :
       shape<real,tag>(this),
       kip_aye(ax,ay,az),
@@ -51,8 +51,8 @@
    { }
 
    inline explicit kip_class(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz, const real &_r
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz, const real _r
    ) :
       shape<real,tag>(this),
       kip_aye(ax,ay,az),
@@ -61,9 +61,9 @@
    { }
 
    inline explicit kip_class(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
-      const real &_r, const tag &thebase
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
+      const real _r, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       kip_aye(ax,ay,az),

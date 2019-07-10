@@ -25,7 +25,7 @@ public:
 
    // min_and_part(min,ptr)
    template<class real>
-   inline explicit min_and_part(const real &_min, const SHAPE &obj) :
+   inline explicit min_and_part(const real _min, const SHAPE &obj) :
       min(minimum_t(_min)), ptr(&obj)
    { }
 };

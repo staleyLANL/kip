@@ -321,7 +321,7 @@ inline void rtrace_h(
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
    const size_t imin, const size_t iend, const int ipart,
-   const size_t jmin, const size_t jend, const real &vmin, const real &vmax,
+   const size_t jmin, const size_t jend, const real vmin, const real vmax,
    const shape_vectors<real,base> &bin
 ) {
    const size_t ilo = imin + size_t(ipart  )*(iend-imin)/engine.hdivision;
@@ -358,7 +358,7 @@ inline void rtrace_v(
    const engine<real> &engine, image<real,color> &image,
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
-   const size_t imin, const size_t iend, const real &hmin, const real &hmax,
+   const size_t imin, const size_t iend, const real hmin, const real hmax,
    const size_t jmin, const size_t jend, const int jpart,
    const shape_vectors<real,base> &bin
 ) {
@@ -407,8 +407,8 @@ void rtrace(
    vars<real,base> &vars, const light<real> &light,
    array<2,pix> &pixel,
 
-   const real &hmin, const real &hmax, const size_t imin, const size_t iend,
-   const real &vmin, const real &vmax, const size_t jmin, const size_t jend,
+   const real hmin, const real hmax, const size_t imin, const size_t iend,
+   const real vmin, const real vmax, const size_t jmin, const size_t jend,
 
    const shape_vectors<real,base> &bin,
    const bool rootlevel

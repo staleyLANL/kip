@@ -52,7 +52,7 @@ public:
    inline explicit cube(
       const point<real> &_c = point<real>(real(0), real(0), real(0)),
       const point<real> &_a = point<real>(real(0), real(0), real(0)),
-      const real &_r = real(1)
+      const real _r = real(1)
    ) :
       shape<real,tag>(this),
       c(_c), a(_a), r(_r)
@@ -61,7 +61,7 @@ public:
    inline explicit cube(
       const point<real> &_c,
       const point<real> &_a,
-      const real &_r, const tag &thebase
+      const real _r, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       c(_c), a(_a), r(_r)
@@ -71,7 +71,7 @@ public:
 
    // cube(c.x,c.y,c.z[,a.x,a.y,a.z[,r[,base]]])
    inline explicit cube(
-      const real &cx, const real &cy, const real &cz
+      const real cx, const real cy, const real cz
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -80,8 +80,8 @@ public:
    { }
 
    inline explicit cube(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -90,9 +90,9 @@ public:
    { }
 
    inline explicit cube(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az,
-      const real &_r
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az,
+      const real _r
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -101,9 +101,9 @@ public:
    { }
 
    inline explicit cube(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az,
-      const real &_r, const tag &thebase
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az,
+      const real _r, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       c(cx,cy,cz),

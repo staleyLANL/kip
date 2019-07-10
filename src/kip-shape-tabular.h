@@ -108,28 +108,28 @@ public:
 
    // tabular([a.x,a.y,a.z[,b.x,b.y,b.z[,(x,r)[,base]]]])
    inline explicit tabular(
-      const real &ax, const real &ay, const real &az
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this), a(ax,ay,az), b(1,0,0) { }
 
    /*
    inline explicit tabular(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz
    ) :
       shape<real,tag>(this), a(ax,ay,az), b(bx,by,bz) { }
    */
 
    inline explicit tabular(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
       const table_t &_table = table_t()
    ) :
       shape<real,tag>(this), a(ax,ay,az), b(bx,by,bz), table(_table) { }
 
    inline explicit tabular(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
       const table_t &_table, const tag &thebase
    ) :
       shape<real,tag>(this,thebase), a(ax,ay,az), b(bx,by,bz), table(_table) { }
@@ -138,8 +138,8 @@ public:
 
    // tabular(a.x,a.y,a.z,b.x,b.y,b.z,base)
    inline explicit tabular(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz, const tag &thebase
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       a(ax,ay,az), b(bx,by,bz)
@@ -166,7 +166,7 @@ public:
 
 
    // push
-   inline point_xr<real> &push(const real &x, const real &r)
+   inline point_xr<real> &push(const real x, const real r)
    {
       return table.push_back(point_xr<real>(x,r)), table.back();
    }
@@ -749,8 +749,8 @@ kip_random(tabular)
       point_xr<real> p;
 
       p.x = i == 0
-         ? real(0.3)*random<real>()/nseg
-         : real(0.3)*random<real>()/nseg + obj.table[i-1].x;
+         ? real(0.3)*random<real>()/real(nseg)
+         : real(0.3)*random<real>()/real(nseg) + obj.table[i-1].x;
       p.r = real(0.15)*random<real>();
       /*
       do

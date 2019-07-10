@@ -70,7 +70,7 @@ public:
 
    // box(c.x,c.y,c.z[,a.x,a.y,a.z[,r.x,r.y,r.z[,base]]])
    inline explicit box(
-      const real &cx, const real &cy, const real &cz
+      const real cx, const real cy, const real cz
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -79,8 +79,8 @@ public:
    { }
 
    inline explicit box(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -89,9 +89,9 @@ public:
    { }
 
    inline explicit box(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az,
-      const real &rx, const real &ry, const real &rz
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az,
+      const real rx, const real ry, const real rz
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
@@ -100,9 +100,9 @@ public:
    { }
 
    inline explicit box(
-      const real &cx, const real &cy, const real &cz,
-      const real &ax, const real &ay, const real &az,
-      const real &rx, const real &ry, const real &rz, const tag &thebase
+      const real cx, const real cy, const real cz,
+      const real ax, const real ay, const real az,
+      const real rx, const real ry, const real rz, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       c(cx,cy,cz),

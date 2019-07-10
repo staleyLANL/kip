@@ -186,7 +186,7 @@ private:
 
    // rpush
    void rpush(
-      bbox_representation_t &, const real &, const base &,
+      bbox_representation_t &, const real, const base &,
       const and_tight_t &, const and_tight_t &, const and_tight_t &,
       const and_tight_t &, const and_tight_t &, const and_tight_t &
    );
@@ -196,7 +196,7 @@ private:
       const bbox<real> &,  // bounding box
       const shape<real,base> *const,  // associated shape
 
-      const real & = real(0),  // scale
+      const real = real(0),  // scale
 
       // bases
       const base & = default_parameter(internal::tclass<base>()),
@@ -211,7 +211,7 @@ public:
       const bbox<real> &,  // bounding box
       const shape<real,base> &,  // associated shape
 
-      const real & = real(0),  // scale
+      const real = real(0),  // scale
 
       // for tight/partial/loose bbox representation
       const base & = default_parameter(internal::tclass<base>()),
@@ -237,7 +237,7 @@ public:
    bbox<real> aabb(
       const bool = false,  // each
       const bool = false,  // overall
-      const real & = real(0),  // scale
+      const real   = real(0),  // scale
       const base & = default_parameter(internal::tclass<base>()),  // tight
       const base & = default_parameter(internal::tclass<base>()),  // partial
       const base & = default_parameter(internal::tclass<base>())   // loose
@@ -377,7 +377,7 @@ shape<real,base> *model<real,base>::push(const shape<real,base> *const ptr)
 // rpush
 template<class real, class base>
 void model<real,base>::rpush(
-   bbox_representation_t &rep, const real &r, const base &thebase,
+   bbox_representation_t &rep, const real r, const base &thebase,
    const and_tight_t &ax, const and_tight_t &ay, const and_tight_t &az,
    const and_tight_t &bx, const and_tight_t &by, const and_tight_t &bz
 ) {
@@ -403,7 +403,7 @@ model<real,base>::push_bbox_ptr(
    const bbox<real> &b,
    const shape<real,base> *const shape,
 
-   const real &scale,
+   const real scale,
 
    const base &_tight_base,
    const base &_partial_base,
@@ -489,7 +489,7 @@ model<real,base>::push_bbox(
    const bbox<real> &b,
    const shape<real,base> &shape,
 
-   const real &scale,
+   const real scale,
 
    const base &tight_base,
    const base &partial_base,
@@ -621,7 +621,7 @@ namespace internal {
 
       inline functor_bound(
          kip::model<real,base> &_model, bbox<real> &_rv,
-         const bool &_each, const real &_scale,
+         const bool &_each, const real _scale,
          const base &_tight, const base &_partial, const base &_loose
       ) :
          model(_model), rv(_rv), each(_each), scale(_scale),
@@ -660,7 +660,7 @@ namespace internal {
 
 template<class real, class base>
 bbox<real> model<real,base>::aabb(
-   const bool each, const bool overall, const real &scale,
+   const bool each, const bool overall, const real scale,
    const base &tight, const base &partial, const base &loose
 ) {
    // chuck any existing clutter

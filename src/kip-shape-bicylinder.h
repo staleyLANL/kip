@@ -49,8 +49,8 @@ public:
    inline explicit bicylinder(
       const point<real> &_a,
       const point<real> &_b,
-      const real &_ra,
-      const real &_rb
+      const real _ra,
+      const real _rb
    ) :
       shape<real,tag>(this),
       a(_a),
@@ -63,8 +63,8 @@ public:
    inline explicit bicylinder(
       const point<real> &_a,
       const point<real> &_b,
-      const real &_ra,
-      const real &_rb, const tag &thebase
+      const real _ra,
+      const real _rb, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       a(_a),
@@ -78,7 +78,7 @@ public:
 
    // bicylinder(a.x,a.y,a.z[,b.x,b.y,b.z[,r.a,r.b[,base]]])
    inline explicit bicylinder(
-      const real &ax, const real &ay, const real &az
+      const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -89,8 +89,8 @@ public:
    }
 
    inline explicit bicylinder(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -101,9 +101,9 @@ public:
    }
 
    inline explicit bicylinder(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
-      const real &_ra, const real &_rb
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
+      const real _ra, const real _rb
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
@@ -114,9 +114,9 @@ public:
    }
 
    inline explicit bicylinder(
-      const real &ax, const real &ay, const real &az,
-      const real &bx, const real &by, const real &bz,
-      const real &_ra, const real &_rb, const tag &thebase
+      const real ax, const real ay, const real az,
+      const real bx, const real by, const real bz,
+      const real _ra, const real _rb, const tag &thebase
    ) :
       shape<real,tag>(this,thebase),
       a(ax,ay,az),
@@ -205,7 +205,7 @@ kip_process(bicylinder)
 // bound_bicylinder - helper
 namespace internal {
    template<template<class,class> class shape, class real, class tag>
-   bbox<real> bound_bicylinder(const shape<real,tag> &obj, const real &ra, const real &rb)
+   bbox<real> bound_bicylinder(const shape<real,tag> &obj, const real ra, const real rb)
    {
       point<real> amin, amax;  internal::bound_abr(obj.a, obj.b, ra, amin,amax);
       point<real> bmin, bmax;  internal::bound_abr(obj.b, obj.a, rb, bmin,bmax);

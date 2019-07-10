@@ -225,7 +225,7 @@ inline bool get_first(
    const point<real> &diff,
 #endif
 
-   const real &qmin, inq<real,tag> &q
+   const real qmin, inq<real,tag> &q
 ) {
    const SHAPE<real,tag> &obj = *(const SHAPE<real,tag> *)bin[s].shape;
    if (!inbound(obj,i,j)) return false;
@@ -290,7 +290,7 @@ inline bool op_first(
 #endif
 
    // qmin, q
-   const real &qmin,
+   const real qmin,
    inq<real,tag> &q,
 
    // insub
@@ -334,7 +334,7 @@ inline bool op_all(
 #endif
 
    // qmin, q
-   const real &qmin,
+   const real qmin,
    afew<inq<real,tag>> &q,
 
    // insub
@@ -379,7 +379,7 @@ inline bool op_all(
    inline void operator()(\
       const engine<real> &engine, const image<real,color> &image,\
       std::vector<minimum_and_shape<real,base>> &bin,\
-      size_t &endsorted, const size_t binsize, const real &maximum,\
+      size_t &endsorted, const size_t binsize, const real maximum,\
       inq<real,base> &qa, inq<real,base> *qa_ptr,\
       inq<real,base> &qb, inq<real,base> *qb_ptr,\
       color *const ptr,\
@@ -407,7 +407,7 @@ inline bool op_all(
    inline bool operator()(\
       const engine<real> &engine, const image<real,color> &image,\
       std::vector<minimum_and_shape<real,base>> &bin,\
-      size_t &endsorted, const size_t binsize, const real &maximum,\
+      size_t &endsorted, const size_t binsize, const real maximum,\
       inq<real,base> &qa, inq<real,base> *qa_ptr,\
       inq<real,base> &qb, inq<real,base> *qb_ptr,\
       const real h, const real v, RGBA<unsigned> &sum,\
@@ -752,7 +752,7 @@ inline void fill_loop_plain(
 
    const size_t imin, const size_t iend,
    const size_t jmin, const size_t jend,
-   const size_t zone, const real &maximum,
+   const size_t zone, const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
    size_t endsorted, const size_t binsize,
@@ -801,7 +801,7 @@ inline void fill_loop_lean(
 
    const size_t imin, const size_t iend,
    const size_t jmin, const size_t jend,
-   const size_t zone, const real &maximum,
+   const size_t zone, const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
    size_t endsorted, const size_t binsize,
@@ -860,11 +860,11 @@ inline void fill_loop_anti(
    const vars  <real,base > &vars,
    const light <real      > &light,
 
-   const real &hcent, const size_t imin, const size_t iend,
-         real  v,     const size_t jmin, const size_t jend,
+   const real hcent, const size_t imin, const size_t iend,
+         real v,     const size_t jmin, const size_t jend,
 
    const size_t zone,
-   const real &maximum,
+   const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
    size_t endsorted, const size_t binsize,

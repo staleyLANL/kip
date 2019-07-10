@@ -51,7 +51,7 @@ public:
 
    // triangle(ux,uy,uz[,vx,vy,vz[,wx,wy,wz[,tag]]])
    inline explicit triangle(
-      const real &ux, const real &uy, const real &uz
+      const real ux, const real uy, const real uz
    ) :
       shape<real,tag>(this),
       u(ux, uy, uz),
@@ -60,8 +60,8 @@ public:
    { this->eyelie = false; }
 
    inline explicit triangle(
-      const real &ux, const real &uy, const real &uz,
-      const real &vx, const real &vy, const real &vz
+      const real ux, const real uy, const real uz,
+      const real vx, const real vy, const real vz
    ) :
       shape<real,tag>(this),
       u(ux, uy, uz),
@@ -70,9 +70,9 @@ public:
    { this->eyelie = false; }
 
    inline explicit triangle(
-      const real &ux, const real &uy, const real &uz,
-      const real &vx, const real &vy, const real &vz,
-      const real &wx, const real &wy, const real &wz
+      const real ux, const real uy, const real uz,
+      const real vx, const real vy, const real vz,
+      const real wx, const real wy, const real wz
    ) :
       shape<real,tag>(this),
       u(ux, uy, uz),
@@ -81,9 +81,9 @@ public:
    { this->eyelie = false; }
 
    inline explicit triangle(
-      const real &ux, const real &uy, const real &uz,
-      const real &vx, const real &vy, const real &vz,
-      const real &wx, const real &wy, const real &wz, const tag &_tag
+      const real ux, const real uy, const real uz,
+      const real vx, const real vy, const real vz,
+      const real wx, const real wy, const real wz, const tag &_tag
    ) :
       shape<real,tag>(this,_tag),
       u(ux, uy, uz),

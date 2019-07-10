@@ -17,7 +17,7 @@ public:
    { }
 
    // point(x,y,z)
-   inline explicit point(const real &_x, const real &_y, const real &_z) :
+   inline explicit point(const real _x, const real _y, const real _z) :
       x(_x), y(_y), z(_z)
    { }
 
@@ -29,7 +29,7 @@ public:
 
 
    // operator()(x,y,z)
-   inline point &operator()(const real &_x, const real &_y, const real &_z)
+   inline point &operator()(const real _x, const real _y, const real _z)
    {
       x = _x;
       y = _y;
@@ -39,7 +39,7 @@ public:
 
    // operator()(offset, d,theta,phi)
    inline point &operator()(
-      const point<real> &offset, const real &d, const real &theta, const real &phi
+      const point<real> &offset, const real d, const real theta, const real phi
    ) {
       const real p = phi  *(real(kip_pi)/180), cosp = op::cos(p);
       const real t = theta*(real(kip_pi)/180);
@@ -76,14 +76,14 @@ inline bool operator!=(const point<real> &a, const point<real> &b)
 
 // real*point
 template<class real>
-inline point<real> operator*(const real &c, const point<real> &u)
+inline point<real> operator*(const real c, const point<real> &u)
 {
    return point<real>(c*u.x, c*u.y, c*u.z);
 }
 
 // point *= real
 template<class real>
-inline point<real> &operator*=(point<real> &u, const real &c)
+inline point<real> &operator*=(point<real> &u, const real c)
 {
    u.x *= c;
    u.y *= c;
