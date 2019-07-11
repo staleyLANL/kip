@@ -45,8 +45,10 @@ inline real random()
 
 
 // pi
-#define kip_pi\
-   3.141592653589793238462643383279502884197169399375105820974944592307816406286
+template<class real>
+inline constexpr real pi = real(
+3.141592653589793238462643383279502884197169399375105820974944592307816406286L);
+
 
 
 // kip::cerr
@@ -99,26 +101,12 @@ inline real random()
       public:
          inline explicit tclass() { }
       };
-
-      /*
-      // fast
-      class fast {
-      public:
-         inline bool operator()(const bool) const { return true; }
-      };
-
-      // safe
-      class safe {
-      public:
-         inline bool operator()(const bool b) const { return b; }
-      };
-      */
    }
 
    namespace op {
       // clip
       template<class T>
-      inline T clip(const T &lower, const T &value, const T &upper)
+      inline T clip(const T lower, const T value, const T upper)
       {
          return
             value < lower ? lower
@@ -357,14 +345,11 @@ inline unsigned abs(const int val)
 inline unsigned long abs(const long val)
    { using ulong = unsigned long; return ulong(std::labs(val)); }
 
-// Apparently, Portland Group C++ is missing std::abs for (float), (long double)
-#ifndef __PGI
 inline float abs(const float val)
    { return ((float (*)(const float))(std::abs))(val); }
 
 inline long double abs(const long double val)
    { return ((long double (*)(const long double))(std::abs))(val); }
-#endif
 
 inline double abs(const double val)
    { return std::fabs(val); }
@@ -409,14 +394,12 @@ inline long double pow(const long double val, const int n)
 
 
 // fmod
-#ifndef __PGI
 inline float fmod(const float a, const float b)
    { return ((float (*)(const float, const float))(std::fmod))(a,b); }
 
 inline long double fmod(const long double a, const long double b)
    { return ((long double (*)(const long double, const long double))
              (std::fmod))(a,b); }
-#endif
 
 inline double fmod(const double a, const double b)
    { return ((double (*)(const double, const double))(std::fmod))(a,b); }
@@ -519,18 +502,6 @@ max(const T &a, const T &b)
 template<class T> inline T
 max(const T &a, const T &b, const T &c)
    { return op::max(a,op::max(b,c)); }
-
-template<class T> inline T
-max(const T &a, const T &b, const T &c, const T &d)
-   { return op::max(a,op::max(b,c,d)); }
-
-template<class T> inline T
-max(const T &a, const T &b, const T &c, const T &d, const T &e)
-   { return op::max(a,op::max(b,c,d,e)); }
-
-template<class T> inline T
-max(const T &a, const T &b, const T &c, const T &d, const T &e, const T &f)
-   { return op::max(a,op::max(b,c,d,e,f)); }
 
 } // namespace op
 

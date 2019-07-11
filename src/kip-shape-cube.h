@@ -295,9 +295,9 @@ kip_random(cube)
    obj.c.z = op::twice(random<real>() - real(0.5));
 
    // angles
-   obj.a.x = real(kip_pi)*random<real>();
-   obj.a.y = real(kip_pi)*random<real>();
-   obj.a.z = real(kip_pi)*random<real>();
+   obj.a.x = pi<real>*random<real>();
+   obj.a.y = pi<real>*random<real>();
+   obj.a.z = pi<real>*random<real>();
 
    // radii
    obj.r = real(0.15)*random<real>();
@@ -500,7 +500,7 @@ kip_read_value(cube) {
       addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
    }
 
-   obj.a *= real(kip_pi)/180;
+   obj.a *= pi<real>/180;
    return !s.fail();
 }
 
@@ -520,7 +520,7 @@ kip_ostream(cube) {
             format == format_t::format_op)
       okay = k << "cube("
                <<  obj.c << ", "
-               << (180/real(kip_pi))*obj.a << ", "
+               << (180/pi<real>)*obj.a << ", "
                <<  obj.r &&
              write_finish(k, obj, true);
 
@@ -528,7 +528,7 @@ kip_ostream(cube) {
    else
       okay = k << "cube(\n   " &&
              k.indent() <<  obj.c << ",\n   " &&
-             k.indent() << (180/real(kip_pi))*obj.a << ",\n   " &&
+             k.indent() << (180/pi<real>)*obj.a << ",\n   " &&
              k.indent() <<  obj.r &&
              write_finish(k, obj, false);
 

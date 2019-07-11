@@ -44,7 +44,7 @@ inline real linear(const real a, const real t, const real b, const char)
 // cosine
 template<class real>
 inline real cosine(const real a, const real t, const real b)
-   { return linear(a, real(0.5)*(1-op::cos(real(kip_pi)*t)), b); }
+   { return linear(a, real(0.5)*(1-op::cos(pi<real>*t)), b); }
 
 template<class real>
 inline real cosine(const real a, const real t, const real b, const char)
@@ -175,8 +175,8 @@ inline real noise(
    const real tmp8 = ran   <real>(i, xint+1,yint+1, zint+1);
 #endif
 
-   const real tx = real(0.5)*(1 - op::cos(real(kip_pi)*(x-xint)));
-   const real ty = real(0.5)*(1 - op::cos(real(kip_pi)*(y-yint)));
+   const real tx = real(0.5)*(1 - op::cos(pi<real>*(x-xint)));
+   const real ty = real(0.5)*(1 - op::cos(pi<real>*(y-yint)));
 
    return interpolate(
       interpolate(

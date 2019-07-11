@@ -471,11 +471,11 @@ kip_random(surf)
    obj.push(point<real>(center.x,center.y,center.z-r));  // node [0]: south pole
    obj.push(point<real>(center.x,center.y,center.z+r));  // node [1]: north pole
 
-   const real dt = op::twice(real(kip_pi)/real(nlong));
-   const real dp = real(kip_pi)/real(nlat);
+   const real dt = op::twice(pi<real>/real(nlong));
+   const real dp = pi<real>/real(nlat);
 
    for (unsigned j = 1;  j < nlat ;  ++j) {
-      const real phi   = real(kip_pi)-real(j)*dp;
+      const real phi   = pi<real>-real(j)*dp;
    for (unsigned i = 0;  i < nlong;  ++i) {
       const real theta = real(i)*dt;
       obj.push(center + r*point<real>(

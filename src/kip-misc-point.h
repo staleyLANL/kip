@@ -41,8 +41,8 @@ public:
    inline point &operator()(
       const point<real> &offset, const real d, const real theta, const real phi
    ) {
-      const real p = phi  *(real(kip_pi)/180), cosp = op::cos(p);
-      const real t = theta*(real(kip_pi)/180);
+      const real p = phi  *(pi<real>/180), cosp = op::cos(p);
+      const real t = theta*(pi<real>/180);
 
       x = offset.x + op::cos(t)*d*cosp;
       y = offset.y - op::sin(t)*d*cosp;

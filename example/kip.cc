@@ -742,8 +742,36 @@ bool read(
 // main
 // -----------------------------------------------------------------------------
 
+#define printval(val) std::cout << #val " = " << val << std::endl
+
 int main(const int argc, const char *const *const argv)
 {
+   /*
+   printval(sizeof(int));
+   printval(sizeof(unsigned int));
+   printval(sizeof(long));
+   printval(sizeof(unsigned long));
+   printval(sizeof(size_t));
+
+   printval(sizeof(kip::bicylinder<real,base>));
+   printval(sizeof(kip::biwasher  <real,base>));
+   printval(sizeof(kip::box       <real,base>));
+   printval(sizeof(kip::circle    <real,base>));
+   printval(sizeof(kip::cone      <real,base>));
+   printval(sizeof(kip::cube      <real,base>));
+   printval(sizeof(kip::cylinder  <real,base>));
+   printval(sizeof(kip::ellipsoid <real,base>));
+   printval(sizeof(kip::paraboloid<real,base>));
+   printval(sizeof(kip::pill      <real,base>));
+   printval(sizeof(kip::polygon   <real,base>));
+   printval(sizeof(kip::silo      <real,base>));
+   printval(sizeof(kip::sphere    <real,base>));
+   printval(sizeof(kip::spheroid  <real,base>));
+   printval(sizeof(kip::tabular   <real,base>));
+   printval(sizeof(kip::triangle  <real,base>));
+   printval(sizeof(kip::washer    <real,base>));
+   */
+
    kip::threads = 0;
    std::string title = argv[0];
 

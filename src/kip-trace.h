@@ -76,14 +76,14 @@ inline void trace_vars(
       #ifdef KIP_ANGLE_TWEAK
          // With slight angle randomization. This is a temporary solution
          // to the cut-plane issue Laura encountered.
-         real(kip_pi/180) * angle_tweak(view.roll),
-         real(kip_pi/180) * angle_tweak(view.phi),
-         real(kip_pi/180) * angle_tweak(view.theta),
+         pi<real>/180 * angle_tweak(view.roll),
+         pi<real>/180 * angle_tweak(view.phi),
+         pi<real>/180 * angle_tweak(view.theta),
       #else
          // Normal computation
-         real(kip_pi/180) * view.roll,
-         real(kip_pi/180) * view.phi,
-         real(kip_pi/180) * view.theta,
+         pi<real>/180 * view.roll,
+         pi<real>/180 * view.phi,
+         pi<real>/180 * view.theta,
       #endif
       view.target
    );
@@ -92,7 +92,7 @@ inline void trace_vars(
    vars.eyeball = vars.t2e.back_n00(view.d);
 
    // target rectangle: [-hmax,+hmax] x [-vmax,+vmax]
-   vars.hmax = view.d * op::tan(view.fov * real(kip_pi/360));
+   vars.hmax = view.d * op::tan(view.fov * (pi<real>/360));
    vars.vmax = image.aspect * real(vpixel)/real(hpixel) * vars.hmax;
 
    // pixels: half & full sizes (remember, domain length is 2*max (-max..max))

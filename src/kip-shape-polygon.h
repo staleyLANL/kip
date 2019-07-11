@@ -260,9 +260,9 @@ kip_random(polygon)
 
    // rotation to move vertices to their actual locations
    const rotate<3,real> move(
-      real(kip_pi)*random<real>(),
-      real(kip_pi)*random<real>(),
-      real(kip_pi)*random<real>(),
+      pi<real>*random<real>(),
+      pi<real>*random<real>(),
+      pi<real>*random<real>(),
       point<real>(
          op::twice(random<real>() - real(0.5)),
          op::twice(random<real>() - real(0.5)),
