@@ -92,7 +92,7 @@ kip_process(sphere)
    misc.sphere.m = (modf-r)*(modf+r);  // = modf^2 - r^2
    interior = inside(eyeball);
 
-   return op::abs(modf-r);
+   return std::abs(modf-r);
 } kip_end
 
 
@@ -145,9 +145,9 @@ kip_infirst(sphere)
    if (h < 0) return false;
 
    if (interior)
-      q = p + op::sqrt(h);
+      q = p + std::sqrt(h);
    else
-      q = p - op::sqrt(h);
+      q = p - std::sqrt(h);
    if (!(0 < q && q < qmin)) return false;
 
    q.point<real>::operator=(eyeball - real(q)*diff);
@@ -163,14 +163,14 @@ kip_inall(sphere)
    if (h < 0) return false;
 
    if (interior) {
-      ints[0] = p + op::sqrt(h);
+      ints[0] = p + std::sqrt(h);
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
       ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);
       ints[0](ints[0] - c, this, normalized_t::nonorm);
       ints.setsize(1);
 
    } else {
-      const real hsqrt = op::sqrt(h);
+      const real hsqrt = std::sqrt(h);
 
       ints[0] = p - hsqrt;
       if (!(0 < ints[0] && ints[0] < qmin)) return false;

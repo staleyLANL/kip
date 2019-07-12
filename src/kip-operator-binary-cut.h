@@ -134,7 +134,7 @@ kip_process(kipcut)
 
    // The following is equivalent to "and" with !inb. The effects are to swap
    // the "both" and "a" cases, and the "b" and "neither" cases.
-   return op::abs(
+   return std::abs(
       binary.ina
     ? binary.inb
     ? binary.bmin  // in both

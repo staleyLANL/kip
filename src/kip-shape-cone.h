@@ -59,13 +59,13 @@ kip_process(cone)
        rot.ex >= rot.h && rot.ey <= r
     ?  rot.ex - rot.h  // east
     :  r*rot.ey + rot.h*rot.ex <= 0
-    ?  op::sqrt(rot.ex*rot.ex + rot.ey*rot.ey)  // southwest
+    ?  std::sqrt(rot.ex*rot.ex + rot.ey*rot.ey)  // southwest
     :  rot.h*(rot.h - rot.ex)/r + r - rot.ey <= 0
-    ?  op::sqrt(op::sq(rot.ex-rot.h) + op::sq(rot.ey-r))  // northeast
+    ?  std::sqrt(op::square(rot.ex-rot.h) + op::square(rot.ey-r))  // northeast
     :  rot.h*rot.ey - r*rot.ex >= 0
-    ?  op::abs(r*rot.ex - rot.h*rot.ey)/op::sqrt(rsq+hsq)  // outside
+    ?  std::abs(r*rot.ex - rot.h*rot.ey)/std::sqrt(rsq+hsq)  // outside
     :  op::min(  // inside...
-          op::abs(r*rot.ex - rot.h*rot.ey)/op::sqrt(rsq+hsq), rot.h-rot.ex
+          std::abs(r*rot.ex - rot.h*rot.ey)/std::sqrt(rsq+hsq), rot.h-rot.ex
        )
     ;
 } kip_end
@@ -100,7 +100,7 @@ kip_dry(cone)
 {
    real az;  if (seg.lt(a,az)) return false;
    real bz;  if (seg.lt(b,bz)) return false;
-   return op::sq(bz-seg.c) >= h1*(az-bz-rot.h)*(az-bz+rot.h);
+   return op::square(bz-seg.c) >= h1*(az-bz-rot.h)*(az-bz+rot.h);
 } kip_end
 
 
@@ -139,7 +139,7 @@ kip_infirst(cone)
          if (0 < q && q < qmin) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            if (op::sq(q.y) + op::sq(q.z) <= rsq) {
+            if (op::square(q.y) + op::square(q.z) <= rsq) {
                q.x = rot.h;
                return q(1,0,0, this, normalized_t::yesnorm), true;
             }
@@ -150,7 +150,7 @@ kip_infirst(cone)
       const real f = dx*dx*(1-h1)-1, g = rot.ey*dy + h1*rot.ex*dx, s = g*g + f*h2;
       if (s < 0 || f == 0) return false;
 
-      q = (g - op::sqrt(s))/f;
+      q = (g - std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;  // inside, so don't need the range check
 
@@ -168,7 +168,7 @@ kip_infirst(cone)
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         if (op::sq(q.y) + op::sq(q.z) <= rsq) {
+         if (op::square(q.y) + op::square(q.z) <= rsq) {
             q.x = rot.h;
             return q(1,0,0, this, normalized_t::yesnorm), true;
          }
@@ -178,7 +178,7 @@ kip_infirst(cone)
       const real f = dx*dx*(1-h1)-1, g = rot.ey*dy + h1*rot.ex*dx, s = g*g + f*h2;
       if (s < 0 || f == 0) return false;
 
-      q = (g + op::sqrt(s))/f;
+      q = (g + std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;
       if (!(0 <= q.x && q.x <= rot.h)) return false;
@@ -213,7 +213,7 @@ inline bool cone<real,tag>::get_baseh(
 
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
-   if (op::sq(info.y) + op::sq(info.z) <= rsq) {
+   if (op::square(info.y) + op::square(info.z) <= rsq) {
       info.x = rot.h;
       return info(1,0,0, this, normalized_t::yesnorm), true;
    }
@@ -264,7 +264,7 @@ kip_inall(cone)
    const real s = g*g + f*h2;
 
    if (s < 0 || (rot.ex > rot.h && dx >= 0) || f == 0) return false;
-   const real tmp = op::sqrt(s);
+   const real tmp = std::sqrt(s);
 
    ints.convex();
    inq<real,tag> q1((g+tmp)/f);

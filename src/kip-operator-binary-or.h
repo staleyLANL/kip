@@ -138,7 +138,7 @@ kip_process(kipor)
    interior = binary.ina || binary.inb;
 
    // minimum
-   return op::abs(
+   return std::abs(
       binary.ina
     ? binary.inb
     ? op::max(binary.amin,binary.bmin)  // in both - use furthest exit

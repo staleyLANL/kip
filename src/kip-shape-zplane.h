@@ -97,7 +97,7 @@ kip_process(zplane)
    misc.plane.h = eyeball.z - z;
    misc.plane.norm = misc.plane.h < 0 ? real(-1) : real(1);
    interior = false;
-   return op::abs(misc.plane.h);
+   return std::abs(misc.plane.h);
 } kip_end
 
 
@@ -132,8 +132,8 @@ kip_infirst(zplane)
         q.z = z,
         q(
            0, 0, misc.plane.norm, this,
-          (int(op::abs(q.x/size.x)) % 2 == (q.x > 0)) ==
-          (int(op::abs(q.y/size.y)) % 2 == (q.y > 0)) ? &color : this,
+          (int(std::abs(q.x/size.x)) % 2 == (q.x > 0)) ==
+          (int(std::abs(q.y/size.y)) % 2 == (q.y > 0)) ? &color : this,
            normalized_t::yesnorm
         ),
         true

@@ -322,143 +322,23 @@ inline diagnostic_t addendum(const MESSAGE &message, const diagnostic_t d)
 
 namespace op {
 
-// sgn
-//   -1, if x < 0
-//    1, if x > 0
-//    0, else
-template<class T>
-inline int sgn(const T &x)
-{
-   return x < 0 ? -1 : x > 0 ? 1 : 0;
-}
-
-
-
-// abs
-template<class T>
-inline T abs(const T &val)
-   { return val < T(0) ? -val : val; }
-
-inline unsigned abs(const int val)
-   { return unsigned(std::abs(val)); }
-
-inline unsigned long abs(const long val)
-   { using ulong = unsigned long; return ulong(std::labs(val)); }
-
-inline float abs(const float val)
-   { return ((float (*)(const float))(std::abs))(val); }
-
-inline long double abs(const long double val)
-   { return ((long double (*)(const long double))(std::abs))(val); }
-
-inline double abs(const double val)
-   { return std::fabs(val); }
-
-
-
-// sqrt
-inline float sqrt(const float val)
-   { return ((float (*)(const float))(std::sqrt))(val); }
-
-inline double sqrt(const double val)
-   { return std::sqrt(val); }
-
-inline long double sqrt(const long double val)
-   { return ((long double (*)(const long double))(std::sqrt))(val); }
-
-
-
-   /*
-// pow
-inline float pow(const float val, const float n)
-   { return ((float (*)(const float, const float))(std::pow))(val,n); }
-
-inline float pow(const float val, const int n)
-   { return ((float (*)(const float, const int))(std::pow))(val,n); }
-
-inline double pow(const double val, const double n)
-   { return ((double (*)(const double, const double))(std::pow))(val,n); }
-
-inline double pow(const double val, const int n)
-   { return ((double (*)(const double, const int))(std::pow))(val,n); }
-
-inline long double pow(const long double val, const long double n)
-   { return ((long double (*)(const long double, const long double))
-             (std::pow))(val,n); }
-
-inline long double pow(const long double val, const int n)
-   { return ((long double (*)(const long double, const int))
-             (std::pow))(val,n); }
-   */
-
-
-
-// fmod
-inline float fmod(const float a, const float b)
-   { return ((float (*)(const float, const float))(std::fmod))(a,b); }
-
-inline long double fmod(const long double a, const long double b)
-   { return ((long double (*)(const long double, const long double))
-             (std::fmod))(a,b); }
-
-inline double fmod(const double a, const double b)
-   { return ((double (*)(const double, const double))(std::fmod))(a,b); }
-
-
-
-// sin
-inline float sin(const float val)
-   { return ((float (*)(const float))(std::sin))(val); }
-
-inline double sin(const double val)
-   { return std::sin(val); }
-
-inline long double sin(const long double val)
-   { return ((long double (*)(const long double))(std::sin))(val); }
-
-
-// cos
-inline float cos(const float val)
-   { return ((float (*)(const float))(std::cos))(val); }
-
-inline double cos(const double val)
-   { return std::cos(val); }
-
-inline long double cos(const long double val)
-   { return ((long double (*)(const long double))(std::cos))(val); }
-
-
-// tan
-inline float tan(const float val)
-   { return ((float (*)(const float))(std::tan))(val); }
-
-inline double tan(const double val)
-   { return std::tan(val); }
-
-inline long double tan(const long double val)
-   { return ((long double (*)(const long double))(std::tan))(val); }
-
-
-
-// rnd (round a value)
+// round
 template<class INTEGER, class T>
-inline INTEGER rnd(const T &val)
+inline INTEGER round(const T val)
 {
    return INTEGER(val < T(0) ? val-T(0.5) : val+T(0.5));
 }
 
-
-// twice (two times a value)
+// twice
 template<class T>
-inline T twice(const T &val)
+inline T twice(const T val)
 {
    return val+val;
 }
 
-
-// sq (square a value)
+// square
 template<class T>
-inline T sq(const T &val)
+inline T square(const T val)
 {
    return val*val;
 }

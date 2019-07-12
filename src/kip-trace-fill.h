@@ -82,15 +82,15 @@ inline long double eps = 0;
 namespace internal {
 
 // get_eps
-template<class T>
-inline T get_eps()
+template<class real>
+inline real get_eps()
 {
    // fixme 2019-07-07.
    // Look more closely, but this may be called in a loop;
    // we should handle it more efficiently
    return eps
-      ? T(eps)
-      : std::pow(T(10), T(-0.4)*std::numeric_limits<T>::digits10);
+      ? real(eps)
+      : std::pow(real(10), real(-0.4)*std::numeric_limits<real>::digits10);
 }
 
 // ttclass
@@ -116,7 +116,7 @@ inline size_t get_endsorted(
       current + op::max(
          size_t(1),  // to be safe (although sort_min is >= 1, from fix())
          size_t(engine.sort_min),
-         op::rnd<size_t>(engine.sort_frac * real(binsize))
+         op::round<size_t>(engine.sort_frac * real(binsize))
       ),
       // but clip to binsize
       binsize
@@ -824,7 +824,7 @@ inline void fill_loop_lean(
       // horizontal pixels in the current bin...
       for (size_t i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
          // a=(d,0,0), b=(0,h,v), (x,y,z)=a+(b-a)/mod(b-a)
-         const real norm = real(1)/op::sqrt(tmp + h*h);
+         const real norm = real(1)/std::sqrt(tmp + h*h);
          const point<real> target =
             vars.t2e.back(view.d*(1-norm), h*norm, v*norm);
          action(

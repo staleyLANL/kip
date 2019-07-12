@@ -479,8 +479,8 @@ kip_random(surf)
    for (unsigned i = 0;  i < nlong;  ++i) {
       const real theta = real(i)*dt;
       obj.push(center + r*point<real>(
-         op::cos(theta)*op::sin(phi),
-         op::sin(theta)*op::sin(phi), op::cos(phi)
+         std::cos(theta)*std::sin(phi),
+         std::sin(theta)*std::sin(phi), std::cos(phi)
       ));
    }}
 

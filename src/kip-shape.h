@@ -851,8 +851,8 @@ inline void bound_abr(
 ) {
    const rotate<2,real> m(a,b);
 
-   const real dx = r*op::sqrt(m.m2x*m.m2x + m.m3.x*m.m3.x);
-   const real dy = r*op::sqrt(m.m2y*m.m2y + m.m3.y*m.m3.y), dz = r*m.m3.z;
+   const real dx = r*std::sqrt(m.m2x*m.m2x + m.m3.x*m.m3.x);
+   const real dy = r*std::sqrt(m.m2y*m.m2y + m.m3.y*m.m3.y), dz = r*m.m3.z;
 
    min(a.x-dx, a.y-dy, a.z-dz);
    max(a.x+dx, a.y+dy, a.z+dz);

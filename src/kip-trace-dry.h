@@ -111,7 +111,7 @@ kip_dry_function(dry_sw) {
 
 // nne
 kip_dry_function(dry_nne) {
-   /*static*/ const real a = op::tan(pi<real>/6);  // about 0.577
+   /*static*/ const real a = std::tan(pi<real>/6);  // about 0.577
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h-vars.heps-1,v-vars.veps+a));
@@ -119,7 +119,7 @@ kip_dry_function(dry_nne) {
 
 // ene
 kip_dry_function(dry_ene) {
-   /*static*/ const real b = op::tan(pi<real>/3);  // about 1.732
+   /*static*/ const real b = std::tan(pi<real>/3);  // about 1.732
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h-vars.heps-1,v-vars.veps+b));
@@ -127,7 +127,7 @@ kip_dry_function(dry_ene) {
 
 // nnw
 kip_dry_function(dry_nnw) {
-   /*static*/ const real a = op::tan(pi<real>/6);  // about 0.577
+   /*static*/ const real a = std::tan(pi<real>/6);  // about 0.577
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h+vars.heps-1,v-vars.veps-a));
@@ -135,7 +135,7 @@ kip_dry_function(dry_nnw) {
 
 // wnw
 kip_dry_function(dry_wnw) {
-   /*static*/ const real b = op::tan(pi<real>/3);  // about 1.732
+   /*static*/ const real b = std::tan(pi<real>/3);  // about 1.732
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h+vars.heps-1,v-vars.veps-b));
@@ -143,7 +143,7 @@ kip_dry_function(dry_wnw) {
 
 // sse
 kip_dry_function(dry_sse) {
-   /*static*/ const real a = op::tan(pi<real>/6);  // about 0.577
+   /*static*/ const real a = std::tan(pi<real>/6);  // about 0.577
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h-vars.heps+1,v+vars.veps+a));
@@ -151,7 +151,7 @@ kip_dry_function(dry_sse) {
 
 // ese
 kip_dry_function(dry_ese) {
-   /*static*/ const real b = op::tan(pi<real>/3);  // about 1.732
+   /*static*/ const real b = std::tan(pi<real>/3);  // about 1.732
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h-vars.heps+1,v+vars.veps+b));
@@ -159,7 +159,7 @@ kip_dry_function(dry_ese) {
 
 // ssw
 kip_dry_function(dry_ssw) {
-   /*static*/ const real a = op::tan(pi<real>/6);  // about 0.577
+   /*static*/ const real a = std::tan(pi<real>/6);  // about 0.577
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h+vars.heps+1,v+vars.veps-a));
@@ -167,7 +167,7 @@ kip_dry_function(dry_ssw) {
 
 // wsw
 kip_dry_function(dry_wsw) {
-   /*static*/ const real b = op::tan(pi<real>/3);  // about 1.732
+   /*static*/ const real b = std::tan(pi<real>/3);  // about 1.732
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h+vars.heps+1,v+vars.veps-b));
@@ -191,7 +191,7 @@ kip_dry_function(dry_wsw) {
 
 // nnne
 kip_dry_function(dry_nnne) {
-   /*static*/ const real a = op::tan(pi<real>/8);  // about 0.414
+   /*static*/ const real a = std::tan(pi<real>/8);  // about 0.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h-vars.heps-1,v-vars.veps+a));
@@ -199,7 +199,7 @@ kip_dry_function(dry_nnne) {
 
 // eene
 kip_dry_function(dry_eene) {
-   /*static*/ const real b = op::tan(3*pi<real>/8);  // about 2.414
+   /*static*/ const real b = std::tan(3*pi<real>/8);  // about 2.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h-vars.heps-1,v-vars.veps+b));
@@ -207,7 +207,7 @@ kip_dry_function(dry_eene) {
 
 // nnnw
 kip_dry_function(dry_nnnw) {
-   /*static*/ const real a = op::tan(pi<real>/8);  // about 0.414
+   /*static*/ const real a = std::tan(pi<real>/8);  // about 0.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h+vars.heps-1,v-vars.veps-a));
@@ -215,7 +215,7 @@ kip_dry_function(dry_nnnw) {
 
 // wwnw
 kip_dry_function(dry_wwnw) {
-   /*static*/ const real b = op::tan(3*pi<real>/8);  // about 2.414
+   /*static*/ const real b = std::tan(3*pi<real>/8);  // about 2.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h+vars.heps-1,v-vars.veps-b));
@@ -223,7 +223,7 @@ kip_dry_function(dry_wwnw) {
 
 // ssse
 kip_dry_function(dry_ssse) {
-   /*static*/ const real a = op::tan(pi<real>/8);  // about 0.414
+   /*static*/ const real a = std::tan(pi<real>/8);  // about 0.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h-vars.heps+1,v+vars.veps+a));
@@ -231,7 +231,7 @@ kip_dry_function(dry_ssse) {
 
 // eese
 kip_dry_function(dry_eese) {
-   /*static*/ const real b = op::tan(3*pi<real>/8);  // about 2.414
+   /*static*/ const real b = std::tan(3*pi<real>/8);  // about 2.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h-vars.heps+1,v+vars.veps+b));
@@ -239,7 +239,7 @@ kip_dry_function(dry_eese) {
 
 // sssw
 kip_dry_function(dry_sssw) {
-   /*static*/ const real a = op::tan(pi<real>/8);  // about 0.414
+   /*static*/ const real a = std::tan(pi<real>/8);  // about 0.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h+vars.heps+1,v+vars.veps-a));
@@ -247,7 +247,7 @@ kip_dry_function(dry_sssw) {
 
 // wwsw
 kip_dry_function(dry_wwsw) {
-   /*static*/ const real b = op::tan(3*pi<real>/8);  // about 2.414
+   /*static*/ const real b = std::tan(3*pi<real>/8);  // about 2.414
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h+vars.heps+1,v+vars.veps-b));
@@ -271,7 +271,7 @@ kip_dry_function(dry_wwsw) {
 
 // ne75
 kip_dry_function(dry_ne75) {
-   /*static*/ const real a = op::tan(pi<real>/12);
+   /*static*/ const real a = std::tan(pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h-vars.heps-1,v-vars.veps+a));
@@ -279,7 +279,7 @@ kip_dry_function(dry_ne75) {
 
 // ne15
 kip_dry_function(dry_ne15) {
-   /*static*/ const real b = op::tan(5*pi<real>/12);
+   /*static*/ const real b = std::tan(5*pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h-vars.heps-1,v-vars.veps+b));
@@ -287,7 +287,7 @@ kip_dry_function(dry_ne15) {
 
 // nw75
 kip_dry_function(dry_nw75) {
-   /*static*/ const real a = op::tan(pi<real>/12);
+   /*static*/ const real a = std::tan(pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h+vars.heps-1,v-vars.veps-a));
@@ -295,7 +295,7 @@ kip_dry_function(dry_nw75) {
 
 // nw15
 kip_dry_function(dry_nw15) {
-   /*static*/ const real b = op::tan(5*pi<real>/12);
+   /*static*/ const real b = std::tan(5*pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v-vars.veps),
       vars.t2e.back_0nn(h+vars.heps-1,v-vars.veps-b));
@@ -303,7 +303,7 @@ kip_dry_function(dry_nw15) {
 
 // se75
 kip_dry_function(dry_se75) {
-   /*static*/ const real a = op::tan(pi<real>/12);
+   /*static*/ const real a = std::tan(pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h-vars.heps+1,v+vars.veps+a));
@@ -311,7 +311,7 @@ kip_dry_function(dry_se75) {
 
 // se15
 kip_dry_function(dry_se15) {
-   /*static*/ const real b = op::tan(5*pi<real>/12);
+   /*static*/ const real b = std::tan(5*pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h-vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h-vars.heps+1,v+vars.veps+b));
@@ -319,7 +319,7 @@ kip_dry_function(dry_se15) {
 
 // sw75
 kip_dry_function(dry_sw75) {
-   /*static*/ const real a = op::tan(pi<real>/12);
+   /*static*/ const real a = std::tan(pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h+vars.heps+1,v+vars.veps-a));
@@ -327,7 +327,7 @@ kip_dry_function(dry_sw75) {
 
 // sw15
 kip_dry_function(dry_sw15) {
-   /*static*/ const real b = op::tan(5*pi<real>/12);
+   /*static*/ const real b = std::tan(5*pi<real>/12);
    return rotate<-3,real>(vars.eyeball,
       vars.t2e.back_0nn(h+vars.heps,  v+vars.veps),
       vars.t2e.back_0nn(h+vars.heps+1,v+vars.veps-b));

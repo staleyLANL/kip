@@ -203,7 +203,7 @@ namespace internal {
       const real a, const real b, const real c,
       const point<real> &r
    ) {
-      return op::sqrt(op::sq(a*r.x) + op::sq(b*r.y) + op::sq(c*r.z));
+      return std::sqrt(op::square(a*r.x) + op::square(b*r.y) + op::square(c*r.z));
    }
 }
 
@@ -241,9 +241,9 @@ kip_dry(ellipsoid)
       cz >= is &&
      (cz >= bs ||
       cz*cz >=
-         op::sq( dot(seg.f, point<real>(rot.f1.x, rot.f1.y, rot.f1.z)) * r.x) +
-         op::sq( dot(seg.f, point<real>(rot.f2.x, rot.f2.y, rot.f2.z)) * r.y) +
-         op::sq( dot(seg.f, point<real>(rot.f3.x, rot.f3.y, rot.f3.z)) * r.z)
+         op::square( dot(seg.f, point<real>(rot.f1.x, rot.f1.y, rot.f1.z)) * r.x) +
+         op::square( dot(seg.f, point<real>(rot.f2.x, rot.f2.y, rot.f2.z)) * r.y) +
+         op::square( dot(seg.f, point<real>(rot.f3.x, rot.f3.y, rot.f3.z)) * r.z)
      );
 } kip_end
 
@@ -309,9 +309,9 @@ kip_infirst(ellipsoid)
    if (s < 0 || g == 0) return false;
 
    if (interior)
-      q = (p + op::sqrt(s))/g;
+      q = (p + std::sqrt(s))/g;
    else
-      q = (p - op::sqrt(s))/g;
+      q = (p - std::sqrt(s))/g;
    if (!(0 < q && q < qmin)) return false;
 
    q.x = eye.x - q*dx;
@@ -370,7 +370,7 @@ kip_inall(ellipsoid)
    const real p = cix*eye.x + ciy*eye.y + ciz*eye.z;
    const real s = p*p - g*i;
    if (s < 0 || g == 0) return false;
-   const real tmp = op::sqrt(s);
+   const real tmp = std::sqrt(s);
 
    ints.convex();
 

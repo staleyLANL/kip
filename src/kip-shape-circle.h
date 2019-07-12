@@ -49,8 +49,8 @@ kip_process(circle)
    interior = false;
 
    return r < rot.ey
-      ? op::sqrt(op::sq(rot.ex) + op::sq(rot.ey - r))
-      : op::abs(rot.ex);
+      ? std::sqrt(op::square(rot.ex) + op::square(rot.ey - r))
+      : std::abs(rot.ex);
 } kip_end
 
 
@@ -75,7 +75,7 @@ kip_dry(circle)
 {
    real az;  if (seg.lt(c,az)) return false;
    real bz;  (void)seg.lt(n,bz);
-   return op::sq(az-seg.c) >= tmp*(rot.h+bz)*(rot.h-bz);
+   return op::square(az-seg.c) >= tmp*(rot.h+bz)*(rot.h-bz);
 } kip_end
 
 
@@ -92,7 +92,7 @@ kip_infirst(circle)
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
 
-   return op::sq(q.y) + op::sq(q.z) <= rsq
+   return op::square(q.y) + op::square(q.z) <= rsq
       ? q.x = real(0),
         q(rot.ex < 0 ? real(-1) : real(1), 0, 0, this, normalized_t::yesnorm), true
       : false;

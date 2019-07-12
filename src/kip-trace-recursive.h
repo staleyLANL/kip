@@ -439,7 +439,7 @@ void rtrace(
    // Split horizontally
    if (inum > 1 && (
        jnum < 2 ||
-       inum > op::rnd<unsigned>(real(jnum)*image.aspect)
+       inum > op::round<unsigned>(real(jnum)*image.aspect)
    )) {
       ///      std::cout << "kip: split horizontally" << std::endl;
 

@@ -252,6 +252,8 @@ bool sample(const sampling samp)
 
 bool move(const int key)
 {
+   using std::fmod;
+
    if (vars::debug) {
       std::cout << "move()" << std::endl;
       std::cout << "   key = " << key << std::endl;

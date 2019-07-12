@@ -95,7 +95,7 @@ kip_process(kipnot)
    unary.ina = unary.a->interior;
    interior = !unary.ina;
 
-   return op::abs(unary.amin);
+   return std::abs(unary.amin);
 } kip_end
 
 

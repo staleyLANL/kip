@@ -41,12 +41,12 @@ public:
    inline point &operator()(
       const point<real> &offset, const real d, const real theta, const real phi
    ) {
-      const real p = phi  *(pi<real>/180), cosp = op::cos(p);
+      const real p = phi  *(pi<real>/180), cosp = std::cos(p);
       const real t = theta*(pi<real>/180);
 
-      x = offset.x + op::cos(t)*d*cosp;
-      y = offset.y - op::sin(t)*d*cosp;
-      z = offset.z + op::sin(p)*d;
+      x = offset.x + std::cos(t)*d*cosp;
+      y = offset.y - std::sin(t)*d*cosp;
+      z = offset.z + std::sin(p)*d;
 
       return *this;
    }
@@ -156,7 +156,7 @@ inline real mod2(const point<real> &u)
 template<class real>
 inline real mod(const point<real> &u)
 {
-   return op::sqrt(mod2(u));
+   return std::sqrt(mod2(u));
 }
 
 
@@ -187,7 +187,7 @@ inline real pdistance(
    const point<real> &u,
    const point<real> &v
 ) {
-   return op::sqrt(pdistance2(u,v));
+   return std::sqrt(pdistance2(u,v));
 }
 
 
@@ -208,12 +208,12 @@ inline real pline(
    const point<real> &p,
    const point<real> &u, const point<real> &v
 ) {
-   return op::sqrt(pline2(p,u,v));
+   return std::sqrt(pline2(p,u,v));
 }
 
 
 
-// skewd2(x1,x2, x3,x4): square of the distance between the (skew) lines:
+// skewd2(x1,x2, x3,x4): distance squared between the (skew) lines:
 //    x1 to x2
 //    x3 to x4
 // Works correctly for parallel lines.
@@ -250,5 +250,5 @@ pline2(x3, x1,x2)
 */
 
    const real den = mod2(c);
-   return den == 0 ? pline2(x1, x3,x4) : op::sq(dot(x3-x1, c)) / den;
+   return den == 0 ? pline2(x1, x3,x4) : op::square(dot(x3-x1, c)) / den;
 }

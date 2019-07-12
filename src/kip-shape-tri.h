@@ -188,7 +188,7 @@ inline real tri<real,tag>::process(
 
    // straight out=down from (u=0 to v)
    if (ey <= 0 && 0 <= ex && ex <= bx)
-      return op::sqrt(op::sq(ey) + op::sq(ez));
+      return std::sqrt(op::square(ey) + op::square(ez));
 
    // straight out from (v to w)
    const real bxmex = bx-ex, bxmcx = bx-cx;
@@ -205,14 +205,14 @@ inline real tri<real,tag>::process(
 
    // relative to points
    if (b || ey < 0 || extcy < eytcx)
-      return op::sqrt(op::min(
+      return std::sqrt(op::min(
          mod2(eye),
          mod2(point<real>(bxmex, ey,    ez)),
          mod2(point<real>(exmcx, eymcy, ez))
       ));
 
    // above/below
-   return op::abs(ez);
+   return std::abs(ez);
 }
 
 

@@ -60,7 +60,7 @@ kip_process(spheroid)
    // won't bother with at the moment.
 
    // eyeball's distance to 0
-   const real d0 = op::sqrt(op::sq(rot.ex) + op::sq(rot.ey));
+   const real d0 = std::sqrt(op::square(rot.ex) + op::square(rot.ey));
 
    // interior
    interior = inside(eyeball);
@@ -73,11 +73,11 @@ kip_process(spheroid)
       const real bb =
           rot.ex <= -rot.h
        ?  rot.ey >= r
-       ?  op::sqrt(op::sq(rot.ex + rot.h) + op::sq(rot.ey - r))  // northwest
+       ?  std::sqrt(op::square(rot.ex + rot.h) + op::square(rot.ey - r))  // northwest
        : -rot.h - rot.ex  // west
        :  rot.ex >= rot.h
        ?  rot.ey >= r
-       ?  op::sqrt(op::sq(rot.ex - rot.h) + op::sq(rot.ey - r))  // northeast
+       ?  std::sqrt(op::square(rot.ex - rot.h) + op::square(rot.ey - r))  // northeast
        :  rot.ex - rot.h  // east
        :  rot.ey - r  // north
        ;
@@ -117,7 +117,7 @@ namespace internal {
       const real a, const real b, const real c,
       const real hsq, const real rsq
    ) {
-      return op::sqrt(a*a*hsq + (b*b + c*c)*rsq);
+      return std::sqrt(a*a*hsq + (b*b + c*c)*rsq);
    }
 }
 
@@ -156,7 +156,7 @@ kip_dry(spheroid)
 {
    real az;  if (seg.lt(a,az)) return false;
    real bz;  if (seg.lt(b,bz)) return false;
-   return (bz-seg.c)*(az-seg.c) + op::sq((az-bz)*r2h2) >= rsq;
+   return (bz-seg.c)*(az-seg.c) + op::square((az-bz)*r2h2) >= rsq;
 } kip_end
 
 
@@ -193,9 +193,9 @@ kip_infirst(spheroid)
    if (s < 0 || g == 0) return false;
 
    if (interior)
-      q = (p - op::sqrt(s))/g;
+      q = (p - std::sqrt(s))/g;
    else
-      q = (p + op::sqrt(s))/g;
+      q = (p + std::sqrt(s))/g;
    if (!(0 < q && q < qmin)) return false;
 
    q.x = rot.ex + q*dx;
@@ -250,7 +250,7 @@ kip_inall(spheroid)
    const real p = dx*exh + dy*eyr;
    const real s = p*p + g*i;
    if (s < 0 || g == 0) return false;
-   const real tmp = op::sqrt(s);
+   const real tmp = std::sqrt(s);
 
    ints.convex();
 

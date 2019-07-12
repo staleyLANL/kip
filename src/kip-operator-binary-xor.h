@@ -138,7 +138,7 @@ kip_process(kipxor)
    interior = binary.ina != binary.inb;
 
    // Technically should be min(abs,abs), but minima are presumably positive.
-   return op::abs(op::min(binary.amin,binary.bmin));
+   return std::abs(op::min(binary.amin,binary.bmin));
 } kip_end
 
 

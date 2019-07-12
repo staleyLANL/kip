@@ -47,7 +47,7 @@ inline real angle_tweak(const real angle)
       real(10),
      -std::numeric_limits<real>::digits10 / real(2)
    );
-   return op::fmod(angle,real(360)) + real(random<real>() - 0.5)*fac;
+   return std::fmod(angle,real(360)) + real(random<real>() - 0.5)*fac;
 }
 
 
@@ -92,7 +92,7 @@ inline void trace_vars(
    vars.eyeball = vars.t2e.back_n00(view.d);
 
    // target rectangle: [-hmax,+hmax] x [-vmax,+vmax]
-   vars.hmax = view.d * op::tan(view.fov * (pi<real>/360));
+   vars.hmax = view.d * std::tan(view.fov * (pi<real>/360));
    vars.vmax = image.aspect * real(vpixel)/real(hpixel) * vars.hmax;
 
    // pixels: half & full sizes (remember, domain length is 2*max (-max..max))
@@ -180,7 +180,7 @@ inline void trace_vipt(
 
          for (size_t i = 0;  i < hpixel;  ++i, h += vars.hfull) {
             // a = (d,0,0),  b = (0,h,v),  (x,y,z) = a+(b-a)/mod(b-a)
-            const real norm = real(1)/op::sqrt(tmp + h*h);
+            const real norm = real(1)/std::sqrt(tmp + h*h);
             image.prior.targets[n++](view.d*(1-norm), h*norm, v*norm);
          }
       }

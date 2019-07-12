@@ -216,7 +216,7 @@ kip_process(tabular)
 
    // We'll compute rsq for each point, slope..dmins for each segment.
 
-   pre[0].rsq = op::sq(table[0].r);
+   pre[0].rsq = op::square(table[0].r);
    real rmax = table[0].r;  // initially
 
    real rv = std::numeric_limits<real>::max();  // initially
@@ -229,7 +229,7 @@ kip_process(tabular)
       internal::rshhhd<real> &seg = pre[i-1];  // segment
 
       // Computations for point...
-      pre[i].rsq = op::sq(next.r);
+      pre[i].rsq = op::square(next.r);
       if (next.r > rmax) rmax = next.r;  // possibly update rmax
 
       // Computations for segment...
@@ -238,7 +238,7 @@ kip_process(tabular)
       seg.slope = (next.r-last.r)/(next.x-last.x);
       const real val = last.r + seg.slope*(rot.ex - last.x);
 
-      seg.h1 = op::sq(seg.slope) + 1;
+      seg.h1 = op::square(seg.slope) + 1;
       seg.h2 = seg.slope * val;
       seg.h3 = (rot.ey - val)*(rot.ey + val);
 
@@ -252,16 +252,16 @@ kip_process(tabular)
        ?  (interior = true, op::min(  // inside
              rot.ex - last.x,
              next.x - rot.ex,
-             op::abs(seg.slope*(rot.ex-last.x)+last.r-rot.ey)/op::sqrt(seg.h1)
+             std::abs(seg.slope*(rot.ex-last.x)+last.r-rot.ey)/std::sqrt(seg.h1)
           ))
        : (last.r - next.r)*(rot.ey - last.r) >=
          (next.x - last.x)*(rot.ex - last.x)
-       ?  op::sqrt(op::sq(rot.ex - last.x) + op::sq(rot.ey - last.r))  // nw
+       ?  std::sqrt(op::square(rot.ex - last.x) + op::square(rot.ey - last.r))  // nw
        : (last.r - next.r)*(rot.ey - next.r) <=
          (next.x - last.x)*(rot.ex - next.x)
-       ?  op::sqrt(op::sq(rot.ex - next.x) + op::sq(rot.ey - next.r))  // ne
-       :  op::abs(seg.slope*(rot.ex - last.x) +
-             last.r - rot.ey) / op::sqrt(seg.h1)  // north
+       ?  std::sqrt(op::square(rot.ex - next.x) + op::square(rot.ey - next.r))  // ne
+       :  std::abs(seg.slope*(rot.ex - last.x) +
+             last.r - rot.ey) / std::sqrt(seg.h1)  // north
       ;
 
       // possibly update minimum
@@ -294,8 +294,8 @@ kip_aabb(tabular)
    const rotate<2,real> r2(a,b);
 
    const point<real> diff(
-      op::sqrt(r2.m2x*r2.m2x + r2.m3.x*r2.m3.x),
-      op::sqrt(r2.m2y*r2.m2y + r2.m3.y*r2.m3.y), r2.m3.z
+      std::sqrt(r2.m2x*r2.m2x + r2.m3.x*r2.m3.x),
+      std::sqrt(r2.m2y*r2.m2y + r2.m3.y*r2.m3.y), r2.m3.z
    ), along = normalize(b-a);
 
    real xmin =  std::numeric_limits<real>::max(), ymin = xmin, zmin = xmin;
@@ -328,7 +328,7 @@ kip_dry(tabular)
    // because it's so much simpler --- and lots of culling happens in infirst()
    real az;  if (seg.lt(atabular,az)) return false;
    real bz;  if (seg.lt(btabular,bz)) return false;
-   return op::sq(hdr*(op::min(az,bz)-seg.c)) >= (rot.h-az+bz)*(rot.h+az-bz);
+   return op::square(hdr*(op::min(az,bz)-seg.c)) >= (rot.h-az+bz)*(rot.h+az-bz);
 } kip_end
 
 
@@ -408,7 +408,7 @@ inline bool tabular<real,tag>::get_bounds(
    real xmin, xmax;
 
    if (den != 0) {
-      const real val = op::sqrt(s);
+      const real val = std::sqrt(s);
 
       // by construction, this q is the smaller one...
       const real qsmall = (-val - eydy)/den;
@@ -485,7 +485,7 @@ inline bool tabular<real,tag>::segment(
       if (s < 0 || m == 0) return false;
 
       // q
-      q = interior ? (g + op::sqrt(s))/m : (g - op::sqrt(s))/m;
+      q = interior ? (g + std::sqrt(s))/m : (g - std::sqrt(s))/m;
       if (!(0 < q && q < qmin)) return false;
 
       q.x = rot.ex + q*dx;
@@ -541,7 +541,7 @@ inline void tabular<real,tag>::segment2(
       const real s = g*g - m*cell.h3;
       if (s < 0 || m == 0) return;
 
-      const real root = op::sqrt(s);
+      const real root = std::sqrt(s);
       real q1 = (g - root)/m;
       real q2 = (g + root)/m;  if (q2 < q1) std::swap(q2,q1);
 

@@ -60,11 +60,11 @@ kip_process(silo)
    // minimum
    return
         rot.ex <= 0
-      ? op::abs(op::sqrt(rsq+m) - r)  // west, or in hemisphere
+      ? std::abs(std::sqrt(rsq+m) - r)  // west, or in hemisphere
       : rot.ex >= rot.h
       ? rot.ey <= r
       ? rot.ex - rot.h  // east
-      : op::sqrt(op::sq(rot.ex-rot.h) + op::sq(rot.ey-r))  // northeast
+      : std::sqrt(op::square(rot.ex-rot.h) + op::square(rot.ey-r))  // northeast
       : rot.ey >= r
       ? rot.ey - r  // north
       : op::min(rot.h-rot.ex, r-rot.ey)  // inside cylindrical portion
@@ -143,7 +143,7 @@ kip_infirst(silo)
          if (0 < q && q < qmin) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            if (op::sq(q.y) + op::sq(q.z) <= rsq) {
+            if (op::square(q.y) + op::square(q.z) <= rsq) {
                q.x = rot.h;
                return q(1,0,0, this, normalized_t::yesnorm), true;
             }
@@ -154,7 +154,7 @@ kip_infirst(silo)
       const real p = dx*rot.ex + dy*rot.ey, g = p*p - m;
       if (g >= 0) {
          // whole sphere is hit somewhere
-         q = op::sqrt(g) - p;  // only care about furthest intersection
+         q = std::sqrt(g) - p;  // only care about furthest intersection
          if (!(q < qmin)) return false;
          if (q > 0) {
             q.x = rot.ex + q*dx;
@@ -170,7 +170,7 @@ kip_infirst(silo)
       const real c = dy*dy, d = tar.z*tar.z, s = c*rsq - d*h2;
       if (s < 0 || c+d == 0) return false;
 
-      q = (op::sqrt(s) - rot.ey*dy)/(c+d);
+      q = (std::sqrt(s) - rot.ey*dy)/(c+d);
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;  // inside, so don't need the range check
 
@@ -198,7 +198,7 @@ kip_infirst(silo)
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         if (op::sq(q.y) + op::sq(q.z) <= rsq) {
+         if (op::square(q.y) + op::square(q.z) <= rsq) {
             q.x = rot.h;
             return q(1,0,0, this, normalized_t::yesnorm), true;
          }
@@ -208,7 +208,7 @@ kip_infirst(silo)
       const real p = dx*rot.ex + dy*rot.ey, g = p*p - m;
       if (g >= 0) {
          // whole sphere is hit somewhere
-         q = -(p + op::sqrt(g));
+         q = -(p + std::sqrt(g));
          if (!(0 < q)) return false;  // would be <= 0 for cyl. portion, too
 
          q.x = rot.ex + q*dx;
@@ -223,7 +223,7 @@ kip_infirst(silo)
       // curve
       if (c+d == 0) return false;
 
-      q = -(rot.ey*dy + op::sqrt(s))/(c+d);
+      q = -(rot.ey*dy + std::sqrt(s))/(c+d);
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;
       if (!(0 <= q.x && q.x <= rot.h)) return false;
@@ -282,7 +282,7 @@ inline bool silo<real,tag>::get_baseh(
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
 
-   if (op::sq(info.y) + op::sq(info.z) <= rsq) {
+   if (op::square(info.y) + op::square(info.z) <= rsq) {
       info.x = rot.h;
       return info(1,0,0, this, normalized_t::yesnorm), true;
    }
@@ -342,8 +342,8 @@ kip_inall(silo)
    const real g = p*p - m;
    if (g >= 0) {
       // whole sphere is hit somewhere
-      inq<real,tag> q1(-op::sqrt(g) - p);
-      inq<real,tag> q2( op::sqrt(g) - p);
+      inq<real,tag> q1(-std::sqrt(g) - p);
+      inq<real,tag> q2( std::sqrt(g) - p);
 
       if ((get_hemi0(tar,dx,dy,qmin,q1) && ints.convex(q1)) ||
           (get_hemi0(tar,dx,dy,qmin,q2) && ints.convex(q2)))
@@ -356,14 +356,14 @@ kip_inall(silo)
 
    // curve
    if (c+d != 0) {
-      const real tmp = op::sqrt(s), tmp2 = rot.ey*dy, tmp3 = 1/(c+d);
+      const real tmp = std::sqrt(s), tmp2 = rot.ey*dy, tmp3 = 1/(c+d);
 
-      inq<real,tag> q4(-(tmp + tmp2)*tmp3);  // -op::sqrt
+      inq<real,tag> q4(-(tmp + tmp2)*tmp3);  // -std::sqrt
       if (get_curve(tar,dx,dy,qmin,q4) && ints.convex(q4)) return true;
 
       if (!ints.size()) return false;
 
-      inq<real,tag> q5( (tmp - tmp2)*tmp3);  // +op::sqrt
+      inq<real,tag> q5( (tmp - tmp2)*tmp3);  // +std::sqrt
       if (get_curve(tar,dx,dy,qmin,q5) && ints.convex(q5)) return true;
    }
 

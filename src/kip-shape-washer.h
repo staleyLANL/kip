@@ -191,14 +191,14 @@ kip_process(washer)
    return
        rot.ey > o
     ?  rot.ex < 0
-    ?  op::sqrt(op::sq(rot.ex) + op::sq(rot.ey-o))  // nw
+    ?  std::sqrt(op::square(rot.ex) + op::square(rot.ey-o))  // nw
     :  rot.ey - o  // n
     :  rot.ey >= i
     ?  rot.ex <= 0
     ? -rot.ex  // w
     :  op::min(rot.ex, o-rot.ey, rot.ey-i)  // inside
     :  rot.ex < 0
-    ?  op::sqrt(op::sq(rot.ex) + op::sq(rot.ey-i))  // sw
+    ?  std::sqrt(op::square(rot.ex) + op::square(rot.ey-i))  // sw
     :  i - rot.ey  // s
     ;
 } kip_end
@@ -232,7 +232,7 @@ kip_dry(washer)
 {
    real az;  if (seg.lt(a,az)) return false;
    real bz;  if (seg.lt(b,bz)) return false;
-   return op::sq(op::min(az,bz)-seg.c) >= p*(rot.h-az+bz)*(rot.h+az-bz);
+   return op::square(op::min(az,bz)-seg.c) >= p*(rot.h-az+bz)*(rot.h+az-bz);
 } kip_end
 
 
@@ -254,7 +254,7 @@ inline bool washer<real,tag>::first_in(
    if (dy < 0) {
       const real idisc = c*isq + d*hin;
       if (idisc >= 0) {
-         q = -(op::sqrt(idisc) + rot.ey*dy)/(c+d);
+         q = -(std::sqrt(idisc) + rot.ey*dy)/(c+d);
          if (0 < q && q < qmin) {
             q.x = rot.ex + q*dx;
             if (0 <= q.x && q.x <= rot.h) {
@@ -269,7 +269,7 @@ inline bool washer<real,tag>::first_in(
    // outer
    const real odisc = c*osq + d*hout;
    if (odisc >= 0) {
-      q = (op::sqrt(odisc) - rot.ey*dy)/(c+d);
+      q = (std::sqrt(odisc) - rot.ey*dy)/(c+d);
       if (0 < q && q < qmin) {
          q.x = rot.ex + q*dx;
          if (0 <= q.x && q.x <= rot.h) {
@@ -287,7 +287,7 @@ inline bool washer<real,tag>::first_in(
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         const real tmp = op::sq(q.y) + op::sq(q.z);
+         const real tmp = op::square(q.y) + op::square(q.z);
          if (isq <= tmp && tmp <= osq) {
             q.x = real(0);
             return q(-1,0,0, this, normalized_t::yesnorm), true;
@@ -302,7 +302,7 @@ inline bool washer<real,tag>::first_in(
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         const real tmp = op::sq(q.y) + op::sq(q.z);
+         const real tmp = op::square(q.y) + op::square(q.z);
          if (isq <= tmp && tmp <= osq) {
             q.x = rot.h;
             return q(1,0,0, this, normalized_t::yesnorm), true;
@@ -338,7 +338,7 @@ inline bool washer<real,tag>::first_out(
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
 
-      const real tmp = op::sq(q.y) + op::sq(q.z);
+      const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
          q.x = real(0);
          return q(-1,0,0, this, normalized_t::yesnorm), true;
@@ -352,7 +352,7 @@ inline bool washer<real,tag>::first_out(
    if (rot.ey > o) {  // oh (outer radius), not zero
       if (dy >= 0) return false;
 
-      q = -(rot.ey*dy + op::sqrt(odisc))/(c+d);
+      q = -(rot.ey*dy + std::sqrt(odisc))/(c+d);
       if (!(0 < q && q < qmin)) return false;
 
       q.x = rot.ex + q*dx;
@@ -368,7 +368,7 @@ inline bool washer<real,tag>::first_out(
       const real idisc = c*isq + d*hin;
       if (idisc < 0) return false;
 
-      q = (op::sqrt(idisc) - rot.ey*dy)/(c+d);
+      q = (std::sqrt(idisc) - rot.ey*dy)/(c+d);
       if (!(0 < q && q < qmin)) return false;
 
       q.x = rot.ex + q*dx;
@@ -417,7 +417,7 @@ inline bool washer<real,tag>::get_base0(
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
 
-      const real tmp = op::sq(q.y) + op::sq(q.z);
+      const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
          q.x = real(0);
          return q(-1,0,0, this, normalized_t::yesnorm), true;
@@ -439,7 +439,7 @@ inline bool washer<real,tag>::get_baseh(
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
 
-      const real tmp = op::sq(q.y) + op::sq(q.z);
+      const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
          q.x = rot.h;
          return q(1,0,0, this, normalized_t::yesnorm), true;
@@ -513,14 +513,14 @@ kip_inall(washer)
       const real f = rot.ey*dy, div = 1/(c+d);
 
       // outer
-      const real so = op::sqrt(odisc);
+      const real so = std::sqrt(odisc);
       if (!((get_outer(tar,dx,dy,qmin,qtmp =-(so+f)*div) && ints.four(qtmp)) ||
             (get_outer(tar,dx,dy,qmin,qtmp = (so-f)*div) && ints.four(qtmp)))) {
 
          // inner
          const real idisc = c*isq + d*hin;
          if (idisc >= 0) {
-            const real si = op::sqrt(idisc);
+            const real si = std::sqrt(idisc);
             (get_inner(tar,dx,dy,qmin,qtmp =-(si+f)*div) && ints.four(qtmp)) ||
             (get_inner(tar,dx,dy,qmin,qtmp = (si-f)*div) && ints.four(qtmp));
          }

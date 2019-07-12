@@ -139,7 +139,7 @@ kip_process(kipand)
 
    // Although other primitives are designed to have non-negative minima,
    // the code seems to run faster if we specifically use abs() here.
-   return op::abs(
+   return std::abs(
       binary.ina
     ? binary.inb
     ? op::min(binary.amin,binary.bmin)  // in both

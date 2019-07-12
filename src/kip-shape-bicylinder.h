@@ -184,16 +184,16 @@ kip_process(bicylinder)
       return op::min(
          rot.ex,
          rot.h-rot.ex,
-         op::abs(slope*rot.ex + r.a - rot.ey)/op::sqrt(h1)
+         std::abs(slope*rot.ex + r.a - rot.ey)/std::sqrt(h1)
       );
 
    if ((r.a-r.b)*(rot.ey-r.a) >= rot.h*rot.ex)
-      return op::sqrt(op::sq(rot.ex) + op::sq(rot.ey-r.a));  // northwest
+      return std::sqrt(op::square(rot.ex) + op::square(rot.ey-r.a));  // northwest
 
    if ((r.a-r.b)*(rot.ey-r.b) <= rot.h*(rot.ex-rot.h))
-      return op::sqrt(op::sq(rot.ex-rot.h) + op::sq(rot.ey-r.b)); // northeast
+      return std::sqrt(op::square(rot.ex-rot.h) + op::square(rot.ey-r.b)); // northeast
 
-   return op::abs(slope*rot.ex+r.a-rot.ey)/op::sqrt(h1);  // north
+   return std::abs(slope*rot.ex+r.a-rot.ey)/std::sqrt(h1);  // north
 } kip_end
 
 
@@ -331,7 +331,7 @@ kip_infirst(bicylinder)
          if (0 < q && q < qmin) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            if (op::sq(q.y) + op::sq(q.z) <= rasq) {
+            if (op::square(q.y) + op::square(q.z) <= rasq) {
                q.x = real(0);
                return q(-1,0,0, this, normalized_t::yesnorm), true;
             }
@@ -344,7 +344,7 @@ kip_infirst(bicylinder)
          if (0 < q && q < qmin) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            if (op::sq(q.y) + op::sq(q.z) <= rbsq) {
+            if (op::square(q.y) + op::square(q.z) <= rbsq) {
                q.x = rot.h;
                return q(1,0,0, this, normalized_t::yesnorm), true;
             }
@@ -355,7 +355,7 @@ kip_infirst(bicylinder)
       const real f = 1 - dx*dx*h1, g = dx*h2 - dy*rot.ey, s = g*g - f*h3;
       if (s < 0 || f == 0) return false;
 
-      q = (g + op::sqrt(s))/f;
+      q = (g + std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
 
       q.x = rot.ex + real(q)*dx;  // inside, so don't need the range check
@@ -376,7 +376,7 @@ kip_infirst(bicylinder)
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         if (op::sq(q.y) + op::sq(q.z) <= rasq) {
+         if (op::square(q.y) + op::square(q.z) <= rasq) {
             q.x = real(0);
             return q(-1,0,0, this, normalized_t::yesnorm), true;
          }
@@ -391,7 +391,7 @@ kip_infirst(bicylinder)
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         if (op::sq(q.y) + op::sq(q.z) <= rbsq) {
+         if (op::square(q.y) + op::square(q.z) <= rbsq) {
             q.x = rot.h;
             return q(1,0,0, this, normalized_t::yesnorm), true;
          }
@@ -400,7 +400,7 @@ kip_infirst(bicylinder)
       // curve
       if (f == 0) return false;
 
-      q = (g - op::sqrt(s))/f;
+      q = (g - std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;
       if (!(0 <= q.x && q.x <= rot.h)) return false;
@@ -436,7 +436,7 @@ inline bool bicylinder<real,tag>::get_base0(
 
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
-   if (op::sq(info.y) + op::sq(info.z) <= rasq) {
+   if (op::square(info.y) + op::square(info.z) <= rasq) {
       info.x = real(0);
       return info(-1,0,0, this, normalized_t::yesnorm), true;
    }
@@ -461,7 +461,7 @@ inline bool bicylinder<real,tag>::get_baseh(
 
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
-   if (op::sq(info.y) + op::sq(info.z) <= rbsq) {
+   if (op::square(info.y) + op::square(info.z) <= rbsq) {
       info.x = rot.h;
       return info(1,0,0, this, normalized_t::yesnorm), true;
    }
@@ -519,7 +519,7 @@ kip_inall(bicylinder)
 
    const real f = 1 - dx*dx*h1, g = dx*h2 - dy*rot.ey, s = g*g - f*h3;
    if (s >= 0 && f != 0) {
-      const real tmp = op::sqrt(s);
+      const real tmp = std::sqrt(s);
 
       inq<real,tag> q3((g - tmp)/f);
       if (get_curve(tar,dx,dy,qmin,q3) && ints.convex(q3))

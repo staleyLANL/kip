@@ -58,13 +58,13 @@ kip_process(paraboloid)
       return rot.ex - rot.h;  // east
 
    else if (r*(r - rot.ey) <= 2*rot.h*(rot.ex - rot.h)) {
-      return op::sqrt(op::sq(rot.ex-rot.h) + op::sq(rot.ey-r));  // northeast
+      return std::sqrt(op::square(rot.ex-rot.h) + op::square(rot.ey-r));  // northeast
 
    } else {
       // safe - based on bounding cylinder
       return
          rot.ex <= 0 && rot.ey >= r
-      ?  op::sqrt(op::sq(rot.ex) + op::sq(rot.ey-r))
+      ?  std::sqrt(op::square(rot.ex) + op::square(rot.ey-r))
       :  rot.ex <= 0
       ? -rot.ex
       :  rot.ey >= r
@@ -86,8 +86,8 @@ namespace internal {
       const real a, const real b, const real c, const real h, const real r,
       const real one, const real two, real &min, real &max
    ) {
-      const real v = r * op::sqrt(b*b + c*c);  min = two - v;
-      const real u = op::twice(op::abs(a)*h);  max = two + v;
+      const real v = r * std::sqrt(b*b + c*c);  min = two - v;
+      const real u = op::twice(std::abs(a)*h);  max = two + v;
 
       if (v <= u) {
          const real at = v*v/(u+u);
@@ -173,7 +173,7 @@ kip_infirst(paraboloid)
          if (0 < q && q < qmin) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            if (op::sq(q.y) + op::sq(q.z) <= rsq) {
+            if (op::square(q.y) + op::square(q.z) <= rsq) {
                q.x = rot.h;
                return q(1,0,0, this, normalized_t::yesnorm), true;
             }
@@ -184,7 +184,7 @@ kip_infirst(paraboloid)
       const real f = h2*(1-dx*dx), g = dx - h2*dy*rot.ey, s = g*g - f*h3;
       if (s < 0 || f == 0) return false;
 
-      q = (g + op::sqrt(s))/f;
+      q = (g + std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;  // inside, so don't need the range check
 
@@ -201,7 +201,7 @@ kip_infirst(paraboloid)
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         if (op::sq(q.y) + op::sq(q.z) <= rsq) {
+         if (op::square(q.y) + op::square(q.z) <= rsq) {
             q.x = rot.h;
             return q(1,0,0, this, normalized_t::yesnorm), true;
          }
@@ -211,7 +211,7 @@ kip_infirst(paraboloid)
       const real f = h2*(1-dx*dx), g = dx - h2*dy*rot.ey, s = g*g - f*h3;
       if (s < 0 || f == 0) return false;
 
-      q = (g - op::sqrt(s))/f;
+      q = (g - std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + real(q)*dx;
       if (!(0 <= q.x && q.x <= rot.h)) return false;
@@ -256,7 +256,7 @@ inline bool paraboloid<real,tag>::get_baseh(
 
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
-   if (op::sq(info.y) + op::sq(info.z) <= rsq) {
+   if (op::square(info.y) + op::square(info.z) <= rsq) {
       info.x = rot.h;
       return info(1,0,0, this, normalized_t::yesnorm), true;
    }
@@ -305,7 +305,7 @@ kip_inall(paraboloid)
    const real f = h2*(1-dx*dx), g = dx - h2*dy*rot.ey, s = g*g - f*h3;
    // zzz might actually be a problem with the f == 0 test (cone and cyl, too?)
    if (s < 0 || (rot.ex > rot.h && dx >= 0) || f == 0) return false;
-   const real tmp = op::sqrt(s);
+   const real tmp = std::sqrt(s);
 
    ints.convex();
    inq<real,tag> q1((g-tmp)/f);

@@ -44,7 +44,7 @@ inline real linear(const real a, const real t, const real b, const char)
 // cosine
 template<class real>
 inline real cosine(const real a, const real t, const real b)
-   { return linear(a, real(0.5)*(1-op::cos(pi<real>*t)), b); }
+   { return linear(a, real(0.5)*(1-std::cos(pi<real>*t)), b); }
 
 template<class real>
 inline real cosine(const real a, const real t, const real b, const char)
@@ -175,8 +175,8 @@ inline real noise(
    const real tmp8 = ran   <real>(i, xint+1,yint+1, zint+1);
 #endif
 
-   const real tx = real(0.5)*(1 - op::cos(pi<real>*(x-xint)));
-   const real ty = real(0.5)*(1 - op::cos(pi<real>*(y-yint)));
+   const real tx = real(0.5)*(1 - std::cos(pi<real>*(x-xint)));
+   const real ty = real(0.5)*(1 - std::cos(pi<real>*(y-yint)));
 
    return interpolate(
       interpolate(
@@ -283,7 +283,7 @@ inline outcolor diffuse_specular(
          ctype(diff*T(rgbval.b))
       );
 
-   const T s = /*op::*/std::pow(d/(q*modi),T(20));
+   const T s = std::pow(d/(q*modi),T(20));
    const T f = diff*(1-s);
    const T spec = s*endcolor<T,ctype>();
 
@@ -359,7 +359,7 @@ inline out kipcolor(
       qcolor.per, qcolor.perfac,
       qcolor.nfun, atotal
    );
-   const real fac = atotal*op::sin(noise);
+   const real fac = atotal*std::sin(noise);
 
    int r = qcolor.r;
    int g = qcolor.g;
@@ -379,7 +379,7 @@ inline out kipcolor(
          qcolor.per, qcolor.perfac,
          qcolor.nfun, atotal
       );
-      const real p = 5*op::min(real(0),0.8+op::cos(20*sw_noise));
+      const real p = 5*op::min(real(0),0.8+std::cos(20*sw_noise));
       r = op::clip(0, int(r + r*p), 255);
       g = op::clip(0, int(g + g*p), 255);
       b = op::clip(0, int(b + b*p), 255);

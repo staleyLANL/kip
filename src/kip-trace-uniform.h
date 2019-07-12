@@ -36,9 +36,9 @@ inline void segment_h(const engine<real> &engine, vars<real,base> &vars)
    #endif
    for (int hseg = 0;  hseg < htotal;  ++hseg) {
       const real
-         hmin = real(op::rnd<unsigned>(vars.hratsub*real(hseg  )))*vars.hfull -
+         hmin = real(op::round<unsigned>(vars.hratsub*real(hseg  )))*vars.hfull -
                 vars.hmax,
-         hmax = real(op::rnd<unsigned>(vars.hratsub*real(hseg+1)))*vars.hfull -
+         hmax = real(op::round<unsigned>(vars.hratsub*real(hseg+1)))*vars.hfull -
                 vars.hmax;
       vars.seg_hneg[hseg] = dry_w(vars, hmin);
       vars.seg_hpos[hseg] = dry_e(vars, hmax);
@@ -60,9 +60,9 @@ inline void segment_v(const engine<real> &engine, vars<real,base> &vars)
    #endif
    for (int vseg = 0;  vseg < vtotal;  ++vseg) {
       const real
-         vmin = real(op::rnd<unsigned>(vars.vratsub*real(vseg  )))*vars.vfull -
+         vmin = real(op::round<unsigned>(vars.vratsub*real(vseg  )))*vars.vfull -
                 vars.vmax,
-         vmax = real(op::rnd<unsigned>(vars.vratsub*real(vseg+1)))*vars.vfull -
+         vmax = real(op::round<unsigned>(vars.vratsub*real(vseg+1)))*vars.vfull -
                 vars.vmax;
       vars.seg_vneg[vseg] = dry_s(vars, vmin);
       vars.seg_vpos[vseg] = dry_n(vars, vmax);
@@ -99,13 +99,13 @@ inline void segment_various(const engine<real> &engine, vars<real,base> &vars)
       const int vseg = b / int(engine.hzone);
 
       const real
-         hmin = real(op::rnd<unsigned>(vars.hrat*real(hseg  )))*vars.hfull -
+         hmin = real(op::round<unsigned>(vars.hrat*real(hseg  )))*vars.hfull -
                 vars.hmax,
-         hmax = real(op::rnd<unsigned>(vars.hrat*real(hseg+1)))*vars.hfull -
+         hmax = real(op::round<unsigned>(vars.hrat*real(hseg+1)))*vars.hfull -
                 vars.hmax,
-         vmin = real(op::rnd<unsigned>(vars.vrat*real(vseg  )))*vars.vfull -
+         vmin = real(op::round<unsigned>(vars.vrat*real(vseg  )))*vars.vfull -
                 vars.vmax,
-         vmax = real(op::rnd<unsigned>(vars.vrat*real(vseg+1)))*vars.vfull -
+         vmax = real(op::round<unsigned>(vars.vrat*real(vseg+1)))*vars.vfull -
                 vars.vmax;
 
       // diag: compute diagonal (45-degree) segmenters
@@ -292,10 +292,10 @@ inline void argsub(const engine<real> &engine, vars<real,base> &vars, SHAPE &s)
       !s.SHAPE::dry(vars.behind));
       continue;
 
-   s.mend.imin = op::rnd<unsigned>(vars.hratsub * sub.imin);
-   s.mend.iend = op::rnd<unsigned>(vars.hratsub * sub.iend);
-   s.mend.jmin = op::rnd<unsigned>(vars.vratsub * sub.jmin);
-   s.mend.jend = op::rnd<unsigned>(vars.vratsub * sub.jend);
+   s.mend.imin = op::round<unsigned>(vars.hratsub * sub.imin);
+   s.mend.iend = op::round<unsigned>(vars.hratsub * sub.iend);
+   s.mend.jmin = op::round<unsigned>(vars.vratsub * sub.jmin);
+   s.mend.jend = op::round<unsigned>(vars.vratsub * sub.jend);
 }
 */
 
@@ -483,10 +483,10 @@ inline void uprepare(
          continue;
 
       // fine boundaries (used later, when shooting rays)
-      p.mend.imin = op::rnd<unsigned>(vars.hratsub * real(sub.imin));
-      p.mend.iend = op::rnd<unsigned>(vars.hratsub * real(sub.iend));
-      p.mend.jmin = op::rnd<unsigned>(vars.vratsub * real(sub.jmin));
-      p.mend.jend = op::rnd<unsigned>(vars.vratsub * real(sub.jend));
+      p.mend.imin = op::round<unsigned>(vars.hratsub * real(sub.imin));
+      p.mend.iend = op::round<unsigned>(vars.hratsub * real(sub.iend));
+      p.mend.jmin = op::round<unsigned>(vars.vratsub * real(sub.jmin));
+      p.mend.jend = op::round<unsigned>(vars.vratsub * real(sub.jend));
 
       // coarse bins (used shortly, when binning objects)
       bin.imin =  sub.imin / engine.hsub;
@@ -575,10 +575,10 @@ inline real uprepare_tri(
       if (imin == iend || jmin == jend) continue;
 
       // fine boundaries
-      t.mend.imin = op::rnd<unsigned>(vars.hratsub * real(imin));
-      t.mend.iend = op::rnd<unsigned>(vars.hratsub * real(iend));
-      t.mend.jmin = op::rnd<unsigned>(vars.vratsub * real(jmin));
-      t.mend.jend = op::rnd<unsigned>(vars.vratsub * real(jend));
+      t.mend.imin = op::round<unsigned>(vars.hratsub * real(imin));
+      t.mend.iend = op::round<unsigned>(vars.hratsub * real(iend));
+      t.mend.jmin = op::round<unsigned>(vars.vratsub * real(jmin));
+      t.mend.jend = op::round<unsigned>(vars.vratsub * real(jend));
 
       if (object_border) {
          surf.mend.imin = op::min(surf.mend.imin, t.mend.imin);
@@ -775,10 +775,10 @@ public:
          vars.vrat = real(image.vpixel)/real(engine.vzone);
          */
          unsigned
-            imin = op::rnd<unsigned>(vars.hrat*real (zone % engine.hzone)),
-            iend = op::rnd<unsigned>(vars.hrat*real((zone % engine.hzone)+1)),
-            jmin = op::rnd<unsigned>(vars.vrat*real (zone / engine.hzone)),
-            jend = op::rnd<unsigned>(vars.vrat*real((zone / engine.hzone)+1));
+            imin = op::round<unsigned>(vars.hrat*real (zone % engine.hzone)),
+            iend = op::round<unsigned>(vars.hrat*real((zone % engine.hzone)+1)),
+            jmin = op::round<unsigned>(vars.vrat*real (zone / engine.hzone)),
+            jend = op::round<unsigned>(vars.vrat*real((zone / engine.hzone)+1));
 
          if (binsize == 0)
             bin_border(image,imin,iend,jmin,jend,color::border(0,max_binsize));

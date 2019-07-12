@@ -37,8 +37,8 @@ public:
    inline explicit rotate(const point<real> &one, const point<real> &two) : o(one)
    {
       const point<real> t = two - one;
-      const real tmp = t.x*t.x + t.y*t.y, rxy = op::sqrt(tmp);
-      h = op::sqrt(tmp + t.z*t.z);
+      const real tmp = t.x*t.x + t.y*t.y, rxy = std::sqrt(tmp);
+      h = std::sqrt(tmp + t.z*t.z);
 
       real cosg, sing;
       if (rxy == 0) {
@@ -122,7 +122,7 @@ public:
       // tprime = point "three" before final rotation
       const point<real> tprime = t.fore(three);
       ex = tprime.x;
-      ey = op::sqrt(tprime.y*tprime.y + tprime.z*tprime.z);
+      ey = std::sqrt(tprime.y*tprime.y + tprime.z*tprime.z);
 
       real cosa, sina;
       if (ey == 0) {
@@ -158,9 +158,9 @@ public:
    ) : o(p) {
 
       // Note: h, ex, and ey are not initialized by this constructor!
-      const real sina = op::sin(alpha), cosa = op::cos(alpha);
-      const real sinb = op::sin(beta ), cosb = op::cos(beta );
-      const real sing = op::sin(gam  ), cosg = op::cos(gam  );
+      const real sina = std::sin(alpha), cosa = std::cos(alpha);
+      const real sinb = std::sin(beta ), cosb = std::cos(beta );
+      const real sing = std::sin(gam  ), cosg = std::cos(gam  );
 
       f1(cosb*cosg, -cosb*sing, sinb);
       f2(cosa*sing + sina*sinb*cosg, cosa*cosg - sina*sinb*sing, -sina*cosb);
@@ -237,7 +237,7 @@ public:
       const rotate<2,real> t(one,two);
 
       const point<real> tprime = t.fore(three);
-      const real ey = op::sqrt(tprime.y*tprime.y + tprime.z*tprime.z);
+      const real ey = std::sqrt(tprime.y*tprime.y + tprime.z*tprime.z);
 
       real cosa, sina;
       if (ey == 0) {
@@ -310,7 +310,7 @@ public:
 
       const point<real> tprime = t.fore(three);
       ex = tprime.x;
-      ey = op::sqrt(tprime.y*tprime.y + tprime.z*tprime.z);
+      ey = std::sqrt(tprime.y*tprime.y + tprime.z*tprime.z);
 
       real cosa, sina;
       if (ey == 0) {

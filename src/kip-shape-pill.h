@@ -57,9 +57,9 @@ kip_process(pill)
    interior = inside(eyeball);
 
    // minimum
-   return op::abs(
-      rot.ex < 0     ? op::sqrt(rsq-h2) - r
-    : rot.ex > rot.h ? op::sqrt(rsq-h3) - r
+   return std::abs(
+      rot.ex < 0     ? std::sqrt(rsq-h2) - r
+    : rot.ex > rot.h ? std::sqrt(rsq-h3) - r
     : rot.ey - r
    );
 } kip_end
@@ -130,7 +130,7 @@ kip_infirst(pill)
       const real f = dx*rot.ex + dy*rot.ey, disc0 = f*f + h2;
       if (disc0 >= 0) {
          // whole sphere is hit somewhere
-         q = op::sqrt(disc0) - f;  // only care about furthest intersection
+         q = std::sqrt(disc0) - f;  // only care about furthest intersection
          if (!(q < qmin)) return false;
          if (q > 0) {
             q.x = rot.ex + q*dx;
@@ -146,7 +146,7 @@ kip_infirst(pill)
       const real g = dx*rot.h - f, disc2 = g*g + h3;
       if (disc2 >= 0) {
          // whole sphere is hit somewhere
-         q = g + op::sqrt(disc2);  // only care about furthest intersection
+         q = g + std::sqrt(disc2);  // only care about furthest intersection
          if (!(q < qmin)) return false;
          if (q > 0) {
             q.x = rot.ex + q*dx;
@@ -162,7 +162,7 @@ kip_infirst(pill)
       const real c = dy*dy, d = tar.z*tar.z, s = c*rsq + d*h1;
       if (s < 0 || c+d == 0) return false;
 
-      q = (op::sqrt(s)- rot.ey*dy)/(c+d);
+      q = (std::sqrt(s)- rot.ey*dy)/(c+d);
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;  // inside, so don't need the range check
 
@@ -179,7 +179,7 @@ kip_infirst(pill)
       const real f = dx*rot.ex + dy*rot.ey, disc0 = f*f + h2;
       if (disc0 >= 0) {
          // whole sphere is hit somewhere
-         q = -(f + op::sqrt(disc0));
+         q = -(f + std::sqrt(disc0));
          if (!(0 < q)) return false;  // would be <= 0 for cyl. portion, too
 
          q.x = rot.ex + q*dx;
@@ -195,7 +195,7 @@ kip_infirst(pill)
       const real g = dx*rot.h - f, disc2 = g*g + h3;
       if (disc2 >= 0) {
          // whole sphere is hit somewhere
-         q = g - op::sqrt(disc2);
+         q = g - std::sqrt(disc2);
          if (!(0 < q)) return false;  // would be <= 0 for cyl. portion, too
 
          q.x = rot.ex + q*dx;
@@ -210,7 +210,7 @@ kip_infirst(pill)
       // curve
       if (c+d == 0) return false;
 
-      q = -(rot.ey*dy + op::sqrt(s))/(c+d);
+      q = -(rot.ey*dy + std::sqrt(s))/(c+d);
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;
       if (!(0 <= q.x && q.x <= rot.h)) return false;
@@ -325,8 +325,8 @@ kip_inall(pill)
    const real f = dx*rot.ex + dy*rot.ey, disc0 = f*f + h2;
    if (disc0 >= 0) {
       // whole sphere is hit somewhere
-      inq<real,tag> q1(-op::sqrt(disc0) - f);
-      inq<real,tag> q2( op::sqrt(disc0) - f);
+      inq<real,tag> q1(-std::sqrt(disc0) - f);
+      inq<real,tag> q2( std::sqrt(disc0) - f);
 
       if ((get_hemi0(tar,dx,dy,qmin,q1) && ints.convex(q1)) ||
           (get_hemi0(tar,dx,dy,qmin,q2) && ints.convex(q2)))
@@ -337,8 +337,8 @@ kip_inall(pill)
    const real g = dx*rot.h - f, disc2 = g*g + h3;
    if (disc2 >= 0) {
       // whole sphere is hit somewhere
-      inq<real,tag> q1(g - op::sqrt(disc2));
-      inq<real,tag> q2(g + op::sqrt(disc2));
+      inq<real,tag> q1(g - std::sqrt(disc2));
+      inq<real,tag> q2(g + std::sqrt(disc2));
 
       if ((get_hemih(tar,dx,dy,qmin,q1) && ints.convex(q1)) ||
           (get_hemih(tar,dx,dy,qmin,q2) && ints.convex(q2)))
@@ -347,14 +347,14 @@ kip_inall(pill)
 
    // curve
    if (c+d != 0) {
-      const real tmp = op::sqrt(s), tmp2 = rot.ey*dy, tmp3 = 1/(c+d);
+      const real tmp = std::sqrt(s), tmp2 = rot.ey*dy, tmp3 = 1/(c+d);
 
-      inq<real,tag> q1(-(tmp + tmp2)*tmp3);  // -op::sqrt
+      inq<real,tag> q1(-(tmp + tmp2)*tmp3);  // -std::sqrt
       if (get_curve(tar,dx,dy,qmin,q1) && ints.convex(q1)) return true;
 
       if (!ints.size()) return false;
 
-      inq<real,tag> q2( (tmp - tmp2)*tmp3);  // +op::sqrt
+      inq<real,tag> q2( (tmp - tmp2)*tmp3);  // +std::sqrt
       if (get_curve(tar,dx,dy,qmin,q2) && ints.convex(q2)) return true;
    }
 

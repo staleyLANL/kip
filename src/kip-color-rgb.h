@@ -457,18 +457,16 @@ inline RGBA<
    return RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
 }
 
-
-
 // op::round(RGBA)
 namespace op {
    template<class INTEGER, class rgb_t>
    inline RGBA<INTEGER> round(const RGBA<rgb_t> &val)
    {
       return RGBA<INTEGER>(
-         rnd<INTEGER>(val.r),
-         rnd<INTEGER>(val.g),
-         rnd<INTEGER>(val.b),
-         rnd<INTEGER>(val.a)
+         round<INTEGER>(val.r),
+         round<INTEGER>(val.g),
+         round<INTEGER>(val.b),
+         round<INTEGER>(val.a)
       );
    }
 }

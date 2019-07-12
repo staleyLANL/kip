@@ -174,8 +174,8 @@ kip_process(biwasher)
    itmp1 = 1 + islope*islope;  itmp2 = islope*(i.a + islope*rot.ex);
    otmp1 = 1 + oslope*oslope;  otmp2 = oslope*(o.a + oslope*rot.ex);
 
-   itmp3 = rot.ey*rot.ey - op::sq(i.a + islope*rot.ex);
-   otmp3 = rot.ey*rot.ey - op::sq(o.a + oslope*rot.ex);
+   itmp3 = rot.ey*rot.ey - op::square(i.a + islope*rot.ex);
+   otmp3 = rot.ey*rot.ey - op::square(o.a + oslope*rot.ex);
 
    interior = inside(eyeball);
 
@@ -194,14 +194,14 @@ kip_process(biwasher)
 
       // northwest: cross((o.a-o.b,h), (x,y-o.a)) >= 0
       if ((o.a-o.b)*(y-o.a) - h*x >= 0)
-         return op::sqrt(op::sq(x) + op::sq(y-o.a));
+         return std::sqrt(op::square(x) + op::square(y-o.a));
 
       // northeast: cross((o.a-o.b,h), (x-h,y-o.b)) <= 0
       if ((o.a-o.b)*(y-o.b) - h*(x-h) <= 0)
-         return op::sqrt(op::sq(x-h) + op::sq(y-o.b));
+         return std::sqrt(op::square(x-h) + op::square(y-o.b));
 
       // north
-      return op::abs(oslope*x+o.a-y)/op::sqrt(otmp1);
+      return std::abs(oslope*x+o.a-y)/std::sqrt(otmp1);
    }
 
    if ((x < 0 && y < i.a) || (x > h && y < i.b) ||
@@ -209,21 +209,21 @@ kip_process(biwasher)
 
       // southwest: cross((i.b-i.a,-h), (x,y-i.a)) <= 0
       if ((i.b-i.a)*(y-i.a) + h*x <= 0)
-         return op::sqrt(op::sq(x) + op::sq(y-i.a));
+         return std::sqrt(op::square(x) + op::square(y-i.a));
 
       // southeast: cross((i.b-i.a,-h), (x-h,y-i.b)) >= 0
       if ((i.b-i.a)*(y-i.b) + h*(x-h) >= 0)
-         return op::sqrt(op::sq(x-h) + op::sq(y-i.b));
+         return std::sqrt(op::square(x-h) + op::square(y-i.b));
 
       // south
-      return op::abs(islope*x+i.a-y)/op::sqrt(itmp1);
+      return std::abs(islope*x+i.a-y)/std::sqrt(itmp1);
    }
 
    // inside
    return op::min(
       x, h-x,
-      op::abs(oslope*x+o.a-y)/op::sqrt(otmp1),
-      op::abs(islope*x+i.a-y)/op::sqrt(itmp1)
+      std::abs(oslope*x+o.a-y)/std::sqrt(otmp1),
+      std::abs(islope*x+i.a-y)/std::sqrt(itmp1)
    );
 } kip_end
 
@@ -262,8 +262,8 @@ kip_dry(biwasher)
 
    const real tmp = (rot.h-az+bz)*(rot.h+az-bz);
    return
-      op::sq((az-seg.c)*rot.h) >= oasq*tmp &&
-      op::sq((bz-seg.c)*rot.h) >= obsq*tmp;
+      op::square((az-seg.c)*rot.h) >= oasq*tmp &&
+      op::square((bz-seg.c)*rot.h) >= obsq*tmp;
 } kip_end
 
 
@@ -348,7 +348,7 @@ inline bool biwasher<real,tag>::first_in(
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         const real tmp = op::sq(q.y) + op::sq(q.z);
+         const real tmp = op::square(q.y) + op::square(q.z);
          if (iasq <= tmp && tmp <= oasq) {
             q.x = real(0);
             return q(-1,0,0, this, normalized_t::yesnorm), true;
@@ -364,7 +364,7 @@ inline bool biwasher<real,tag>::first_in(
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         const real tmp = op::sq(q.y) + op::sq(q.z);
+         const real tmp = op::square(q.y) + op::square(q.z);
          if (ibsq <= tmp && tmp <= obsq) {
             q.x = rot.h;
             return q(1,0,0, this, normalized_t::yesnorm), true;
@@ -380,7 +380,7 @@ inline bool biwasher<real,tag>::first_in(
 
    // outer
    if (ao != 0) {
-      q = (bo + op::sqrt(so))/ao;
+      q = (bo + std::sqrt(so))/ao;
       if (0 < q && q < qmin) {
          q.x = rot.ex + q*dx;
          if (0 <= q.x && q.x <= rot.h) {
@@ -398,7 +398,7 @@ inline bool biwasher<real,tag>::first_in(
    if (si < 0) return false;
 
    if (ai != 0) {
-      q = (bi + op::sqrt(si))/ai;
+      q = (bi + std::sqrt(si))/ai;
       if (0 < q && q < qmin) {
          q.x = rot.ex + q*dx;
          if (0 <= q.x && q.x <= rot.h) {
@@ -433,7 +433,7 @@ inline bool biwasher<real,tag>::first_out(
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
 
-      const real tmp = op::sq(q.y) + op::sq(q.z);
+      const real tmp = op::square(q.y) + op::square(q.z);
       if (iasq <= tmp && tmp <= oasq) {
          q.x = real(0);
          return q(-1,0,0, this, normalized_t::yesnorm), true;
@@ -449,7 +449,7 @@ inline bool biwasher<real,tag>::first_out(
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
 
-      const real tmp = op::sq(q.y) + op::sq(q.z);
+      const real tmp = op::square(q.y) + op::square(q.z);
       if (ibsq <= tmp && tmp <= obsq) {
          q.x = rot.h;
          return q(1,0,0, this, normalized_t::yesnorm), true;
@@ -464,7 +464,7 @@ inline bool biwasher<real,tag>::first_out(
 
    // outer
    if (ao != 0 && rot.ey > o.a + oslope*rot.ex) {
-      q = (bo - op::sqrt(so))/ao;
+      q = (bo - std::sqrt(so))/ao;
       if (!(0 < q && q < qmin)) return false;
 
       q.x = rot.ex + q*dx;
@@ -481,7 +481,7 @@ inline bool biwasher<real,tag>::first_out(
    const real si = bi*bi - ai*itmp3;
    if (si < 0 || ai == 0) return false;
 
-   q = (bi + op::sqrt(si))/ai;
+   q = (bi + std::sqrt(si))/ai;
    if (!(0 < q && q < qmin)) return false;
 
    q.x = rot.ex + q*dx;
@@ -515,7 +515,7 @@ inline bool biwasher<real,tag>::get_base0(
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
 
-      const real tmp = op::sq(q.y) + op::sq(q.z);
+      const real tmp = op::square(q.y) + op::square(q.z);
       if (iasq <= tmp && tmp <= oasq) {
          q.x = real(0);
          return q(-1,0,0, this, normalized_t::yesnorm), true;
@@ -538,7 +538,7 @@ inline bool biwasher<real,tag>::get_baseh(
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
 
-      const real tmp = op::sq(q.y) + op::sq(q.z);
+      const real tmp = op::square(q.y) + op::square(q.z);
       if (ibsq <= tmp && tmp <= obsq) {
          q.x = rot.h;
          return q(1,0,0, this, normalized_t::yesnorm), true;
@@ -631,7 +631,7 @@ kip_inall(biwasher)
 
    // outer
    if (ao != 0) {
-      const real s1 = op::sqrt(so), divo = 1/ao;
+      const real s1 = std::sqrt(so), divo = 1/ao;
       if (!((get_outer(tar,dx,dy,qmin,qtmp=(bo+s1)*divo) && ints.four(qtmp)) ||
             (get_outer(tar,dx,dy,qmin,qtmp=(bo-s1)*divo) && ints.four(qtmp)))) {
 
@@ -641,7 +641,7 @@ kip_inall(biwasher)
          const real si = bi*bi - ai*itmp3;
 
          if (si >= 0 && ai != 0) {
-            const real s2 = op::sqrt(si), divi = 1/ai;
+            const real s2 = std::sqrt(si), divi = 1/ai;
             (get_inner(tar,dx,dy,qmin,qtmp=(bi+s2)*divi) && ints.four(qtmp)) ||
             (get_inner(tar,dx,dy,qmin,qtmp=(bi-s2)*divi) && ints.four(qtmp));
          }

@@ -57,7 +57,7 @@ kip_process(cylinder)
        rot.ex <= 0
     ?  rot.ey <= 1
     ? -rot.ex // west
-    :  op::sqrt(op::sq(rot.ex) + op::sq(rot.ey-1))  // northwest
+    :  std::sqrt(op::square(rot.ex) + op::square(rot.ey-1))  // northwest
     :  rot.ey >= 1
     ?  rot.ey - 1  // north
     :  op::min(rot.ex, 1-rot.ey)  // inside
@@ -112,7 +112,7 @@ kip_dry(cylinder)
    // Different from e.g. washer and tabular because we use rotate<3,real,true>,
    // where "true" turns on scaling - making rot.h = (its usual value) / r.
    const real tmp = rot.h*r;
-   return op::sq(rot.h*(op::min(az,bz)-seg.c)) >= (tmp-az+bz)*(tmp+az-bz);
+   return op::square(rot.h*(op::min(az,bz)-seg.c)) >= (tmp-az+bz)*(tmp+az-bz);
 } kip_end
 
 
@@ -151,7 +151,7 @@ kip_infirst(cylinder)
          if (0 < q && q < qmin) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            if (op::sq(q.y) + op::sq(q.z) <= 1) {
+            if (op::square(q.y) + op::square(q.z) <= 1) {
                q.x = real(0);
                return q(-1,0,0, this, normalized_t::yesnorm, r), true;
             }
@@ -164,7 +164,7 @@ kip_infirst(cylinder)
          if (0 < q && q < qmin) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            if (op::sq(q.y) + op::sq(q.z) <= 1) {
+            if (op::square(q.y) + op::square(q.z) <= 1) {
                q.x = rot.h;
                return q(1,0,0, this, normalized_t::yesnorm, r), true;
             }
@@ -175,7 +175,7 @@ kip_infirst(cylinder)
       const real c = dy*dy, d = tar.z*tar.z, s = c - d*h2;
       if (s < 0 || c+d == 0) return false;
 
-      q = (op::sqrt(s) - rot.ey*dy)/(c+d);
+      q = (std::sqrt(s) - rot.ey*dy)/(c+d);
       if (!(0 < q && q < qmin)) return false;
 
       q.x = rot.ex + q*dx;  // inside, so don't need the range check
@@ -196,7 +196,7 @@ kip_infirst(cylinder)
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
 
-         if (op::sq(q.y) + op::sq(q.z) <= 1) {
+         if (op::square(q.y) + op::square(q.z) <= 1) {
             q.x = real(0);
             return q(-1,0,0, this, normalized_t::yesnorm, r), true;
          }
@@ -205,7 +205,7 @@ kip_infirst(cylinder)
       // curve
       if (c+d == 0) return false;
 
-      q = -(rot.ey*dy + op::sqrt(s))/(c+d);
+      q = -(rot.ey*dy + std::sqrt(s))/(c+d);
       if (!(0 < q && q < qmin)) return false;
       q.x = rot.ex + q*dx;
       if (!(0 <= q.x && q.x <= rot.h)) return false;
@@ -240,7 +240,7 @@ inline bool cylinder<real,tag>::get_base0(
 
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
-   if (op::sq(info.y) + op::sq(info.z) <= 1) {
+   if (op::square(info.y) + op::square(info.z) <= 1) {
       info.x = real(0);
       return info(-1,0,0, this, normalized_t::yesnorm, r), true;
    }
@@ -265,7 +265,7 @@ inline bool cylinder<real,tag>::get_baseh(
 
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
-   if (op::sq(info.y) + op::sq(info.z) <= 1) {
+   if (op::square(info.y) + op::square(info.z) <= 1) {
       info.x = rot.h;
       return info(1,0,0, this, normalized_t::yesnorm, r), true;
    }
@@ -323,14 +323,14 @@ kip_inall(cylinder)
 
    const real c = dy*dy, d = tar.z*tar.z, s = c - d*h2;
    if (s >= 0 && c+d != 0) {
-      const real tmp = op::sqrt(s), tmp2 = rot.ey*dy, tmp3 = 1/(c+d);
+      const real tmp = std::sqrt(s), tmp2 = rot.ey*dy, tmp3 = 1/(c+d);
 
-      inq<real,tag> q3(-(tmp + tmp2)*tmp3);  // -op::sqrt
+      inq<real,tag> q3(-(tmp + tmp2)*tmp3);  // -std::sqrt
       if (get_curve(tar,dx,dy,qmin,q3) && ints.convex(q3)) return true;
 
       if (!ints.size()) return false;
 
-      inq<real,tag> q4( (tmp - tmp2)*tmp3);  // +op::sqrt
+      inq<real,tag> q4( (tmp - tmp2)*tmp3);  // +std::sqrt
       if (get_curve(tar,dx,dy,qmin,q4) && ints.convex(q4)) return true;
    }
 

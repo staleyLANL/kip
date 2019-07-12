@@ -133,7 +133,7 @@ kip_process(polygon)
 
    // minimum
    if (point_in_poly(basic.eye().x, basic.eye().y))
-      return op::abs(basic.eye().z);
+      return std::abs(basic.eye().z);
 
    real minimum = std::numeric_limits<real>::max();
    point_xy<real> a = poly[npts-1], b;
@@ -145,11 +145,11 @@ kip_process(polygon)
       const real c1 = basic.eye().z*basic.eye().z, q = (a1*a2 + b1*b2)/den;
 
       if (0 < q && q < 1)
-         minimum = op::min(minimum, op::sq(b2*a1 - a2*b1)/den + c1);
+         minimum = op::min(minimum, op::square(b2*a1 - a2*b1)/den + c1);
       minimum = op::min(minimum, a1*a1 + b1*b1 + c1);
    }
 
-   return op::sqrt(minimum);
+   return std::sqrt(minimum);
 } kip_end
 
 
