@@ -269,19 +269,17 @@ kip_check(ellipsoid)
 kip_random(ellipsoid)
 {
    // center
-   obj.c.x = op::twice(random<real>() - real(0.5));
-   obj.c.y = op::twice(random<real>() - real(0.5));
-   obj.c.z = op::twice(random<real>() - real(0.5));
+   random_full(obj.c);
 
    // angles
-   obj.a.x = pi<real>*random<real>();
-   obj.a.y = pi<real>*random<real>();
-   obj.a.z = pi<real>*random<real>();
+   obj.a.x = pi<real>*random_unit<real>();
+   obj.a.y = pi<real>*random_unit<real>();
+   obj.a.z = pi<real>*random_unit<real>();
 
    // radii
-   obj.r.x = real(0.15)*random<real>();
-   obj.r.y = real(0.15)*random<real>();
-   obj.r.z = real(0.15)*random<real>();
+   obj.r.x = real(0.15)*random_unit<real>();
+   obj.r.y = real(0.15)*random_unit<real>();
+   obj.r.z = real(0.15)*random_unit<real>();
 
    // base
    random(obj.base());  obj.baseset = true;

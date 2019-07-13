@@ -103,11 +103,8 @@ kip_random(one)
 {
    const size_t nop = 4;
 
-   const point<real> loc(
-      op::twice(random<real>() - real(0.5)),
-      op::twice(random<real>() - real(0.5)),
-      op::twice(random<real>() - real(0.5))
-   );
+   point<real> loc;
+   random_full(loc);
    obj.clear();
    obj.nary.vec().reserve(nop);
 
@@ -117,9 +114,9 @@ kip_random(one)
       obj.nary.push().op = ptr;
 
       ptr->c = loc + point<real>(
-         real(0.2)*random<real>(),
-         real(0.2)*random<real>(),
-         real(0.2)*random<real>()
+         real(0.2)*random_unit<real>(),
+         real(0.2)*random_unit<real>(),
+         real(0.2)*random_unit<real>()
       );
    }
 

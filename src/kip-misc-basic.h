@@ -35,13 +35,6 @@ inline T &default_parameter(const internal::tclass<T> &)
    return value;
 }
 
-// random
-template<class real>
-inline real random()
-{
-   return real(rand())*(1/real(RAND_MAX));
-}
-
 
 
 // pi
@@ -77,43 +70,80 @@ inline constexpr real pi = real(
 #endif
 
 
-   // print
-   template<class T>
-   inline void print(const T &value)
+// print
+template<class T>
+inline void print(const T &value)
+{
+   std::cout << value << std::endl;
+}
+
+// ray tracing method
+enum class method_t {
+   uniform,
+   recursive,
+   block
+};
+
+namespace internal {
+   // no_action
+   inline void no_action() { }
+
+   // tclass
+   template<class T> class tclass
    {
-      std::cout << value << std::endl;
-   }
-
-   // ray tracing method
-   enum class method_t {
-      uniform,
-      recursive,
-      block
+   public:
+      inline explicit tclass() { }
    };
+}
 
-   namespace internal {
-      // no_action
-      inline void no_action() { }
-
-      // tclass
-      template<class T> class tclass
-      {
-      public:
-         inline explicit tclass() { }
-      };
+namespace op {
+   // clip
+   template<class T>
+   inline T clip(const T lower, const T value, const T upper)
+   {
+      return
+         value < lower ? lower
+       : value > upper ? upper
+       : value;
    }
+}
 
-   namespace op {
-      // clip
-      template<class T>
-      inline T clip(const T lower, const T value, const T upper)
-      {
-         return
-            value < lower ? lower
-          : value > upper ? upper
-          : value;
-      }
-   }
+
+
+// -----------------------------------------------------------------------------
+// random numbers
+// int rand() \in [0..RAND_MAX]
+// -----------------------------------------------------------------------------
+
+/*
+// random
+template<class real>
+inline real random()
+{
+   return real(rand())*(1/real(RAND_MAX));
+}
+*/
+
+// random_unit: [0,1]
+template<class real>
+inline real random_unit()
+{
+   return rand()*(real(1)/RAND_MAX);
+}
+
+// random_full: [-1,1)
+template<class real>
+inline real random_full()
+{
+   return (rand()-RAND_MAX/2)*(real(1)/(-1-RAND_MAX/2));
+}
+
+// random_half: [-0.5,0.5)
+template<class real>
+inline real random_half()
+{
+   return (rand()-RAND_MAX/2)*(real(1)/(-1-RAND_MAX));
+}
 
 
 

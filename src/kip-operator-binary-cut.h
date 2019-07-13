@@ -205,9 +205,9 @@ kip_random(kipcut)
    random(*a);  a->r *= real(1.5);
    random(*b);  b->r *= real(1.5);  const real r = a->r + b->r;
 
-   b->c.x = a->c.x + (random<real>() - real(0.5))*r;
-   b->c.y = a->c.y + (random<real>() - real(0.5))*r;
-   b->c.z = a->c.z + (random<real>() - real(0.5))*r;
+   b->c.x = a->c.x + random_half<real>()*r;
+   b->c.y = a->c.y + random_half<real>()*r;
+   b->c.z = a->c.z + random_half<real>()*r;
 
    // operands
    obj.binary.a = a;

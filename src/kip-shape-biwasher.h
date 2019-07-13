@@ -302,27 +302,21 @@ kip_check(biwasher)
 // random
 kip_random(biwasher)
 {
-   const real ax = op::twice(random<real>() - real(0.5));
-   const real ay = op::twice(random<real>() - real(0.5));
-   const real az = op::twice(random<real>() - real(0.5));
-
-   const real oa = real(0.15)*random<real>();
-   const real ob = real(0.15)*random<real>();
+   const real oa = real(0.15)*random_unit<real>();
+   const real ob = real(0.15)*random_unit<real>();
 
    // a
-   obj.a.x = ax;
-   obj.a.y = ay;
-   obj.a.z = az;
+   random_full(obj.a);
 
    // b
-   obj.b.x = ax + real(0.6)*(random<real>() - real(0.5));
-   obj.b.y = ay + real(0.6)*(random<real>() - real(0.5));
-   obj.b.z = az + real(0.6)*(random<real>() - real(0.5));
+   obj.b.x = obj.a.x + real(0.6)*random_half<real>();
+   obj.b.y = obj.a.y + real(0.6)*random_half<real>();
+   obj.b.z = obj.a.z + real(0.6)*random_half<real>();
 
    // i.a, o.a
    // i.b, o.b
-   obj.i.a = oa*random<real>();  obj.o.a = oa;
-   obj.i.b = ob*random<real>();  obj.o.b = ob;
+   obj.i.a = oa*random_unit<real>();  obj.o.a = oa;
+   obj.i.b = ob*random_unit<real>();  obj.o.b = ob;
 
    // base
    random(obj.base());  obj.baseset = true;

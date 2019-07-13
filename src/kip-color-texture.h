@@ -85,9 +85,7 @@ inline real ran(
 ) {
    /*
    // zzz Need to change srand48() and drand48() calls, so that we instead
-   // zzz use kip's own random<>() function.
-   /// assert(false);
-   return random<real>();
+   // use kip's random functions.
 
    srand48((long(i)<<6) + (long(x)<<12) + (long(y)<<18) + (long(z)<<24));
    const double seed = drand48();

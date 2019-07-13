@@ -47,7 +47,7 @@ inline real angle_tweak(const real angle)
       real(10),
      -std::numeric_limits<real>::digits10 / real(2)
    );
-   return std::fmod(angle,real(360)) + real(random<real>() - 0.5)*fac;
+   return std::fmod(angle,real(360)) + fac*random_half<real>();
 }
 
 

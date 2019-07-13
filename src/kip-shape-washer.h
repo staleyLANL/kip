@@ -581,25 +581,17 @@ kip_check(washer)
 
 kip_random(washer)
 {
-   const real ax = op::twice(random<real>() - real(0.5));
-   const real ay = op::twice(random<real>() - real(0.5));
-   const real az = op::twice(random<real>() - real(0.5));
-
-   const real o = real(0.15)*random<real>();
-
    // a
-   obj.a.x = ax;
-   obj.a.y = ay;
-   obj.a.z = az;
+   random_full(obj.a);
 
    // b
-   obj.b.x = ax + real(0.6)*(random<real>() - real(0.5));
-   obj.b.y = ay + real(0.6)*(random<real>() - real(0.5));
-   obj.b.z = az + real(0.6)*(random<real>() - real(0.5));
+   obj.b.x = obj.a.x + real(0.6)*random_half<real>();
+   obj.b.y = obj.a.y + real(0.6)*random_half<real>();
+   obj.b.z = obj.a.z + real(0.6)*random_half<real>();
 
    // i, o
-   obj.i = o*random<real>();
-   obj.o = o;
+   obj.o = real(0.15)*random_unit<real>();
+   obj.i = obj.o*random_unit<real>();
 
    // base
    random(obj.base());  obj.baseset = true;

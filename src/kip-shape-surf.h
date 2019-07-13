@@ -450,19 +450,16 @@ kip_random(surf)
    obj.tri .clear();
 
    // Center
-   const point<real> center(
-      op::twice(random<real>() - real(0.5)),
-      op::twice(random<real>() - real(0.5)),
-      op::twice(random<real>() - real(0.5))
-   );
+   point<real> center;
+   random(center);
 
    // Radius
-   const real r = real(0.15)*random<real>();
+   const real r = real(0.15)*random_unit<real>();
 
    // Number of longitude and latitude segments
    const unsigned
-      nlong = 3+unsigned(real(nsurf)*random<real>()),  // want >= 3
-      nlat  = 2+unsigned(real(nsurf)*random<real>());  // want >= 2
+      nlong = 3+unsigned(real(nsurf)*random_unit<real>()),  // want >= 3
+      nlat  = 2+unsigned(real(nsurf)*random_unit<real>());  // want >= 2
 
    // Nodes
    const unsigned nnode = nlong*(nlat-1) + 2;   // 2 is for poles

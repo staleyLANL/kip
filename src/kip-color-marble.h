@@ -71,14 +71,14 @@ inline marble<C,real> &random(marble<C,real> &obj)
    obj.g = tmp.g;
    obj.b = tmp.b;
 
-   obj.amp    = 1 + random<real>();
+   obj.amp    = 1 + random_unit<real>();
    obj.ampfac = 1;
 
-   obj.per    = 0.005*(1 + random<real>());
+   obj.per    = 0.005*(1 + random_unit<real>());
    obj.perfac = 1;
 
    obj.nfun = 1;
-   obj.seed = unsigned(1000000*random<real>());
+   obj.seed = unsigned(1000000*random_unit<real>());
 
    obj.swirl = false;
    return obj;

@@ -135,17 +135,17 @@ kip_check(circle)
 kip_random(circle)
 {
    // center
-   obj.c(
-      op::twice(real(random<real>() - 0.5)),
-      op::twice(real(random<real>() - 0.5)),
-      op::twice(real(random<real>() - 0.5))
-   );
+   random_full(obj.c);
 
    // normal
-   obj.n(real(random<real>()-0.5), real(random<real>()-0.5), real(random<real>()-0.5));
+   obj.n(
+      random_half<real>(),
+      random_half<real>(),
+      random_half<real>()
+   );
 
    // r
-   obj.r = real(0.15*random<real>());
+   obj.r = real(0.15)*random_unit<real>();
 
    // base
    random(obj.base());  obj.baseset = true;

@@ -243,19 +243,17 @@ kip_check(triangle)
 kip_random(triangle)
 {
    // u
-   obj.u.x = op::twice(random<real>() - real(0.5));
-   obj.u.y = op::twice(random<real>() - real(0.5));
-   obj.u.z = op::twice(random<real>() - real(0.5));
+   random_full(obj.u);
 
    // v
-   obj.v.x = obj.u.x + real(0.3)*(random<real>() - real(0.5));
-   obj.v.y = obj.u.y + real(0.3)*(random<real>() - real(0.5));
-   obj.v.z = obj.u.z + real(0.3)*(random<real>() - real(0.5));
+   obj.v.x = obj.u.x + real(0.3)*random_half<real>();
+   obj.v.y = obj.u.y + real(0.3)*random_half<real>();
+   obj.v.z = obj.u.z + real(0.3)*random_half<real>();
 
    // w
-   obj.w.x = obj.u.x + real(0.3)*(random<real>() - real(0.5));
-   obj.w.y = obj.u.y + real(0.3)*(random<real>() - real(0.5));
-   obj.w.z = obj.u.z + real(0.3)*(random<real>() - real(0.5));
+   obj.w.x = obj.u.x + real(0.3)*random_half<real>();
+   obj.w.y = obj.u.y + real(0.3)*random_half<real>();
+   obj.w.z = obj.u.z + real(0.3)*random_half<real>();
 
    // tag
    random(obj.base());  obj.baseset = true;

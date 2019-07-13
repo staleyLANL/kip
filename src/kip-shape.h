@@ -959,21 +959,17 @@ template<class real, class tag, class SHAPE>
 SHAPE &random_abr(SHAPE &obj)
 {
    // a
-   obj.a(
-      op::twice(random<real>() - real(0.5)),
-      op::twice(random<real>() - real(0.5)),
-      op::twice(random<real>() - real(0.5))
-   );
+   random_full(obj.a);
 
    // b
    obj.b = obj.a + point<real>(
-      real(0.6)*(random<real>() - real(0.5)),
-      real(0.6)*(random<real>() - real(0.5)),
-      real(0.6)*(random<real>() - real(0.5))
+      real(0.6)*random_half<real>(),
+      real(0.6)*random_half<real>(),
+      real(0.6)*random_half<real>()
    );
 
    // r
-   obj.r = real(0.15*random<real>());
+   obj.r = real(0.15)*random_unit<real>();
 
    // base
    random(obj.base());  obj.baseset = true;

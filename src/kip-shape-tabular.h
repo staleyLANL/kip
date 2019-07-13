@@ -728,18 +728,16 @@ kip_random(tabular)
    // number of segments (+1 == number of (x,r) points)
    const size_t nseg = (ntabular < 2)
       ? 1
-      : 1 + size_t(real(ntabular)*random<real>());
+      : 1 + size_t(real(ntabular)*random_unit<real>());
    const size_t npts = nseg+1;
 
    // a
-   obj.a.x = op::twice(random<real>() - real(0.5));
-   obj.a.y = op::twice(random<real>() - real(0.5));
-   obj.a.z = op::twice(random<real>() - real(0.5));
+   random_full(obj.a);
 
    // b
-   obj.b.x = obj.a.x + random<real>() - real(0.5);
-   obj.b.y = obj.a.y + random<real>() - real(0.5);
-   obj.b.z = obj.a.z + random<real>() - real(0.5);
+   obj.b.x = obj.a.x + random_half<real>();
+   obj.b.y = obj.a.y + random_half<real>();
+   obj.b.z = obj.a.z + random_half<real>();
 
    // table
    obj.table.clear();
@@ -749,16 +747,9 @@ kip_random(tabular)
       point_xr<real> p;
 
       p.x = i == 0
-         ? real(0.3)*random<real>()/real(nseg)
-         : real(0.3)*random<real>()/real(nseg) + obj.table[i-1].x;
-      p.r = real(0.15)*random<real>();
-      /*
-      do
-         p.r = i == 0
-            ? real(0.15)*random<real>()
-            : obj.table[i-1].r + real(0.03)*(random<real>() - real(0.5));
-      while (p.r <= 0);
-      */
+         ? real(0.3)*random_unit<real>()/real(nseg)
+         : real(0.3)*random_unit<real>()/real(nseg) + obj.table[i-1].x;
+      p.r = real(0.15)*random_unit<real>();
 
       obj.table.push_back(p);
    }

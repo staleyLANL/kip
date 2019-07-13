@@ -289,7 +289,14 @@ kip_random(kipand)
    shape<real,tag> *aptr;  static bool justspheres = false;
    shape<real,tag> *bptr;  static point<real> loc;
 
-   if (justspheres || random<real>() < 0.0) {
+   // Remark, 2019-07-12. This line used to read:
+   //    if (justspheres || random<real>() < 0.0) {
+   // with the old random<real>() function, which returned a random number
+   // in the range [0,1]. I've replaced it with our equivalent new random
+   // function, random_unit<real>(), but how did it makes sense in the
+   // original to have the < 0.0 test, which would always fail?
+
+   if (justspheres || random_unit<real>() < 0.0) {
       sphere<real,tag> *const a = new sphere<real,tag>;
       sphere<real,tag> *const b = new sphere<real,tag>;
 
@@ -298,29 +305,25 @@ kip_random(kipand)
 
       if (justspheres) {
          a->c = loc + point<real>(
-            real(0.2)*random<real>(),
-            real(0.2)*random<real>(),
-            real(0.2)*random<real>()
+            real(0.2)*random_unit<real>(),
+            real(0.2)*random_unit<real>(),
+            real(0.2)*random_unit<real>()
          );
          b->c = loc + point<real>(
-            real(0.2)*random<real>(),
-            real(0.2)*random<real>(),
-            real(0.2)*random<real>()
+            real(0.2)*random_unit<real>(),
+            real(0.2)*random_unit<real>(),
+            real(0.2)*random_unit<real>()
          );
       } else {
          const real r = a->r + b->r;
-         b->c.x = a->c.x + (random<real>() - real(0.5))*r;
-         b->c.y = a->c.y + (random<real>() - real(0.5))*r;
-         b->c.z = a->c.z + (random<real>() - real(0.5))*r;
+         b->c.x = a->c.x + random_half<real>()*r;
+         b->c.y = a->c.y + random_half<real>()*r;
+         b->c.z = a->c.z + random_half<real>()*r;
       }
 
    } else {
       justspheres = true;
-      loc(
-         op::twice(random<real>() - real(0.5)),
-         op::twice(random<real>() - real(0.5)),
-         op::twice(random<real>() - real(0.5))
-      );
+      random_full(loc);
       kipand<real,tag> *const a = new kipand<real,tag>; random(*a); aptr = a;
       kipand<real,tag> *const b = new kipand<real,tag>; random(*b); bptr = b;
       justspheres = false;

@@ -58,6 +58,22 @@ public:
 // point: functions
 // -----------------------------------------------------------------------------
 
+// random_full
+template<class real>
+inline point<real> &random_full(point<real> &p)
+{
+   return p(random_full<real>(), random_full<real>(), random_full<real>());
+
+   /*
+   p.x = random_full<real>();
+   p.y = random_full<real>();
+   p.z = random_full<real>();
+   return p;
+   */
+}
+
+
+
 // operator==
 template<class real>
 inline bool operator==(const point<real> &a, const point<real> &b)

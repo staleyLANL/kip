@@ -27,3 +27,6 @@ cd ..
 cd example
 ./runme
 cd ..
+
+# list
+ls -l `/usr/bin/find . -name "build" -print`

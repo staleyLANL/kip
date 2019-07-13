@@ -138,7 +138,10 @@ inline crayola &random(crayola &obj)
 {
    // doesn't include "unknown"
    return obj = crayola(
-      crayola_id_t(1+random<double>()*double(crayola::color_table().size()-1))
+      crayola_id_t(
+         1 +
+         random_unit<double>() * double(crayola::color_table().size() - 1)
+      )
    );
 }
 

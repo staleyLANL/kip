@@ -359,9 +359,9 @@ inline RGB<
 {
    static const double scale = internal::endcolor<double,rgb_t>();
 
-   obj.r = rgb_t(random<float>()*scale);
-   obj.g = rgb_t(random<float>()*scale);
-   obj.b = rgb_t(random<float>()*scale);
+   obj.r = rgb_t(random_unit<double>()*scale);
+   obj.g = rgb_t(random_unit<double>()*scale);
+   obj.b = rgb_t(random_unit<double>()*scale);
 
    return obj;
 }

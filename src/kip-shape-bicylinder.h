@@ -288,23 +288,17 @@ kip_check(bicylinder)
 // random
 kip_random(bicylinder)
 {
-   const real ax = op::twice(random<real>() - real(0.5));
-   const real ay = op::twice(random<real>() - real(0.5));
-   const real az = op::twice(random<real>() - real(0.5));
-
    // a
-   obj.a.x = ax;
-   obj.a.y = ay;
-   obj.a.z = az;
+   random_full(obj.a);
 
    // b
-   obj.b.x = ax + real(0.6)*(random<real>() - real(0.5));
-   obj.b.y = ay + real(0.6)*(random<real>() - real(0.5));
-   obj.b.z = az + real(0.6)*(random<real>() - real(0.5));
+   obj.b.x = obj.a.x + real(0.6)*random_half<real>();
+   obj.b.y = obj.a.y + real(0.6)*random_half<real>();
+   obj.b.z = obj.a.z + real(0.6)*random_half<real>();
 
    // r.a, r.b
-   obj.r.a = real(0.15)*random<real>();
-   obj.r.b = real(0.15)*random<real>();
+   obj.r.a = real(0.15)*random_unit<real>();
+   obj.r.b = real(0.15)*random_unit<real>();
 
    // base
    random(obj.base());  obj.baseset = true;

@@ -180,11 +180,11 @@ kip_check(xplane)
 kip_random(xplane)
 {
    // x
-   obj.x = op::twice(random<real>() - 0.5);
+   obj.x = random_full<real>();
 
    // size.y, size.z
-   obj.size.y = random<real>();
-   obj.size.z = random<real>();
+   obj.size.y = random_unit<real>();
+   obj.size.z = random_unit<real>();
 
    // color
    random(obj.color);

@@ -256,18 +256,15 @@ kip_check(polygon)
 kip_random(polygon)
 {
    static const size_t max = 16;  // #points = #edges = max
-   const size_t npts = 3 + size_t((max-2)*random<real>());
+   const size_t npts = 3 + size_t((max-2)*random_unit<real>());
 
    // rotation to move vertices to their actual locations
+   point<real> p;
    const rotate<3,real> move(
-      pi<real>*random<real>(),
-      pi<real>*random<real>(),
-      pi<real>*random<real>(),
-      point<real>(
-         op::twice(random<real>() - real(0.5)),
-         op::twice(random<real>() - real(0.5)),
-         op::twice(random<real>() - real(0.5))
-      )
+      pi<real>*random_unit<real>(),
+      pi<real>*random_unit<real>(),
+      pi<real>*random_unit<real>(),
+      random_full(p)
    );
 
    // table
@@ -276,7 +273,7 @@ kip_random(polygon)
 
    for (size_t i = 0;  i < npts;  ++i)
       obj.table.push_back(move.back(
-         point<real>(real(0.3)*random<real>(), real(0.3)*random<real>(), 0)
+         point<real>(real(0.3)*random_unit<real>(), real(0.3)*random_unit<real>(), 0)
       ));
 
    // base

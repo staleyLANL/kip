@@ -246,10 +246,10 @@ inline bool get_first(
              qmin, q, subinfo(i,j, unsigned(zone), obj.mend)
           )
       ) {
-         q = real(q)*(1 + (2*random<real>()-1)*eps);
+         q = real(q)*(1 + eps*random_full<real>());
          return q < qmin*(1-eps)
             ? (num = 1)
-            : ++num == 1 || num*random<real>() < 1;
+            : ++num == 1 || num*random_unit<real>() < 1;
       }
 
       return false;
@@ -303,7 +303,7 @@ inline bool op_first(
       const real eps = get_eps<real>();
       if (!(s->infirst(kip_etd, qmin,q, insub)))
          return false;
-      return real(q = real(q)*(1 + (2*random<real>()-1)*eps)) < qmin;
+      return real(q = real(q)*(1 + eps*random_full<real>())) < qmin;
    #endif
 
    // general shape
@@ -350,7 +350,7 @@ inline bool op_all(
 
       const unsigned size = q.size();
       for (unsigned n = size;  n--; )
-         q[n] = real(q[n])*(1 + (2*random<real>()-1)*eps);
+         q[n] = real(q[n])*(1 + eps*random_full<real>());
 
       q.sort();
       for (unsigned n = size;  n--; )

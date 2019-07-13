@@ -183,14 +183,12 @@ kip_inall(half)
 kip_random(half)
 {
    // center
-   obj.point.x = op::twice(random<real>() - 0.5);
-   obj.point.y = op::twice(random<real>() - 0.5);
-   obj.point.z = op::twice(random<real>() - 0.5);
+   random(obj.point);
 
    // normal
-   obj.normal.x = random<real>() - 0.5;
-   obj.normal.y = random<real>() - 0.5;
-   obj.normal.z = random<real>() - 0.5;
+   obj.normal.x = random_half<real>();
+   obj.normal.y = random_half<real>();
+   obj.normal.z = random_half<real>();
 
    // base
    random(obj.base());  obj.baseset = true;
