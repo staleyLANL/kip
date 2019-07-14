@@ -441,8 +441,8 @@ kip_check(surf)
 
 
 
-// random
-kip_random(surf)
+// randomize
+kip_randomize(surf)
 {
    using tri_t = typename surf<real,tag>::tri_t;
 
@@ -451,7 +451,7 @@ kip_random(surf)
 
    // Center
    point<real> center;
-   random(center);
+   random_full(center);
 
    // Radius
    const real r = real(0.15)*random_unit<real>();
@@ -498,7 +498,7 @@ kip_random(surf)
    }
 
    // Tag
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

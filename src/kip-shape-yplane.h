@@ -176,8 +176,8 @@ kip_check(yplane)
 
 
 
-// random
-kip_random(yplane)
+// randomize
+kip_randomize(yplane)
 {
    // y
    obj.y = random_full<real>();
@@ -187,10 +187,10 @@ kip_random(yplane)
    obj.size.z = random_unit<real>();
 
    // color
-   random(obj.color);
+   randomize(obj.color);
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

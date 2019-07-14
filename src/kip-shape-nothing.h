@@ -48,10 +48,10 @@ kip_inall  (nothing) { return false; } kip_end
 kip_check  (nothing) { return diagnostic_t::diagnostic_good; } kip_end
 
 
-// random
-kip_random(nothing)
+// randomize
+kip_randomize(nothing)
 {
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

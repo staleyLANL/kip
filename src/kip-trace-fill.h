@@ -648,7 +648,7 @@ kip_fill_anti(two_anti) {
    inq<real,base> &qb, inq<real,base> *qb_ptr,
    const real h,  // "hcent"
    const real v,  // "vcent"
-   RGBA<unsigned> &sum,  
+   RGBA<unsigned> &sum,
    const vars  <real,base > &vars,
    const light <real      > &light,
    pix &pixel,

@@ -179,19 +179,17 @@ kip_inall(half)
 
 
 
-// random
-kip_random(half)
+// randomize
+kip_randomize(half)
 {
    // center
-   random(obj.point);
+   random_full(obj.point);
 
    // normal
-   obj.normal.x = random_half<real>();
-   obj.normal.y = random_half<real>();
-   obj.normal.z = random_half<real>();
+   obj.normal(random_full<real>(), random_full<real>(), random_full<real>());
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

@@ -196,25 +196,25 @@ kip_check(kipcut)
 
 
 
-// random
-kip_random(kipcut)
+// randomize
+kip_randomize(kipcut)
 {
    sphere<real,tag> *const a = new sphere<real,tag>;
    sphere<real,tag> *const b = new sphere<real,tag>;
 
-   random(*a);  a->r *= real(1.5);
-   random(*b);  b->r *= real(1.5);  const real r = a->r + b->r;
+   randomize(*a);  a->r *= real(1.5);
+   randomize(*b);  b->r *= real(1.5);  const real r = a->r + b->r;
 
-   b->c.x = a->c.x + random_half<real>()*r;
-   b->c.y = a->c.y + random_half<real>()*r;
-   b->c.z = a->c.z + random_half<real>()*r;
+   b->c.x = a->c.x + r*random_half<real>();
+   b->c.y = a->c.y + r*random_half<real>();
+   b->c.z = a->c.z + r*random_half<real>();
 
    // operands
    obj.binary.a = a;
    obj.binary.b = b;
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

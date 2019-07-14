@@ -60,12 +60,12 @@ const char *const marble<T,real>::description = "marble";
 
 
 
-// random(marble)
+// randomize
 template<class C, class real>
-inline marble<C,real> &random(marble<C,real> &obj)
+inline marble<C,real> &randomize(marble<C,real> &obj)
 {
    RGB<C> tmp;
-   random(tmp);
+   randomize(tmp);
 
    obj.r = tmp.r;
    obj.g = tmp.g;

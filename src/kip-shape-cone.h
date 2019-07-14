@@ -113,8 +113,8 @@ kip_check(cone)
 
 
 
-// random
-kip_random(cone)
+// randomize
+kip_randomize(cone)
 {
    return internal::random_abr<real,tag>(obj);
 } kip_end

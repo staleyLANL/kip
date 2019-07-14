@@ -125,8 +125,8 @@ kip_check(cylinder)
 
 
 
-// random
-kip_random(cylinder)
+// randomize
+kip_randomize(cylinder)
 {
    return internal::random_abr<real,tag>(obj);
 } kip_end

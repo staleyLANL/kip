@@ -139,8 +139,8 @@ kip_dry(even)
 
 
 
-// random
-kip_random(even)
+// randomize
+kip_randomize(even)
 {
    const size_t nop = 4;
 
@@ -151,7 +151,7 @@ kip_random(even)
 
    for (size_t i = 0;  i < nop;  ++i) {
       sphere<real,tag> *const ptr = new sphere<real,tag>;
-      random(*ptr);
+      randomize(*ptr);
       obj.nary.push().op = ptr;
 
       ptr->c = loc + point<real>(
@@ -162,7 +162,7 @@ kip_random(even)
    }
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

@@ -131,24 +131,20 @@ kip_check(circle)
 
 
 
-// random
-kip_random(circle)
+// randomize
+kip_randomize(circle)
 {
    // center
    random_full(obj.c);
 
    // normal
-   obj.n(
-      random_half<real>(),
-      random_half<real>(),
-      random_half<real>()
-   );
+   obj.n(random_full<real>(), random_full<real>(), random_full<real>());
 
    // r
    obj.r = real(0.15)*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

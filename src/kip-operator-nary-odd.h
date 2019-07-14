@@ -144,8 +144,8 @@ kip_inall(odd)
 
 
 
-// random
-kip_random(odd)
+// randomize
+kip_randomize(odd)
 {
    const size_t nop = 4;
 
@@ -156,7 +156,7 @@ kip_random(odd)
 
    for (size_t i = 0;  i < nop;  ++i) {
       sphere<real,tag> *const ptr = new sphere<real,tag>;
-      random(*ptr);
+      randomize(*ptr);
       obj.nary.push().op = ptr;
 
       ptr->c = loc + point<real>(
@@ -167,7 +167,7 @@ kip_random(odd)
    }
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

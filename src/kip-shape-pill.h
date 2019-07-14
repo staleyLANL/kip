@@ -104,8 +104,8 @@ kip_check(pill)
 
 
 
-// random
-kip_random(pill)
+// randomize
+kip_randomize(pill)
 {
    return internal::random_abr<real,tag>(obj);
 } kip_end

@@ -285,8 +285,8 @@ kip_check(bicylinder)
 
 
 
-// random
-kip_random(bicylinder)
+// randomize
+kip_randomize(bicylinder)
 {
    // a
    random_full(obj.a);
@@ -301,7 +301,7 @@ kip_random(bicylinder)
    obj.r.b = real(0.15)*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

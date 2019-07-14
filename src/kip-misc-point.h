@@ -63,13 +63,6 @@ template<class real>
 inline point<real> &random_full(point<real> &p)
 {
    return p(random_full<real>(), random_full<real>(), random_full<real>());
-
-   /*
-   p.x = random_full<real>();
-   p.y = random_full<real>();
-   p.z = random_full<real>();
-   return p;
-   */
 }
 
 

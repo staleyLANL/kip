@@ -169,8 +169,8 @@ kip_check(spheroid)
 
 
 
-// random
-kip_random(spheroid)
+// randomize
+kip_randomize(spheroid)
 {
    return internal::random_abr<real,tag>(obj);
 } kip_end

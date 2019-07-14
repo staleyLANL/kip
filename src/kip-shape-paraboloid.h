@@ -147,8 +147,8 @@ kip_check(paraboloid)
 
 
 
-// random
-kip_random(paraboloid)
+// randomize
+kip_randomize(paraboloid)
 {
    return internal::random_abr<real,tag>(obj);
 } kip_end

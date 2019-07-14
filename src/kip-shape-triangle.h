@@ -239,8 +239,8 @@ kip_check(triangle)
 
 
 
-// random
-kip_random(triangle)
+// randomize
+kip_randomize(triangle)
 {
    // u
    random_full(obj.u);
@@ -256,7 +256,7 @@ kip_random(triangle)
    obj.w.z = obj.u.z + real(0.3)*random_half<real>();
 
    // tag
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

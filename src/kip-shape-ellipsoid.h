@@ -265,8 +265,8 @@ kip_check(ellipsoid)
 
 
 
-// random
-kip_random(ellipsoid)
+// randomize
+kip_randomize(ellipsoid)
 {
    // center
    random_full(obj.c);
@@ -282,7 +282,7 @@ kip_random(ellipsoid)
    obj.r.z = real(0.15)*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

@@ -344,10 +344,10 @@ using rgba = RGBA<>;
 
 
 // -----------------------------------------------------------------------------
-// random(RGB)
+// randomize(RGB)
 // -----------------------------------------------------------------------------
 
-// random(RGB<rgb_t>), for rgb_t = unsigned integral
+// randomize(RGB<rgb_t>), for rgb_t = unsigned integral
 template<class rgb_t>
 inline RGB<
    typename internal::if_true<
@@ -355,7 +355,7 @@ inline RGB<
      !std::numeric_limits<rgb_t>::is_signed,
       rgb_t
    >::result
-> &random(RGB<rgb_t> &obj)
+> &randomize(RGB<rgb_t> &obj)
 {
    static const double scale = internal::endcolor<double,rgb_t>();
 
@@ -368,18 +368,18 @@ inline RGB<
 
 
 
-// random(RGB<rgb_t>), for rgb_t = floating
+// randomize(RGB<rgb_t>), for rgb_t = floating
 template<class rgb_t>
 inline RGB<
    typename internal::if_true<
       internal::is_floating<rgb_t>::result,
       rgb_t
    >::result
-> &random(RGB<rgb_t> &obj)
+> &randomize(RGB<rgb_t> &obj)
 {
-   obj.r = rgb_t(random<rgb_t>());
-   obj.g = rgb_t(random<rgb_t>());
-   obj.b = rgb_t(random<rgb_t>());
+   obj.r = random_unit<rgb_t>();
+   obj.g = random_unit<rgb_t>();
+   obj.b = random_unit<rgb_t>();
 
    return obj;
 }

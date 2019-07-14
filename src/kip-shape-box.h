@@ -324,8 +324,8 @@ kip_check(box)
 
 
 
-// random
-kip_random(box)
+// randomize
+kip_randomize(box)
 {
    // center
    random_full(obj.c);
@@ -341,7 +341,7 @@ kip_random(box)
    obj.r.z = real(0.15)*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

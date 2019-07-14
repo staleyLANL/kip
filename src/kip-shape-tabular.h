@@ -720,10 +720,10 @@ kip_check(tabular)
 
 
 // -----------------------------------------------------------------------------
-// random
+// randomize
 // -----------------------------------------------------------------------------
 
-kip_random(tabular)
+kip_randomize(tabular)
 {
    // number of segments (+1 == number of (x,r) points)
    const size_t nseg = (ntabular < 2)
@@ -755,7 +755,7 @@ kip_random(tabular)
    }
 
    // tag
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 
 } kip_end

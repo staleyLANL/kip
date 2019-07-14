@@ -115,8 +115,8 @@ kip_check(silo)
 
 
 
-// random
-kip_random(silo)
+// randomize
+kip_randomize(silo)
 {
    return internal::random_abr<real,tag>(obj);
 } kip_end

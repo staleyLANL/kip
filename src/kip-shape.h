@@ -776,10 +776,10 @@ public:
    inline diagnostic_t type<real,tag>::check() const\
    {
 
-// kip_random
-#define kip_random(type)\
+// kip_randomize
+#define kip_randomize(type)\
    template<class real, class tag>\
-   type<real,tag> &random(type<real,tag> &obj)\
+   type<real,tag> &randomize(type<real,tag> &obj)\
    {\
       (void)obj;
 
@@ -972,7 +972,7 @@ SHAPE &random_abr(SHAPE &obj)
    obj.r = real(0.15)*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 }
 

@@ -133,8 +133,8 @@ public:
 
 
 
-// random(crayola)
-inline crayola &random(crayola &obj)
+// randomize
+inline crayola &randomize(crayola &obj)
 {
    // doesn't include "unknown"
    return obj = crayola(

@@ -192,10 +192,10 @@ kip_inall(sphere)
 
 
 // -----------------------------------------------------------------------------
-// random
+// randomize
 // -----------------------------------------------------------------------------
 
-kip_random(sphere)
+kip_randomize(sphere)
 {
    // center
    random_full(obj.c);
@@ -204,7 +204,7 @@ kip_random(sphere)
    obj.r = real(0.15)*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

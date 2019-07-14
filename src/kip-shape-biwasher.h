@@ -299,8 +299,8 @@ kip_check(biwasher)
 
 
 
-// random
-kip_random(biwasher)
+// randomize
+kip_randomize(biwasher)
 {
    const real oa = real(0.15)*random_unit<real>();
    const real ob = real(0.15)*random_unit<real>();
@@ -319,7 +319,7 @@ kip_random(biwasher)
    obj.i.b = ob*random_unit<real>();  obj.o.b = ob;
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

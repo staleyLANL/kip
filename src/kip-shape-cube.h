@@ -286,8 +286,8 @@ kip_check(cube)
 
 
 
-// random
-kip_random(cube)
+// randomize
+kip_randomize(cube)
 {
    // center
    random_full(obj.c);
@@ -301,7 +301,7 @@ kip_random(cube)
    obj.r = real(0.15)*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

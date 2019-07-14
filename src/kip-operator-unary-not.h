@@ -130,18 +130,35 @@ kip_check(kipnot)
 
 
 
-// random
-kip_random(kipnot)
+// randomize
+kip_randomize(kipnot)
 {
-   sphere<real,tag> *const a = new sphere<real,tag>;
-   random(*a);
-   // delete for the above new is in kipnot's destructor
+   // For a random [kip]not, we're just going to do a not(not(sphere)).
+   // Really, the point of generating random objects is to create lots
+   // of them, for the purposes of speed testing.
 
-   // operand
-   obj.unary.a = a;
+   // Note: I see from testing that these randomly-generated not objects
+   // are very slow. This is no doubt because screen segmenting basically
+   // doesn't happen for not. Really, these should only be used in other
+   // objects, when absolutely necessary. Generally, for what nots would
+   // usually be used for, a "cut" object is probably better.
 
-   // base
-   random(obj.base());  obj.baseset = true;
+   // sphere
+   sphere<real,tag> *const sptr = new sphere<real,tag>; // delete in ~kipnot()
+   randomize(*sptr);
+
+   // not: inner
+   kipnot<real,tag> *const nptr = new kipnot<real,tag>; // delete in ~kipnot()
+   nptr->unary.a = sptr;
+
+   // not: outer
+   obj.unary.a = nptr;
+
+   // Don't color over the nested objects
+   // randomize(obj.base());
+   // obj.baseset = true;
+
+   // done
    return obj;
 } kip_end
 

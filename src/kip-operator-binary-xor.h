@@ -180,25 +180,25 @@ kip_check(kipxor)
 
 
 
-// random
-kip_random(kipxor)
+// randomize
+kip_randomize(kipxor)
 {
    sphere<real,tag> *const a = new sphere<real,tag>;
    sphere<real,tag> *const b = new sphere<real,tag>;
 
-   random(*a);
-   random(*b);  const real r = a->r + b->r;
+   randomize(*a);
+   randomize(*b);  const real r = a->r + b->r;
 
-   b->c.x = a->c.x + random_half<real>()*r;
-   b->c.y = a->c.y + random_half<real>()*r;
-   b->c.z = a->c.z + random_half<real>()*r;
+   b->c.x = a->c.x + r*random_half<real>();
+   b->c.y = a->c.y + r*random_half<real>();
+   b->c.z = a->c.z + r*random_half<real>();
 
    // operands
    obj.binary.a = a;
    obj.binary.b = b;
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

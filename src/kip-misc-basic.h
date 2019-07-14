@@ -111,18 +111,9 @@ namespace op {
 
 
 // -----------------------------------------------------------------------------
-// random numbers
+// random_*
 // int rand() \in [0..RAND_MAX]
 // -----------------------------------------------------------------------------
-
-/*
-// random
-template<class real>
-inline real random()
-{
-   return real(rand())*(1/real(RAND_MAX));
-}
-*/
 
 // random_unit: [0,1]
 template<class real>

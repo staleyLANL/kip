@@ -576,10 +576,10 @@ kip_check(washer)
 
 
 // -----------------------------------------------------------------------------
-// random
+// randomize
 // -----------------------------------------------------------------------------
 
-kip_random(washer)
+kip_randomize(washer)
 {
    // a
    random_full(obj.a);
@@ -594,7 +594,7 @@ kip_random(washer)
    obj.i = obj.o*random_unit<real>();
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

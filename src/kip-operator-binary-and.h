@@ -281,10 +281,10 @@ kip_inall(kipand)
 
 
 // -----------------------------------------------------------------------------
-// random
+// randomize
 // -----------------------------------------------------------------------------
 
-kip_random(kipand)
+kip_randomize(kipand)
 {
    shape<real,tag> *aptr;  static bool justspheres = false;
    shape<real,tag> *bptr;  static point<real> loc;
@@ -300,8 +300,8 @@ kip_random(kipand)
       sphere<real,tag> *const a = new sphere<real,tag>;
       sphere<real,tag> *const b = new sphere<real,tag>;
 
-      random(*a);  a->r += a->r;  aptr = a;
-      random(*b);  b->r += b->r;  bptr = b;
+      randomize(*a);  a->r += a->r;  aptr = a;
+      randomize(*b);  b->r += b->r;  bptr = b;
 
       if (justspheres) {
          a->c = loc + point<real>(
@@ -316,16 +316,16 @@ kip_random(kipand)
          );
       } else {
          const real r = a->r + b->r;
-         b->c.x = a->c.x + random_half<real>()*r;
-         b->c.y = a->c.y + random_half<real>()*r;
-         b->c.z = a->c.z + random_half<real>()*r;
+         b->c.x = a->c.x + r*random_half<real>();
+         b->c.y = a->c.y + r*random_half<real>();
+         b->c.z = a->c.z + r*random_half<real>();
       }
 
    } else {
       justspheres = true;
       random_full(loc);
-      kipand<real,tag> *const a = new kipand<real,tag>; random(*a); aptr = a;
-      kipand<real,tag> *const b = new kipand<real,tag>; random(*b); bptr = b;
+      kipand<real,tag> *const a = new kipand<real,tag>; randomize(*a); aptr = a;
+      kipand<real,tag> *const b = new kipand<real,tag>; randomize(*b); bptr = b;
       justspheres = false;
    }
 
@@ -334,7 +334,7 @@ kip_random(kipand)
    obj.binary.b = bptr;
 
    // tag
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

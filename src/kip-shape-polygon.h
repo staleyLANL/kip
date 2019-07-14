@@ -252,8 +252,8 @@ kip_check(polygon)
 
 
 
-// random
-kip_random(polygon)
+// randomize
+kip_randomize(polygon)
 {
    static const size_t max = 16;  // #points = #edges = max
    const size_t npts = 3 + size_t((max-2)*random_unit<real>());
@@ -277,7 +277,7 @@ kip_random(polygon)
       ));
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 

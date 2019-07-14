@@ -466,7 +466,7 @@ inline bool shape(const int n)
 {
    static SHAPE obj;
    for (int i = 0;  i < n;  ++i)
-      model.push(kip::random(obj));
+      model.push(kip::randomize(obj));
    return true;
 }
 
@@ -474,48 +474,50 @@ inline bool shape(const int n)
 // specific
 // ------------------------
 
-inline bool bicylinder(const int n)
-   { return shape<kip::bicylinder<real,base>>(n); }
-inline bool biwasher(const int n)
-   { return shape<kip::biwasher<real,base>>(n); }
-inline bool box(const int n)
-   { return shape<kip::box<real,base>>(n); }
-inline bool circle(const int n)
-   { return shape<kip::circle<real,base>>(n); }
-inline bool cone(const int n)
-   { return shape<kip::cone<real,base>>(n); }
-inline bool cube(const int n)
-   { return shape<kip::cube<real,base>>(n); }
-inline bool cylinder(const int n)
-   { return shape<kip::cylinder<real,base>>(n); }
-inline bool ellipsoid(const int n)
-   { return shape<kip::ellipsoid<real,base>>(n); }
-inline bool paraboloid(const int n)
-   { return shape<kip::paraboloid<real,base>>(n); }
-inline bool pill(const int n)
-   { return shape<kip::pill<real,base>>(n); }
-inline bool polygon(const int n)
-   { return shape<kip::polygon<real,base>>(n); }
-inline bool silo(const int n)
-   { return shape<kip::silo<real,base>>(n); }
-inline bool sphere(const int n)
-   { return shape<kip::sphere<real,base>>(n); }
-inline bool spheroid(const int n)
-   { return shape<kip::spheroid<real,base>>(n); }
-inline bool tabular(const int n)
-   { return shape<kip::tabular<real,base>>(n); }
-inline bool triangle(const int n)
-   { return shape<kip::triangle<real,base>>(n); }
-inline bool washer(const int n)
-   { return shape<kip::washer<real,base>>(n); }
+#define make_shape(s) \
+   inline bool s(const int n) { return shape<kip::s<real,base>>(n); }
 
-/*
-surf
-tri
-xplane
-yplane
-zplane
-*/
+make_shape(bicylinder)
+make_shape(biwasher)
+make_shape(box)
+make_shape(circle)
+make_shape(cone)
+make_shape(cube)
+make_shape(cylinder)
+make_shape(ellipsoid)
+make_shape(paraboloid)
+make_shape(pill)
+make_shape(polygon)
+make_shape(silo)
+make_shape(sphere)
+make_shape(spheroid)
+make_shape(tabular)
+make_shape(triangle)
+make_shape(washer)
+make_shape(surf)
+
+make_shape(kipnot)
+make_shape(kipand)
+make_shape(kipcut)
+make_shape(kipor)
+make_shape(kipxor)
+
+make_shape(ands)
+make_shape(odd)
+make_shape(even)
+make_shape(some)
+make_shape(one)
+make_shape(ors)
+
+make_shape(half)
+make_shape(nothing)
+make_shape(everything)
+
+make_shape(xplane)
+make_shape(yplane)
+make_shape(zplane)
+
+#undef make_shape
 
 } // namespace args
 
@@ -626,7 +628,7 @@ inline bool threads(const int n)
 
 namespace args {
 
-#define make_shape(shape) { "-" #shape, { args::shape, true } }
+#define make_shape(s) { "-" #s, { args::s, true } }
 
 // map
 // last value == option has int parameter?
@@ -649,6 +651,35 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    make_shape(tabular),
    make_shape(triangle),
    make_shape(washer),
+   make_shape(surf),
+
+   make_shape(kipnot),
+   make_shape(kipand),
+   make_shape(kipcut),
+   make_shape(kipor),
+   make_shape(kipxor),
+
+   make_shape(ands),
+   make_shape(odd),
+   make_shape(even),
+   make_shape(some),
+   make_shape(one),
+   make_shape(ors),
+
+   make_shape(half),
+   make_shape(nothing),
+   make_shape(everything),
+
+   make_shape(xplane),
+   make_shape(yplane),
+   make_shape(zplane),
+
+   // alternative names
+   { "-not", { args::kipnot, true } },
+   { "-and", { args::kipand, true } },
+   { "-cut", { args::kipcut, true } },
+   { "-or",  { args::kipor,  true } },
+   { "-xor", { args::kipxor, true } },
 
    // window
    { "-hwindow", { args::hwindow, true  } },
@@ -748,6 +779,9 @@ bool read(
 
 int main(const int argc, const char *const *const argv)
 {
+   kip::half<real,base> half; randomize(half);
+   kip::surf<real,base> surf; randomize(surf);
+
    /*
    printval(sizeof(int));
    printval(sizeof(unsigned int));

@@ -126,8 +126,8 @@ kip_dry(ands)
 
 
 
-// random
-kip_random(ands)
+// randomize
+kip_randomize(ands)
 {
    const size_t nop = 4;
 
@@ -138,7 +138,7 @@ kip_random(ands)
 
    for (size_t i = 0;  i < nop;  ++i) {
       sphere<real,tag> *const ptr = new sphere<real,tag>;
-      random(*ptr);
+      randomize(*ptr);
       obj.misc.ands.push().op = ptr;
 
       ptr->r += ptr->r;
@@ -150,7 +150,7 @@ kip_random(ands)
    }
 
    // base
-   random(obj.base());  obj.baseset = true;
+   randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
 
