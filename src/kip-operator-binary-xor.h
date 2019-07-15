@@ -183,22 +183,32 @@ kip_check(kipxor)
 // randomize
 kip_randomize(kipxor)
 {
-   sphere<real,tag> *const a = new sphere<real,tag>;
-   sphere<real,tag> *const b = new sphere<real,tag>;
+   // For a random [kip]xor, we'll do an xor(cone,sphere).
 
-   randomize(*a);
-   randomize(*b);  const real r = a->r + b->r;
+   // cone
+   cone  <real,tag> *const one = new cone  <real,tag>; // delete in ~kipxor()
+   randomize(*one);
 
-   b->c.x = a->c.x + r*random_half<real>();
-   b->c.y = a->c.y + r*random_half<real>();
-   b->c.z = a->c.z + r*random_half<real>();
+   // sphere
+   sphere<real,tag> *const two = new sphere<real,tag>; // delete in ~kipxor()
+   point<real> tweak; const real fac = random_unit<real>();
+   two->c = one->a + fac*(one->b - one->a) + real(0.1)*random_full(tweak);
+   two->r = one->r*random_unit<real>();
 
-   // operands
-   obj.binary.a = a;
-   obj.binary.b = b;
+   // xor: operands
+   obj.binary.a = one;
+   obj.binary.b = two;
 
-   // base
-   randomize(obj.base());  obj.baseset = true;
+   // fixme 2019-07-14. Something may be wrong with kipxor's color selection.
+   // See similar remark re: kipcut.
+
+   // color over the nested objects, in order to give the overall object
+   // a consistent color
+   // randomize(obj.base());
+   obj.base() = one->base();
+   obj.baseset = true;
+
+   // done
    return obj;
 } kip_end
 

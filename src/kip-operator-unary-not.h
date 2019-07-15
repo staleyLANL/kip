@@ -133,9 +133,8 @@ kip_check(kipnot)
 // randomize
 kip_randomize(kipnot)
 {
-   // For a random [kip]not, we're just going to do a not(not(sphere)).
-   // Really, the point of generating random objects is to create lots
-   // of them, for the purposes of speed testing.
+   // For a random [kip]not, we'll do a not(not(sphere)).
+   // Random objects are largely for speed testing.
 
    // Note: I see from testing that these randomly-generated not objects
    // are very slow. This is no doubt because screen segmenting basically
@@ -154,7 +153,8 @@ kip_randomize(kipnot)
    // not: outer
    obj.unary.a = nptr;
 
-   // Don't color over the nested objects
+   // don't color over the nested objects, but instead maintain
+   // the original sphere's color
    // randomize(obj.base());
    // obj.baseset = true;
 

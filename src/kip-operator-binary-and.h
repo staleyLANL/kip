@@ -286,55 +286,35 @@ kip_inall(kipand)
 
 kip_randomize(kipand)
 {
-   shape<real,tag> *aptr;  static bool justspheres = false;
-   shape<real,tag> *bptr;  static point<real> loc;
+   // For a random [kip]and, we'll do an and(sphere,sphere).
 
-   // Remark, 2019-07-12. This line used to read:
-   //    if (justspheres || random<real>() < 0.0) {
-   // with the old random<real>() function, which returned a random number
-   // in the range [0,1]. I've replaced it with our equivalent new random
-   // function, random_unit<real>(), but how did it makes sense in the
-   // original to have the < 0.0 test, which would always fail?
+   // random "starting point"
+   point<real> cent;
+   random_full(cent);
 
-   if (justspheres || random_unit<real>() < 0.0) {
-      sphere<real,tag> *const a = new sphere<real,tag>;
-      sphere<real,tag> *const b = new sphere<real,tag>;
+   // random "difference"
+   point<real> diff;
+   random_full(diff);
+   diff *= real(0.05); // spheres will be twice this distance apart
 
-      randomize(*a);  a->r += a->r;  aptr = a;
-      randomize(*b);  b->r += b->r;  bptr = b;
+   // spheres
+   sphere<real,tag> *const one = new sphere<real,tag>; // delete in ~kipand()
+   one->c = cent - diff;
+   one->r = real(0.11) + real(0.05)*random_unit<real>();
+   sphere<real,tag> *const two = new sphere<real,tag>; // delete in ~kipand()
+   two->c = cent + diff;
+   two->r = real(0.11) + real(0.05)*random_unit<real>();
 
-      if (justspheres) {
-         a->c = loc + point<real>(
-            real(0.2)*random_unit<real>(),
-            real(0.2)*random_unit<real>(),
-            real(0.2)*random_unit<real>()
-         );
-         b->c = loc + point<real>(
-            real(0.2)*random_unit<real>(),
-            real(0.2)*random_unit<real>(),
-            real(0.2)*random_unit<real>()
-         );
-      } else {
-         const real r = a->r + b->r;
-         b->c.x = a->c.x + r*random_half<real>();
-         b->c.y = a->c.y + r*random_half<real>();
-         b->c.z = a->c.z + r*random_half<real>();
-      }
+   // and: operands
+   obj.binary.a = one;
+   obj.binary.b = two;
 
-   } else {
-      justspheres = true;
-      random_full(loc);
-      kipand<real,tag> *const a = new kipand<real,tag>; randomize(*a); aptr = a;
-      kipand<real,tag> *const b = new kipand<real,tag>; randomize(*b); bptr = b;
-      justspheres = false;
-   }
+   // color over the nested objects, in order to give the overall object
+   // a consistent color
+   randomize(obj.base());
+   obj.baseset = true;
 
-   // operands
-   obj.binary.a = aptr;
-   obj.binary.b = bptr;
-
-   // tag
-   randomize(obj.base());  obj.baseset = true;
+   // done
    return obj;
 } kip_end
 
