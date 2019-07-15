@@ -470,6 +470,7 @@ inline bool shape(const int n)
    return true;
 }
 
+
 // ------------------------
 // specific
 // ------------------------
@@ -518,6 +519,52 @@ make_shape(yplane)
 make_shape(zplane)
 
 #undef make_shape
+
+
+// ------------------------
+// xyz: tests [xyz]plane
+// ------------------------
+
+// xyz
+bool xyz(const int n)
+{
+   for (int i = 0;  i < n;  ++i) {
+      // sphere
+      kip::sphere<real,base> *const s = new kip::sphere<real,base>;
+      randomize(*s);
+
+      kip::shape<real,base> *p;
+      const real r = kip::random_unit<real>();
+      if (r < 1/real(3)) {
+         // xplane
+         kip::xplane<real,base> *const x = new kip::xplane<real,base>;
+         x->size.y = real(0.1)*kip::random_unit<real>();
+         x->size.z = real(0.1)*kip::random_unit<real>(); x->x = s->c.x;
+         kip::randomize(x->color), kip::randomize(x->base()); p = x;
+      } else if (r < 2/real(3)) {
+         // yplane
+         kip::yplane<real,base> *const y = new kip::yplane<real,base>;
+         y->size.x = real(0.1)*kip::random_unit<real>();
+         y->size.z = real(0.1)*kip::random_unit<real>(); y->y = s->c.y;
+         kip::randomize(y->color), kip::randomize(y->base()); p = y;
+      } else {
+         // zplane
+         kip::zplane<real,base> *const z = new kip::zplane<real,base>;
+         z->size.x = real(0.1)*kip::random_unit<real>();
+         z->size.y = real(0.1)*kip::random_unit<real>(); z->z = s->c.z;
+         kip::randomize(z->color), kip::randomize(z->base()); p = z;
+      }
+
+      // and
+      kip::kipand<real,base> obj;
+      obj.binary.a = s;
+      obj.binary.b = p;
+      obj.baseset = false;
+      model.push(obj);
+   }
+
+   return true;
+}
 
 } // namespace args
 
@@ -633,6 +680,7 @@ namespace args {
 // map
 // last value == option has int parameter?
 std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
+
    // shapes
    make_shape(bicylinder),
    make_shape(biwasher),
@@ -674,12 +722,15 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    make_shape(yplane),
    make_shape(zplane),
 
-   // alternative names
+   // shapes: alternative names
    { "-not", { args::kipnot, true } },
    { "-and", { args::kipand, true } },
    { "-cut", { args::kipcut, true } },
    { "-or",  { args::kipor,  true } },
    { "-xor", { args::kipxor, true } },
+
+   // xyz
+   { "-xyz", { args::xyz, true } },
 
    // window
    { "-hwindow", { args::hwindow, true  } },
@@ -806,6 +857,28 @@ int main(const int argc, const char *const *const argv)
    printval(sizeof(kip::tabular   <real,base>));
    printval(sizeof(kip::triangle  <real,base>));
    printval(sizeof(kip::washer    <real,base>));
+   printval(sizeof(kip::surf      <real,base>));
+
+   printval(sizeof(kip::kipnot    <real,base>));
+   printval(sizeof(kip::kipand    <real,base>));
+   printval(sizeof(kip::kipcut    <real,base>));
+   printval(sizeof(kip::kipor     <real,base>));
+   printval(sizeof(kip::kipxor    <real,base>));
+
+   printval(sizeof(kip::ands      <real,base>));
+   printval(sizeof(kip::odd       <real,base>));
+   printval(sizeof(kip::even      <real,base>));
+   printval(sizeof(kip::some      <real,base>));
+   printval(sizeof(kip::one       <real,base>));
+   printval(sizeof(kip::ors       <real,base>));
+
+   printval(sizeof(kip::half      <real,base>));
+   printval(sizeof(kip::nothing   <real,base>));
+   printval(sizeof(kip::everything<real,base>));
+
+   printval(sizeof(kip::xplane    <real,base>));
+   printval(sizeof(kip::yplane    <real,base>));
+   printval(sizeof(kip::zplane    <real,base>));
    */
 
    kip::threads = 0;

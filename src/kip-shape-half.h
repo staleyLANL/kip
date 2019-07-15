@@ -186,7 +186,7 @@ kip_randomize(half)
    random_full(obj.point);
 
    // normal
-   obj.normal(random_full<real>(), random_full<real>(), random_full<real>());
+   random_full(obj.normal);
 
    // base
    randomize(obj.base());  obj.baseset = true;

@@ -186,11 +186,10 @@ kip_randomize(yplane)
    obj.size.x = random_unit<real>();
    obj.size.z = random_unit<real>();
 
-   // color
+   // color, base
    randomize(obj.color);
-
-   // base
-   randomize(obj.base());  obj.baseset = true;
+   randomize(obj.base());
+   obj.baseset = true;
    return obj;
 } kip_end
 

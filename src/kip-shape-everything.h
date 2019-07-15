@@ -52,6 +52,7 @@ kip_check  (everything) { return diagnostic_t::diagnostic_good; } kip_end
 // randomize
 kip_randomize(everything)
 {
+   // base
    randomize(obj.base());  obj.baseset = true;
    return obj;
 } kip_end
