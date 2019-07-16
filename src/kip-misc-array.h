@@ -48,7 +48,7 @@ class array<0,element> {
 public:
 
    // array()
-   inline explicit array() : ptr(NULL), num(0) { }
+   inline explicit array() : ptr(nullptr), num(0) { }
 
    // array(n)
    inline explicit array(const size_t n) : ptr(new element[n]), num(n) { }

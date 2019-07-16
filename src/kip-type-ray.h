@@ -21,14 +21,13 @@ public:
    // conversion to bool (meaning: ray hits shape)
    inline operator bool() const
    {
-      // zzz Maybe just make to shape*; then same usage, plus more.
-      return shape != NULL;
+      return shape != nullptr;
    }
 
    // initialize
    inline void initialize()
    {
-      shape = NULL;
+      shape = nullptr;
    }
 
    // indsn: set

@@ -5,7 +5,7 @@
 
 // Defines
 //#define KIP_ASSERT
-//#define KIP_BLOCK  // zzz Faster without; block.h needs work, anyway
+//#define KIP_BLOCK  // zzz Faster without; and block.h is broken anyway
 //#define KIP_COLOR_FLAT
 //#define KIP_COLOR_DIFFUSE
 
@@ -41,7 +41,6 @@
 #include <sstream>
 #include <vector>
 
-
 // OpenMP files
 #ifdef _OPENMP
 #include <omp.h>
@@ -71,7 +70,6 @@ namespace kip {
 #include "kip-misc-basic.h"
 #include "kip-misc-compiler.h"
 
-
 // ----------------
 // miscellaneous
 // ----------------
@@ -86,14 +84,12 @@ namespace kip {
 #include "kip-color-marble.h"
 #include "kip-color-colormap.h"
 
-
 // ----------------
 // i/o
 // ----------------
 
 #include "kip-io-stream.h"
 #include "kip-io-read.h"
-
 
 // ----------------
 // shapes
@@ -163,7 +159,6 @@ namespace kip {
 #include "kip-shape-end.h"
 #include "kip-shape-simplify.h"
 
-
 // ----------------
 // per-pixel info;
 // coloring
@@ -171,7 +166,6 @@ namespace kip {
 
 #include "kip-type-ray.h"
 #include "kip-color-texture.h"
-
 
 // ----------------
 // major classes
@@ -188,7 +182,6 @@ namespace kip {
 #include "kip-type-image.h"
 #include "kip-type-scene.h"
 
-
 // ----------------
 // ray tracing
 // ----------------
@@ -196,10 +189,8 @@ namespace kip {
 // helper
 #include "kip-trace-dry.h"
 #include "kip-trace-fill.h"
-/*
-#include "kip-trace-fill-triangle.h"
-#include "kip-trace-fill-tri.h"
-*/
+// #include "kip-trace-fill-triangle.h"
+// #include "kip-trace-fill-tri.h"
 
 // methods
 #include "kip-trace-uniform.h"
@@ -209,24 +200,20 @@ namespace kip {
 // api
 #include "kip-trace.h"
 
-
+// ----------------
+// cleanup
+// ----------------
 
 #undef _kip_quote
 #undef  kip_quote
-
 #undef _kip_paste
 #undef  kip_paste
-
 #undef _kip_description
 #undef  kip_description
-
-/*
-#undef  kip_expand_plain
-#undef  kip_expand_semi
-
-#undef  kip_extra_plain
-#undef  kip_extra_semi
-*/
+// #undef  kip_expand_plain
+// #undef  kip_expand_semi
+// #undef  kip_extra_plain
+// #undef  kip_extra_semi
 
 } // namespace kip
 

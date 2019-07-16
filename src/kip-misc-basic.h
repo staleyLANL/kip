@@ -375,33 +375,34 @@ inline T square(const T val)
 namespace op {
 
 // min
-template<class T> inline T
-min(const T &a, const T &b)
+template<class T>
+inline const T &min(const T &a, const T &b)
    { return std::min(a,b); }
 
-template<class T> inline T
-min(const T &a, const T &b, const T &c)
+template<class T>
+inline const T &min(const T &a, const T &b, const T &c)
    { return op::min(a,op::min(b,c)); }
 
-template<class T> inline T
-min(const T &a, const T &b, const T &c, const T &d)
+template<class T>
+inline const T &min(const T &a, const T &b, const T &c, const T &d)
    { return op::min(a,op::min(b,c,d)); }
 
-template<class T> inline T
-min(const T &a, const T &b, const T &c, const T &d, const T &e)
+template<class T>
+inline const T &min(const T &a, const T &b, const T &c, const T &d, const T &e)
    { return op::min(a,op::min(b,c,d,e)); }
 
-template<class T> inline T
-min(const T &a, const T &b, const T &c, const T &d, const T &e, const T &f)
+template<class T>
+inline const T &min(const T &a, const T &b, const T &c,
+              const T &d, const T &e, const T &f)
    { return op::min(a,op::min(b,c,d,e,f)); }
 
 // max
-template<class T> inline T
-max(const T &a, const T &b)
+template<class T>
+inline const T &max(const T &a, const T &b)
    { return std::max(a,b); }
 
-template<class T> inline T
-max(const T &a, const T &b, const T &c)
+template<class T>
+inline const T &max(const T &a, const T &b, const T &c)
    { return op::max(a,op::max(b,c)); }
 
 } // namespace op

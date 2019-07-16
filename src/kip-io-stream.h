@@ -144,13 +144,10 @@ public:
 
 
 
-   // get, unget, peek, void *
+   // get, unget, peek, bool, !
    inline int get() const { return stream.get(); }
    inline const istream &unget() const { stream.unget();  return *this; }
    inline int peek() { return stream.peek(); }
-   /*
-   inline operator void *() { return stream; } // null iff failbit or badbit
-   */
    inline operator bool() const { return bool(stream); }
    inline bool operator !() const { return !stream; }
 
@@ -576,22 +573,6 @@ bool istream::recover(const unused)
 // -----------------------------------------------------------------------------
 // operator<< (kip::ostream, general)
 // -----------------------------------------------------------------------------
-
-/*
-// default shape base
-#ifdef KIP_DEFAULT_TAG_T
-   using default_tag_t = KIP_DEFAULT_TAG_T;
-#else
-   using default_tag_t = RGB<>;
-#endif
-
-// ostream << kipand
-template<class T = default_real_t, class tag = default_tag_t>
-class kipand;
-
-template<class T, class tag>
-std::ostream &operator<<(std::ostream &, const kipand<T,tag> &);
-*/
 
 template<class T>
 inline kip::ostream &operator<<(kip::ostream &k, const T &value)

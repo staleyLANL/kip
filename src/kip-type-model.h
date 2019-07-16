@@ -193,7 +193,7 @@ private:
 
    // push_bbox_ptr(bbox,shape*, scale, tight,loose)
    bbox_representation_t &push_bbox_ptr(
-      const bbox<real> &,  // bounding box
+      const kip::bbox<real> &,  // bounding box
       const shape<real,base> *const,  // associated shape
 
       const real = real(0),  // scale
@@ -208,7 +208,7 @@ public:
 
    // push_bbox(bbox,shape&, scale, tight,partial,loose)
    bbox_representation_t &push_bbox(
-      const bbox<real> &,  // bounding box
+      const kip::bbox<real> &,  // bounding box
       const shape<real,base> &,  // associated shape
 
       const real = real(0),  // scale
@@ -234,7 +234,7 @@ public:
    void unbound();
 
    // aabb
-   bbox<real> aabb(
+   kip::bbox<real> aabb(
       const bool = false,  // each
       const bool = false,  // overall
       const real   = real(0),  // scale
@@ -310,7 +310,7 @@ loop<real,base>::loop(const model<real,base> &m)
    three t;
 
 #define kip_make_loop(type)\
-   t.begin = (t.size = m.type.size()) ? (const char *)&m.type[0] : NULL;\
+   t.begin = (t.size = m.type.size()) ? (const char *)&m.type[0] : nullptr;\
    t.element_size = sizeof(kip::type<real,base>);\
    shapes.push_back(t);
 
@@ -353,7 +353,7 @@ bool loop<real,base>::operator()() const
 template<class real, class base>
 shape<real,base> *model<real,base>::push(const shape<real,base> *const ptr)
 {
-   if (ptr == NULL) return NULL;
+   if (ptr == nullptr) return nullptr;
 
 #define kip_make_push(type)\
    if (ptr->id() == internal::get_shape_id<kip::type>::result)\
@@ -363,7 +363,7 @@ shape<real,base> *model<real,base>::push(const shape<real,base> *const ptr)
 #undef kip_make_push
 
    assert(false);  // shouldn't get here, or else id() didn't check out
-   return NULL;
+   return nullptr;
 }
 
 
@@ -400,7 +400,7 @@ void model<real,base>::rpush(
 template<class real, class base>
 typename model<real,base>::bbox_representation_t &
 model<real,base>::push_bbox_ptr(
-   const bbox<real> &b,
+   const kip::bbox<real> &b,
    const shape<real,base> *const shape,
 
    const real scale,
@@ -486,7 +486,7 @@ model<real,base>::push_bbox_ptr(
 template<class real, class base>
 inline typename model<real,base>::bbox_representation_t &
 model<real,base>::push_bbox(
-   const bbox<real> &b,
+   const kip::bbox<real> &b,
    const shape<real,base> &shape,
 
    const real scale,
@@ -670,7 +670,7 @@ bbox<real> model<real,base>::aabb(
    /// std::cout << "   bound " << each << ' ' << overall << std::endl;
 
    // new return value, to be computed
-   bbox<real> rv(false,1,0,false, false,1,0,false, false,1,0,false);
+   kip::bbox<real> rv(false,1,0,false, false,1,0,false, false,1,0,false);
 
    // compute
    const internal::functor_bound<real,base>
@@ -679,7 +679,7 @@ bbox<real> model<real,base>::aabb(
 
    // finish
    if (overall)
-      push_bbox_ptr(rv, NULL);
+      push_bbox_ptr(rv,nullptr);
    return rv;
 }
 

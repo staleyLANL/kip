@@ -830,9 +830,6 @@ bool read(
 
 int main(const int argc, const char *const *const argv)
 {
-   kip::half<real,base> half; randomize(half);
-   kip::surf<real,base> surf; randomize(surf);
-
    /*
    printval(sizeof(int));
    printval(sizeof(unsigned int));

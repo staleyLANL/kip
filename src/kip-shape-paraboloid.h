@@ -91,8 +91,8 @@ namespace internal {
 
       if (v <= u) {
          const real at = v*v/(u+u);
-         min = op::min(min, one - at);
-         max = op::max(max, one + at);
+         min = op::min(min, one-at);
+         max = op::max(max, one+at);
       }
    }
 }

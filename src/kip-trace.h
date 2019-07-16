@@ -224,7 +224,10 @@ inline void trace_pixel(
    image<real,color> &image,   // input/output
    array<2,pix> &pixel    // per-pixel information
 ) {
-   // quick-initialize shape pointers to NULL
+   // 2019 jul 15. The following comment was here (previously saying NULL,
+   // but same difference). It doesn't seem like the right comment here...?
+
+   // quick-initialize shape pointers to nullptr
    const size_t hpixel = image.hpixel;
    const size_t vpixel = image.vpixel;
 

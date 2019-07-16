@@ -238,26 +238,26 @@ inline real noise(
 
 namespace internal {
 
-template<class outcolor, class T>
+template<class outcolor, class real>
 inline outcolor diffuse_specular(
    const RGB<unsigned char> &rgbval,
-   const T &q,
-   const point<T> &eyeball,
-   const point<T> &light,
-   const point<T> &intersection,
-   const point<T> &normal,
+   const real q,
+   const point<real> &eyeball,
+   const point<real> &light,
+   const point<real> &intersection,
+   const point<real> &normal,
    const bool normalized
 ) {
    // Assumptions: eyeball != intersection, light != intersection,
    // normal != (0,0,0).
    using ctype = typename outcolor::value_t;
 
-   const point<T> n   = normalized ? normal : normalize(normal);
-   const point<T> i2l = light - intersection;
+   const point<real> n   = normalized ? normal : normalize(normal);
+   const point<real> i2l = light - intersection;
 
-   const T modi =  mod(i2l);
-   const T dotp =  dot(n,i2l);
-   const T diff = (dotp+modi)/(modi+modi);
+   const real modi =  mod(i2l);
+   const real dotp =  dot(n,i2l);
+   const real diff = (dotp+modi)/(modi+modi);
 
 #ifdef KIP_COLOR_DIFFUSE
    (void)q;
@@ -265,30 +265,30 @@ inline outcolor diffuse_specular(
 
    // diffuse
    return outcolor(
-      ctype(diff*T(rgbval.r)),
-      ctype(diff*T(rgbval.g)),
-      ctype(diff*T(rgbval.b))
+      ctype(diff*real(rgbval.r)),
+      ctype(diff*real(rgbval.g)),
+      ctype(diff*real(rgbval.b))
    );
 
 #else
 
    // diffuse + specular
-   const T d = dot((dotp+dotp)*n - i2l, eyeball - intersection);
+   const real d = dot((dotp+dotp)*n - i2l, eyeball - intersection);
    if (d < 0)
       return outcolor(
-         ctype(diff*T(rgbval.r)),
-         ctype(diff*T(rgbval.g)),
-         ctype(diff*T(rgbval.b))
+         ctype(diff*real(rgbval.r)),
+         ctype(diff*real(rgbval.g)),
+         ctype(diff*real(rgbval.b))
       );
 
-   const T s = std::pow(d/(q*modi),T(20));
-   const T f = diff*(1-s);
-   const T spec = s*endcolor<T,ctype>();
+   const real s = std::pow(d/(q*modi),real(20));
+   const real f = diff*(1-s);
+   const real spec = s*endcolor<real,ctype>();
 
    return outcolor(
-      ctype(f*T(rgbval.r) + spec),
-      ctype(f*T(rgbval.g) + spec),
-      ctype(f*T(rgbval.b) + spec)
+      ctype(f*real(rgbval.r) + spec),
+      ctype(f*real(rgbval.g) + spec),
+      ctype(f*real(rgbval.b) + spec)
    );
 
 #endif
@@ -416,11 +416,11 @@ inline out get_color(
 #else
    // diffuse or specular
    //    const RGB<unsigned char> &rgbval,
-   //    const T &q,
-   //    const point<T> &eyeball,
-   //    const point<T> &light,
-   //    const point<T> &intersection,
-   //    const point<T> &normal,
+   //    const real q,
+   //    const point<real> &eyeball,
+   //    const point<real> &light,
+   //    const point<real> &intersection,
+   //    const point<real> &normal,
    //    const bool normalized
 
    /*

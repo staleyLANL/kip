@@ -708,12 +708,12 @@ inline bool write_finish(
 
 namespace internal {
 
-template<class T, class tag>
+template<class real, class tag>
 kip::ostream &onetwor_write(
-   kip::ostream &k, const shape<T,tag> &obj,
-   const point<T> &one,
-   const point<T> &two,
-   const T &r,
+   kip::ostream &k, const shape<real,tag> &obj,
+   const point<real> &one,
+   const point<real> &two,
+   const real r,
    const std::string &description
 ) {
    bool okay;

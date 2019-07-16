@@ -50,7 +50,7 @@ private:
          kip_data.push().op =
               from.kip_data.vec()[n].op
             ? from.kip_data.vec()[n].op->duplicate()
-            : NULL;
+            : nullptr;
       // don't need to bring over .in and (when applicable) .min; those
       // are used only internally, by kip, and are initialized as needed.
    }
@@ -141,14 +141,14 @@ public:
    // from pointer
    inline shape<real,tag> &push(const shape<real,tag> *const ptr)
    {
-      kip_data.push().op = ptr ? ptr->duplicate() : NULL;
+      kip_data.push().op = ptr ? ptr->duplicate() : nullptr;
       return propagate_base_last();
    }
 
    // from reference
    inline shape<real,tag> &push(const shape<real,tag> &ref)
    {
-      //kip_data.push().op = &ref ? ref.duplicate() : NULL;
+      //kip_data.push().op = &ref ? ref.duplicate() : nullptr;
       kip_data.push().op = ref.duplicate();
       return propagate_base_last();
    }

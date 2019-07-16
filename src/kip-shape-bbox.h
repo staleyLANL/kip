@@ -187,19 +187,47 @@ inline std::ostream &operator<<(
 namespace internal {
 
 // op_leq
-class op_leq { public:
+class op_leq {
+public:
    inline explicit op_leq() { }
 
-   template<class T>
-   inline bool operator()(const T &a, const T &b) const { return a <= b; }
+   template<class real>
+   inline bool operator()(
+      const bbox<real> &a,
+      const bbox<real> &b
+   ) const {
+      return a <= b;
+   }
+
+   template<class real>
+   inline bool operator()(
+      const and_tight<real> &a,
+      const and_tight<real> &b
+   ) const {
+      return a <= b;
+   }
 };
 
 // op_less
-class op_less { public:
+class op_less {
+public:
    inline explicit op_less() { }
 
-   template<class T>
-   inline bool operator()(const T &a, const T &b) const { return a < b; }
+   template<class real>
+   inline bool operator()(
+      const bbox<real> &a,
+      const bbox<real> &b
+   ) const {
+      return a < b;
+   }
+
+   template<class real>
+   inline bool operator()(
+      const and_tight<real> &a,
+      const and_tight<real> &b
+   ) const {
+      return a < b;
+   }
 };
 
 

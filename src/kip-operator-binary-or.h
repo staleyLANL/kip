@@ -25,8 +25,8 @@ public:
       shape<real,tag>(this)
    {
       kip_counter_ctor(kipor);
-      binary.a = NULL;
-      binary.b = NULL;
+      binary.a = nullptr;
+      binary.b = nullptr;
    }
 
 
@@ -83,16 +83,18 @@ public:
       shape<real,tag>(from)
    {
       kip_counter_ctor(kipor);
-      binary.a = from.binary.a ? from.binary.a->duplicate() : NULL;
-      binary.b = from.binary.b ? from.binary.b->duplicate() : NULL;
+      binary.a = from.binary.a ? from.binary.a->duplicate() : nullptr;
+      binary.b = from.binary.b ? from.binary.b->duplicate() : nullptr;
    }
 
    // kipor = kipor
    inline kipor &operator=(const kipor &from)
    {
       this->shape<real,tag>::operator=(from);
-      delete binary.a; binary.a=from.binary.a ? from.binary.a->duplicate():NULL;
-      delete binary.b; binary.b=from.binary.b ? from.binary.b->duplicate():NULL;
+      delete binary.a;
+      binary.a = from.binary.a ? from.binary.a->duplicate() : nullptr;
+      delete binary.b;
+      binary.b = from.binary.b ? from.binary.b->duplicate() : nullptr;
       return *this;
    }
 

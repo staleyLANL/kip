@@ -23,7 +23,7 @@ public:
    // kipnot()
    inline explicit kipnot() :
       shape<real,tag>(this)
-   { kip_counter_ctor(kipnot);  unary.a = NULL; }
+   { kip_counter_ctor(kipnot);  unary.a = nullptr; }
 
 
    // kipnot(a[,base]), a = pointer
@@ -59,14 +59,15 @@ public:
       shape<real,tag>(from)
    {
       kip_counter_ctor(kipnot);
-      unary.a = from.unary.a ? from.unary.a->duplicate() : NULL;
+      unary.a = from.unary.a ? from.unary.a->duplicate() : nullptr;
    }
 
    // kipnot = kipnot
    inline kipnot &operator=(const kipnot &from)
    {
       this->shape<real,tag>::operator=(from);
-      delete unary.a; unary.a=from.unary.a ? from.unary.a->duplicate():NULL;
+      delete unary.a;
+      unary.a = from.unary.a ? from.unary.a->duplicate() : nullptr;
       return *this;
    }
 

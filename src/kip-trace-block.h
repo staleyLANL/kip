@@ -89,19 +89,29 @@ inline void bsetup(
 // next
 // -----------------------------------------------------------------------------
 
-// minref, maxref
+/*
+2019 jul 15
+Was there a reason I had these, instead of using
+our op::min and op::max functions?
+
+// minref
 template<class T>
-inline const T &minref(const T &a, const T &b) { return a < b ? a : b; }
-template<class T>
-inline const T &maxref(const T &a, const T &b) { return a < b ? b : a; }
+inline const T &minref(const T &a, const T &b)
+   { return a < b ? a : b; }
 
 template<class T>
 inline const T &minref(const T &a, const T &b, const T &c)
    { return minref(a,minref(b,c)); }
 
+// maxref
+template<class T>
+inline const T &maxref(const T &a, const T &b)
+   { return a < b ? b : a; }
+
 template<class T>
 inline const T &maxref(const T &a, const T &b, const T &c)
    { return maxref(a,maxref(b,c)); }
+*/
 
 
 
@@ -250,7 +260,7 @@ void btrace(
       inq<real,base> q2, *qnext = &q2;
 
       real qmin = std::numeric_limits<real>::max(), qseg = 0;
-      const shape<real,base> *ptr = NULL;
+      const shape<real,base> *ptr = nullptr;
 
       unsigned i, j, k, status = 0;  const int npix = h + hpixel*v;
       while (

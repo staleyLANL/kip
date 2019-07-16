@@ -80,7 +80,7 @@ class array_simple {
 public:
 
    // array_simple()
-   inline explicit array_simple() : ptr(NULL), size(0) { }
+   inline explicit array_simple() : ptr(nullptr), size(0) { }
 
    // destructor
    inline ~array_simple()

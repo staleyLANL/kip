@@ -49,9 +49,9 @@ std::pair<
 > simplify(const shape<real,base> *const ptr)
 {
    using pair = std::pair<const shape<real,base> *, const shape<real,base> *>;
-   const pair nn = pair(NULL,NULL);
+   const pair nn = pair(nullptr,nullptr);
 
-   if (ptr == NULL)
+   if (ptr == nullptr)
       return nn;
 
 #define kip_make_simplify(type)\
@@ -71,14 +71,14 @@ std::pair<
 // Helpers
 // -----------------------------------------------------------------------------
 
-// pNULL: (&obj, NULL)   "invalid"
+// pNULL: (&obj, nullptr)   "invalid"
 // psame: (&obj, &obj)   "same - object didn't simplify"
 // pdiff: (&obj,  new)   "simplified to 'new' (delete eventually)"
 namespace internal {
    template<template<class,class> class type, class real, class base>
    inline std::pair<const type<real,base> *, const shape<real,base> *>
    pNULL(const type<real,base> &obj)
-      { return std::make_pair(&obj, (const shape<real,base> *)NULL); }
+      { return std::make_pair(&obj, (const shape<real,base> *)nullptr); }
 
    template<template<class,class> class type, class real, class base>
    inline std::pair<const type<real,base> *, const shape<real,base> *>
@@ -109,7 +109,7 @@ inline std::pair<const old_t<real,base> *, const shape<real,base> *> make(
 
    assert(one == two.first);
 
-   // one, NULL   (obj, NULL), and delete "one"
+   // one, nullptr   (obj, nullptr), and delete "one"
    // one, one    (obj, one )
    // one, two    (obj, two ), and delete "one"
 
@@ -712,8 +712,8 @@ kip_simplify(kipnot)
    // simplify argument
    const shape<real,base> *const a = simplify(obj.unary.a).second;
 
-   // not(NULL) = NULL
-   if (a == NULL)  // also covers obj.unary.a == NULL
+   // not(nullptr) = nullptr
+   if (a == nullptr)  // also covers obj.unary.a == nullptr
       return internal::pNULL(obj);
 
    // not(half) = half, with opposite normal
@@ -754,8 +754,8 @@ kip_simplify(kipnot)
 kip_simplify(kipand)
 {
    /*
-   and(a, NULL)            NULL
-   and(NULL, b)            NULL
+   and(a, nullptr)            nullptr
+   and(nullptr, b)            nullptr
 
    // same/different arguments; will need comparison functionality:
    and(a, a)               a
@@ -785,8 +785,8 @@ kip_simplify(kipand)
 kip_simplify(kipcut)
 {
    /*
-   cut(a, NULL)     a
-   cut(NULL, b)     NULL
+   cut(a, nullptr)     a
+   cut(nullptr, b)     nullptr
 
    // same/different arguments; will need comparison functionality:
    cut(a, a)        nothing
@@ -809,8 +809,8 @@ kip_simplify(kipcut)
 kip_simplify(kipor)
 {
    /*
-   or(a, NULL)           a
-   or(NULL, b)           b
+   or(a, nullptr)           a
+   or(nullptr, b)           b
 
    // same/different arguments; will need comparison functionality:
    or(a, a)              a
@@ -840,8 +840,8 @@ kip_simplify(kipor)
 kip_simplify(kipxor)
 {
    /*
-   xor(a, NULL)          a
-   xor(NULL, b)          b
+   xor(a, nullptr)          a
+   xor(nullptr, b)          b
 
    // same/different arguments; will need comparison functionality:
    xor(a, a)             nothing

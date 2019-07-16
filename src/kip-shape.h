@@ -97,7 +97,7 @@ namespace internal {
       const unsigned nzone;
 
       // zzz remove?
-      inline explicit subinfo() : mend(*(minend*)NULL), nzone(0) { }
+      inline explicit subinfo() : mend(*(minend*)nullptr), nzone(0) { }
 
       // subinfo(i,j)
       inline explicit subinfo(
@@ -389,7 +389,7 @@ public:
       solid   ( true   ),
       isbound ( false  ),
       baseset ( false  ),
-      user    ( NULL   )
+      user    (nullptr )
    { }
 
    // shape(derived *, base)
@@ -404,7 +404,7 @@ public:
       solid   ( true    ),
       isbound ( false   ),
       baseset ( true    ),
-      user    ( NULL    )
+      user    ( nullptr )
    { }
 
    // shape(shape)
@@ -995,9 +995,9 @@ inline diagnostic_t check_operand(
    const shape<real,tag> *const p,
    const char *const description
 ) {
-   if (p == NULL) {
+   if (p == nullptr) {
       std::ostringstream oss;
-      oss << "Logical-" << logical << " has undefined (NULL pointer) operand \""
+      oss << "Logical-" << logical << " has undefined (nullptr) operand \""
           << description << '\"';
       return error(oss);
    }
