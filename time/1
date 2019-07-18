@@ -80,6 +80,11 @@ echo "xyz"
 /usr/bin/time -f '   %e' s -xyz           50000 -render 40 -timing -threads 1
 /usr/bin/time -f '   %e' s -xyz           50000 -render 40 -timing -threads 1
 
+echo "quad"
+/usr/bin/time -f '   %e' s -quad          50000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -quad          50000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -quad          50000 -render 40 -timing -threads 1
+
 
 # ------------------------
 # shapes

@@ -29,7 +29,8 @@ int downsize;
 
 
 // -----------------------------------------------------------------------------
-// variables from command-line arguments
+// command-line arguments:
+// variables
 // -----------------------------------------------------------------------------
 
 namespace vars {
@@ -450,7 +451,7 @@ int interactive(const std::string &title)
 
 
 // -----------------------------------------------------------------------------
-// command-line arguments
+// command-line arguments:
 // shapes
 // -----------------------------------------------------------------------------
 
@@ -478,6 +479,7 @@ inline bool shape(const int n)
 #define make_shape(s) \
    inline bool s(const int n) { return shape<kip::s<real,base>>(n); }
 
+// regular
 make_shape(bicylinder)
 make_shape(biwasher)
 make_shape(box)
@@ -497,12 +499,16 @@ make_shape(triangle)
 make_shape(washer)
 make_shape(surf)
 
+// unary
 make_shape(kipnot)
+
+// binary
 make_shape(kipand)
 make_shape(kipcut)
 make_shape(kipor)
 make_shape(kipxor)
 
+// nary
 make_shape(ands)
 make_shape(odd)
 make_shape(even)
@@ -510,16 +516,28 @@ make_shape(some)
 make_shape(one)
 make_shape(ors)
 
+// special
 make_shape(half)
 make_shape(nothing)
 make_shape(everything)
 
+// planes
 make_shape(xplane)
 make_shape(yplane)
 make_shape(zplane)
 
 #undef make_shape
 
+} // namespace args
+
+
+
+// -----------------------------------------------------------------------------
+// command-line arguments:
+// shape combos
+// -----------------------------------------------------------------------------
+
+namespace args {
 
 // ------------------------
 // xyz: tests [xyz]plane
@@ -566,12 +584,57 @@ bool xyz(const int n)
    return true;
 }
 
+
+
+// ------------------------
+// quad: box made of 12
+// edges, based on pill.
+// ------------------------
+
+// quad
+bool quad(const int n)
+{
+   for (int i = 0;  i < n;  ++i) {
+      // points
+      kip::point<real> one; kip::random_full(one);
+      kip::point<real> pnt; kip::random_full(pnt);
+      kip::point<real> two; two = one + real(0.2)*pnt;
+
+      // radius, color
+      const real r = real(0.015)*kip::mod(one-two);
+      base color; randomize(color);
+
+      // for brevity
+      using pill = kip::pill<real,base>;
+
+      // x direction
+      model.push(pill(one.x,one.y,one.z, two.x,one.y,one.z, r, color));
+      model.push(pill(one.x,one.y,two.z, two.x,one.y,two.z, r, color));
+      model.push(pill(one.x,two.y,one.z, two.x,two.y,one.z, r, color));
+      model.push(pill(one.x,two.y,two.z, two.x,two.y,two.z, r, color));
+
+      // y direction
+      model.push(pill(one.x,one.y,one.z, one.x,two.y,one.z, r, color));
+      model.push(pill(one.x,one.y,two.z, one.x,two.y,two.z, r, color));
+      model.push(pill(two.x,one.y,one.z, two.x,two.y,one.z, r, color));
+      model.push(pill(two.x,one.y,two.z, two.x,two.y,two.z, r, color));
+
+      // z direction
+      model.push(pill(one.x,one.y,one.z, one.x,one.y,two.z, r, color));
+      model.push(pill(one.x,two.y,one.z, one.x,two.y,two.z, r, color));
+      model.push(pill(two.x,one.y,one.z, two.x,one.y,two.z, r, color));
+      model.push(pill(two.x,two.y,one.z, two.x,two.y,two.z, r, color));
+   }
+
+   return true;
+}
+
 } // namespace args
 
 
 
 // -----------------------------------------------------------------------------
-// command-line arguments
+// command-line arguments:
 // non-shapes
 // -----------------------------------------------------------------------------
 
@@ -670,7 +733,8 @@ inline bool threads(const int n)
 
 
 // -----------------------------------------------------------------------------
-// command-line arguments
+// command-line arguments:
+// processing
 // -----------------------------------------------------------------------------
 
 namespace args {
@@ -729,8 +793,9 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    { "-or",  { args::kipor,  true } },
    { "-xor", { args::kipxor, true } },
 
-   // xyz
-   { "-xyz", { args::xyz, true } },
+   // xyz, quad
+   { "-xyz",  { args::xyz,  true } },
+   { "-quad", { args::quad, true } },
 
    // window
    { "-hwindow", { args::hwindow, true  } },
