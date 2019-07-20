@@ -43,27 +43,26 @@ public:
 
 
 // -----------------------------------------------------------------------------
-// point_xy
-// point_xr
+// xypoint
+// xrpoint
 // -----------------------------------------------------------------------------
 
-// point_xy
+// xypoint
 template<class real = default_real_t>
-class point_xy {
+class xypoint {
 public:
    real x, y;
-   inline explicit point_xy() { }
-   inline explicit point_xy(const real _x, const real _y) : x(_x), y(_y) { }
+   inline explicit xypoint() { }
+   inline explicit xypoint(const real _x, const real _y) : x(_x), y(_y) { }
 };
 
-
-// point_xr
+// xrpoint
 template<class real = default_real_t>
-class point_xr {
+class xrpoint {
 public:
    real x, r;
-   inline explicit point_xr() { }
-   inline explicit point_xr(const real _x, const real _r) : x(_x), r(_r) { }
+   inline explicit xrpoint() { }
+   inline explicit xrpoint(const real _x, const real _r) : x(_x), r(_r) { }
 };
 
 
@@ -148,8 +147,6 @@ public:
    inline operator       real&()       { return q; }
    inline operator const real&() const { return q; }
 
-
-
    // operator()(nx,ny,nz, shape,        normalized [, fac = default])
    // operator()(n,        shape,        normalized [, fac = default])
    // operator()(nx,ny,nz, shape, color, normalized [, fac = default])
@@ -206,8 +203,6 @@ public:
       fac = _fac;
       return *this;
    }
-
-
 
    // reverse
    inline inq &reverse(const bool doit)  // conditional
@@ -303,8 +298,6 @@ public:
       return *this;
    }
 
-
-
    // size()
    inline size_t size() const { return num; }
 
@@ -316,8 +309,6 @@ public:
       { if_kip_assert_index(i < num);  return ptr[i]; }
    inline const INQ &operator[](const size_t i) const
       { if_kip_assert_index(i < num);  return ptr[i]; }
-
-
 
    // push
    inline INQ &push(const INQ &value)
@@ -335,8 +326,6 @@ public:
       return ptr[num++] = value;
    }
 
-
-
    // one()
    inline INQ &one()
    {
@@ -344,14 +333,11 @@ public:
       return ptr[0];
    }
 
-
    // reset()
    inline void reset()
    {
       num = 0;
    }
-
-
 
    // convex()
    inline void convex()
@@ -377,8 +363,6 @@ public:
          return false;  // only have first entry
       }
    }
-
-
 
    // four()
    inline void four()
@@ -420,8 +404,6 @@ public:
       return num > 0;
    }
 
-
-
    // reverse (reverses normals, not container of inqs)
    inline afew &reverse(const bool doit)
    {
@@ -439,41 +421,3 @@ public:
    // conversion to bool (always returns true)
    inline operator bool() const { return true; }
 };
-
-
-
-// -----------------------------------------------------------------------------
-// operator== and operator!= for point_xy and point_xr
-// -----------------------------------------------------------------------------
-
-// for point_xy
-template<class real>
-inline bool operator==(
-   const point_xy<real> &a,
-   const point_xy<real> &b
-)
-   { return a.x == b.x && a.y == b.y; }
-
-template<class real>
-inline bool operator!=(
-   const point_xy<real> &a,
-   const point_xy<real> &b
-)
-   { return !(a == b); }
-
-
-
-// for point_xr
-template<class real>
-inline bool operator==(
-   const point_xr<real> &a,
-   const point_xr<real> &b
-)
-   { return a.x == b.x && a.r == b.r; }
-
-template<class real>
-inline bool operator!=(
-   const point_xr<real> &a,
-   const point_xr<real> &b
-)
-   { return !(a == b); }

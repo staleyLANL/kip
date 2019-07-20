@@ -502,7 +502,7 @@ public:
    // infirst
    virtual bool infirst(
       const point<real> &, const point<real> &, const point<real> &,
-      const real,       inq<real,tag>   &, const internal::subinfo &
+      const real, inq<real,tag> &, const internal::subinfo &
    ) const = 0;
 
    // inall

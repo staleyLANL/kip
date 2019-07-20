@@ -18,12 +18,12 @@
 #define KIP_SEGMENTING_BINARY
 
 // decide if we want this or not
-#define KIP_TOGETHER
+// #define KIP_TOGETHER
 
 
 
 // -----------------------------------------------------------------------------
-// Misc
+// General #includes
 // -----------------------------------------------------------------------------
 
 // C++ files
@@ -49,7 +49,7 @@
 
 
 // -----------------------------------------------------------------------------
-// Kip files
+// Kip #includes
 // -----------------------------------------------------------------------------
 
 #define _kip_quote(arg) #arg
@@ -64,16 +64,10 @@
 namespace kip {
 
 // ----------------
-// basic
+// misc
 // ----------------
 
 #include "kip-misc-basic.h"
-#include "kip-misc-compiler.h"
-
-// ----------------
-// miscellaneous
-// ----------------
-
 #include "kip-misc-array.h"
 #include "kip-misc-point.h"
 #include "kip-misc-rotate.h"
@@ -216,32 +210,3 @@ namespace kip {
 // #undef  kip_extra_semi
 
 } // namespace kip
-
-
-
-// -----------------------------------------------------------------------------
-// This nonsense inhibits spurious "defined but not used" warnings from some
-// compilers under some circumstances.
-// -----------------------------------------------------------------------------
-
-namespace kip {
-namespace internal {
-
-inline const char &nonsense();
-inline const char &stupid = nonsense();
-
-inline const char &nonsense()
-{
-   (void)notes;
-   (void)warnings;
-   (void)addenda;
-   (void)threads;
-   (void)eps;
-   (void)stupid;
-
-   static const char _stupid = '\0';
-   return _stupid;
-}
-
-}
-}

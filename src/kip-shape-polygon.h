@@ -15,7 +15,7 @@ public:
 private:
    // modified polygon: (0,0,0), (h,0,0), (ex,ey,0), ... (all with z == 0)
    mutable rotate<3,real> rot;
-   mutable array_simple<point_xy<real>> poly;  // rotated to 2d
+   mutable array_simple<xypoint<real>> poly;  // rotated to 2d
    mutable real xlo, xhi, ylo, yhi;  // 2d bounding box
    mutable size_t npts;
 
@@ -70,7 +70,7 @@ public:
       if (x < xlo || x > xhi || y < ylo || y > yhi)
          return false;
 
-      point_xy<real> a = poly[npts-1], b;
+      xypoint<real> a = poly[npts-1], b;
       bool apos = a.y >= y, inside = false;
 
       for (size_t j = 0;  j < npts;  a = b, ++j) {
@@ -116,9 +116,9 @@ kip_process(polygon)
    // xy projection of points
    poly.resize(npts);
 
-   poly[0] = point_xy<real>(0,0);
-   poly[1] = point_xy<real>(rot.h,0);
-   poly[2] = point_xy<real>(rot.ex,rot.ey);
+   poly[0] = xypoint<real>(0,0);
+   poly[1] = xypoint<real>(rot.h,0);
+   poly[2] = xypoint<real>(rot.ex,rot.ey);
 
    xlo = op::min(real(0), rot.ex);  ylo = 0;
    xhi = op::max(rot.h,rot.ex);  yhi = rot.ey;
@@ -126,7 +126,7 @@ kip_process(polygon)
    for (size_t i = 3;  i < npts;  ++i) {
       const real x = rot.forex(table[i]);
       const real y = rot.forey(table[i]);
-      poly[i] = point_xy<real>(x,y);
+      poly[i] = xypoint<real>(x,y);
       if (x < xlo) xlo = x; else if (x > xhi) xhi = x;
       if (y < ylo) ylo = y; else if (y > yhi) yhi = y;
    }
@@ -136,7 +136,7 @@ kip_process(polygon)
       return std::abs(basic.eye().z);
 
    real minimum = std::numeric_limits<real>::max();
-   point_xy<real> a = poly[npts-1], b;
+   xypoint<real> a = poly[npts-1], b;
 
    for (size_t i = 0;  i < npts;  a = b, ++i) {
       b = poly[i];

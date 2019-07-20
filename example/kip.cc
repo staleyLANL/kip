@@ -24,6 +24,7 @@ kip::engine<real      > engine;
 kip::image <real,color> image;
 
 // misc
+using ulong = unsigned long;
 int downsize;
 
 
@@ -188,7 +189,7 @@ void putimage()
 
    // size: different from window
    static kip::array<2,color> bitmap;
-   bitmap.upsize(vars::hwindow,vars::vwindow);
+   bitmap.upsize(ulong(vars::hwindow),ulong(vars::vwindow));
    const real hfac = real(image.hpixel) / real(vars::hwindow);
    const real vfac = real(image.vpixel) / real(vars::vwindow);
 
@@ -197,8 +198,8 @@ void putimage()
    #endif
    for (int n = 0;  n < vars::hwindow * vars::vwindow;  ++n)
       bitmap[n] = image(
-         int(hfac*(real(n % vars::hwindow) + 0.5)),
-         int(vfac*(real(n / vars::hwindow) + 0.5))
+         ulong(hfac*(real(n % vars::hwindow) + 0.5)),
+         ulong(vfac*(real(n / vars::hwindow) + 0.5))
       );
 
    if (vars::debug)
@@ -356,7 +357,7 @@ void expose(const int hsize, const int vsize)
 
    int himage, vimage;
    if (diffsize(himage,vimage)) {
-      image.upsize(himage,vimage);
+      image.upsize(ulong(himage),ulong(vimage));
       render();
    }
    putimage();
@@ -378,7 +379,7 @@ GLenum keydown(const int key, const GLenum /*state*/)
    if (move(key)) {
       int himage, vimage;
       if (diffsize(himage,vimage))
-         image.upsize(himage,vimage);
+         image.upsize(ulong(himage),ulong(vimage));
       render();
       putimage();
    }
@@ -417,7 +418,7 @@ int interactive(const std::string &title)
       // fixme diffsize() does two things, and is confusing.
       int himage, vimage;
       if (diffsize(himage,vimage))
-         image.upsize(himage,vimage);
+         image.upsize(ulong(himage),ulong(vimage));
       // else image is already exactly the size we need, so we're good to go
 
       for (int n = 0;  n < vars::nrender;  ++n) {
@@ -859,7 +860,7 @@ bool read(
       // option?
       auto iter = map.find(argv[i]);
       if (iter != map.end()) {
-         int n;
+         int n = 0; // init prevents warning
          auto p = iter->second; // the pair
          if ((!p.second || getint(argc,argv,++i,n,title)) &&
              (okay = p.first(n)))

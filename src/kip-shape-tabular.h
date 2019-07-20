@@ -15,7 +15,7 @@ class tabular : public shape<real,tag> {
    using shape<real,tag>::interior;
 
 public:
-   using table_t = std::vector<point_xr<real>>;
+   using table_t = std::vector<xrpoint<real>>;
 
 private:
    mutable rotate<3,real> rot;
@@ -166,9 +166,9 @@ public:
 
 
    // push
-   inline point_xr<real> &push(const real x, const real r)
+   inline xrpoint<real> &push(const real x, const real r)
    {
-      return table.push_back(point_xr<real>(x,r)), table.back();
+      return table.push_back(xrpoint<real>(x,r)), table.back();
    }
 };
 
@@ -223,7 +223,7 @@ kip_process(tabular)
 
    interior = false;  // possibly modified to true below
    for (unsigned i = 1;  i < npts;  ++i) {
-      const point_xr<real>
+      const xrpoint<real>
          &last = table[i-1],  // point to the left  of segment
          &next = table[i  ];  // point to the right of segment
       internal::rshhhd<real> &seg = pre[i-1];  // segment
@@ -683,7 +683,7 @@ kip_check(tabular)
 
    // segments
    for (size_t i = 1;  i < npts;  ++i) {
-      const point_xr<real>
+      const xrpoint<real>
          &last = table[i-1],  // point to the left
          &next = table[i  ];  // point to the right
 
@@ -744,7 +744,7 @@ kip_randomize(tabular)
    obj.table.reserve(npts);
 
    for (size_t i = 0;  i < npts;  ++i) {
-      point_xr<real> p;
+      xrpoint<real> p;
 
       p.x = i == 0
          ? real(0.3)*random_unit<real>()/real(nseg)
@@ -792,7 +792,7 @@ kip_read_value(tabular) {
 
    if (okay && n) {
       obj.table.reserve(n);
-      point_xr<real> p;
+      xrpoint<real> p;
 
       for (unsigned i = 0;  i < n && okay;  ++i)
          if ((okay =
