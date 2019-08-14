@@ -211,20 +211,11 @@ template<
 >
 inline bool get_first(
    const ttclass<SHAPE> &,
-
    const BIN &bin,
    const unsigned s,
    const size_t i, const size_t j,
    const size_t zone,
-
-#ifdef KIP_TOGETHER
    const eyetardiff<real> &etd,
-#else
-   const point<real> &eyeball,
-   const point<real> &target,
-   const point<real> &diff,
-#endif
-
    const real qmin, inq<real,tag> &q
 ) {
    const SHAPE<real,tag> &obj = *(const SHAPE<real,tag> *)bin[s].shape;
@@ -237,15 +228,7 @@ inline bool get_first(
       if (qmin == std::numeric_limits<real>::max())
          num = 0;
 
-      if (obj.infirst(
-#ifdef KIP_TOGETHER
-             etd,
-#else
-             eyeball, target, diff,
-#endif
-             qmin, q, subinfo(i,j, unsigned(zone), obj.mend)
-          )
-      ) {
+      if (obj.infirst(etd, qmin, q, subinfo(i,j, unsigned(zone), obj.mend))) {
          q = real(q)*(1 + eps*random_full<real>());
          return q < qmin*(1-eps)
             ? (num = 1)
@@ -254,15 +237,7 @@ inline bool get_first(
 
       return false;
    #else
-      return
-         obj.infirst(
-#ifdef KIP_TOGETHER
-            etd,
-#else
-            eyeball, target, diff,
-#endif
-            qmin, q, subinfo(i,j, unsigned(zone), obj.mend)
-         );
+      return obj.infirst(etd, qmin, q, subinfo(i,j, unsigned(zone), obj.mend));
    #endif
 }
 
@@ -281,13 +256,7 @@ inline bool op_first(
    const shape<real,tag> *const s,
 
    // eyeball, target, diff
-#ifdef KIP_TOGETHER
    const eyetardiff<real> &etd,
-#else
-   const point<real> &eyeball,
-   const point<real> &target,
-   const point<real> &diff,
-#endif
 
    // qmin, q
    const real qmin,
@@ -325,13 +294,7 @@ inline bool op_all(
    const shape<real,tag> *const s,
 
    // eyeball, target, diff
-#ifdef KIP_TOGETHER
    const eyetardiff<real> &etd,
-#else
-   const point<real> &eyeball,
-   const point<real> &target,
-   const point<real> &diff,
-#endif
 
    // qmin, q
    const real qmin,
@@ -426,15 +389,8 @@ inline bool op_all(
 #define kip_fill_end } };
 
 // kip_param
-#ifdef KIP_TOGETHER
-   #define kip_param(s,qmin,q)\
-      ttclass<SHAPE>(), bin, s, i, j, zone,\
-      etd, qmin, q
-#else
-   #define kip_param(s,qmin,q)\
-      ttclass<SHAPE>(), bin, s, i, j, zone,\
-      vars.eyeball, target, diff, qmin, q
-#endif
+#define kip_param(s,qmin,q) \
+   ttclass<SHAPE>(), bin, s, i, j, zone, etd, qmin, q
 
 
 
@@ -446,25 +402,18 @@ inline bool op_all(
 
 // one_plain
 kip_fill_plain(one_plain) {
-
-#ifdef KIP_TOGETHER
    const eyetardiff<real> etd(vars.eyeball, target, diff);
-#endif
 
    get_first(kip_param(0,maximum,qa))
     ? (*ptr = get_color<color>(vars.eyeball, light, qa, pixel))
     :  *ptr;
-
 } kip_fill_end
 
 
 
 // two_plain
 kip_fill_plain(two_plain) {
-
-#ifdef KIP_TOGETHER
    const eyetardiff<real> etd(vars.eyeball, target, diff);
-#endif
 
    get_first(kip_param(0,maximum,qa))
  ? bin[1].minimum < qa.q &&
@@ -474,17 +423,13 @@ kip_fill_plain(two_plain) {
  : get_first(kip_param(1,maximum,qb))
     ? (*ptr = get_color<color>(vars.eyeball, light, qb, pixel))
     :  *ptr;
-
 } kip_fill_end
 
 
 
 // max_plain
 kip_fill_plain(max_plain) {
-
-#ifdef KIP_TOGETHER
    const eyetardiff<real> etd(vars.eyeball, target, diff);
-#endif
 
    for (unsigned s = 0;  s < binsize;  ++s)
       if (get_first(kip_param(s,maximum,qa))) {
@@ -494,17 +439,13 @@ kip_fill_plain(max_plain) {
         *ptr = get_color<color>(vars.eyeball, light, *qa_ptr, pixel);
          return;
       }
-
 } kip_fill_end
 
 
 
 // any_plain
 kip_fill_plain(any_plain) {
-
-#ifdef KIP_TOGETHER
    const eyetardiff<real> etd(vars.eyeball, target, diff);
-#endif
 
    unsigned s = 0;  bool found;  qa = maximum;
    if (prev > 3) {  // I tried several values, and this number works well
@@ -586,9 +527,7 @@ kip_fill_anti(one_anti) {
             v-vars.vhalf+(vars.vhalf+real(l)*vars.vfull)*vars.rec_anti(real()))
       ),
       target = vars.eyeball - diff;
-      #ifdef KIP_TOGETHER
-         const eyetardiff<real> etd(vars.eyeball, target, diff);
-      #endif
+      const eyetardiff<real> etd(vars.eyeball, target, diff);
 
       // examine object
       sum += get_first(kip_param(0,maximum,qa))
@@ -614,9 +553,7 @@ kip_fill_anti(two_anti) {
             v-vars.vhalf+(vars.vhalf+real(l)*vars.vfull)*vars.rec_anti(real()))
       ),
       target = vars.eyeball - diff;
-      #ifdef KIP_TOGETHER
-         const eyetardiff<real> etd(vars.eyeball, target, diff);
-      #endif
+      const eyetardiff<real> etd(vars.eyeball, target, diff);
 
       // examine objects
       sum += get_first(kip_param(0,maximum,qa))
@@ -636,25 +573,6 @@ kip_fill_anti(two_anti) {
 } kip_fill_end
 
 
-
-/*
-   const engine<real      > &engine,
-   const image <real,color> &image,
-   std::vector<minimum_and_shape<real,base>> &bin,
-         size_t &endsorted,
-   const size_t  binsize,
-   const real   &maximum,
-   inq<real,base> &qa, inq<real,base> *qa_ptr,
-   inq<real,base> &qb, inq<real,base> *qb_ptr,
-   const real h,  // "hcent"
-   const real v,  // "vcent"
-   RGBA<unsigned> &sum,
-   const vars  <real,base > &vars,
-   const light <real      > &light,
-   pix &pixel,
-   const size_t i,
-   const size_t j, const size_t zone
-*/
 
 // any_anti
 kip_fill_anti(any_anti) {
@@ -686,9 +604,7 @@ kip_fill_anti(any_anti) {
                vv + real(l)*vmult
          )),
          target = vars.eyeball - diff;
-      #ifdef KIP_TOGETHER
       const eyetardiff<real> etd(vars.eyeball, target, diff);
-      #endif
 
       // loop over objects in this bin
       unsigned s = 0;  bool f = false;

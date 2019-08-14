@@ -17,9 +17,6 @@
 #define KIP_SEGMENTING_LINEAR
 #define KIP_SEGMENTING_BINARY
 
-// decide if we want this or not
-// #define KIP_TOGETHER
-
 
 
 // -----------------------------------------------------------------------------

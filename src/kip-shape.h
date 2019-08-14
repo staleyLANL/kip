@@ -113,8 +113,6 @@ namespace internal {
 
 
 
-#ifdef KIP_TOGETHER
-
 // eyetardiff
 template<class real>
 class eyetardiff {
@@ -130,8 +128,6 @@ public:
    ) : eyeball(e), target(t), diff(d)
    { }
 };
-
-#endif
 
 
 
@@ -481,10 +477,6 @@ public:
    // dry
    virtual bool dry(const rotate<-3,real> &) const = 0;
 
-
-
-#ifdef KIP_TOGETHER
-
    // infirst
    virtual bool infirst(
       const eyetardiff<real> &,
@@ -496,24 +488,6 @@ public:
       const eyetardiff<real> &,
       const real, afew<inq<real,tag>> &, const internal::subinfo &
    ) const = 0;
-
-#else
-
-   // infirst
-   virtual bool infirst(
-      const point<real> &, const point<real> &, const point<real> &,
-      const real, inq<real,tag> &, const internal::subinfo &
-   ) const = 0;
-
-   // inall
-   virtual bool inall(
-      const point<real> &, const point<real> &, const point<real> &,
-      const real, afew<inq<real,tag>> &, const internal::subinfo &
-   ) const = 0;
-
-#endif
-
-
 
    // check
    virtual diagnostic_t check() const = 0;
@@ -564,8 +538,6 @@ public:
 //    Declares: process, aabb, dry, first, all, check
 //    Ignores:  back, propagate_base
 
-#ifdef KIP_TOGETHER
-
 #define kip_functions(kip_class)\
    \
    kip_virtual_id(kip_class)\
@@ -605,54 +577,6 @@ public:
    \
    inline diagnostic_t check() const
    // no ';' at end - semicolons at *invocation* points help emacs indent
-
-#else
-
-#define kip_functions(kip_class)\
-   \
-   kip_virtual_id(kip_class)\
-   kip_destructor(kip_class)\
-   \
-   inline kip_class *duplicate() const { return new kip_class(*this); }\
-   inline size_t size_of() const { return sizeof(kip_class); }\
-   \
-   inline kip::istream &read (kip::istream &k)       { return k >> *this; }\
-   inline std::istream &read (std::istream &s)       { return s >> *this; }\
-   inline kip::ostream &write(kip::ostream &k) const { return k << *this; }\
-   inline std::ostream &write(std::ostream &s) const { return s << *this; }\
-   \
-   inline real process(\
-      const kip::point<real> &,\
-      const kip::point<real> &,\
-      const engine<real> &,\
-      const internal::vars<real,tag> &\
-   ) const;\
-   \
-   inline bbox<real> aabb() const;\
-   inline bool dry(const rotate<-3,real> &) const;\
-   \
-   inline bool infirst(\
-      const kip::point<real> &,\
-      const kip::point<real> &,\
-      const kip::point<real> &,\
-      const real,\
-      inq<real,tag> &,\
-      const internal::subinfo &\
-   ) const;\
-   \
-   inline bool inall(\
-      const kip::point<real> &,\
-      const kip::point<real> &,\
-      const kip::point<real> &,\
-      const real,\
-      afew<inq<real,tag>> &,\
-      const internal::subinfo &\
-   ) const;\
-   \
-   inline diagnostic_t check() const
-   // no ';' at end - semicolons at *invocation* points help emacs indent
-
-#endif
 
 
 
@@ -696,8 +620,6 @@ public:
 
 
 
-#ifdef KIP_TOGETHER
-
 // kip_etd
 #define kip_etd etd
 
@@ -732,43 +654,6 @@ public:
       \
       (void)eyeball;  (void)target;  (void)diff;\
       (void)qmin;     (void)ints;    (void)insub;
-
-#else
-
-// kip_etd
-#define kip_etd eyeball, target, diff
-
-// kip_infirst
-#define kip_infirst(type)\
-   template<class real, class tag>\
-   inline bool type<real,tag>::infirst(\
-      const kip::point<real> &eyeball,\
-      const kip::point<real> &target,\
-      const kip::point<real> &diff,\
-      const real qmin,\
-      inq<real,tag> &q,\
-      const internal::subinfo &insub\
-   ) const {\
-      (void)eyeball;  (void)target;  (void)diff;\
-      (void)qmin;     (void)q;       (void)insub;
-
-// kip_inall
-#define kip_inall(type)\
-   template<class real, class tag>\
-   inline bool type<real,tag>::inall(\
-      const kip::point<real> &eyeball,\
-      const kip::point<real> &target,\
-      const kip::point<real> &diff,\
-      const real qmin,\
-      afew<inq<real,tag>> &ints,\
-      const internal::subinfo &insub\
-   ) const {\
-      (void)eyeball;  (void)target;  (void)diff;\
-      (void)qmin;     (void)ints;    (void)insub;
-
-#endif
-
-
 
 // kip_check
 #define kip_check(type)\
@@ -1019,11 +904,7 @@ inline diagnostic_t check_operand(
 template<class real, class tag>
 inline bool op_first(
    const shape<real,tag> *const,
-#ifdef KIP_TOGETHER
    const eyetardiff<real> &,
-#else
-   const point<real> &, const point<real> &, const point<real> &,
-#endif
    const real, inq<real,tag> &, const subinfo &
 );
 
@@ -1033,11 +914,7 @@ inline bool op_first(
 template<class real, class tag>
 inline bool op_all(
    const shape<real,tag> *const,
-#ifdef KIP_TOGETHER
    const eyetardiff<real> &,
-#else
-   const point<real> &, const point<real> &, const point<real> &,
-#endif
    const real, afew<inq<real,tag>> &, const subinfo &
 );
 

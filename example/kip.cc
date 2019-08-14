@@ -407,7 +407,10 @@ int interactive(const std::string &title)
       char *const str = new char[title.size()+1];  // tkInitWindow wants char *
       const bool okay = tkInitWindow(strcpy(str,title.c_str())) != GL_FALSE;
       delete[] str;
-      if (!okay) return 1;
+      if (!okay) {
+         std::cerr << "Error: could not initialize window" << std::endl;
+         return 1;
+      }
    }
 
    if (vars::nrender > 0) {
@@ -826,7 +829,7 @@ bool getint(
    const int i, int &n, std::string &title
 ) {
    if (!(i < argc)) {
-      std::cout
+      std::cerr
          << "Error: " << argv[i-1]
          << " requires an int parameter (" << argv[i-1] << " #)" << std::endl;
       return false;
@@ -834,7 +837,7 @@ bool getint(
 
    std::istringstream iss(argv[i]);
    if (!(iss >> n)) {
-      std::cout
+      std::cerr
          << "Error: " << argv[i-1] << " parameter " << argv[i]
          << " could not be converted to int" << std::endl;
       return false;
@@ -875,7 +878,8 @@ bool read(
          model.append = true;
          stream >> model;
       } else {
-         std::cout << "Could not open file \"" << argv[i] << '"' <<  std::endl;
+         std::cerr
+            << "Error: could not open file \"" << argv[i] << '"' << std::endl;
          okay = false;
       }
    }
@@ -945,15 +949,17 @@ int main(const int argc, const char *const *const argv)
    */
 
    kip::threads = 0;
-   std::string title = argv[0];
+   std::string title = argv[0] == nullptr || argv[0][0] == '\0'
+    ? "executable-name"
+    :  argv[0];
 
    // command-line arguments
    if (argc < 2) {
-      std::cout << "Usage: " << argv[0] << " <file> <option> ..." << std::endl;
-      exit(1);
+      std::cerr << "Usage: " << title << " <file> <option> ..." << std::endl;
+      return 2;
    }
    if (!args::read(argc,argv,title))
-      exit(1);
+      return 1;
 
    // initialize kip parameters
    initialize();
