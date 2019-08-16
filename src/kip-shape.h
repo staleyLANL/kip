@@ -77,13 +77,13 @@ namespace internal {
 // -----------------------------------------------------------------------------
 // minend
 // subinfo
+// eyetardiff
 // -----------------------------------------------------------------------------
 
 // minend
 class minend {
 public:
    size_t imin, iend, jmin, jend;
-   inline explicit minend() { }
 };
 
 
@@ -92,24 +92,22 @@ public:
 namespace internal {
    class subinfo {
    public:
-      const minend &mend;
+      minend mend;
       size_t i, j;
-      const unsigned nzone;
+      unsigned nzone;
 
-      // zzz remove?
-      inline explicit subinfo() : mend(*(minend*)nullptr), nzone(0) { }
-
-      // subinfo(i,j)
       inline explicit subinfo(
-         const size_t &_i, const size_t &_j,
-         const unsigned &_nzone,
-         const minend/*<I>*/ &_mend//ccc
+         const size_t _i,
+         const size_t _j,
+         const unsigned _nzone,
+         const minend _mend
       ) :
-         mend(_mend),//ccc
-         i(_i), j(_j), nzone(_nzone)
+         mend(_mend),
+         i(_i), j(_j),
+         nzone(_nzone)
       { }
    };
-} // namespace internal
+}
 
 
 
@@ -117,15 +115,18 @@ namespace internal {
 template<class real>
 class eyetardiff {
 public:
-   const point<real> eyeball;
-   const point<real> target;
-   const point<real> diff;
+   point<real> eyeball;
+   point<real> target;
+   point<real> diff;
 
    inline explicit eyetardiff(
-      const point<real> &e,
-      const point<real> &t,
-      const point<real> &d
-   ) : eyeball(e), target(t), diff(d)
+      const point<real> e,
+      const point<real> t,
+      const point<real> d
+   ) :
+      eyeball(e),
+      target(t),
+      diff(d)
    { }
 };
 
@@ -905,7 +906,9 @@ template<class real, class tag>
 inline bool op_first(
    const shape<real,tag> *const,
    const eyetardiff<real> &,
-   const real, inq<real,tag> &, const subinfo &
+   const real,
+   inq<real,tag> &,
+   const subinfo &
 );
 
 
@@ -915,7 +918,9 @@ template<class real, class tag>
 inline bool op_all(
    const shape<real,tag> *const,
    const eyetardiff<real> &,
-   const real, afew<inq<real,tag>> &, const subinfo &
+   const real,
+   afew<inq<real,tag>> &,
+   const subinfo &
 );
 
 } // namespace internal
