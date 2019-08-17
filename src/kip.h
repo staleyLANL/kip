@@ -4,12 +4,12 @@
 // Users should #include only this file.
 
 // Defines
-//#define KIP_ASSERT
 //#define KIP_BLOCK  // zzz Faster without; and block.h is broken anyway
 //#define KIP_COLOR_FLAT
 //#define KIP_COLOR_DIFFUSE
 
 //#define KIP_SEGMENTING_DIAG
+
 //#define KIP_SEGMENTING_QUAD
 //#define KIP_SEGMENTING_3060
 //#define KIP_SEGMENTING_1575
@@ -120,12 +120,6 @@ namespace kip {
 #include "kip-shape-tabular.h"
 #include "kip-shape-surf.h"
 
-// hack :-/
-#ifdef KIP_CONSTRUCT_COUNTER
-   #undef  kip_destructor
-   #define kip_destructor(kip_class)
-#endif
-
 // operators
 #include "kip-operator.h"
 
@@ -148,7 +142,6 @@ namespace kip {
 
 // misc
 #include "kip-shape-end.h"
-#include "kip-shape-simplify.h"
 
 // ----------------
 // per-pixel info;
@@ -165,7 +158,7 @@ namespace kip {
 // for kip's use
 #include "kip-type-vars.h"
 
-// intended for users
+// for users
 #include "kip-type-model.h"
 #include "kip-type-view.h"
 #include "kip-type-light.h"

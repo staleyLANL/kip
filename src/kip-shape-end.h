@@ -17,8 +17,6 @@ namespace internal {
 template<class>
 class id_t {
 public:
-   inline explicit id_t() { }
-
    // for "shape" itself
    static const shape_id_t shape;
 

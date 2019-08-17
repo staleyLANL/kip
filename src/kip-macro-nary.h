@@ -94,21 +94,18 @@ public:
    // kip_class()
    inline explicit kip_class() : shape<real,tag>(this)
    {
-      kip_counter_ctor(kip_class);
       new (&kip_data.vec()) vec_t;
    }
 
    // kip_class(base)
    inline explicit kip_class(const tag &thebase) : shape<real,tag>(this,thebase)
    {
-      kip_counter_ctor(kip_class);
       new (&kip_data.vec()) vec_t;
    }
 
    // kip_class(kip_class)
    inline kip_class(const kip_class &from) : shape<real,tag>(from)
    {
-      kip_counter_ctor(kip_class);
       new (&kip_data.vec()) vec_t;
       copy(from);
    }
@@ -129,7 +126,6 @@ public:
    {
       clear();
       kip_data.vec().~vec_t();
-      kip_counter_dtor(kip_class);
    }
 
 

@@ -44,27 +44,24 @@ inline constexpr real pi = real(
 
 // kip::cerr
 #ifdef kip_cerr_is_not_cout
-   // cerr is cerr
    inline std::ostream &cerr = std::cerr;
 #else
-   // cerr is cout
    inline std::ostream &cerr = std::cout;
 #endif
 
 
 // KIP_ASSERT
 #ifdef KIP_ASSERT
-   #define if_kip_assert(test) assert(test)
+   #define kip_assert(test) assert(test)
 #else
-   #define if_kip_assert(test)
+   #define kip_assert(test)
 #endif
-
 
 // KIP_ASSERT_INDEX
 #ifdef KIP_ASSERT_INDEX
-   #define if_kip_assert_index(test) assert(test)
+   #define kip_assert_index(test) assert(test)
 #else
-   #define if_kip_assert_index(test)
+   #define kip_assert_index(test)
 #endif
 
 
@@ -171,39 +168,17 @@ inline const char *oform()
 
 // diagnostic_t
 enum class diagnostic_t {
-   diagnostic_good    = 3,  // everything is perfect
-   diagnostic_note    = 2,  // for-your-information
-   diagnostic_warning = 1,  // likely problem
-   diagnostic_error   = 0   // definite error
+   diagnostic_good    = 3,
+   diagnostic_note    = 2,
+   diagnostic_warning = 1,
+   diagnostic_error   = 0
 };
-
 
 // no-context warning: forward declaration
 template<class MESSAGE>
 inline diagnostic_t warning(const MESSAGE &message);
 
-
-
-// helper classes/functions
-namespace internal {
-   // errors
-   class errors_class {
-   public:
-      static const bool value = true;
-      inline explicit errors_class() { }
-      inline const errors_class &operator=(const bool _value) const
-      {
-         if (!_value)
-            warning("kip::errors = false?\n"
-                    "(un)fortunately, you can't turn off errors");
-         return *this;
-      }
-      inline operator bool() const { return true; }
-   };
-}
-
 // for the user
-inline internal::errors_class errors;
 inline bool warnings = true;
 inline bool notes    = true;
 inline bool addenda  = true;
@@ -432,34 +407,6 @@ inline const T &max(const T &a, const T &b, const T &c)
 #define kip_extra(macro,sym) \
    \
    macro(tri) sym
-
-
-
-// -----------------------------------------------------------------------------
-// Constructor/destructor call-counters
-// -----------------------------------------------------------------------------
-
-#ifdef KIP_CONSTRUCT_COUNTER
-   class counter {
-   public:
-      #define kip_construct_counter(type) static long int type
-      kip_expand(kip_construct_counter,;)
-      kip_extra (kip_construct_counter,;)
-      #undef  kip_construct_counter
-   };
-
-   #define kip_construct_counter(type) long int counter::type = 0
-   kip_expand(kip_construct_counter,;)
-   kip_extra (kip_construct_counter,;)
-   #undef  kip_construct_counter
-
-   #define kip_counter_ctor(type) counter::type++
-   #define kip_counter_dtor(type) counter::type--
-
-#else
-   #define kip_counter_ctor(type) {}
-   #define kip_counter_dtor(type) {}
-#endif
 
 
 

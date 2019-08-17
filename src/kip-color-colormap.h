@@ -30,9 +30,6 @@ public:
    // size()
    inline unsigned size() const { return vec.size(); }
 
-   // constructor
-   inline explicit colormap_jet() { }
-
 
    // ------------------------
    // push
@@ -162,19 +159,6 @@ public:
       const double b = one*vec[lo].b + two*vec[hi].b;
 
       const RGB<uchar> rv(uchar(255*r), uchar(255*g), uchar(255*b));
-
-      /*
-      std::cout << "one = " << one << std::endl;
-      std::cout << "two = " << two << std::endl;
-
-      if (rv.r ==   0) std::cout << "000 red"   << std::endl;
-      if (rv.g ==   0) std::cout << "000 green" << std::endl;
-      if (rv.b ==   0) std::cout << "000 blue"  << std::endl;
-      if (rv.r == 255) std::cout << "255 red"   << std::endl;
-      if (rv.g == 255) std::cout << "255 green" << std::endl;
-      if (rv.b == 255) std::cout << "255 blue"  << std::endl;
-      */
-
       return rv;
 
       /*

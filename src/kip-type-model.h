@@ -63,6 +63,9 @@ public:
       here. Note also that our pointer return is consistent with our pointer
       input - and appropriate, as the exact type is determined at run-time.
 
+      2019-08-16, is the following comment (and the relevant functions) still
+      relevant, given that I removed (for now, at least) the simplify() code?
+
       The std::pair push() call (5) allows for pushing of the output from a
       simplify() call. In view of what simplify() produces: if first==second
       then first (whose type is known at compile-time) is pushed; otherwise,
@@ -510,8 +513,6 @@ model<real,base>::push_bbox(
 namespace internal {
    class functor_clear {
    public:
-      inline functor_clear() { }
-
       template<class CONTAINER>
       inline void operator()(CONTAINER &c) const { c.clear(); }
    };
@@ -581,8 +582,6 @@ namespace internal {
 namespace internal {
    class functor_unbound {
    public:
-      inline functor_unbound() { }
-
       template<class CONTAINER>
       inline void operator()(CONTAINER &c) const
       {
@@ -599,8 +598,6 @@ namespace internal {
 template<class real, class base>
 void model<real,base>::unbound()
 {
-   /// std::cout << "   unbound!" << std::endl;
-
    const internal::functor_unbound f;
    internal::allshape(*this, f);
 }
@@ -665,9 +662,6 @@ bbox<real> model<real,base>::aabb(
 ) {
    // chuck any existing clutter
    unbound();
-
-   /// Remove...
-   /// std::cout << "   bound " << each << ' ' << overall << std::endl;
 
    // new return value, to be computed
    kip::bbox<real> rv(false,1,0,false, false,1,0,false, false,1,0,false);

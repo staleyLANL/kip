@@ -290,7 +290,7 @@ void btrace(
                   bin[obj].shape->is_operand = false;
                   bin[obj].minimum = bin[obj].shape->minimum =
                      bin[obj].shape->process(vars.eyeball, light[0]);
-                  if_kip_assert(bin[obj].minimum >= 0);
+                  kip_assert(bin[obj].minimum >= 0);
 
                   bin[obj].shape->lastpix =
                      // Is interior && solid (not just interior) the correct
@@ -316,7 +316,7 @@ void btrace(
                                   view.eyeball, view.target, diff,
                                   qmin,*qused, insub)) {
                   const real q = qused->q;
-                  if_kip_assert(0 < q && q < qmin);
+                  kip_assert(0 < q && q < qmin);
                   ptr = bin[s].shape;  qmin = q;  s++;
                   break;
                }
@@ -329,7 +329,7 @@ void btrace(
                                   eyeball, target, diff,
                                   qmin, *qnext, insub)) {
                   const real q = qnext->q;
-                  if_kip_assert(0 < q && q < qmin);
+                  kip_assert(0 < q && q < qmin);
                   ptr = bin[s].shape;  qmin = q;
                   std::swap(qused,qnext);
                }

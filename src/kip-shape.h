@@ -170,7 +170,7 @@ public:
    virtual shape_id_t id() const = 0;
 
    // [imin,iend) x [jmin,jend)
-   mutable minend/*<>*/ mend;
+   mutable minend mend;
 
    // get_interior(), because some g++s don't realize interior is public
    inline bool get_interior() const { return interior; }
@@ -523,15 +523,6 @@ public:
    inline shape_id_t id() const\
       { return internal::get_shape_id<kip_class>::result; }
 
-// kip_destructor
-#ifdef KIP_CONSTRUCT_COUNTER
-   #define kip_destructor(kip_class)\
-      inline ~kip_class()\
-         { kip_counter_dtor(kip_class); }
-#else
-   #define kip_destructor(kip_class)
-#endif
-
 
 
 // Regarding virtuals:
@@ -542,7 +533,6 @@ public:
 #define kip_functions(kip_class)\
    \
    kip_virtual_id(kip_class)\
-   kip_destructor(kip_class)\
    \
    inline kip_class *duplicate() const { return new kip_class(*this); }\
    inline size_t size_of() const { return sizeof(kip_class); }\
@@ -980,8 +970,6 @@ namespace internal {
 template<class real, class tag>
 class less {
 public:
-   inline explicit less() { }
-
    // for minimum_and_shape
    inline bool operator()(
       const minimum_and_shape<real,tag> &a,
@@ -1006,8 +994,6 @@ template<class real> class mmi;
 template<class real>
 class less_mmi {
 public:
-   inline explicit less_mmi() { }
-
    // for mmi
    inline bool operator()(
       const mmi<real> &a,
@@ -1022,8 +1008,6 @@ public:
 template<class real>
 class same {
 public:
-   inline explicit same() { }
-
    // for point
    inline bool operator()(const point<real> &a, const point<real> &b) const
       { return a == b; }
@@ -1035,8 +1019,6 @@ public:
 template<class real, class tag>
 class more {
 public:
-   inline explicit more() { }
-
    // for minimum_and_shape
    inline bool operator()(
       const minimum_and_shape<real,tag> &a,

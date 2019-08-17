@@ -30,7 +30,7 @@ kip_process(odd)
       vec[i].op->is_operand = true;
       min_and_op[i].minimum = minimum_t((min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars));
-      if_kip_assert(min_and_op[i].minimum >= 0);
+      kip_assert(min_and_op[i].minimum >= 0);
    }
 
    // The logical-odd operator is mutually reflexive, so we can arbitrarily

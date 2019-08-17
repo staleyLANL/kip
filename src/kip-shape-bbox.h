@@ -189,8 +189,6 @@ namespace internal {
 // op_leq
 class op_leq {
 public:
-   inline explicit op_leq() { }
-
    template<class real>
    inline bool operator()(
       const bbox<real> &a,
@@ -211,8 +209,6 @@ public:
 // op_less
 class op_less {
 public:
-   inline explicit op_less() { }
-
    template<class real>
    inline bool operator()(
       const bbox<real> &a,

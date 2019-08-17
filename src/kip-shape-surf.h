@@ -20,9 +20,6 @@ public:
    minimum_t min;
    const SHAPE *ptr;
 
-   // min_and_part()
-   inline explicit min_and_part() { }
-
    // min_and_part(min,ptr)
    template<class real>
    inline explicit min_and_part(const real _min, const SHAPE &obj) :
@@ -36,9 +33,6 @@ public:
 template<class SHAPE>
 class part_less {
 public:
-   // part_less()
-   inline explicit part_less() { }
-
    // for min_and_part
    inline bool operator()(
       const min_and_part<SHAPE> &a,
@@ -216,7 +210,6 @@ public:
    inline ~surf()
    {
       mint().~binner_t();
-      kip_counter_dtor(surf);
    }
 };
 
@@ -527,7 +520,7 @@ kip_infirst(surf)
    q = qmin;  bool found = false;
    for (unsigned t = 0;  t < ntri && bin[t].min < q;  ++t) {
       inq<real,tag> qnew;
-      const minend/*<>*/ &fine = bin[t].ptr->mend;
+      const minend &fine = bin[t].ptr->mend;
 
       if (fine.imin <= insub.i && insub.i < fine.iend &&
           fine.jmin <= insub.j && insub.j < fine.jend &&
@@ -560,7 +553,7 @@ kip_inall(surf)
    bool found = false;
    for (unsigned t = 0;  t < ntri && bin[t].min < qmin;  ++t) {
       inq<real,tag> q;
-      const minend/*<>*/ &fine = bin[t].ptr->mend;
+      const minend &fine = bin[t].ptr->mend;
 
       if (fine.imin <= insub.i && insub.i < fine.iend &&
           fine.jmin <= insub.j && insub.j < fine.jend &&

@@ -306,14 +306,14 @@ public:
 
    // operator[]
    inline       INQ &operator[](const size_t i)
-      { if_kip_assert_index(i < num);  return ptr[i]; }
+      { kip_assert_index(i < num);  return ptr[i]; }
    inline const INQ &operator[](const size_t i) const
-      { if_kip_assert_index(i < num);  return ptr[i]; }
+      { kip_assert_index(i < num);  return ptr[i]; }
 
    // push
    inline INQ &push(const INQ &value)
    {
-      if_kip_assert_index(num <= bufsize);
+      kip_assert_index(num <= bufsize);
       if (num == bufsize) {
          bufsize += bufsize;
          INQ *const newptr = new INQ[bufsize];
@@ -348,7 +348,7 @@ public:
    inline bool convex(const INQ &inq)  // for INQ of inq<> type
    {
       if (num) {
-         if_kip_assert(num == 1);
+         kip_assert(num == 1);
 
          if (inq.q > ptr[0].q)
             ptr[1] = inq;

@@ -36,8 +36,6 @@ class scene :
    inline scene &operator=(const scene &) { return *this; }
 
 public:
-   // scene()
-   inline explicit scene() { }
 
    // direct access to constituents
    inline kip::model <real,tag>   &model () { return *this; }

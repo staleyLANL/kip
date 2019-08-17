@@ -24,7 +24,6 @@ public:
    inline explicit kipxor() :
       shape<real,tag>(this)
    {
-      kip_counter_ctor(kipxor);
       binary.a = nullptr;
       binary.b = nullptr;
    }
@@ -37,7 +36,6 @@ public:
    ) :
       shape<real,tag>(this)
    {
-      kip_counter_ctor(kipxor);
       binary.a = _a;
       binary.b = _b;
    }
@@ -48,7 +46,6 @@ public:
    ) :
       shape<real,tag>(this,thebase)
    {
-      kip_counter_ctor(kipxor);
       binary.a = _a;
       binary.b = _b;
    }
@@ -61,7 +58,6 @@ public:
    ) :
       shape<real,tag>(this)
    {
-      kip_counter_ctor(kipxor);
       binary.a = a.duplicate();
       binary.b = b.duplicate();
    }
@@ -72,7 +68,6 @@ public:
    ) :
       shape<real,tag>(this,thebase)
    {
-      kip_counter_ctor(kipxor);
       binary.a = a.duplicate();
       binary.b = b.duplicate();
    }
@@ -82,7 +77,6 @@ public:
    inline kipxor(const kipxor &from) :
       shape<real,tag>(from)
    {
-      kip_counter_ctor(kipxor);
       binary.a = from.binary.a ? from.binary.a->duplicate() : nullptr;
       binary.b = from.binary.b ? from.binary.b->duplicate() : nullptr;
    }
@@ -102,7 +96,6 @@ public:
    // destructor
    inline ~kipxor()
    {
-      kip_counter_dtor(kipxor);
       delete binary.a;
       delete binary.b;
    }
@@ -120,11 +113,11 @@ kip_process(kipxor)
    // process operands
    binary.a->is_operand = true;
    binary.amin = binary.a->process(eyeball,light,engine,vars);
-   if_kip_assert(binary.amin >= 0);
+   kip_assert(binary.amin >= 0);
 
    binary.b->is_operand = true;
    binary.bmin = binary.b->process(eyeball,light,engine,vars);
-   if_kip_assert(binary.bmin >= 0);
+   kip_assert(binary.bmin >= 0);
 
    // The logical-xor operator is reflexive, so we can swap its operands.
    // Putting the operand with the *smallest* minimum first tends to speed

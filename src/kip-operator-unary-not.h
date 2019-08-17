@@ -23,7 +23,7 @@ public:
    // kipnot()
    inline explicit kipnot() :
       shape<real,tag>(this)
-   { kip_counter_ctor(kipnot);  unary.a = nullptr; }
+   { unary.a = nullptr; }
 
 
    // kipnot(a[,base]), a = pointer
@@ -31,13 +31,13 @@ public:
       const shape<real,tag> *const _a
    ) :
       shape<real,tag>(this)
-   { kip_counter_ctor(kipnot);  unary.a = _a; }
+   { unary.a = _a; }
 
    inline explicit kipnot(
       const shape<real,tag> *const _a, const tag &thebase
    ) :
       shape<real,tag>(this,thebase)
-   { kip_counter_ctor(kipnot);  unary.a = _a; }
+   { unary.a = _a; }
 
 
    // kipnot(a[,base]), a = reference
@@ -45,20 +45,19 @@ public:
       const shape<real,tag> &a
    ) :
       shape<real,tag>(this)
-   { kip_counter_ctor(kipnot);  unary.a = a.duplicate(); }
+   { unary.a = a.duplicate(); }
 
    inline explicit kipnot(
       const shape<real,tag> &a, const tag &thebase
    ) :
       shape<real,tag>(this,thebase)
-   { kip_counter_ctor(kipnot);  unary.a = a.duplicate(); }
+   { unary.a = a.duplicate(); }
 
 
    // kipnot(kipnot)
    inline kipnot(const kipnot &from) :
       shape<real,tag>(from)
    {
-      kip_counter_ctor(kipnot);
       unary.a = from.unary.a ? from.unary.a->duplicate() : nullptr;
    }
 
@@ -75,7 +74,6 @@ public:
    // destructor
    inline ~kipnot()
    {
-      kip_counter_dtor(kipnot);
       delete unary.a;
    }
 };
@@ -91,7 +89,7 @@ kip_process(kipnot)
 {
    unary.a->is_operand = true;
    unary.amin = unary.a->process(eyeball,light,engine,vars);
-   if_kip_assert(unary.amin >= 0);
+   kip_assert(unary.amin >= 0);
 
    unary.ina = unary.a->interior;
    interior = !unary.ina;

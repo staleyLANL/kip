@@ -24,7 +24,6 @@ public:
    inline explicit kipand() :
       shape<real,tag>(this)
    {
-      kip_counter_ctor(kipand);
       binary.a = nullptr;
       binary.b = nullptr;
    }
@@ -37,7 +36,6 @@ public:
    ) :
       shape<real,tag>(this)
    {
-      kip_counter_ctor(kipand);
       binary.a = a;
       binary.b = b;
    }
@@ -48,7 +46,6 @@ public:
    ) :
       shape<real,tag>(this,_tag)
    {
-      kip_counter_ctor(kipand);
       binary.a = a;
       binary.b = b;
    }
@@ -61,7 +58,6 @@ public:
    ) :
       shape<real,tag>(this)
    {
-      kip_counter_ctor(kipand);
       binary.a = a.duplicate();
       binary.b = b.duplicate();
    }
@@ -72,7 +68,6 @@ public:
    ) :
       shape<real,tag>(this,_tag)
    {
-      kip_counter_ctor(kipand);
       binary.a = a.duplicate();
       binary.b = b.duplicate();
    }
@@ -82,7 +77,6 @@ public:
    inline kipand(const kipand &from) :
       shape<real,tag>(from)
    {
-      kip_counter_ctor(kipand);
       binary.a = from.binary.a ? from.binary.a->duplicate() : nullptr;
       binary.b = from.binary.b ? from.binary.b->duplicate() : nullptr;
    }
@@ -102,7 +96,6 @@ public:
    // destructor
    inline ~kipand()
    {
-      kip_counter_dtor(kipand);
       delete binary.a;
       delete binary.b;
    }
@@ -120,11 +113,11 @@ kip_process(kipand)
    // process operands
    binary.a->is_operand = true;
    binary.amin = binary.a->process(eyeball,light,engine,vars);
-   if_kip_assert(binary.amin >= 0);
+   kip_assert(binary.amin >= 0);
 
    binary.b->is_operand = true;
    binary.bmin = binary.b->process(eyeball,light,engine,vars);
-   if_kip_assert(binary.bmin >= 0);
+   kip_assert(binary.bmin >= 0);
 
    // The logical-and operator is reflexive, so we can swap its operands.
    // Putting the operand with the *largest* minimum first tends to speed

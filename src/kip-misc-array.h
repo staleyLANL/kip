@@ -97,7 +97,7 @@ public:
    inline const typename internal::is_integer<integer,element>::result
    &operator[](const integer n) const
    {
-      if_kip_assert_index(n < size());
+      kip_assert_index(n < size());
       return ptr[n];
    }
 
@@ -105,7 +105,7 @@ public:
    inline typename internal::is_integer<integer,element>::result
    &operator[](const integer n)
    {
-      if_kip_assert_index(n < size());
+      kip_assert_index(n < size());
       return ptr[n];
    }
 };
@@ -148,13 +148,13 @@ public:
    // operator()
    inline const element &operator()(const size_t i) const
    {
-      if_kip_assert_index(i < inum);
+      kip_assert_index(i < inum);
       return (*this)[i];
    }
 
    inline element &operator()(const size_t i)
    {
-      if_kip_assert_index(i < inum);
+      kip_assert_index(i < inum);
       return (*this)[i];
    }
 };
@@ -195,13 +195,13 @@ public:
    // operator()
    inline const element &operator()(const size_t i, const size_t j) const
    {
-      if_kip_assert_index(i < inum && j < jnum);
+      kip_assert_index(i < inum && j < jnum);
       return (*this)[i + inum*j];
    }
 
    inline element &operator()(const size_t i, const size_t j)
    {
-      if_kip_assert_index(i < inum && j < jnum);
+      kip_assert_index(i < inum && j < jnum);
       return (*this)[i + inum*j];
    }
 };
@@ -250,14 +250,14 @@ public:
    inline const element &operator()(
       const size_t i, const size_t j, const size_t k
    ) const {
-      if_kip_assert_index(i < inum && j < jnum && k < knum);
+      kip_assert_index(i < inum && j < jnum && k < knum);
       return (*this)[i + inum*(j + jnum*k)];
    }
 
    inline element &operator()(
       const size_t i, const size_t j, const size_t k
    ) {
-      if_kip_assert_index(i < inum && j < jnum && k < knum);
+      kip_assert_index(i < inum && j < jnum && k < knum);
       return (*this)[i + inum*(j + jnum*k)];
    }
 };

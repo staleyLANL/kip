@@ -312,7 +312,7 @@ inline void argsub(const engine<real> &engine, vars<real,base> &vars, SHAPE &s)
 template<class real, class base, class SHAPE>
 inline char test_diag(
    const vars<real,base> &vars, const SHAPE &p, const size_t val,
-   minend/*<>*/ &bin, const size_t hseg
+   minend &bin, const size_t hseg
 ) {
    const size_t n = 4*val;
 
@@ -473,10 +473,10 @@ inline void uprepare(
       // minimum distance from eyeball
       p.is_operand = false;  // or we wouldn't be in the object's std::vector
       const real pmin = p.SHAPE::process(vars.eyeball, light[0], engine, vars);
-      if_kip_assert(pmin >= 0);
+      kip_assert(pmin >= 0);
 
       // behind us, off-screen, or we're inside
-      minend/*<>*/ sub, bin;
+      minend sub, bin;
       if (p.SHAPE::dry(vars.behind) ||
          !seg_minmax(engine,vars,p, sub.imin,sub.iend,sub.jmin,sub.jend) ||
          (p.get_interior() && p.solid))
@@ -543,7 +543,7 @@ inline real uprepare_tri(
    // per-node "behind" and "minend"
    const size_t nnode = surf.node.size();
    std::vector< bool > behind(nnode);
-   std::vector< minend/*<>*/ > me(nnode);
+   std::vector< minend > me(nnode);
 
    // for each node...
    for (size_t n = nnode;  n--; ) {
@@ -814,11 +814,11 @@ void utrace(
    const size_t nzone = engine.hzone*engine.vzone;
 
    /*
-   const size_t nobjects = model.size();
+   const size_t ntotal = model.size();
    #define kip_single_shape(shape)\
-      if (nobjects == model.shape.size()) {\
-         utrace_do<shape, real, tag, color, pix>()\
-            (nzone, light, engine, vars, image, pixel);\
+      if (ntotal == model.shape.size()) {\
+         utrace_do<shape,real,tag,color,pix>()\
+            (int(nzone), view, light, engine, vars, image, pixel); \
          return;\
       }
    kip_expand(kip_single_shape,)
@@ -826,10 +826,8 @@ void utrace(
    */
 
    // general model
-   {
-      utrace_do<shape, real, tag, color, pix>()
-         (int(nzone), view, light, engine, vars, image, pixel);
-   }
+   utrace_do<shape,real,tag,color,pix>()
+      (int(nzone), view, light, engine, vars, image, pixel);
 }
 
 } // namespace internal

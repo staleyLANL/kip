@@ -74,7 +74,7 @@ inline void rprepare(
 
       s.is_operand = false;
       const real smin = s.SHAPE::process(vars.eyeball, light[0], engine, vars);
-      if_kip_assert(smin >= 0);
+      kip_assert(smin >= 0);
 
       if (!s.SHAPE::dry(vars.left  ) && !s.SHAPE::dry(vars.right) &&
           !s.SHAPE::dry(vars.bottom) && !s.SHAPE::dry(vars.top  ) &&
