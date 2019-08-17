@@ -58,7 +58,7 @@ std::pair<
    if (ptr->id() == internal::get_shape_id<type>::result)\
       return simplify((const type<real,base> *)ptr)
 
-   kip_expand_semi(kip_make_simplify)
+   kip_expand(kip_make_simplify,;)
 #undef kip_make_simplify
 
    assert(false);  // shouldn't get here, or else id() didn't check out

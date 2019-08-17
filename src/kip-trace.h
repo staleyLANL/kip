@@ -260,7 +260,7 @@ inline void object_border_begin(
 ) {
    if (image.border.object) {
       #define kip_border(type) object_border_shape(model.type)
-      kip_expand_semi(kip_border)
+      kip_expand(kip_border,;)
       #undef kip_border
    }
 }
@@ -307,7 +307,7 @@ inline void object_border_end(
 ) {
    if (image.border.object) {
       #define kip_border(type) object_border_shape(model.type, image)
-      kip_expand_semi(kip_border)
+      kip_expand(kip_border,;)
       #undef kip_border
    }
 }

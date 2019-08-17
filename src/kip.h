@@ -201,9 +201,7 @@ namespace kip {
 #undef  kip_paste
 #undef _kip_description
 #undef  kip_description
-// #undef  kip_expand_plain
-// #undef  kip_expand_semi
-// #undef  kip_extra_plain
-// #undef  kip_extra_semi
+#undef  kip_expand
+#undef  kip_extra
 
 } // namespace kip

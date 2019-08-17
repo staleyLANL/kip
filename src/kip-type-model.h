@@ -314,7 +314,7 @@ loop<real,base>::loop(const model<real,base> &m)
    t.element_size = sizeof(kip::type<real,base>);\
    shapes.push_back(t);
 
-   kip_expand_semi(kip_make_loop)
+   kip_expand(kip_make_loop,;)
 #undef  kip_make_loop
 
    nshapes = shapes.size();
@@ -359,7 +359,7 @@ shape<real,base> *model<real,base>::push(const shape<real,base> *const ptr)
    if (ptr->id() == internal::get_shape_id<kip::type>::result)\
       return &push((const kip::type<real,base> *)ptr)
 
-   kip_expand_semi(kip_make_push)
+   kip_expand(kip_make_push,;)
 #undef kip_make_push
 
    assert(false);  // shouldn't get here, or else id() didn't check out
@@ -531,7 +531,7 @@ template<class real, class base>
 model<real,base> &model<real,base>::assign(const model<real,base> &from)
 {
 #define kip_make_assign(type) type = from.type
-   kip_expand_semi(kip_make_assign)
+   kip_expand(kip_make_assign,;)
 #undef  kip_make_assign
 
    return *this;
@@ -718,7 +718,7 @@ bool shape_select(const std::string &name, ACTION &action)
    // full names
    #define kip_if_shape(shp)\
       else if (name == #shp) { action.fun(internal::tclass<shp<real,base>>()); }
-   kip_expand_plain(kip_if_shape)
+   kip_expand(kip_if_shape,)
    #undef  kip_if_shape
 
    else return false;
@@ -955,7 +955,7 @@ kip::ostream &operator<<(
    internal::write_shape_start() = true;
 
 #define kip_write_shape(shape) internal::write_shape(k, obj.shape) &&
-   kip_expand_plain(kip_write_shape)
+   kip_expand(kip_write_shape,)
 #undef  kip_write_shape
 
    // done

@@ -821,7 +821,7 @@ void utrace(
             (nzone, light, engine, vars, image, pixel);\
          return;\
       }
-   kip_expand_plain(kip_single_shape)
+   kip_expand(kip_single_shape,)
    #undef kip_single_shape
    */
 

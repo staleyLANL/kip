@@ -78,8 +78,7 @@ inline void bsetup(
 
 #define kip_make_setup(type)\
    block_setup_shape(model,engine,vars, xfac,yfac,zfac, model.type)
-
-   kip_expand_semi(kip_make_setup)
+   kip_expand(kip_make_setup,;)
 #undef  kip_make_setup
 }
 
@@ -223,7 +222,7 @@ void btrace(
 
    // for each object: set lastpix = -2
 #define kip_make_trace(type) btrace_shape(model.type)
-   kip_expand_semi(kip_make_trace)
+   kip_expand(kip_make_trace,;)
 #undef  kip_make_trace
 
 

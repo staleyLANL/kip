@@ -19,7 +19,7 @@ template<class AGGREGATE, class FUNCTOR>
 void allshape(AGGREGATE &obj, FUNCTOR &f)
 {
 #define kip_call_f(type) f(obj.type)
-   kip_expand_semi(kip_call_f)
+   kip_expand(kip_call_f,;)
 #undef  kip_call_f
 }
 

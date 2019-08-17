@@ -14,7 +14,7 @@ public:
    // data
    #define kip_make_shape_vector(type)\
       std::vector<minimum_and_ptr<real,kip::type<real,tag>>> type
-   kip_expand_semi(kip_make_shape_vector)
+   kip_expand(kip_make_shape_vector,;)
    #undef  kip_make_shape_vector
 
    // size
@@ -37,7 +37,7 @@ public:
    {
    #define kip_make_reserve(type)\
       type.reserve(model.type.size());
-   kip_expand_semi(kip_make_reserve)
+   kip_expand(kip_make_reserve,;)
    #undef  kip_make_reserve
    }
 };
@@ -302,7 +302,7 @@ void grow_portion(
 #define kip_make_grow(type)\
    grow_portion_specific\
       (tclass<type<real,base>>(), current.type,portion.type, seg,pos);
-   kip_expand_semi(kip_make_grow)
+   kip_expand(kip_make_grow,;)
 #undef  kip_make_grow
 }
 

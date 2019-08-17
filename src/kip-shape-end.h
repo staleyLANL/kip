@@ -24,8 +24,8 @@ public:
 
    // for primitives and operators
    #define kip_make_id(type) static const shape_id_t type
-      kip_expand_semi(kip_make_id)
-      kip_extra_semi (kip_make_id)
+      kip_expand(kip_make_id,;)
+      kip_extra (kip_make_id,;)
    #undef kip_make_id
 };
 
@@ -39,9 +39,8 @@ const shape_id_t id_t<unused>::shape = get_shape_id<kip::shape>::result;
 #define kip_make_id(type)\
    template<class unused>\
    const shape_id_t id_t<unused>::type = get_shape_id<kip::type>::result
-
-kip_expand_semi(kip_make_id)
-kip_extra_semi (kip_make_id)
+kip_expand(kip_make_id,;)
+kip_extra (kip_make_id,;)
 #undef kip_make_id
 
 } // namespace internal

@@ -35,8 +35,6 @@ inline T &default_parameter(const internal::tclass<T> &)
    return value;
 }
 
-
-
 // pi
 template<class real>
 inline constexpr real pi = real(
@@ -89,11 +87,7 @@ namespace internal {
    inline void no_action() { }
 
    // tclass
-   template<class T> class tclass
-   {
-   public:
-      inline explicit tclass() { }
-   };
+   template<class T> class tclass { };
 }
 
 namespace op {
@@ -410,69 +404,34 @@ inline const T &max(const T &a, const T &b, const T &c)
 
 
 // -----------------------------------------------------------------------------
-// kip_expand*
-// kip_extra*
+// kip_expand
+// kip_extra
 // -----------------------------------------------------------------------------
 
-// ------------------------
-// kip_expand*
-// ------------------------
+// kip_expand
+#define kip_expand(macro,sym) \
+   \
+   macro(kipnot) sym \
+   \
+   macro(kipand) sym   macro(kipcut) sym \
+   macro(kipor ) sym   macro(kipxor) sym \
+   \
+   macro(ands) sym   macro(odd) sym   macro(even) sym \
+   macro(some) sym   macro(one) sym   macro(ors ) sym \
+   \
+   macro(bicylinder) sym  macro(biwasher  ) sym  macro(box       ) sym \
+   macro(circle    ) sym  macro(cone      ) sym  macro(cylinder  ) sym \
+   macro(ellipsoid ) sym  macro(half      ) sym  macro(paraboloid) sym \
+   macro(cube      ) sym  macro(nothing   ) sym  macro(everything) sym \
+   macro(pill      ) sym  macro(polygon   ) sym  macro(silo      ) sym \
+   macro(sphere    ) sym  macro(spheroid  ) sym  macro(tabular   ) sym \
+   macro(triangle  ) sym  macro(washer    ) sym  macro(xplane    ) sym \
+   macro(yplane    ) sym  macro(zplane    ) sym  macro(surf      ) sym
 
-// without semicolon
-#define kip_expand_plain(fun)\
+// kip_extra
+#define kip_extra(macro,sym) \
    \
-   fun( kipnot ) \
-   \
-   fun( kipand )   fun( kipcut ) \
-   fun( kipor  )   fun( kipxor ) \
-   \
-   fun( ands   )   fun( odd    )   fun( even ) \
-   fun( some   )   fun( one    )   fun( ors  ) \
-   \
-   fun( bicylinder )  fun( biwasher   )  fun( box        ) \
-   fun( circle     )  fun( cone       )  fun( cylinder   ) \
-   fun( ellipsoid  )  fun( half       )  fun( paraboloid ) \
-   fun( cube       )  fun( nothing    )  fun( everything ) \
-   fun( pill       )  fun( polygon    )  fun( silo       ) \
-   fun( sphere     )  fun( spheroid   )  fun( tabular    ) \
-   fun( triangle   )  fun( washer     )  fun( xplane     ) \
-   fun( yplane     )  fun( zplane     )  fun( surf       )
-
-// with semicolon
-#define kip_expand_semi(fun)\
-   \
-   fun( kipnot );\
-   \
-   fun( kipand );  fun( kipcut );\
-   fun( kipor  );  fun( kipxor );\
-   \
-   fun( ands   );  fun( odd    );  fun( even );\
-   fun( some   );  fun( one    );  fun( ors  );\
-   \
-   fun( bicylinder );  fun( biwasher   );  fun( box        );\
-   fun( circle     );  fun( cone       );  fun( cylinder   );\
-   fun( ellipsoid  );  fun( half       );  fun( paraboloid );\
-   fun( cube       );  fun( nothing    );  fun( everything );\
-   fun( pill       );  fun( polygon    );  fun( silo       );\
-   fun( sphere     );  fun( spheroid   );  fun( tabular    );\
-   fun( triangle   );  fun( washer     );  fun( xplane     );\
-   fun( yplane     );  fun( zplane     );  fun( surf       );
-
-
-
-// ------------------------
-// kip_extra*
-// ------------------------
-
-// without semicolon
-#define kip_extra_plain(fun)\
-   \
-   fun( tri )
-
-// with semicolon
-#define kip_extra_semi(fun)\
-   \
-   fun( tri );
+   macro(tri) sym
 
 
 
@@ -484,14 +443,14 @@ inline const T &max(const T &a, const T &b, const T &c)
    class counter {
    public:
       #define kip_construct_counter(type) static long int type
-      kip_expand_semi(kip_construct_counter)
-      kip_extra_semi (kip_construct_counter)
+      kip_expand(kip_construct_counter,;)
+      kip_extra (kip_construct_counter,;)
       #undef  kip_construct_counter
    };
 
    #define kip_construct_counter(type) long int counter::type = 0
-   kip_expand_semi(kip_construct_counter)
-   kip_extra_semi (kip_construct_counter)
+   kip_expand(kip_construct_counter,;)
+   kip_extra (kip_construct_counter,;)
    #undef  kip_construct_counter
 
    #define kip_counter_ctor(type) counter::type++
@@ -529,7 +488,8 @@ inline int threads = 0; // 0 = default (means to ask the system)
       omp_set_num_threads(nthreads);
    }
 
-   inline int this_thread() {
+   inline int this_thread()
+   {
       return omp_get_thread_num();
    }
 #else
