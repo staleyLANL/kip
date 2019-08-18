@@ -270,38 +270,6 @@ inline void seg_minmax(
 
 
 // -----------------------------------------------------------------------------
-// argsub
-// -----------------------------------------------------------------------------
-
-// <0> - primitive
-// <1> - unary
-// <2> - binary
-// <3> - nary
-
-/*
-// Later split; should not be generic
-template<unsigned code, class real, class base, class ORIGINAL>
-inline void argsub(const engine<real> &engine, vars<real,base> &vars, SHAPE &s)
-{
-   (void)engine;
-   (void)vars;
-   (void)s;
-
-   minend<> sub;
-   if (seg_minmax(engine,vars,s, sub.imin,sub.iend,sub.jmin,sub.jend) &&
-      !s.SHAPE::dry(vars.behind));
-      continue;
-
-   s.mend.imin = op::round<unsigned>(vars.hratsub * sub.imin);
-   s.mend.iend = op::round<unsigned>(vars.hratsub * sub.iend);
-   s.mend.jmin = op::round<unsigned>(vars.vratsub * sub.jmin);
-   s.mend.jend = op::round<unsigned>(vars.vratsub * sub.jend);
-}
-*/
-
-
-
-// -----------------------------------------------------------------------------
 // test_diag
 // test_quad
 // test_3060
@@ -414,6 +382,8 @@ inline void merge_bins(
    vars<real,base> &vars, const int nthreads,
    const array<3,std::vector<minimum_and_shape<real,base>>> &per_zone
 ) {
+   (void)nbin;  (void)hzone;  (void)vars;
+   (void)nthreads;  (void)per_zone;
    #ifdef _OPENMP
       #pragma omp parallel for
       for (int b = 0;  b < nbin;  ++b) {
@@ -427,9 +397,6 @@ inline void merge_bins(
                per_zone(hseg, vseg, t-1).end  ()
             );
       }
-   #else
-      (void)nbin;  (void)hzone;  (void)vars;
-      (void)nthreads;  (void)per_zone;
    #endif
 }
 
@@ -732,15 +699,12 @@ void usetup(
 
 
 // -----------------------------------------------------------------------------
-// utrace_do
+// utrace_helper
 // Helper for utrace()
 // -----------------------------------------------------------------------------
 
-template<
-   template<class,class> class SHAPE,
-   class real, class tag, class color, class pix
->
-class utrace_do {
+template<class real, class tag, class color, class pix>
+class utrace_helper {
 public:
 
    // ------------------------
@@ -770,20 +734,18 @@ public:
          const size_t binsize = vars.uniform[zone].size();
          if (binsize == 0 && !image.border.bin) continue;
 
-         /*
-         vars.hrat = real(image.hpixel)/real(engine.hzone);
-         vars.vrat = real(image.vpixel)/real(engine.vzone);
-         */
-         unsigned
-            imin = op::round<unsigned>(vars.hrat*real (zone % engine.hzone)),
-            iend = op::round<unsigned>(vars.hrat*real((zone % engine.hzone)+1)),
-            jmin = op::round<unsigned>(vars.vrat*real (zone / engine.hzone)),
-            jend = op::round<unsigned>(vars.vrat*real((zone / engine.hzone)+1));
+         // vars.hrat = real(image.hpixel)/real(engine.hzone)
+         // vars.vrat = real(image.vpixel)/real(engine.vzone)
+         const unsigned
+            imin = op::round<unsigned>(vars.hrat*real (zone%engine.hzone)),
+            iend = op::round<unsigned>(vars.hrat*real((zone%engine.hzone)+1)),
+            jmin = op::round<unsigned>(vars.vrat*real (zone/engine.hzone)),
+            jend = op::round<unsigned>(vars.vrat*real((zone/engine.hzone)+1));
 
          if (binsize == 0)
             bin_border(image,imin,iend,jmin,jend,color::border(0,max_binsize));
          else {
-            trace_bin<SHAPE>(
+            trace_bin(
                engine, view, image, vars, light, pixel,
                imin,iend, jmin,jend, zone, max_binsize,
                vars.uniform[zone], binsize  // latter = former.size()
@@ -802,7 +764,6 @@ public:
 
 template<class real, class tag, class color, class pix>
 void utrace(
-   const model <real,tag  > &model,
    const view  <real      > &view,
    const light <real      > &light,
    const engine<real      > &engine,
@@ -810,23 +771,8 @@ void utrace(
          image <real,color> &image,
    array<2,pix> &pixel
 ) {
-   (void)model;
    const size_t nzone = engine.hzone*engine.vzone;
-
-   /*
-   const size_t ntotal = model.size();
-   #define kip_single_shape(shape)\
-      if (ntotal == model.shape.size()) {\
-         utrace_do<shape,real,tag,color,pix>()\
-            (int(nzone), view, light, engine, vars, image, pixel); \
-         return;\
-      }
-   kip_expand(kip_single_shape,)
-   #undef kip_single_shape
-   */
-
-   // general model
-   utrace_do<shape,real,tag,color,pix>()
+   utrace_helper<real,tag,color,pix>()
       (int(nzone), view, light, engine, vars, image, pixel);
 }
 

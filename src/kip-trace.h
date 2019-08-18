@@ -12,8 +12,6 @@ inline void initialize_pixel(
 ) {
 }
 
-
-
 // initialize_pixel: array<2,pix>
 template<class pix>
 inline void initialize_pixel(
@@ -32,9 +30,7 @@ inline void initialize_pixel(
 
 
 // -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// trace: helpers
-// -----------------------------------------------------------------------------
+// helpers
 // -----------------------------------------------------------------------------
 
 namespace internal {
@@ -52,10 +48,7 @@ inline real angle_tweak(const real angle)
 
 
 
-// -----------------------------------------------------------------------------
 // trace_vars
-// -----------------------------------------------------------------------------
-
 template<class base, class real, class color>
 inline void trace_vars(
          model <real,base > &model,   // input
@@ -123,10 +116,7 @@ inline void trace_vars(
 
 
 
-// -----------------------------------------------------------------------------
 // trace_vipt
-// -----------------------------------------------------------------------------
-
 template<class real, class base, class color>
 inline void trace_vipt(
    const view  <real      > &view,    // input
@@ -196,10 +186,7 @@ inline void trace_vipt(
 
 
 
-// -----------------------------------------------------------------------------
 // trace_bitmap
-// -----------------------------------------------------------------------------
-
 template<class real, class color>
 inline void trace_bitmap(
    image<real,color> &image  // input/output
@@ -215,10 +202,7 @@ inline void trace_bitmap(
 
 
 
-// -----------------------------------------------------------------------------
 // trace_pixel
-// -----------------------------------------------------------------------------
-
 template<class real, class color, class pix>
 inline void trace_pixel(
    image<real,color> &image,   // input/output
@@ -235,11 +219,6 @@ inline void trace_pixel(
 }
 
 
-
-// -----------------------------------------------------------------------------
-// object_border_begin
-// object_border_end
-// -----------------------------------------------------------------------------
 
 // object_border_shape, for object_border_begin
 template<class SHAPEVEC>
@@ -347,7 +326,7 @@ inline void trace_uniform(
 
    // preprocess, trace
    usetup(model,       light, engine, vars, image.border.object);
-   utrace(model, view, light, engine, vars, image, pixel);
+   utrace(       view, light, engine, vars, image, pixel);
 }
 
 
@@ -426,14 +405,6 @@ inline void trace_block(
       btrace(model, view, light, engine, image, vars, pixel);
    #endif
 }
-
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// trace
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
 
 
@@ -544,17 +515,14 @@ inline bool trace(
 template<class real, class base, class color>
 inline bool trace(scene<real,base,color> &s)
 {
-   return trace(
-      s, s, s, s, s  // model, view, light, engine, image
-   );
+   // model, view, light, engine, image
+   return trace(s, s, s, s, s);
 }
 
 // trace(scene,array)
 template<class real, class base, class color, class pix>
 inline bool trace(scene<real,base,color> &s, array<2,pix> &pixel)
 {
-   return trace(
-      s, s, s, s, s,  // model, view, light, engine, image
-      pixel
-   );
+   // model, view, light, engine, image, pixel
+   return trace(s, s, s, s, s, pixel);
 }

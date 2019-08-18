@@ -47,7 +47,6 @@ namespace internal {
    }
 }
 
-
 // comma ,
 template<class ISTREAM>
 inline bool read_comma(ISTREAM &s)
@@ -62,23 +61,7 @@ inline bool read_comma_or(ISTREAM &s)
 {
    return internal::read_specific_character
       (s, "comma ',' or semicolon ';' or right parenthesis ')'", ',', ';');
-
-   /*
-   return internal::read_specific_character
-      (s, "comma ',' or right parenthesis ')'", ',');
-   */
 }
-
-
-
-/*
-// semicolon ;
-template<class ISTREAM>
-inline bool read_semi(ISTREAM &s)
-{
-   return internal::read_specific_character(s, "semicolon ';'", ';');
-}
-*/
 
 // semicolon ;
 // BUT print that right parenthesis could have been there
@@ -88,8 +71,6 @@ inline bool read_semi_or(ISTREAM &s)
    return internal::read_specific_character
       (s, "semicolon ';' or right parenthesis ')'", ';');
 }
-
-
 
 // left parenthesis (
 template<class ISTREAM>
@@ -374,8 +355,6 @@ inline std::istream &operator>>(std::istream &s, crayola &obj)
    return s;
 }
 
-
-
 // kip::ostream << crayola
 template<class>
 kip::ostream &crayola_write(kip::ostream &k, const crayola &obj)
@@ -432,8 +411,6 @@ inline std::istream &operator>>(std::istream &s, RGB<T> &obj)
    return s;
 }
 
-
-
 // kip::ostream << RGB
 template<class T>
 inline kip::ostream &operator<<(kip::ostream &k, const RGB<T> &obj)
@@ -477,8 +454,6 @@ inline std::istream &operator>>(std::istream &s, RGBA<T> &obj)
    k >> obj;
    return s;
 }
-
-
 
 // kip::ostream << RGBA
 template<class T>
@@ -525,8 +500,6 @@ inline std::istream &operator>>(std::istream &s, marble<T,real> &obj)
    return s;
 }
 
-
-
 // kip::ostream << marble
 template<class T, class real>
 kip::ostream &operator<<(kip::ostream &k, const marble<T,real> &obj)
@@ -568,7 +541,6 @@ bool read_value(
    const std::string &description = "point"
 ) {
    // x, y, z
-
    s.bail = false;
    if (!(
       read_value(s,value.x) && read_comma(s) &&
@@ -604,8 +576,6 @@ inline std::istream &operator>>(std::istream &s, point<T> &obj)
    k >> obj;
    return s;
 }
-
-
 
 // kip::ostream << point
 template<class T>

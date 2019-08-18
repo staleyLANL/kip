@@ -27,8 +27,6 @@ public:
    #undef kip_make_id
 };
 
-
-
 // id for shape (base class)
 template<class unused>
 const shape_id_t id_t<unused>::shape = get_shape_id<kip::shape>::result;

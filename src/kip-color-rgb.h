@@ -25,8 +25,6 @@ public:
    using result = B;
 };
 
-
-
 // is_floating: default
 template<class T> class is_floating
    { public: static const bool result = false; };
@@ -160,19 +158,8 @@ public:
       const value_t &_r, const value_t &_g, const value_t &_b
    ) : r(_r), g(_g), b(_b) { }
 
-///   /*
    // conversion from crayola
    inline RGB(const crayola &from);
-/*
-   {
-      const RGB value = crayola::color_table()[from.id()].first;
-      r = value.r;
-      g = value.g;
-      b = value.b;
-   }
-*/
-///   */
-
 
    // operator()(r,g,b), for convenience
    inline RGB &operator()(
@@ -243,21 +230,8 @@ public:
       r(from.r), g(from.g), b(from.b), a(opaque<rgb_t>())
    { }
 
-///   /*
    // conversion from crayola
    inline RGBA(const crayola &from);
-/*
-   {
-      const RGB<rgb_t> value(from);/// = crayola::color_table()[from.id()].first;
-      r = value.r;
-      g = value.g;
-      b = value.b;
-      a = opaque<rgb_t>();
-   }
-*/
-///   */
-
-
 
    // operator()(r,g,b[,a]), for convenience
    inline RGBA &operator()(
@@ -283,13 +257,9 @@ public:
       return *this;
    }
 
-
-   /*
    // alpha meanings
-   static const value_t transparent;
-   static const value_t opaque;
-   */
-
+   // static const value_t transparent;
+   // static const value_t opaque;
 
    // background
    static inline RGBA background()
@@ -329,14 +299,6 @@ public:
 
 // description
 template<class rgb_t> const char *const RGBA<rgb_t>::description = "RGBA";
-
-/*
-// transparent, opaque
-template<class rgb_t>
-const rgb_t RGBA<rgb_t>::transparent = internal::mincolor<rgb_t>();  // e.g. 0
-template<class rgb_t>
-const rgb_t RGBA<rgb_t>::opaque      = internal::maxcolor<rgb_t>();  // e.g. 255
-*/
 
 // for users
 using rgba = RGBA<>;
@@ -401,20 +363,6 @@ inline RGBA<A> &operator+=(RGBA<A> &lhs, const RGBA<B> &rhs)
    return lhs;
 }
 
-
-/*
-// RGBA<A> * B
-template<class A, class B>
-inline RGBA<
-   typename promote<A,B,float>::result  // at least float
-> operator*(const RGBA<A> &lhs, const B &rhs)
-{
-   using T = typename promote<A,B,float>::result;
-   return RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
-}
-*/
-
-
 // op::div(RGBA,den)
 namespace op {
    template<class A, class B>
@@ -428,46 +376,3 @@ namespace op {
       );
    }
 }
-
-/*
-// RGBA<A> += RGBA<B>
-template<class A, class B>
-inline RGBA<
-   // or we shouldn't be doing this RGBA<A> += RGBA<B>...
-   typename if_same<
-      A,
-      typename promote<A,B,float>::result
-   >::result
-> &operator+=(RGBA<A> &lhs, const RGBA<B> &rhs)
-{
-   lhs.r += A(rhs.r);
-   lhs.g += A(rhs.g);
-   lhs.b += A(rhs.b);
-   lhs.a += A(rhs.a);
-   return lhs;
-}
-
-// RGBA<A> * B
-template<class A, class B>
-inline RGBA<
-   typename promote<A,B,float>::result  // at least float
-> operator*(const RGBA<A> &lhs, const B &rhs)
-{
-   using T = typename promote<A,B,float>::result;
-   return RGBA<T>(lhs.r*rhs, lhs.g*rhs, lhs.b*rhs, lhs.a*rhs);
-}
-
-// op::round(RGBA)
-namespace op {
-   template<class INTEGER, class rgb_t>
-   inline RGBA<INTEGER> round(const RGBA<rgb_t> &val)
-   {
-      return RGBA<INTEGER>(
-         round<INTEGER>(val.r),
-         round<INTEGER>(val.g),
-         round<INTEGER>(val.b),
-         round<INTEGER>(val.a)
-      );
-   }
-}
-*/

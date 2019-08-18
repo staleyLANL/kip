@@ -93,10 +93,6 @@ inline real get_eps()
       : std::pow(real(10), real(-0.4)*std::numeric_limits<real>::digits10);
 }
 
-// ttclass
-template<template<class,class> class T>
-class ttclass { };
-
 
 
 // -----------------------------------------------------------------------------
@@ -131,7 +127,6 @@ inline bool inbound(
    const shape<real,tag> &obj,
    const size_t i, const size_t j
 ) {
-
    // 2017-04-05
    // the four min and end values appear to be largely uninitialized
    /*
@@ -144,21 +139,9 @@ inline bool inbound(
    std::cout << "kip:    jend == " << obj.mend.jend << std::endl;
    */
 
-   if (
-     (obj.mend.imin <= i && i < obj.mend.iend &&
-      obj.mend.jmin <= j && j < obj.mend.jend)
-   ) {
-      return true;
-   } else {
-      return false;
-   }
-
-   /*
-short version
    return
       obj.mend.imin <= i && i < obj.mend.iend &&
       obj.mend.jmin <= j && j < obj.mend.jend;
-   */
 }
 
 
@@ -169,17 +152,6 @@ inline bool inbound(
    const shape<real,tag> &obj,
    const subinfo &insub
 ) {
-   // 2017-04-05
-   /*
-   std::cout << "kip: inbound #2" << std::endl;
-   std::cout << "kip:    imin == " << insub.mend.imin << std::endl;
-   std::cout << "kip:    i    == " << insub.i << std::endl;
-   std::cout << "kip:    iend == " << insub.mend.iend << std::endl;
-   std::cout << "kip:    jmin == " << insub.mend.jmin << std::endl;
-   std::cout << "kip:    j    == " << insub.j << std::endl;
-   std::cout << "kip:    jend == " << insub.mend.jend << std::endl;
-   */
-
    (void)obj;  // ccc Need to make this have valid values for non-root shapes!
 
    // ccc remove later...
@@ -205,12 +177,8 @@ inline bool inbound(
 //    get_first
 // -----------------------------------------------------------------------------
 
-template<
-   template<class,class> class SHAPE,
-   class BIN, class real, class tag
->
+template<class BIN, class real, class tag>
 inline bool get_first(
-   const ttclass<SHAPE> &,
    const BIN &bin,
    const unsigned s,
    const size_t i, const size_t j,
@@ -218,7 +186,7 @@ inline bool get_first(
    const eyetardiff<real> &etd,
    const real qmin, inq<real,tag> &q
 ) {
-   const SHAPE<real,tag> &obj = *(const SHAPE<real,tag> *)bin[s].shape;
+   const shape<real,tag> &obj = *bin[s].shape;
    if (!inbound(obj,i,j)) return false;
 
    #ifdef KIP_FUZZY
@@ -333,10 +301,7 @@ inline bool op_all(
 
 // kip_fill_plain
 #define kip_fill_plain(name)\
-   template<\
-      template<class,class> class SHAPE,\
-      class real, class color, class base, class pix\
-   >\
+   template<class real, class color, class base, class pix>\
    class name {\
    public:\
    inline void operator()(\
@@ -361,10 +326,7 @@ inline bool op_all(
 
 // kip_fill_anti
 #define kip_fill_anti(name)\
-   template<\
-      template<class,class> class SHAPE,\
-      class real, class color, class base, class pix\
-   >\
+   template<class real, class color, class base, class pix>\
    class name {\
    public:\
    inline bool operator()(\
@@ -389,8 +351,7 @@ inline bool op_all(
 #define kip_fill_end } };
 
 // kip_param
-#define kip_param(s,qmin,q) \
-   ttclass<SHAPE>(), bin, s, i, j, zone, etd, qmin, q
+#define kip_param(s,qmin,q) bin, s, i, j, zone, etd, qmin, q
 
 
 
@@ -657,12 +618,10 @@ kip_fill_anti(any_anti) {
 // Each loops over individual shapes, for a specific pixel.
 
 template<
-   template<class,class> class SHAPE,
    class real, class color, class base, class pix,
    class ACTION
 >
 inline void fill_loop_plain(
-   const ttclass<SHAPE> &,
    const engine<real> &engine, image<real,color> &image,
    const vars<real,base> &vars, const light<real> &light,
 
@@ -702,13 +661,10 @@ inline void fill_loop_plain(
 
 // fill_loop_lean
 template<
-   template<class,class> class SHAPE,
    class real, class color, class base, class pix,
    class ACTION
 >
 inline void fill_loop_lean(
-   const ttclass<SHAPE> &,
-
    const view  <real      > &view,
    const engine<real      > &engine,
          image <real,color> &image,
@@ -765,12 +721,9 @@ inline void fill_loop_lean(
 
 // qqq Figure out good antialiasing treatment of per-pixel information
 template<
-  template<class,class> class SHAPE,
   class real, class color, class base, class pix, class size_t, class ACTION
 >
 inline void fill_loop_anti(
-   const ttclass<SHAPE> &,
-
    const engine<real      > &engine,
          image <real,color> &image,
    const vars  <real,base > &vars,
@@ -844,10 +797,7 @@ inline void bin_border(
 
 
 // trace_bin
-template<
-   template<class,class> class SHAPE,
-   class real, class color, class base, class pix
->
+template<class real, class color, class base, class pix>
 void trace_bin(
    const engine<real      > &engine,
    const view  <real      > &view,
@@ -870,25 +820,25 @@ void trace_bin(
 
    // macros
    #define kip_action_plain(functor)\
-   fill_loop_plain(ttclass<SHAPE>(),\
+   fill_loop_plain(\
       engine,image,vars,light,\
       imin,iend, jmin,jend, zone,maximum,\
       bin, endsorted,binsize, qa,qb, pixel,\
-      functor<SHAPE,real,color,base,pix>())
+      functor<real,color,base,pix>())
 
    #define kip_action_lean(functor)\
-   fill_loop_lean(ttclass<SHAPE>(),\
+   fill_loop_lean(\
       view,engine,image,vars,light,\
       imin,iend, jmin,jend, zone,maximum,\
       bin, endsorted,binsize, qa,qb, pixel,\
-      functor<SHAPE,real,color,base,pix>())
+      functor<real,color,base,pix>())
 
    #define kip_action_anti(functor)\
-   fill_loop_anti (ttclass<SHAPE>(),\
+   fill_loop_anti (\
       engine,image,vars,light,\
       hcent,imin,iend, vcent,jmin,jend, zone,maximum,\
       bin, endsorted,binsize, qa,qb, pixel,\
-      functor<SHAPE,real,color,base,pix>())
+      functor<real,color,base,pix>())
 
    // binsize-dependent [partial-]sorting actions
    using diff_t =
@@ -936,22 +886,6 @@ void trace_bin(
 
    } else {
       // Antialiasing case
-
-      /*
-      if (binsize == 1) {
-         for (size_t j = jmin;  j < jend;  ++j)
-         for (size_t i = imin;  i < iend;  ++i)
-            image(i,j) = rgb(255,0,0);
-      } else if (binsize == 2) {
-         for (size_t j = jmin;  j < jend;  ++j)
-         for (size_t i = imin;  i < iend;  ++i)
-            image(i,j) = rgb(0,255,0);
-      } else {
-         for (size_t j = jmin;  j < jend;  ++j)
-         for (size_t i = imin;  i < iend;  ++i)
-            image(i,j) = rgb(0,0,255);
-      }
-      */
 
       // center of pixel (imin,jmin)
       const real hcent = real(imin)*vars.hfull - vars.hmax + vars.hhalf;

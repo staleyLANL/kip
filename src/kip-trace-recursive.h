@@ -232,7 +232,7 @@ inline void to_abstract_then_fill(
    const size_t zone = 0;  /// zone == 0?
    const size_t max_binsize = 0;  // for border drawing; not precomputed here
 
-   trace_bin<shape>(
+   trace_bin(
       engine, view, image, vars, light, pixel,
       imin,iend, jmin,jend, zone, max_binsize,
       bin,binsize

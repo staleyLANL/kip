@@ -6,110 +6,52 @@
 
 
 // -----------------------------------------------------------------------------
-// Defaults
-// -----------------------------------------------------------------------------
-
-namespace internal {
-
-// method
-inline method_t default_method() { return method_t::uniform; }
-
-   // For method==uniform: hzone, hsub, vzone, vsub
-   // Comment, 2017-04-08:
-   // hzone and vzone are the number of bins, not their size in pixels. They
-   // affect the object binning/hashing. hsub and vsub are the number of sub-
-   // zones per zone. They determine how "tight" the computed bounds around
-   // individual objects will be. Example: say we have an image 1000 pixels
-   // wide. You might use 40 bins, in which case each bin is 25 pixels wide.
-   // hsub could then be anywhere from 1..25. If 0, the "fix" stuff changes
-   // it to the largest value, 25. Otherwise, clip to the allowable range.
-   inline unsigned default_hzone() { return 40; }
-   inline unsigned default_hsub () { return  0; }
-   inline unsigned default_vzone() { return 40; }
-   inline unsigned default_vsub () { return  0; }
-
-   // For method==recursive: hdivision, vdivision, min_area
-   inline unsigned default_hdivision() { return 2; }
-   inline unsigned default_vdivision() { return 2; }
-   inline unsigned default_min_area () { return 800; }
-
-   // For method==block: xzone, yzone, zzone
-   inline unsigned default_xzone() { return 26; }
-   inline unsigned default_yzone() { return 26; }
-   inline unsigned default_zzone() { return 26; }
-
-// For method==uniform and method==recursive: sort_frac, sort_min
-template<class real>
-inline real default_sort_frac() { return real(0.02); }
-inline unsigned default_sort_min() { return 64; }
-
-// For all methods: "fudge factor," and "low memory" flag
-template<class real>
-inline real default_fudge() { return real(0.99999); }
-
-// Lean[er] memory usage?
-inline bool default_lean() { return true; }
-
-} // namespace internal
-
-
-
-// -----------------------------------------------------------------------------
 // engine
 // -----------------------------------------------------------------------------
 
-template<class real>  // template argument defaulted elsewhere
+template<class real>  // template argument was defaulted elsewhere
 class engine {
 public:
+   static constexpr real default_fudge = real(0.99999);
 
    // ------------------------
    // Settings
    // ------------------------
 
    // method
-   method_t method;
+   method_t method = method_t::uniform;
 
-      // For method==uniform
-      unsigned hzone, hsub;
-      unsigned vzone, vsub;
+   // For method = uniform
+   // hzone and vzone are the number of bins, not their size in pixels.
+   // They affect the object binning/hashing.
+   // hsub and vsub are the number of sub-zones per zone. They determine how
+   // "tight" the computed bounds around individual objects will be. Example:
+   // say we have an image 1000 pixels wide. You might use 40 bins, in which
+   // case each bin is 25 pixels wide. hsub could then be anywhere from 1..25.
+   // If 0, the "fix" stuff changes it to the largest value, 25. Otherwise,
+   // clip to the allowable range.
+   unsigned hzone = 40;
+   unsigned vzone = 40;
+   unsigned hsub  = 0;
+   unsigned vsub  = 0;
 
-      // For method==recursive
-      unsigned hdivision;
-      unsigned vdivision, min_area;
+   // For method = recursive
+   unsigned hdivision = 2;
+   unsigned vdivision = 2;
+   unsigned min_area  = 800;
 
-      // For method==block
-      unsigned xzone;
-      unsigned yzone;
-      unsigned zzone;
+   // For method = block
+   unsigned xzone = 26;
+   unsigned yzone = 26;
+   unsigned zzone = 26;
 
-   // For method==uniform and method==recursive
-   real     sort_frac;
-   unsigned sort_min;
+   // For method = uniform and method = recursive
+   real     sort_frac = real(0.02);
+   unsigned sort_min  = 64;
 
-   // For all methods
-   real fudge;
-   bool lean;
-
-   // ------------------------
-   // Constructors
-   // ------------------------
-
-   // engine()
-   inline explicit engine() :
-      method   (internal::default_method()),
-      hzone    (internal::default_hzone()), hsub(internal::default_hsub()),
-      vzone    (internal::default_vzone()), vsub(internal::default_vsub()),
-      hdivision(internal::default_hdivision()),
-      vdivision(internal::default_vdivision()),
-      min_area (internal::default_min_area()),
-      xzone    (internal::default_xzone()),
-      yzone    (internal::default_yzone()),
-      zzone    (internal::default_zzone()),
-      sort_frac(internal::default_sort_frac<real>()),
-      sort_min (internal::default_sort_min()),
-      fudge    (internal::default_fudge<real>()),
-      lean     (internal::default_lean())
-   { }
+   // For all methods: fudge factor, leaner memory use flag
+   real fudge = default_fudge;
+   bool lean  = true;
 
    // ------------------------
    // Functions
@@ -184,10 +126,6 @@ template<class real>
 inline void fix_engine(
    engine<real> &obj, const size_t hpixel, const size_t vpixel
 ) {
-   // method
-   if (obj.method != method_t::uniform && obj.method != method_t::recursive && obj.method != method_t::block)
-      obj.method = internal::default_method();
-
    // uniform fix
    if (obj.method == method_t::uniform) {
       // hzone, vzone
@@ -238,7 +176,7 @@ inline void fix_engine(
    // in fact any fudge < 1 is allowable. But further down than "1-epsilon" has
    // no use, and would slow the code.
    if (!(0 <= obj.fudge && obj.fudge < 1))  // if NOT in [0,1)...
-      obj.fudge = internal::default_fudge<real>();
+      obj.fudge = engine<real>::default_fudge;
 }
 
 } // namespace internal

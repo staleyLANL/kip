@@ -251,13 +251,6 @@ public:
       return *this;
    }
 
-   /*
-   // void *
-   inline operator void *() const { return stream; }
-
-   // bool
-   inline operator bool  () const { return 0 != stream; }
-   */
    inline operator bool() const { return bool(stream); }
    inline bool operator !() const { return !stream; }
 

@@ -18,67 +18,37 @@ class border_t {
 public:
 
    // defaults
-   static inline bool     default_bin   () { return false; }
-   static inline bool     default_object() { return false; }
-   static inline unsigned default_small () { return 4; }
-   static inline unsigned default_large () { return 2*default_small(); }
+   static constexpr bool default_object = false;
+   static constexpr unsigned default_small = 4;
+   static constexpr unsigned default_large = 2*default_small;
 
    // data
-   bool bin;
+   bool bin = false;
    bool object;
    unsigned small;
    unsigned large;
 
    // border_t()
-   inline explicit border_t()
- : bin   (default_bin   ()),
-   object(default_object()),
-   small (default_small ()),
-   large (default_large ())
+   inline explicit border_t() :
+      object(default_object),
+      small (default_small),
+      large (default_large)
    { }
 
    // operator()
    inline border_t operator()(
       const bool     _bin,
-      const bool     _object = default_object(),
-      const unsigned _small  = default_small (),
-      const unsigned _large  = default_large ()
+      const bool     _object = default_object,
+      const unsigned _small  = default_small,
+      const unsigned _large  = default_large
    ) {
       bin    = _bin;
       object = _object;
-      small  = _small;/// ? _small : default_small();
+      small  = _small;/// ? _small : default_small;
       large  = _large;/// ? _large : 2*_small;
       return *this;
    }
 };
-
-} // namespace internal
-
-
-
-// -----------------------------------------------------------------------------
-// Defaults
-// -----------------------------------------------------------------------------
-
-namespace internal {
-
-// hpixel, vpixel
-inline size_t default_hpixel() { return 800; }
-inline size_t default_vpixel() { return 800; }
-
-// background
-template<class color>
-inline color default_background() { return color::background(); }
-
-// aspect
-template<class real>
-inline real default_aspect() { return real(1); }
-
-// anti
-inline unsigned default_anti() { return 1; }
-
-// border
-inline border_t default_border() { return border_t(); }
 
 } // namespace internal
 
@@ -102,6 +72,7 @@ class image {
    inline image &operator=(const image &) { return *this; }
 
 public:
+   static constexpr unsigned default_anti = 1;
 
    // --------------------------------
    // Data, constructor
@@ -113,14 +84,12 @@ public:
    // other data
    const size_t &hpixel;   // references bitmap.isize()
    const size_t &vpixel;   // references bitmap.jsize()
-   color background;       // background color
-   real  aspect;           // pixel aspect ratio
+   color background = color::background();       // background color
+   real  aspect = real(1);           // pixel aspect ratio
    mutable unsigned anti;  // antialiasing indicator
    mutable internal::border_t border;  // bin/object border information
 
-
-
-   // prior   zzz Eventually make private, so users can't disturb
+   // prior zzz Eventually make private, so users can't disturb
    class _prior {
    public:
       // targets
@@ -141,20 +110,13 @@ public:
       { }
    } prior;
 
-
-
    // image()
    inline explicit image() :
-      bitmap     (internal::default_hpixel(), internal::default_vpixel()),
-      hpixel     (bitmap.isize()),
-      vpixel     (bitmap.jsize()),
-      background (internal::default_background<color>()),
-      aspect     (internal::default_aspect<real>()),
-      anti       (internal::default_anti()),
-      border     (internal::default_border())
+      bitmap(800,800),
+      hpixel(bitmap.isize()),
+      vpixel(bitmap.jsize()),
+      anti  (default_anti)
    { }
-
-
 
    // --------------------------------
    // Miscellaneous
@@ -200,7 +162,7 @@ image<real,color> &image<real,color>::fix()
    if (anti < 1) {
       std::ostringstream oss;
       oss << "Image has anti=" << anti << "; setting to default=";
-      oss << (anti = internal::default_anti());
+      oss << (anti = default_anti);
       (void)warning(oss);
    }
 

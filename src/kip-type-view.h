@@ -3,34 +3,6 @@
 
 // This file provides the "view" class.
 
-// -----------------------------------------------------------------------------
-// Defaults
-// -----------------------------------------------------------------------------
-
-namespace internal {
-
-// d
-template<class real>
-inline real default_d() { return real(8); }
-
-// target
-template<class real>
-inline point<real> default_target()
-{
-   return point<real>(real(0), real(0), real(0));
-}
-
-// theta, phi, roll
-template<class real> inline real default_theta() { return real(60); }
-template<class real> inline real default_phi  () { return real(30); }
-template<class real> inline real default_roll () { return real( 0); }
-
-// fov
-template<class real>
-inline real default_fov() { return real(16); }
-
-} // namespace internal
-
 
 
 // -----------------------------------------------------------------------------
@@ -40,40 +12,27 @@ inline real default_fov() { return real(16); }
 template<class real = default_real_t>
 class view {
 public:
-   point<real> target;  // point at which eyeball is looking
+   static constexpr real default_d = real(8);
+   static constexpr real default_fov = real(16);
 
-   mutable real d;    // eyeball's distance from target
-   mutable real fov;  // field of view
+   // point at which eyeball is looking
+   point<real> target = point<real>(0,0,0);
 
-   real theta;   // angle in xy plane, from +x axis
-   real phi;     // angle up(+) or down(-) from xy plane
-   real roll;    // right(+) or left(-) roll of eyeball
+   mutable real d   = default_d;   // eyeball's distance from target
+   mutable real fov = default_fov; // field of view
 
-   // prior   zzz Eventually make private, so users can't disturb
+   real theta = real(60); // angle in xy plane, from +x axis
+   real phi   = real(30); // angle up(+) or down(-) from xy plane
+   real roll  = real( 0); // right(+) or left(-) roll of eyeball
+
+   // prior zzz Eventually make private, so users can't disturb
    class _prior {
    public:
       /// mutable point<real> target;
       /// mutable real theta, phi, roll;
       mutable real d, fov;
-
-      // first
-      mutable bool first;
-
-      // c'tor
-      inline explicit _prior() : first(true) { }
+      mutable bool first = true;
    } prior;
-
-
-
-   // view()
-   inline explicit view() :
-   target(internal::default_target<real>()),
-   d     (internal::default_d     <real>()),
-   fov   (internal::default_fov   <real>()),
-   theta (internal::default_theta <real>()),
-   phi   (internal::default_phi   <real>()),
-   roll  (internal::default_roll  <real>())
-   { }
 
    // fix
    inline const view &fix() const;
@@ -92,7 +51,7 @@ const view<real> &view<real>::fix() const
    if (d <= 0) {
       std::ostringstream oss;
       oss << "View has d=" << d << "; setting to default=";
-      oss << (d = internal::default_d<real>());
+      oss << (d = default_d);
       (void)warning(oss);
    }
 
@@ -100,10 +59,9 @@ const view<real> &view<real>::fix() const
    if (fov <= 0 || fov >= 180) {
       std::ostringstream oss;
       oss << "View has fov=" << fov << "; setting to default=";
-      oss << (fov = internal::default_fov<real>()) << " degrees";
+      oss << (fov = default_fov) << " degrees";
       (void)warning(oss);
    }
 
-   // done
    return *this;
 }

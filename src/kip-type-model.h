@@ -291,7 +291,6 @@ public:
    // constructor: loop(model)
    explicit loop(const model<real,base> &m);
 
-
    // operator()
    bool operator()() const;
 
@@ -491,9 +490,7 @@ inline typename model<real,base>::bbox_representation_t &
 model<real,base>::push_bbox(
    const kip::bbox<real> &b,
    const shape<real,base> &shape,
-
    const real scale,
-
    const base &tight_base,
    const base &partial_base,
    const base &loose_base
@@ -575,8 +572,6 @@ namespace internal {
       inline bool operator()(const SHAPE &s) const { return s.isbound; }
    };
 }
-
-
 
 // unbound
 namespace internal {
@@ -948,9 +943,9 @@ kip::ostream &operator<<(
    // write...
    internal::write_shape_start() = true;
 
-#define kip_write_shape(shape) internal::write_shape(k, obj.shape) &&
+   #define kip_write_shape(shape) internal::write_shape(k, obj.shape) &&
    kip_expand(kip_write_shape,)
-#undef  kip_write_shape
+   #undef kip_write_shape
 
    // done
    true;

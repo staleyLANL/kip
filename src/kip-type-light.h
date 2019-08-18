@@ -3,21 +3,6 @@
 
 // This file provides the "light" class.
 
-// -----------------------------------------------------------------------------
-// Defaults
-// -----------------------------------------------------------------------------
-
-namespace internal {
-
-// light[0]
-template<class real>
-inline point<real> default_light0()
-{
-   return point<real>(real(0), real(-10), real(5));
-}
-
-}
-
 
 
 // -----------------------------------------------------------------------------
@@ -28,32 +13,18 @@ template<class real = default_real_t>
 class light {
 
    // light source
-   point<real> primary;
+   point<real> primary = point<real>(0,-10,5);
 
 public:
-
-   // light()
-   inline explicit light() :
-      primary(internal::default_light0<real>())
-   { }
 
    // operator[]
    inline       point<real> &operator[](const size_t)       { return primary; }
    inline const point<real> &operator[](const size_t) const { return primary; }
 
    // fix
-   inline const light &fix() const;
+   inline const light &fix() const
+   {
+      // currently, nothing needs fixing
+      return *this;
+   }
 };
-
-
-
-// -----------------------------------------------------------------------------
-// fix
-// -----------------------------------------------------------------------------
-
-template<class real>
-inline const light<real> &light<real>::fix() const
-{
-   // currently, nothing needs fixing
-   return *this;
-}
