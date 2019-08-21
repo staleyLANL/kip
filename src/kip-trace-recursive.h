@@ -48,15 +48,11 @@ public:
 // rprepare
 // -----------------------------------------------------------------------------
 
-// zzz KIP_SEGMENTING_DIAG not used in uniform; make more consistent,
-// also compare with use of other KIP_SEGMENTING_ values.
 #ifdef KIP_SEGMENTING_DIAG
    #define if_segmenting_diag(arg) arg
 #else
    #define if_segmenting_diag(arg)
 #endif
-
-
 
 template<class real, class base, class FROM, class TO>
 inline void rprepare(

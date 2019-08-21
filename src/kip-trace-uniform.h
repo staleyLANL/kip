@@ -10,9 +10,6 @@
 //    If binary : uses binary
 //    If both   : uses binary for [hv]min, linear for [hv]max
 
-// diagonal (user-settable)
-inline bool diagonal = false;
-
 
 
 // -----------------------------------------------------------------------------
@@ -72,6 +69,11 @@ inline void segment_v(const engine<real> &engine, vars<real,base> &vars)
 
 
 // segment_various
+#if defined(KIP_SEGMENTING_DIAG) || \
+    defined(KIP_SEGMENTING_QUAD) || \
+    defined(KIP_SEGMENTING_3060) || \
+    defined(KIP_SEGMENTING_1575)
+
 template<class real, class base>
 inline void segment_various(const engine<real> &engine, vars<real,base> &vars)
 {
@@ -79,7 +81,9 @@ inline void segment_various(const engine<real> &engine, vars<real,base> &vars)
    const int nbin = int(engine.hzone * engine.vzone);
 
    // resize
-   vars.seg_diag.resize(4*nbin);
+   #ifdef KIP_SEGMENTING_DIAG
+      vars.seg_diag.resize(4*nbin);
+   #endif
    #ifdef KIP_SEGMENTING_QUAD
       vars.seg_quad.resize(8*nbin);
    #endif
@@ -107,13 +111,16 @@ inline void segment_various(const engine<real> &engine, vars<real,base> &vars)
                 vars.vmax,
          vmax = real(op::round<unsigned>(vars.vrat*real(vseg+1)))*vars.vfull -
                 vars.vmax;
+      int n;
 
-      // diag: compute diagonal (45-degree) segmenters
-      int n = 4*b;
-      vars.seg_diag[n++] = dry_sw(vars, hmin,vmin);
-      vars.seg_diag[n++] = dry_ne(vars, hmax,vmax);
-      vars.seg_diag[n++] = dry_se(vars, hmax,vmin);
-      vars.seg_diag[n++] = dry_nw(vars, hmin,vmax);
+      // diag: compute 45-degree segmenters
+      #ifdef KIP_SEGMENTING_DIAG
+         n = 4*b;
+         vars.seg_diag[n++] = dry_sw(vars, hmin,vmin);
+         vars.seg_diag[n++] = dry_ne(vars, hmax,vmax);
+         vars.seg_diag[n++] = dry_se(vars, hmax,vmin);
+         vars.seg_diag[n++] = dry_nw(vars, hmin,vmax);
+      #endif
 
       // quad: compute 22.5- and 67.5-degree segmenters
       #ifdef KIP_SEGMENTING_QUAD
@@ -155,6 +162,15 @@ inline void segment_various(const engine<real> &engine, vars<real,base> &vars)
       #endif
    }
 }
+
+#else
+
+template<class real, class base>
+inline void segment_various(const engine<real> &, vars<real,base> &)
+{
+}
+
+#endif
 
 
 
@@ -270,10 +286,7 @@ inline void seg_minmax(
 
 
 // -----------------------------------------------------------------------------
-// test_diag
-// test_quad
-// test_3060
-// test_1575
+// test_*
 // -----------------------------------------------------------------------------
 
 // test_diag
@@ -282,12 +295,19 @@ inline char test_diag(
    const vars<real,base> &vars, const SHAPE &p, const size_t val,
    minend &bin, const size_t hseg
 ) {
-   const size_t n = 4*val;
-
-   if (p.SHAPE::dry(vars.seg_diag[n  ])) return bin.iend = hseg,   'b';  // sw
-   if (p.SHAPE::dry(vars.seg_diag[n+3])) return                    'b';  // nw
-   if (p.SHAPE::dry(vars.seg_diag[n+2])) return bin.imin = hseg+1, 'c';  // se
-   if (p.SHAPE::dry(vars.seg_diag[n+1])) return                    'c';  // ne
+   #ifdef KIP_SEGMENTING_DIAG
+      const size_t n = 4*val;
+      if (p.SHAPE::dry(vars.seg_diag[n  ])) return bin.iend = hseg,   'b'; // sw
+      if (p.SHAPE::dry(vars.seg_diag[n+3])) return                    'b'; // nw
+      if (p.SHAPE::dry(vars.seg_diag[n+2])) return bin.imin = hseg+1, 'c'; // se
+      if (p.SHAPE::dry(vars.seg_diag[n+1])) return                    'c'; // ne
+   #else
+      (void)vars;
+      (void)p;
+      (void)val;
+      (void)bin;
+      (void)hseg;
+   #endif
 
    return '\0';
 }
@@ -300,7 +320,7 @@ inline char test_quad(
    const vars<real,base> &vars, const SHAPE &p, const size_t val
 ) {
    #ifdef KIP_SEGMENTING_QUAD
-      const unsigned a = 8*val;
+      const size_t a = 8*val;
       if (p.SHAPE::dry(vars.seg_quad[a  ]) ||  // sw
           p.SHAPE::dry(vars.seg_quad[a+2]) ||  // ne
           p.SHAPE::dry(vars.seg_quad[a+1]) ||  // sw
@@ -311,7 +331,9 @@ inline char test_quad(
           p.SHAPE::dry(vars.seg_quad[a+7]))    // nw
          return 'c';
    #else
-      (void)vars;  (void)p;  (void)val;
+      (void)vars;
+      (void)p;
+      (void)val;
    #endif
 
    return '\0';
@@ -325,8 +347,7 @@ inline char test_3060(
    const vars<real,base> &vars, const SHAPE &p, const size_t val
 ) {
    #ifdef KIP_SEGMENTING_3060
-      const unsigned b = 8*val;
-
+      const size_t b = 8*val;
       if (p.SHAPE::dry(vars.seg_3060[b  ]) ||
           p.SHAPE::dry(vars.seg_3060[b+2]) ||
           p.SHAPE::dry(vars.seg_3060[b+1]) ||
@@ -337,7 +358,9 @@ inline char test_3060(
           p.SHAPE::dry(vars.seg_3060[b+7]))
          return 'c';
    #else
-      (void)vars;  (void)p;  (void)val;
+      (void)vars;
+      (void)p;
+      (void)val;
    #endif
 
    return '\0';
@@ -351,8 +374,7 @@ inline char test_1575(
    const vars<real,base> &vars, const SHAPE &p, const size_t val
 ) {
    #ifdef KIP_SEGMENTING_1575
-      const unsigned c = 8*val;
-
+      const size_t c = 8*val;
       if (p.SHAPE::dry(vars.seg_1575[c  ]) ||
           p.SHAPE::dry(vars.seg_1575[c+2]) ||
           p.SHAPE::dry(vars.seg_1575[c+1]) ||
@@ -363,7 +385,9 @@ inline char test_1575(
           p.SHAPE::dry(vars.seg_1575[c+7]))
          return 'c';
    #else
-      (void)vars;  (void)p;  (void)val;
+      (void)vars;
+      (void)p;
+      (void)val;
    #endif
 
    return '\0';
@@ -382,8 +406,12 @@ inline void merge_bins(
    vars<real,base> &vars, const int nthreads,
    const array<3,std::vector<minimum_and_shape<real,base>>> &per_zone
 ) {
-   (void)nbin;  (void)hzone;  (void)vars;
-   (void)nthreads;  (void)per_zone;
+   (void)nbin;
+   (void)hzone;
+   (void)vars;
+   (void)nthreads;
+   (void)per_zone;
+
    #ifdef _OPENMP
       #pragma omp parallel for
       for (int b = 0;  b < nbin;  ++b) {
@@ -408,14 +436,11 @@ inline void uprepare(
    const light<real> &light, const engine<real> &engine,
    vars<real,base> &vars, const int nbin,
    SHAPEVEC &vec,  // std::vector of model.sphere, model.ands, etc.
-   const bool _diag
+   const bool diag
 ) {
    // number of this particular type of shape
    const int numobj = int(vec.size());  // int, for OpenMP
    if (numobj == 0) return;  // none of this type of shape
-
-   // kip::diagonal is a "global" user-settable flag
-   const bool diag = diagonal || _diag;
 
    // per_zone(hzone,vzone,nthreads-1) (-1 because thread 0 uses vars.uniform)
    static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;

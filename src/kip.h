@@ -4,12 +4,12 @@
 // Users should #include only this file.
 
 // Defines
-//#define KIP_BLOCK  // zzz Faster without; and block.h is broken anyway
+//#define KIP_BLOCK  // zzz Faster without, and block.h is broken anyway
+
 //#define KIP_COLOR_FLAT
 //#define KIP_COLOR_DIFFUSE
 
 //#define KIP_SEGMENTING_DIAG
-
 //#define KIP_SEGMENTING_QUAD
 //#define KIP_SEGMENTING_3060
 //#define KIP_SEGMENTING_1575
@@ -68,7 +68,6 @@ namespace kip {
 #include "kip-misc-array.h"
 #include "kip-misc-point.h"
 #include "kip-misc-rotate.h"
-#include "kip-misc-promote.h"
 
 #include "kip-color-rgb.h"
 #include "kip-color-crayola.h"
