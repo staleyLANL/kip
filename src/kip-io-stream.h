@@ -441,9 +441,9 @@ bool istream::cblock(
    const unsigned  save_line  = line;
    const streampos save_begin = begin;
    const streampos save_mark  = themark;
-   const size_t size = lines.size();
+   const ulong size = lines.size();
 
-   for (size_t i = 0;  i < size;  ++i) {
+   for (ulong i = 0;  i < size;  ++i) {
       line    = lines [i];
       begin   = begins[i];
       themark = marks [i];

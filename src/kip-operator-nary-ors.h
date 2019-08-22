@@ -5,7 +5,7 @@
 // ors
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class ors : public shape<real,tag> {
    using shape<real,tag>::interior;
 
@@ -26,7 +26,7 @@ kip_process(ors)
    kip_data.nop = vec.size();
    std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
 
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->is_operand = true;
       min_and_op[i].minimum = minimum_t((min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars));
@@ -42,7 +42,7 @@ kip_process(ors)
    bool in_all = true;   // remains true  if no objects
    bool in_ge1 = false;  // remains false if no objects
    nary.total_in = 0;
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].min = min_and_op[i].minimum;
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          in_ge1 = true, nary.total_in++;
@@ -55,17 +55,17 @@ kip_process(ors)
    real rv = kip_data.nop ? min_and_op[0].minimum : real(0);
    if (in_all)
       // in ALL; use maximum of minima (furthest exit)
-      for (size_t i = 1;  i < kip_data.nop;  ++i)
+      for (ulong i = 1;  i < kip_data.nop;  ++i)
          rv = op::max(rv, real(min_and_op[i].minimum));
    else if (in_ge1) {
       // in >=1; use maximum of "in" minima (furthest exit of "in"s)
       rv = real(0);
-      for (size_t i = 0;  i < kip_data.nop;  ++i)
+      for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (vec[i].in)
             rv = op::max(rv, real(min_and_op[i].minimum));
    } else
       // in NONE; use minimum of minima (closest entry)
-      for (size_t i = 1;  i < kip_data.nop;  ++i)
+      for (ulong i = 1;  i < kip_data.nop;  ++i)
          rv = op::min(rv, real(min_and_op[i].minimum));
    return rv;
 } kip_end
@@ -84,7 +84,7 @@ kip_aabb(ors)
    const vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
 
-   for (size_t i = 0;  i < kip_data.nop;  ++i)
+   for (ulong i = 0;  i < kip_data.nop;  ++i)
       rv = internal::bound_combine(rv, vec[i].op->aabb(), internal::op_leq());
    return rv;
 } kip_end
@@ -95,7 +95,7 @@ kip_aabb(ors)
 kip_dry(ors)
 {
    const vec_t &vec = kip_data.vec();
-   for (size_t i = 0;  i < kip_data.nop;  ++i)
+   for (ulong i = 0;  i < kip_data.nop;  ++i)
       if (!vec[i].op->dry(seg)) return false;  // makes the whole thing non-dry
    return kip_data.nop > 0;  // false if no operands, true otherwise
 } kip_end
@@ -105,14 +105,14 @@ kip_dry(ors)
 // randomize
 kip_randomize(ors)
 {
-   const size_t nop = 4;
+   const ulong nop = 4;
 
    point<real> loc;
    random_full(loc);
    obj.clear();
    obj.nary.vec().reserve(nop);
 
-   for (size_t i = 0;  i < nop;  ++i) {
+   for (ulong i = 0;  i < nop;  ++i) {
       sphere<real,tag> *const ptr = new sphere<real,tag>;
       randomize(*ptr);
       obj.nary.push().op = ptr;
@@ -144,7 +144,7 @@ kip_infirst(ors)
    // outside to inside) at the first intersection with any object's boundary
    if (!interior) {
       inq<real,tag> qtmp;  q = qmin;
-      for (size_t i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
+      for (ulong i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
          if (internal::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
             q = qtmp;
       return q < qmin;
@@ -153,12 +153,12 @@ kip_infirst(ors)
    // INSIDE: we're inside one or more operands; the overall status changes
    // (from inside to outside) at the point after which we're outside all
    // objects
-   const size_t num_operand = kip_data.nop;
+   const ulong num_operand = kip_data.nop;
    using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       const bool found =
          vec[i].min < qmin &&
          internal::op_all(vec[i].op, kip_etd,
@@ -177,10 +177,10 @@ kip_infirst(ors)
    // search for the first relevant intersection. "current" will be the operand
    // that provides this (exit) point, and it's the relevant one if there's no
    // previous such operand, or if this one is closer
-   size_t num_in  = nary.total_in;
+   ulong num_in  = nary.total_in;
 
    for (int current = -1 ;; ++operand[current].next) {
-      for (size_t i = 0;  i < kip_data.nop;  ++i)
+      for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (operand[i].next < operand[i].size) {
             // there are still more intersections with i
             if (current == -1 || operand[i].q() < operand[current].q())
@@ -213,12 +213,12 @@ kip_inall(ors)
    const vec_t &vec = kip_data.vec();
    if (kip_data.nop == 0) return false;  // no operands --> no intersection
 
-   const size_t num_operand = kip_data.nop;
+   const ulong num_operand = kip_data.nop;
    using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       const bool found =
          vec[i].min < qmin &&
          internal::op_all(vec[i].op, kip_etd,
@@ -232,11 +232,11 @@ kip_inall(ors)
          return kip_less, false;
    }
 
-   size_t num_in = nary.total_in;
+   ulong num_in = nary.total_in;
    ints.reset();
 
    for (int current = -1 ;; ++operand[current].next, current = -1) {
-      for (size_t i = 0;  i < kip_data.nop;  ++i)
+      for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (operand[i].next < operand[i].size) {
             // there are still more intersections with i
             if (current == -1 || operand[i].q() < operand[current].q())

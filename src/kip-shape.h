@@ -6,12 +6,12 @@
 
 // vars
 namespace internal {
-   template<class real = default_real_t, class tag = default_tag_t>
+   template<class real = default_real, class tag = default_base>
    class vars;
 }
 
 // engine
-template<class real = default_real_t>
+template<class real = default_real>
 class engine;
 
 
@@ -47,9 +47,9 @@ public:
 
 
 // shape_id_t
-// Note: I found that by using unsigned char rather than an enum,
+// Note: I found that by using uchar, not an enum,
 // these allow for a smaller sizeof(shape<>).
-using shape_id_t = unsigned char;
+using shape_id_t = uchar;
 
 namespace internal {
    // unique_number
@@ -83,7 +83,7 @@ namespace internal {
 // minend
 class minend {
 public:
-   size_t imin, iend, jmin, jend;
+   ulong imin, iend, jmin, jend;
 };
 
 
@@ -93,12 +93,12 @@ namespace internal {
    class subinfo {
    public:
       minend mend;
-      size_t i, j;
+      ulong i, j;
       unsigned nzone;
 
       inline explicit subinfo(
-         const size_t _i,
-         const size_t _j,
+         const ulong _i,
+         const ulong _j,
          const unsigned _nzone,
          const minend _mend
       ) :
@@ -219,11 +219,11 @@ public:
          public : using vec_t = std::vector<element_t>;
          private: mutable char _per[sizeof(vec_t)];
       public:
-         mutable size_t nop;
+         mutable ulong nop;
          inline vec_t &vec() const { return *(vec_t *)(void *)&_per[0]; }
          inline element_t &push() const
             { return vec().push_back(element_t()), vec().back(); }
-         mutable size_t total_in;
+         mutable ulong total_in;
       } ands;
    };
 
@@ -234,12 +234,12 @@ public:
       public : using vec_t = std::vector<element_t>;
       private: mutable char _per[sizeof(vec_t)];
    public:
-      mutable size_t nop;
+      mutable ulong nop;
       inline vec_t &vec() const
          { return *(vec_t *)(void *)&_per[0]; }
       inline element_t &push() const
          { return vec().push_back(element_t()), vec().back(); }
-      mutable size_t total_in;
+      mutable ulong total_in;
    };
 
    /*
@@ -284,7 +284,7 @@ public:
       class {
       public:
          mutable char ghi[sizeof(point<real>)];
-         mutable size_t u, v, w;
+         mutable ulong u, v, w;
       } vertex;
 
       // for triangle
@@ -335,7 +335,7 @@ public:
    class union_vertex {
    public:
       mutable char ghi[sizeof(point<real>)];
-      mutable size_t u, v, w;
+      mutable ulong u, v, w;
    };
 
    // for triangle
@@ -454,7 +454,7 @@ public:
 
    // duplicate, size_of
    virtual shape<real,tag> *duplicate() const = 0;
-   virtual size_t size_of() const = 0;
+   virtual ulong size_of() const = 0;
 
 
    // read
@@ -535,7 +535,7 @@ public:
    kip_virtual_id(kip_class)\
    \
    inline kip_class *duplicate() const { return new kip_class(*this); }\
-   inline size_t size_of() const { return sizeof(kip_class); }\
+   inline ulong size_of() const { return sizeof(kip_class); }\
    \
    inline kip::istream &read (kip::istream &k)       { return k >> *this; }\
    inline std::istream &read (std::istream &s)       { return s >> *this; }\

@@ -20,9 +20,9 @@ bool trace(scene<real,tag,color> &, array<2,pix> &);
 // -----------------------------------------------------------------------------
 
 template<
-   class real  = default_real_t,
-   class tag   = default_tag_t,
-   class color = default_color_t
+   class real  = default_real,
+   class tag   = default_base,
+   class color = default_color
 >
 class scene :
    public model <real,tag>,

@@ -60,7 +60,7 @@ public:
    // fix
    // Receives hpixel and vpixel from an "image" object.
    // Intentionally returns a value (not a reference).
-   inline engine fix(const size_t, const size_t) const;
+   inline engine fix(const ulong, const ulong) const;
 };
 
 
@@ -72,7 +72,7 @@ public:
 namespace internal {
 
 // fix_zone_hv
-inline void fix_zone_hv(unsigned &zone, const size_t npixel)
+inline void fix_zone_hv(unsigned &zone, const ulong npixel)
 {
    if (zone < 1)
       zone = 1;
@@ -84,7 +84,7 @@ inline void fix_zone_hv(unsigned &zone, const size_t npixel)
 // fix_sub_hv (also fixes products with hzone, vzone)
 inline void fix_sub_hv(
    unsigned &sub, const unsigned zone,
-   const size_t npixel
+   const ulong npixel
 ) {
    if (sub < 1 || sub*zone > npixel+zone-1)
       sub = unsigned((npixel+zone-1)/zone);
@@ -124,7 +124,7 @@ inline void fix_sort(engine<real> &obj)
 // fix_engine
 template<class real>
 inline void fix_engine(
-   engine<real> &obj, const size_t hpixel, const size_t vpixel
+   engine<real> &obj, const ulong hpixel, const ulong vpixel
 ) {
    // uniform fix
    if (obj.method == method_t::uniform) {
@@ -190,7 +190,7 @@ inline void fix_engine(
 
 template<class real>
 inline engine<real> engine<real>::fix(
-   const size_t hpixel, const size_t vpixel
+   const ulong hpixel, const ulong vpixel
 ) const {
    engine<real> rv = *this;
    internal::fix_engine(rv, hpixel,vpixel);

@@ -18,7 +18,7 @@ public:
    #undef  kip_make_shape_vector
 
    // size
-   inline size_t size() const
+   inline ulong size() const
    {
       const functor_size f;
       allshape(*this, f);
@@ -175,8 +175,8 @@ public:
    template<class CONTAINER>
    inline void operator()(CONTAINER &c) const
    {
-      const size_t size = c.size();
-      for (size_t s = 0;  s < size;  ++s)
+      const ulong size = c.size();
+      for (ulong s = 0;  s < size;  ++s)
          bin.push_back(minimum_and_shape<real,base>(c[s].minimum, *c[s].shape));
    }
 };
@@ -189,10 +189,10 @@ inline void to_abstract_then_fill(
    const engine<real> &engine, image<real,color> &image,
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
-   const size_t imin, const size_t iend,
-   const size_t jmin, const size_t jend,
+   const ulong imin, const ulong iend,
+   const ulong jmin, const ulong jend,
 
-   const shape_vectors<real,base> &sv, const size_t binsize
+   const shape_vectors<real,base> &sv, const ulong binsize
 ) {
    std::vector<minimum_and_shape<real,base>> bin;
    bin.reserve(binsize);
@@ -225,8 +225,8 @@ inline void to_abstract_then_fill(
    // option to automatically make hzone*hsub and vzone*vsub be the image
    // size, so that object bounds are always pixel-tight?
 
-   const size_t zone = 0;  /// zone == 0?
-   const size_t max_binsize = 0;  // for border drawing; not precomputed here
+   const ulong zone = 0;  /// zone == 0?
+   const ulong max_binsize = 0;  // for border drawing; not precomputed here
 
    trace_bin(
       engine, view, image, vars, light, pixel,
@@ -251,12 +251,12 @@ inline void grow_portion_specific(
    const rotate<-3,real> seg[6],
    const char pos
 ) {
-   const size_t size = current.size();
+   const ulong size = current.size();
    portion.clear();  portion.reserve(size);
 
    if (pos == 'L') {
       // low
-      for (size_t s = 0;  s < size;  ++s)
+      for (ulong s = 0;  s < size;  ++s)
          if (                      !current[s].shape->SHAPE::dry(seg[0])
              if_segmenting_diag(&& !current[s].shape->SHAPE::dry(seg[2]))
              if_segmenting_diag(&& !current[s].shape->SHAPE::dry(seg[4]))
@@ -265,7 +265,7 @@ inline void grow_portion_specific(
 
    } else if (pos == 'C') {
       // center
-      for (size_t s = 0;  s < size;  ++s)
+      for (ulong s = 0;  s < size;  ++s)
          if (                      !current[s].shape->SHAPE::dry(seg[0])
              if_segmenting_diag(&& !current[s].shape->SHAPE::dry(seg[2]))
              if_segmenting_diag(&& !current[s].shape->SHAPE::dry(seg[4]))
@@ -277,7 +277,7 @@ inline void grow_portion_specific(
 
    } else  // pos == 'H')
       // high
-      for (size_t s = 0;  s < size;  ++s)
+      for (ulong s = 0;  s < size;  ++s)
          if (                      !current[s].shape->SHAPE::dry(seg[1])
              if_segmenting_diag(&& !current[s].shape->SHAPE::dry(seg[3]))
              if_segmenting_diag(&& !current[s].shape->SHAPE::dry(seg[5]))
@@ -316,12 +316,12 @@ inline void rtrace_h(
    const engine<real> &engine, image<real,color> &image,
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
-   const size_t imin, const size_t iend, const int ipart,
-   const size_t jmin, const size_t jend, const real vmin, const real vmax,
+   const ulong imin, const ulong iend, const int ipart,
+   const ulong jmin, const ulong jend, const real vmin, const real vmax,
    const shape_vectors<real,base> &bin
 ) {
-   const size_t ilo = imin + size_t(ipart  )*(iend-imin)/engine.hdivision;
-   const size_t ihi = imin + size_t(ipart+1)*(iend-imin)/engine.hdivision;
+   const ulong ilo = imin + ulong(ipart  )*(iend-imin)/engine.hdivision;
+   const ulong ihi = imin + ulong(ipart+1)*(iend-imin)/engine.hdivision;
    if (ilo == ihi) return;
 
    const real hlo = real(ilo)*vars.hfull - vars.hmax;
@@ -354,12 +354,12 @@ inline void rtrace_v(
    const engine<real> &engine, image<real,color> &image,
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
-   const size_t imin, const size_t iend, const real hmin, const real hmax,
-   const size_t jmin, const size_t jend, const int jpart,
+   const ulong imin, const ulong iend, const real hmin, const real hmax,
+   const ulong jmin, const ulong jend, const int jpart,
    const shape_vectors<real,base> &bin
 ) {
-   const size_t jlo = jmin + size_t(jpart  )*(jend-jmin)/engine.vdivision;
-   const size_t jhi = jmin + size_t(jpart+1)*(jend-jmin)/engine.vdivision;
+   const ulong jlo = jmin + ulong(jpart  )*(jend-jmin)/engine.vdivision;
+   const ulong jhi = jmin + ulong(jpart+1)*(jend-jmin)/engine.vdivision;
    if (jlo == jhi) return;
 
    const real vlo = real(jlo)*vars.vfull - vars.vmax;
@@ -403,15 +403,15 @@ void rtrace(
    vars<real,base> &vars, const light<real> &light,
    array<2,pix> &pixel,
 
-   const real hmin, const real hmax, const size_t imin, const size_t iend,
-   const real vmin, const real vmax, const size_t jmin, const size_t jend,
+   const real hmin, const real hmax, const ulong imin, const ulong iend,
+   const real vmin, const real vmax, const ulong jmin, const ulong jend,
 
    const shape_vectors<real,base> &bin,
    const bool rootlevel
 ) {
    (void)rootlevel;  // used iff OpenMP
 
-   const size_t binsize = bin.size();
+   const ulong binsize = bin.size();
    ///   std::cout << "kip: binsize == " << binsize << std::endl;
    if (binsize == 0) {
       // might have border to draw
@@ -421,8 +421,8 @@ void rtrace(
    }
 
    // If we've recursed down far enough
-   const size_t inum = iend - imin;  // exact #pixels horizontally
-   const size_t jnum = jend - jmin;  // exact #pixels vertically
+   const ulong inum = iend - imin;  // exact #pixels horizontally
+   const ulong jnum = jend - jmin;  // exact #pixels vertically
    if (inum*jnum <= engine.min_area) {
       ///      std::cout << "kip: calling to_abstract_then_fill()" << std::endl;
       to_abstract_then_fill(

@@ -4,8 +4,8 @@
 // This file defines the crayola class, which supports Crayola crayon colors.
 
 class crayola;
-using crayola_id_t = unsigned char;
-using crayola_rgb_t = unsigned char;
+using crayola_id_t = uchar;
+using crayola_rgb_t = uchar;
 
 
 

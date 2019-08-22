@@ -4,7 +4,7 @@
 // This file provides the "image" class template.
 
 // Default type: color
-using default_color_t = rgba;
+using default_color = rgba;
 
 
 
@@ -59,8 +59,8 @@ public:
 // -----------------------------------------------------------------------------
 
 template<
-   class real  = default_real_t,
-   class color = default_color_t
+   class real  = default_real,
+   class color = default_color
 >
 class image {
 
@@ -82,8 +82,8 @@ public:
    array<2,color> bitmap;
 
    // other data
-   const size_t &hpixel;   // references bitmap.isize()
-   const size_t &vpixel;   // references bitmap.jsize()
+   const ulong &hpixel;   // references bitmap.isize()
+   const ulong &vpixel;   // references bitmap.jsize()
    color background = color::background();       // background color
    real  aspect = real(1);           // pixel aspect ratio
    mutable unsigned anti;  // antialiasing indicator
@@ -97,8 +97,8 @@ public:
 
       // aspect, hpixel, vpixel
       real aspect;
-      const size_t &hpixel;  // references targets.isize()
-      const size_t &vpixel;  // references targets.jsize()
+      const ulong &hpixel;  // references targets.isize()
+      const ulong &vpixel;  // references targets.jsize()
 
       // first
       bool first;
@@ -126,17 +126,17 @@ public:
    inline image &fix();
 
    // resize
-   inline image &resize(const size_t h, const size_t v = 0)
+   inline image &resize(const ulong h, const ulong v = 0)
       { bitmap.resize(h, v ? v : h);  return *this; }
 
    // upsize
-   inline image &upsize(const size_t h, const size_t v = 0)
+   inline image &upsize(const ulong h, const ulong v = 0)
       { bitmap.upsize(h, v ? v : h);  return *this; }
 
    // indexing
-   inline const color &operator()(const size_t i, const size_t j) const
+   inline const color &operator()(const ulong i, const ulong j) const
       { return bitmap(i,j); }
-   inline       color &operator()(const size_t i, const size_t j)
+   inline       color &operator()(const ulong i, const ulong j)
       { return bitmap(i,j); }
 
    // data access

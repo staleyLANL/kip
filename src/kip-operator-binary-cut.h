@@ -5,7 +5,7 @@
 // kipcut: A cut B == A and (not B)
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class kipcut : public shape<real,tag> {
    using shape<real,tag>::interior;
 
@@ -273,8 +273,8 @@ kip_infirst(kipcut)
       return !binary.inb && (q = aq[0], true);
 
    // search for the relevant point
-   const size_t anum = aq.size();  size_t an = 0;  bool ina = binary.ina;
-   const size_t bnum = bq.size();  size_t bn = 0;  bool inb = binary.inb, is_a;
+   const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;
+   const ulong bnum = bq.size();  ulong bn = 0;  bool inb = binary.inb, is_a;
 
    do
       if (an < anum && bn < bnum)
@@ -311,8 +311,8 @@ kip_inall(kipcut)
          internal::op_all(binary.b, kip_etd, qmin,bq, insub)))
       return !binary.inb && ints.assign(aq);
 
-   const size_t anum = aq.size();  size_t an = 0;  bool ina = binary.ina;
-   const size_t bnum = bq.size();  size_t bn = 0;  bool inb = binary.inb;
+   const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;
+   const ulong bnum = bq.size();  ulong bn = 0;  bool inb = binary.inb;
    bool in = interior, is_a;
 
    for (ints.reset();;) {

@@ -2,7 +2,7 @@
 #pragma once
 
 // nsurf
-inline size_t nsurf = 6;
+inline ulong nsurf = 6;
 
 
 
@@ -67,7 +67,7 @@ public:
    inline void reset(const E &engine)
    {
       // clear
-      for (size_t bin = linear.size();  bin--; )  // for each bin
+      for (ulong bin = linear.size();  bin--; )  // for each bin
          linear[bin].clear();
 
       // resize (not upsize) can necessitate fewer above clear()s in future
@@ -83,7 +83,7 @@ public:
    }
 
    // operator[]
-   inline std::vector<T> &operator[](const size_t i) { return linear(i); }
+   inline std::vector<T> &operator[](const ulong i) { return linear(i); }
 };
 
 
@@ -92,7 +92,7 @@ public:
 // surf
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class surf : public shape<real,tag> {
    using pnt_t = point<real>;
 
@@ -281,21 +281,21 @@ kip_process(surf)
 kip_aabb(surf)
 {
    // bookkeeping
-   const size_t ntri = tri.size();
+   const ulong ntri = tri.size();
    if ((degenerate = ntri == 0))
       return bbox<real>(false,1,0,false, false,1,0,false, false,1,0,false);
 
    // identify nodes that are used by at least one triangle
-   const size_t nnode = node.size();
+   const ulong nnode = node.size();
    used.assign(nnode,false);
-   for (size_t t = 0;  t < ntri;  ++t)
+   for (ulong t = 0;  t < ntri;  ++t)
       used[tri[t].u()] = used[tri[t].v()] = used[tri[t].w()] = true;
 
    // bounds, based on identified nodes
    xmin = ymin = zmin =  std::numeric_limits<real>::max();
    xmax = ymax = zmax = -xmin;
 
-   real x, y, z;  size_t n = 0;
+   real x, y, z;  ulong n = 0;
 
    /*
    for ( ; n < nnode;  ++n)
@@ -363,7 +363,7 @@ kip_dry(surf)
    // check the points
    // Note: we could also require used[n] in the conditional, but in the normal
    // case of surfs that don't have extraneous nodes, doing so just wastes time.
-   for (size_t n = node.size();  n--; )
+   for (ulong n = node.size();  n--; )
       if (seg.lt(node[n]))
          return false;
    return true;
@@ -374,15 +374,15 @@ kip_dry(surf)
 // check
 kip_check(surf)
 {
-   const size_t nnode = node.size();
-   const size_t ntri  = tri .size();
+   const ulong nnode = node.size();
+   const ulong ntri  = tri .size();
    diagnostic_t rv = diagnostic_t::diagnostic_good;
 
    // Check each tri...
-   for (size_t t = 0;  t < ntri;  ++t) {
-      const size_t u = tri[t].u();
-      const size_t v = tri[t].v();
-      const size_t w = tri[t].w();
+   for (ulong t = 0;  t < ntri;  ++t) {
+      const ulong u = tri[t].u();
+      const ulong v = tri[t].v();
+      const ulong w = tri[t].w();
 
 
       // Require: u < nnode,  v < nnode,  w < nnode
@@ -507,7 +507,7 @@ kip_infirst(surf)
    // bookkeeping
    std::vector<internal::min_and_part<kip::tri<real,tag>>> &bin =
       mint()[insub.nzone];
-   const size_t ntri = bin.size();  if (ntri == 0) return false;
+   const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint().sorted[insub.nzone]) {
@@ -540,7 +540,7 @@ kip_inall(surf)
    // bookkeeping
    std::vector<internal::min_and_part<kip::tri<real,tag>>> &bin =
       mint()[insub.nzone];
-   const size_t ntri = bin.size();  if (ntri == 0) return false;
+   const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint().sorted[insub.nzone]) {
@@ -563,8 +563,8 @@ kip_inall(surf)
 
    // reverse normals, as necessary
    if (found) {
-      ints.sort();  const size_t size = ints.size();
-      for (size_t i = !interior;  i < size;  i += 2)
+      ints.sort();  const ulong size = ints.size();
+      for (ulong i = !interior;  i < size;  i += 2)
          ints[i].reverse();
    }
    return found;
@@ -637,8 +637,8 @@ kip_read_value(surf) {
 kip_ostream(surf) {
    bool okay;
 
-   const size_t nnode = obj.node.size();
-   const size_t ntri  = obj.tri .size();
+   const ulong nnode = obj.node.size();
+   const ulong ntri  = obj.tri .size();
 
    // stub
    if (format == format_t::format_stub)
@@ -650,12 +650,12 @@ kip_ostream(surf) {
             format == format_t::format_op) {
       // nodes
       okay = k << "surf(" << nnode;
-      for (size_t n = 0;  n < nnode && okay;  ++n)
+      for (ulong n = 0;  n < nnode && okay;  ++n)
          okay = k << ", " << obj.node[n];
 
       // tris
       okay = okay && k << ", " << ntri;
-      for (size_t t = 0;  t < ntri  && okay;  ++t)
+      for (ulong t = 0;  t < ntri  && okay;  ++t)
          okay = k << ", " << obj.tri [t];
 
       // finish
@@ -666,12 +666,12 @@ kip_ostream(surf) {
    else {
       // nodes
       okay = k << "surf(\n   " && k.indent() << nnode;
-      for (size_t n = 0;  n < nnode && okay;  ++n)
+      for (ulong n = 0;  n < nnode && okay;  ++n)
          okay = k << ",\n   " && k.indent() << obj.node[n];
 
       // tris
       okay = okay && k << ",\n   " && k.indent() << ntri;
-      for (size_t t = 0;  t < ntri  && okay;  ++t)
+      for (ulong t = 0;  t < ntri  && okay;  ++t)
          okay = k << ",\n   " && k.indent() << obj.tri [t];
 
       // finish

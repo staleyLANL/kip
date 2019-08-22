@@ -292,11 +292,11 @@ inline void seg_minmax(
 // test_diag
 template<class real, class base, class SHAPE>
 inline char test_diag(
-   const vars<real,base> &vars, const SHAPE &p, const size_t val,
-   minend &bin, const size_t hseg
+   const vars<real,base> &vars, const SHAPE &p, const ulong val,
+   minend &bin, const ulong hseg
 ) {
    #ifdef KIP_SEGMENTING_DIAG
-      const size_t n = 4*val;
+      const ulong n = 4*val;
       if (p.SHAPE::dry(vars.seg_diag[n  ])) return bin.iend = hseg,   'b'; // sw
       if (p.SHAPE::dry(vars.seg_diag[n+3])) return                    'b'; // nw
       if (p.SHAPE::dry(vars.seg_diag[n+2])) return bin.imin = hseg+1, 'c'; // se
@@ -317,10 +317,10 @@ inline char test_diag(
 // test_quad
 template<class real, class base, class SHAPE>
 inline char test_quad(
-   const vars<real,base> &vars, const SHAPE &p, const size_t val
+   const vars<real,base> &vars, const SHAPE &p, const ulong val
 ) {
    #ifdef KIP_SEGMENTING_QUAD
-      const size_t a = 8*val;
+      const ulong a = 8*val;
       if (p.SHAPE::dry(vars.seg_quad[a  ]) ||  // sw
           p.SHAPE::dry(vars.seg_quad[a+2]) ||  // ne
           p.SHAPE::dry(vars.seg_quad[a+1]) ||  // sw
@@ -344,10 +344,10 @@ inline char test_quad(
 // test_3060
 template<class real, class base, class SHAPE>
 inline char test_3060(
-   const vars<real,base> &vars, const SHAPE &p, const size_t val
+   const vars<real,base> &vars, const SHAPE &p, const ulong val
 ) {
    #ifdef KIP_SEGMENTING_3060
-      const size_t b = 8*val;
+      const ulong b = 8*val;
       if (p.SHAPE::dry(vars.seg_3060[b  ]) ||
           p.SHAPE::dry(vars.seg_3060[b+2]) ||
           p.SHAPE::dry(vars.seg_3060[b+1]) ||
@@ -371,10 +371,10 @@ inline char test_3060(
 // test_1575
 template<class real, class base, class SHAPE>
 inline char test_1575(
-   const vars<real,base> &vars, const SHAPE &p, const size_t val
+   const vars<real,base> &vars, const SHAPE &p, const ulong val
 ) {
    #ifdef KIP_SEGMENTING_1575
-      const size_t c = 8*val;
+      const ulong c = 8*val;
       if (p.SHAPE::dry(vars.seg_1575[c  ]) ||
           p.SHAPE::dry(vars.seg_1575[c+2]) ||
           p.SHAPE::dry(vars.seg_1575[c+1]) ||
@@ -446,7 +446,7 @@ inline void uprepare(
    static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
    const int nthreads = get_nthreads();
    #ifdef _OPENMP
-      for (size_t z = per_zone.size();  z--; )
+      for (ulong z = per_zone.size();  z--; )
          per_zone[z].clear();
       if (nthreads > 1)
          per_zone.resize(engine.hzone, engine.vzone, nthreads-1);
@@ -457,9 +457,9 @@ inline void uprepare(
       #pragma omp parallel for
    #endif
    for (int i = 0;  i < numobj;  ++i) {
-      ///      const size_t i = iint;
+      ///      const ulong i = iint;
       using SHAPE = typename SHAPEVEC::value_type;
-      SHAPE &p = vec[size_t(i)];
+      SHAPE &p = vec[ulong(i)];
       if (!p.on) continue;
 
       // minimum distance from eyeball
@@ -492,10 +492,10 @@ inline void uprepare(
        : &vars.uniform[0];
 
       // drop into bins
-      for (size_t vseg = bin.jmin;  vseg < bin.jend;  ++vseg) {
-         size_t val = vseg*engine.hzone + bin.imin;
+      for (ulong vseg = bin.jmin;  vseg < bin.jend;  ++vseg) {
+         ulong val = vseg*engine.hzone + bin.imin;
 
-         for (size_t hseg = bin.imin;  hseg < bin.iend;  ++hseg, ++val) {
+         for (ulong hseg = bin.imin;  hseg < bin.iend;  ++hseg, ++val) {
             // diag?
             if (diag) {
                const char rv = test_diag(vars, p, val, bin, hseg);
@@ -533,12 +533,12 @@ inline real uprepare_tri(
    real min_overall = std::numeric_limits<real>::max();
 
    // per-node "behind" and "minend"
-   const size_t nnode = surf.node.size();
+   const ulong nnode = surf.node.size();
    std::vector< bool > behind(nnode);
    std::vector< minend > me(nnode);
 
    // for each node...
-   for (size_t n = nnode;  n--; ) {
+   for (ulong n = nnode;  n--; ) {
       behind[n] = vars.behind.ge(surf.node[n]);
       seg_minmax(
          engine, vars, surf.node[n],
@@ -549,21 +549,21 @@ inline real uprepare_tri(
 
    // for each tri
    using tri_t = tri<real,base>;
-   for (size_t it = surf.tri.size();  it--; ) {
+   for (ulong it = surf.tri.size();  it--; ) {
       tri_t &t = surf.tri[it];  // this particular tri
 
       // process
       const real m = t.tri_t::process(surf.node, vars.eyeball, engine, vars);
-      const size_t u = t.u(), v = t.v(), w = t.w();
+      const ulong u = t.u(), v = t.v(), w = t.w();
 
       // degenerate / coplanar with eye, or entirely behind eye
       if (t.degenerate || (behind[u] && behind[v] && behind[w])) continue;
 
       // tri min and end, based on those of its vertices
-      const size_t imin = op::min(me[u].imin, me[v].imin, me[w].imin);
-      const size_t iend = op::max(me[u].iend, me[v].iend, me[w].iend);
-      const size_t jmin = op::min(me[u].jmin, me[v].jmin, me[w].jmin);
-      const size_t jend = op::max(me[u].jend, me[v].jend, me[w].jend);
+      const ulong imin = op::min(me[u].imin, me[v].imin, me[w].imin);
+      const ulong iend = op::max(me[u].iend, me[v].iend, me[w].iend);
+      const ulong jmin = op::min(me[u].jmin, me[v].jmin, me[w].jmin);
+      const ulong jend = op::max(me[u].jend, me[v].jend, me[w].jend);
       if (imin == iend || jmin == jend) continue;
 
       // fine boundaries
@@ -580,18 +580,18 @@ inline real uprepare_tri(
       }
 
       // coarse bins
-      const size_t bimin =  imin / engine.hsub;
-      const size_t biend = (iend + engine.hsub - 1)/engine.hsub;
-      const size_t bjmin =  jmin / engine.vsub;
-      const size_t bjend = (jend + engine.vsub - 1)/engine.vsub;
+      const ulong bimin =  imin / engine.hsub;
+      const ulong biend = (iend + engine.hsub - 1)/engine.hsub;
+      const ulong bjmin =  jmin / engine.vsub;
+      const ulong bjend = (jend + engine.vsub - 1)/engine.vsub;
 
       // bring over base
       t.base() = surf.base();
 
       // drop into bins
-      for (size_t j = bjmin;  j < bjend;  ++j) {
-         size_t val = j*engine.hzone + bimin;
-         for (size_t i = bimin;  i < biend;  ++i)
+      for (ulong j = bjmin;  j < bjend;  ++j) {
+         ulong val = j*engine.hzone + bimin;
+         for (ulong i = bimin;  i < biend;  ++i)
             bins[val++].push_back(element_t(m,t));
       }
 
@@ -618,7 +618,7 @@ inline void uprepare_surf(
    static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
    const int nthreads = get_nthreads();
    #ifdef _OPENMP
-      for (size_t z = per_zone.size();  z--; )
+      for (ulong z = per_zone.size();  z--; )
          per_zone[z].clear();
       if (nthreads > 1)
          per_zone.resize(engine.hzone, engine.vzone, nthreads-1);
@@ -629,7 +629,7 @@ inline void uprepare_surf(
       #pragma omp parallel for
    #endif
    for (int s = 0;  s < nsurf;  ++s) {
-      const surf<real,base> &p = vec[size_t(s)];  // this surf
+      const surf<real,base> &p = vec[ulong(s)];  // this surf
       if (!p.on) continue;
 
       p.is_operand = false;  // global (not as operand) surf
@@ -638,10 +638,10 @@ inline void uprepare_surf(
          continue;
 
       if (object_border ) {
-         p.mend.imin = std::numeric_limits<size_t>::max();
-         p.mend.iend = std::numeric_limits<size_t>::min();
-         p.mend.jmin = std::numeric_limits<size_t>::max();
-         p.mend.jend = std::numeric_limits<size_t>::min();
+         p.mend.imin = std::numeric_limits<ulong>::max();
+         p.mend.iend = std::numeric_limits<ulong>::min();
+         p.mend.jmin = std::numeric_limits<ulong>::max();
+         p.mend.jend = std::numeric_limits<ulong>::min();
       }
 
       const int thread = this_thread();
@@ -745,7 +745,7 @@ public:
 
       // Compute maximum bin size
       // qqq should parallelize, if openmp
-      size_t max_binsize = 0;
+      ulong max_binsize = 0;
       if (image.border.bin) {
          for (int zone = 0;  zone < nzone;  ++zone)
             max_binsize = std::max(max_binsize, vars.uniform[zone].size());
@@ -755,8 +755,8 @@ public:
       #if defined(_OPENMP)
          #pragma omp parallel for
       #endif
-      for (size_t zone = 0;  zone < size_t(nzone);  ++zone) {
-         const size_t binsize = vars.uniform[zone].size();
+      for (ulong zone = 0;  zone < ulong(nzone);  ++zone) {
+         const ulong binsize = vars.uniform[zone].size();
          if (binsize == 0 && !image.border.bin) continue;
 
          // vars.hrat = real(image.hpixel)/real(engine.hzone)
@@ -796,7 +796,7 @@ void utrace(
          image <real,color> &image,
    array<2,pix> &pixel
 ) {
-   const size_t nzone = engine.hzone*engine.vzone;
+   const ulong nzone = engine.hzone*engine.vzone;
    utrace_helper<real,tag,color,pix>()
       (int(nzone), view, light, engine, vars, image, pixel);
 }

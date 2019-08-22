@@ -2,7 +2,7 @@
 #pragma once
 
 // ntabular
-inline size_t ntabular = 16;
+inline ulong ntabular = 16;
 
 
 
@@ -10,7 +10,7 @@ inline size_t ntabular = 16;
 // tabular
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class tabular : public shape<real,tag> {
    using shape<real,tag>::interior;
 
@@ -27,7 +27,7 @@ private:
    mutable real hdr, rmaxsq, f, left, right;
 
 private:
-   mutable size_t npts;
+   mutable ulong npts;
 
    // endcaps
    inline bool cap_lo(
@@ -36,7 +36,7 @@ private:
 
    inline bool cap_hi(
       const real, const real, inq<real,tag> &, const real, const real,
-      const size_t
+      const ulong
    ) const;
 
    // hit_bounding_cylinder, get_bounds
@@ -46,24 +46,24 @@ private:
 
    inline bool get_bounds(
       const real, const real, const real, const real, const real,
-      const size_t, const size_t,
-      size_t &, size_t &
+      const ulong, const ulong,
+      ulong &, ulong &
    ) const;
 
    // segment, registerq, segment2
    inline bool segment(
       const point<real> &, const real, inq<real,tag> &,
-      const real, const real, const real, const real, const size_t
+      const real, const real, const real, const real, const ulong
    ) const;
 
    inline void registerq(
-      const real, const real, const real, const real, const real, const size_t,
+      const real, const real, const real, const real, const real, const ulong,
       afew<inq<real,tag>> &
    ) const;
 
    inline void segment2(
       const real, const real, afew<inq<real,tag>> &,
-      const real, const real, const real, const real, const size_t
+      const real, const real, const real, const real, const ulong
    ) const;
 
 public:
@@ -75,7 +75,7 @@ public:
 
    // (x,r) coordinates
    table_t table;
-   inline size_t size() const { return table.size(); }
+   inline ulong size() const { return table.size(); }
 
    kip_functions(tabular);
 
@@ -363,7 +363,7 @@ inline bool tabular<real,tag>::cap_lo(
 template<class real, class tag>
 inline bool tabular<real,tag>::cap_hi(
    const real tar_z, const real qmin, inq<real,tag> &q,
-   const real dx, const real dy, const size_t P
+   const real dx, const real dy, const ulong P
 ) const {
    if (dx == 0) return false;
 
@@ -401,8 +401,8 @@ inline bool tabular<real,tag>::hit_bounding_cylinder(
 template<class real, class tag>
 inline bool tabular<real,tag>::get_bounds(
    const real s, const real den, const real eydy, const real dx, const real qmin,
-   const size_t P, const size_t C,
-   size_t &cmin, size_t &cmax
+   const ulong P, const ulong C,
+   ulong &cmin, ulong &cmax
 ) const {
    // Begin by determining xmin, xmax of ray intersection with bounding cylinder
    real xmin, xmax;
@@ -441,9 +441,9 @@ inline bool tabular<real,tag>::get_bounds(
    // cmin
    cmin = 0;
    if (table[1].x < xmin) {
-      cmin = 1;  size_t hi = C;
+      cmin = 1;  ulong hi = C;
       do {
-         const size_t mid = (cmin + hi)/2 + 1;
+         const ulong mid = (cmin + hi)/2 + 1;
          if (table[mid].x < xmin) cmin = mid; else hi = mid-1;
       } while (hi > cmin);
    }
@@ -451,9 +451,9 @@ inline bool tabular<real,tag>::get_bounds(
    // cmax
    cmax = C;
    if (table[C].x > xmax) {  // [C] or [P-1]
-      cmax = cmin;  size_t hi = C-1;
+      cmax = cmin;  ulong hi = C-1;
       do {
-         const size_t mid = (cmax + hi)/2 + 1;
+         const ulong mid = (cmax + hi)/2 + 1;
          if (table[mid].x > xmax) hi = mid-1; else cmax = mid;
       } while (hi > cmax);
    }
@@ -473,7 +473,7 @@ template<class real, class tag>
 inline bool tabular<real,tag>::segment(
    const point<real> &tar, const real qmin, inq<real,tag> &q,
    const real dx, const real dy, const real tmp1, const real tmp2,
-   const size_t i
+   const ulong i
 ) const {
    // We're dealing with cell i, which is between points table[i] and table[i+1]
    const internal::rshhhd<real> &cell = pre[i];
@@ -506,7 +506,7 @@ inline bool tabular<real,tag>::segment(
 template<class real, class tag>
 inline void tabular<real,tag>::registerq(
    const real q, const real dx, const real dy,
-   const real tar_z, const real slope, const size_t i,
+   const real tar_z, const real slope, const ulong i,
    afew<inq<real,tag>> &ints
 ) const {
    inq<real,tag> qtmp;
@@ -530,7 +530,7 @@ template<class real, class tag>
 inline void tabular<real,tag>::segment2(
    const real tar_z, const real qmin, afew<inq<real,tag>> &ints,
    const real dx, const real dy, const real tmp1, const real tmp2,
-   const size_t i
+   const ulong i
 ) const {
    // We're dealing with cell i, which is between points table[i] and table[i+1]
    const internal::rshhhd<real> &cell = pre[i];
@@ -562,8 +562,8 @@ kip_infirst(tabular)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   const size_t P = npts-1;  // last valid point
-   const size_t C = npts-2;  // last valid cell
+   const ulong P = npts-1;  // last valid point
+   const ulong C = npts-2;  // last valid cell
 
    // If outside, examine end caps
    if (left > 0) {
@@ -583,17 +583,17 @@ kip_infirst(tabular)
    if (!hit_bounding_cylinder(dy,tar.z, s,den)) return false;
 
    // Determine starting and ending cell-wise indices
-   size_t cmin, cmax;
+   ulong cmin, cmax;
    if (!get_bounds(s,den, rot.ey*dy,dx, qmin, P,C, cmin,cmax)) return false;
 
    // Examine curved portion
    const real tmp1 = dx*dx, tmp2 = dy*rot.ey;
    if (dx > 0)
-      for (size_t i = cmin;  i <= cmax;  ++i) {
+      for (ulong i = cmin;  i <= cmax;  ++i) {
          if (segment(tar,qmin, q, dx,dy, tmp1,tmp2, i)) return true;
       }
    else
-      for (size_t i = cmax;  i >= cmin;  --i)
+      for (ulong i = cmax;  i >= cmin;  --i)
          if (segment(tar,qmin, q, dx,dy, tmp1,tmp2, i)) return true; else
          if (i == 0) break;  // so we can't wrap around to maximum unsigned
 
@@ -619,11 +619,11 @@ kip_inall(tabular)
    real s, den;  const real tar_z = rot.forez(target);
    if (!hit_bounding_cylinder(dy, tar_z, s,den)) return false;
 
-   const size_t P = npts-1;  // last valid point
-   const size_t C = npts-2;  // last valid cell
+   const ulong P = npts-1;  // last valid point
+   const ulong C = npts-2;  // last valid cell
 
    // Determine starting and ending cell-wise indices
-   size_t cmin, cmax;
+   ulong cmin, cmax;
    if (!get_bounds(s,den, rot.ey*dy,dx, qmin, P,C, cmin,cmax)) return false;
 
    // Examine "0" endcap, curved portions "c", and "h" endcap, as appropriate,
@@ -635,7 +635,7 @@ kip_inall(tabular)
    if (dx < 0) {
       // Check h, c, 0
       if (cap_hi(tar_z,qmin,ints[0],dx,dy,P)) ints.setsize(1);  // h
-      for (size_t i = cmax;  i >= cmin;  --i) {
+      for (ulong i = cmax;  i >= cmin;  --i) {
          segment2(tar_z,qmin, ints, dx,dy, tmp1,tmp2, i);       // c
          if (i == 0) break;  // so we can't wrap around to maximum unsigned
       }
@@ -644,7 +644,7 @@ kip_inall(tabular)
    } else if (dx > 0) {
       // Check 0, c, h
       if (cap_lo(tar_z,qmin,ints[0],dx,dy  )) ints.setsize(1);  // 0
-      for (size_t i = cmin;  i <= cmax;  ++i)
+      for (ulong i = cmin;  i <= cmax;  ++i)
          segment2(tar_z,qmin, ints, dx,dy, tmp1,tmp2, i);       // c
       if (cap_hi(tar_z,qmin,qtmp,   dx,dy,P)) ints.push(qtmp);  // h
 
@@ -672,7 +672,7 @@ kip_check(tabular)
       rv = error("tabular has number of points < 2");
 
    // points
-   for (size_t i = 0;  i < npts;  ++i)
+   for (ulong i = 0;  i < npts;  ++i)
       // radii must be nonnegative
       if (table[i].r < real(0)) {
          std::ostringstream oss;
@@ -682,7 +682,7 @@ kip_check(tabular)
       }
 
    // segments
-   for (size_t i = 1;  i < npts;  ++i) {
+   for (ulong i = 1;  i < npts;  ++i) {
       const xrpoint<real>
          &last = table[i-1],  // point to the left
          &next = table[i  ];  // point to the right
@@ -726,10 +726,10 @@ kip_check(tabular)
 kip_randomize(tabular)
 {
    // number of segments (+1 == number of (x,r) points)
-   const size_t nseg = (ntabular < 2)
+   const ulong nseg = (ntabular < 2)
       ? 1
-      : 1 + size_t(real(ntabular)*random_unit<real>());
-   const size_t npts = nseg+1;
+      : 1 + ulong(real(ntabular)*random_unit<real>());
+   const ulong npts = nseg+1;
 
    // a
    random_full(obj.a);
@@ -743,7 +743,7 @@ kip_randomize(tabular)
    obj.table.clear();
    obj.table.reserve(npts);
 
-   for (size_t i = 0;  i < npts;  ++i) {
+   for (ulong i = 0;  i < npts;  ++i) {
       xrpoint<real> p;
 
       p.x = i == 0
@@ -818,7 +818,7 @@ kip::ostream &tabular_write(
    kip::ostream &k, const OBJ<real,tag> &obj,
    const char *const name
 ) {
-   const size_t npts = obj.size();
+   const ulong npts = obj.size();
    bool okay;
 
    // stub

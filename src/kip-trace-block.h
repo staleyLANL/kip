@@ -280,12 +280,12 @@ void btrace(
          using vector_t = std::vector<minimum_and_shape<real,base>>;
 
          vector_t &bin = vars.block[seg].vec;
-         const size_t size = bin.size();
+         const ulong size = bin.size();
          if (size == 0) continue;
 
          // sort, if we didn't see this bin with any previous pixels
          if (vars.block[seg].reset) {
-            for (size_t obj = 0;  obj < size;  ++obj)
+            for (ulong obj = 0;  obj < size;  ++obj)
                if (bin[obj].shape->lastpix == -2) {  // was reset only
                   bin[obj].shape->is_operand = false;
                   bin[obj].minimum = bin[obj].shape->minimum =
@@ -308,7 +308,7 @@ void btrace(
 
          // zzz 2013-11-12: really call op_first below???
          // loop over objects in this bin
-         size_t s = 0;
+         ulong s = 0;
          for ( ;  s < size;  ++s)
             if (bin[s].shape->lastpix < npix) {
                bin[s].shape->lastpix = npix;

@@ -102,17 +102,17 @@ inline real get_eps()
 
 // get_endsorted
 template<class real>
-inline size_t get_endsorted(
-   const size_t current,  // already sorted; now sort from [current] on
+inline ulong get_endsorted(
+   const ulong current,  // already sorted; now sort from [current] on
    const engine<real> &engine,
-   const size_t binsize   // total number of values
+   const ulong binsize   // total number of values
 ) {
    return op::min(
       // sort at least sort_min objects, and at least sort_frac fraction...
       current + op::max(
-         size_t(1),  // to be safe (although sort_min is >= 1, from fix())
-         size_t(engine.sort_min),
-         op::round<size_t>(engine.sort_frac * real(binsize))
+         ulong(1),  // to be safe (although sort_min is >= 1, from fix())
+         ulong(engine.sort_min),
+         op::round<ulong>(engine.sort_frac * real(binsize))
       ),
       // but clip to binsize
       binsize
@@ -125,7 +125,7 @@ inline size_t get_endsorted(
 template<class real, class tag>
 inline bool inbound(
    const shape<real,tag> &obj,
-   const size_t i, const size_t j
+   const ulong i, const ulong j
 ) {
    // 2017-04-05
    // the four min and end values appear to be largely uninitialized
@@ -181,8 +181,8 @@ template<class BIN, class real, class tag>
 inline bool get_first(
    const BIN &bin,
    const unsigned s,
-   const size_t i, const size_t j,
-   const size_t zone,
+   const ulong i, const ulong j,
+   const ulong zone,
    const eyetardiff<real> &etd,
    const real qmin, inq<real,tag> &q
 ) {
@@ -307,7 +307,7 @@ inline bool op_all(
    inline void operator()(\
       const engine<real> &engine, const image<real,color> &image,\
       std::vector<minimum_and_shape<real,base>> &bin,\
-      size_t &endsorted, const size_t binsize, const real maximum,\
+      ulong &endsorted, const ulong binsize, const real maximum,\
       inq<real,base> &qa, inq<real,base> *qa_ptr,\
       inq<real,base> &qb, inq<real,base> *qb_ptr,\
       color *const ptr,\
@@ -315,7 +315,7 @@ inline bool op_all(
       const vars<real,base> &vars, const point<real> &light,\
       const point<real> &target, const point<real> &diff,\
       pix &pixel, \
-      const size_t i, const size_t j, const size_t zone\
+      const ulong i, const ulong j, const ulong zone\
    ) const {\
       (void)engine;  (void)image; (void)bin;    (void)endsorted; (void)binsize;\
       (void)maximum; (void)qa;    (void)qa_ptr; (void)qb;        (void)qb_ptr;\
@@ -332,13 +332,13 @@ inline bool op_all(
    inline bool operator()(\
       const engine<real> &engine, const image<real,color> &image,\
       std::vector<minimum_and_shape<real,base>> &bin,\
-      size_t &endsorted, const size_t binsize, const real maximum,\
+      ulong &endsorted, const ulong binsize, const real maximum,\
       inq<real,base> &qa, inq<real,base> *qa_ptr,\
       inq<real,base> &qb, inq<real,base> *qb_ptr,\
       const real h, const real v, RGBA<unsigned> &sum,\
       const vars<real,base> &vars, const light<real> &light,\
       pix &pixel, \
-      const size_t i, const size_t j, const size_t zone\
+      const ulong i, const ulong j, const ulong zone\
    ) const {\
       (void)engine;  (void)image; (void)bin;    (void)endsorted; (void)binsize;\
       (void)maximum; (void)qa;    (void)qa_ptr; (void)qb;        (void)qb_ptr;\
@@ -432,8 +432,12 @@ kip_fill_plain(any_plain) {
 
          // sort more
          endsorted = get_endsorted(endsorted, engine, binsize);
-         std::partial_sort(bin.begin()+s, bin.begin()+long(endsorted),
-                           bin.end(), less<real,base>());
+         std::partial_sort(
+            bin.begin()+s,
+            bin.begin()+endsorted,
+            bin.end(),
+            less<real,base>()
+         );
       }
       prev = newprev;
 
@@ -455,8 +459,12 @@ kip_fill_plain(any_plain) {
 
          // sort more
          endsorted = get_endsorted(endsorted, engine, binsize);
-         std::partial_sort(bin.begin()+s, bin.begin()+long(endsorted),
-                           bin.end(), less<real,base>());
+         std::partial_sort(
+            bin.begin()+s,
+            bin.begin()+endsorted,
+            bin.end(),
+            less<real,base>()
+         );
       }
    }
 
@@ -583,8 +591,12 @@ kip_fill_anti(any_anti) {
 
          // sort more
          endsorted = get_endsorted(endsorted, engine, binsize);
-         std::partial_sort(bin.begin()+s, bin.begin()+long(endsorted),
-                           bin.end(), less<real,base>());
+         std::partial_sort(
+            bin.begin()+s,
+            bin.begin()+endsorted,
+            bin.end(),
+            less<real,base>()
+         );
       }
 
       if (f) {
@@ -625,25 +637,25 @@ inline void fill_loop_plain(
    const engine<real> &engine, image<real,color> &image,
    const vars<real,base> &vars, const light<real> &light,
 
-   const size_t imin, const size_t iend,
-   const size_t jmin, const size_t jend,
-   const size_t zone, const real maximum,
+   const ulong imin, const ulong iend,
+   const ulong jmin, const ulong jend,
+   const ulong zone, const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
-   size_t endsorted, const size_t binsize,
+   ulong endsorted, const ulong binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
    array<2,pix> &pixel,
    const ACTION &action
 ) {
    // vertical pixels in the current bin...
-   for (size_t j = jmin;  j < jend;  ++j) {
+   for (ulong j = jmin;  j < jend;  ++j) {
       const point<real> *tar = &image.prior.targets(imin,j);
       color *ptr = &image(imin,j);  unsigned prev = 0;
       pix *p = &pixel(imin,j);
 
       // horizontal pixels in the current bin...
-      for (size_t i = imin;  i < iend;  ++i, ++tar, ++ptr, ++p) {
+      for (ulong i = imin;  i < iend;  ++i, ++tar, ++ptr, ++p) {
          const point<real> target = vars.t2e.back(*tar);
 
          action(
@@ -671,12 +683,12 @@ inline void fill_loop_lean(
    const vars  <real,base > &vars,
    const light <real      > &light,
 
-   const size_t imin, const size_t iend,
-   const size_t jmin, const size_t jend,
-   const size_t zone, const real maximum,
+   const ulong imin, const ulong iend,
+   const ulong jmin, const ulong jend,
+   const ulong zone, const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
-   size_t endsorted, const size_t binsize,
+   ulong endsorted, const ulong binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
    array<2,pix> &pixel,
@@ -687,14 +699,14 @@ inline void fill_loop_lean(
    const real vmin = vars.vhalf - vars.vmax, dsq = view.d*view.d;
 
    // vertical pixels in the current bin...
-   for (size_t j = jmin;  j < jend;  ++j) {
+   for (ulong j = jmin;  j < jend;  ++j) {
       const real v = vmin + real(j   )*vars.vfull, tmp = dsq + v*v;
       /* */ real h = hmin + real(imin)*vars.hfull;
       color *ptr = &image(imin,j);  unsigned prev = 0;
       pix   *p   = &pixel(imin,j);
 
       // horizontal pixels in the current bin...
-      for (size_t i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
+      for (ulong i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
          // a=(d,0,0), b=(0,h,v), (x,y,z)=a+(b-a)/mod(b-a)
          const real norm = real(1)/std::sqrt(tmp + h*h);
          const point<real> target =
@@ -721,7 +733,7 @@ inline void fill_loop_lean(
 
 // qqq Figure out good antialiasing treatment of per-pixel information
 template<
-  class real, class color, class base, class pix, class size_t, class ACTION
+  class real, class color, class base, class pix, class ulong, class ACTION
 >
 inline void fill_loop_anti(
    const engine<real      > &engine,
@@ -729,14 +741,14 @@ inline void fill_loop_anti(
    const vars  <real,base > &vars,
    const light <real      > &light,
 
-   const real hcent, const size_t imin, const size_t iend,
-         real v,     const size_t jmin, const size_t jend,
+   const real hcent, const ulong imin, const ulong iend,
+         real v,     const ulong jmin, const ulong jend,
 
-   const size_t zone,
+   const ulong zone,
    const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
-   size_t endsorted, const size_t binsize,
+   ulong endsorted, const ulong binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
    array<2,pix> &pixel,
@@ -745,12 +757,12 @@ inline void fill_loop_anti(
    real h = hcent;
 
    // vertical pixels in the current bin...
-   for (size_t j = jmin;  j < jend;  ++j, v += vars.vfull, h = hcent) {
+   for (ulong j = jmin;  j < jend;  ++j, v += vars.vfull, h = hcent) {
       color *ptr = &image(imin,j);
       pix   *p   = &pixel(imin,j);
 
       // horizontal pixels in the current bin...
-      for (size_t i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
+      for (ulong i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
          RGBA<unsigned> sum(0,0,0);  // qqq don't hardcode RGBA, here/elsewhere
 
          // one_anti()
@@ -761,17 +773,7 @@ inline void fill_loop_anti(
             maximum, qa, &qa, qb, &qb, h, v, sum, vars, light, *p,
             i, j, zone
          ))
-            *ptr = op::div<unsigned char>(sum,vars.anti2);
-
-         /*
-         action(
-            engine,image, bin, endsorted,binsize,
-            maximum, qa,&qa, qb,&qb, h,v, sum, vars,light, *p,
-            i,j, zone
-         )
-         ? (*ptr = op::round<unsigned char>(sum * vars.rec_anti2(float())))
-         :  *ptr;
-         */
+            *ptr = op::div<uchar>(sum,vars.anti2);
       }
    }
 }
@@ -787,11 +789,11 @@ inline void fill_loop_anti(
 template<class real, class color>
 inline void bin_border(
    image<real,color> &image,
-   const size_t imin, const size_t iend,
-   const size_t jmin, const size_t jend, const color &border
+   const ulong imin, const ulong iend,
+   const ulong jmin, const ulong jend, const color &border
 ) {
-   for (size_t j=jmin; j<jend; ++j) image(imin,j) = image(iend-1,j) = border;
-   for (size_t i=imin; i<iend; ++i) image(i,jmin) = image(i,jend-1) = border;
+   for (ulong j=jmin; j<jend; ++j) image(imin,j) = image(iend-1,j) = border;
+   for (ulong i=imin; i<iend; ++i) image(i,jmin) = image(i,jend-1) = border;
 }
 
 
@@ -806,12 +808,12 @@ void trace_bin(
    const light <real      > &light,
    array<2,pix> &pixel,
 
-   size_t imin, size_t iend,
-   size_t jmin, size_t jend,
-   const size_t zone, const size_t max_binsize,
+   ulong imin, ulong iend,
+   ulong jmin, ulong jend,
+   const ulong zone, const ulong max_binsize,
 
    std::vector<minimum_and_shape<real,base>> &bin,
-   const size_t binsize
+   const ulong binsize
 ) {
    // border?
    if (image.border.bin)
@@ -843,7 +845,7 @@ void trace_bin(
    // binsize-dependent [partial-]sorting actions
    using diff_t =
       typename std::vector<minimum_and_shape<real,base>>::difference_type;
-   size_t endsorted = 0;
+   ulong endsorted = 0;
 
    if (binsize == 2) {
       if (bin[1].minimum < bin[0].minimum)
@@ -851,7 +853,9 @@ void trace_bin(
    } else if (binsize > 2) {
       endsorted = get_endsorted(0, engine, binsize);
       std::partial_sort(
-         bin.begin(), bin.begin()+diff_t(endsorted), bin.end(),
+         bin.begin(),
+         bin.begin()+diff_t(endsorted),
+         bin.end(),
          less<real,base>()
       );
    }

@@ -9,7 +9,7 @@
 // view
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t>
+template<class real = default_real>
 class view {
 public:
    static constexpr real default_d = real(8);

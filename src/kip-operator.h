@@ -46,8 +46,8 @@ void propagate_binary(const shape<real,tag> &obj, const bool force)
 template<class VEC, class tag>
 void propagate_nary(const VEC &vec, const tag &base, const bool force)
 {
-   const size_t size = vec.size();
-   for (size_t n = 0;  n < size;  ++n) {
+   const ulong size = vec.size();
+   for (ulong n = 0;  n < size;  ++n) {
       bool baseset;
       if (!(baseset = vec[n].op->baseset) || force) {
          vec[n].op->base() = base;
@@ -77,8 +77,8 @@ template<class INQ>
 class afew_book {
 public:
    afew<INQ> points;  // for this operand
-   size_t size;  // size (computed before loop) of "points"
-   size_t next;  // running next-position
+   ulong size;  // size (computed before loop) of "points"
+   ulong next;  // running next-position
    bool in_now;  // status as we move along the ray
 
    inline       INQ &q()       { return points[next]; }
@@ -91,20 +91,20 @@ public:
 template<class T>
 class grower {
    std::vector<T> vec;
-   size_t position;
+   ulong position;
 
 public:
    // grower()
    inline grower() : position(0) { }
 
    // more(count)
-   inline T *more(const size_t count)
+   inline T *more(const ulong count)
    {
-      const size_t available = vec.size() - position;
+      const ulong available = vec.size() - position;
       if (available < count)
          vec.insert(vec.end(), count-available, T());
          /*
-         for (size_t i = 0;  i < count-available;  ++i)
+         for (ulong i = 0;  i < count-available;  ++i)
             vec.push_back(T());
          */
 
@@ -114,7 +114,7 @@ public:
    }
 
    // less(count)
-   inline void less(const size_t count)
+   inline void less(const ulong count)
    {
       position -= count;
    }

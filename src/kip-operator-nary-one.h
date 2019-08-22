@@ -5,7 +5,7 @@
 // one
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class one : public shape<real,tag> {
    using shape<real,tag>::interior;
 
@@ -26,7 +26,7 @@ kip_process(one)
    kip_data.nop = vec.size();
    std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
 
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->is_operand = true;
       min_and_op[i].minimum = minimum_t((min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars));
@@ -40,7 +40,7 @@ kip_process(one)
 
    // Bookkeeping
    nary.total_in = 0;
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].min = min_and_op[i].minimum;
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
@@ -52,13 +52,13 @@ kip_process(one)
 
    if (nary.total_in < 2) {
       real rv = min_and_op[0].minimum;
-      for (size_t i = 1;  i < kip_data.nop;  ++i)
+      for (ulong i = 1;  i < kip_data.nop;  ++i)
          rv = op::min(rv, real(min_and_op[i].minimum));
       return rv;
    }
 
-   std::vector<real> minin(nary.total_in);  size_t n = 0;
-   for (size_t i = 0;  i < kip_data.nop;  ++i)
+   std::vector<real> minin(nary.total_in);  ulong n = 0;
+   for (ulong i = 0;  i < kip_data.nop;  ++i)
       if (vec[i].in)
          minin[n++] = min_and_op[i].minimum;
 
@@ -80,7 +80,7 @@ kip_aabb(one)
    const vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
 
-   for (size_t i = 0;  i < kip_data.nop;  ++i)
+   for (ulong i = 0;  i < kip_data.nop;  ++i)
       rv = internal::bound_combine(rv, vec[i].op->aabb(), internal::op_less());
    return rv;
 } kip_end
@@ -91,7 +91,7 @@ kip_aabb(one)
 kip_dry(one)
 {
    const vec_t &vec = kip_data.vec();
-   for (size_t i = 0;  i < kip_data.nop;  ++i)
+   for (ulong i = 0;  i < kip_data.nop;  ++i)
       if (!vec[i].op->dry(seg)) return false;  // makes the whole thing non-dry
    return kip_data.nop > 0;  // false if no operands, true otherwise
 } kip_end
@@ -101,14 +101,14 @@ kip_dry(one)
 // randomize
 kip_randomize(one)
 {
-   const size_t nop = 4;
+   const ulong nop = 4;
 
    point<real> loc;
    random_full(loc);
    obj.clear();
    obj.nary.vec().reserve(nop);
 
-   for (size_t i = 0;  i < nop;  ++i) {
+   for (ulong i = 0;  i < nop;  ++i) {
       sphere<real,tag> *const ptr = new sphere<real,tag>;
       randomize(*ptr);
       obj.nary.push().op = ptr;
@@ -144,20 +144,20 @@ kip_infirst(one)
       //    in 1 --> in 0
       //    in 1 --> in 2
       inq<real,tag> qtmp;  q = qmin;
-      for (size_t i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
+      for (ulong i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
          if (internal::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
             q = qtmp;
       return q < qmin;
    }
 
    // Inside 2 or more operands...
-   const size_t num_operand = kip_data.nop;
+   const ulong num_operand = kip_data.nop;
    using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information
    bool found = false;
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       operand[i].size =
          vec[i].min < qmin &&
          internal::op_all(vec[i].op, kip_etd,
@@ -169,10 +169,10 @@ kip_infirst(one)
    if (!found) return kip_less, false;
 
    // search for the first relevant intersection.
-   size_t num_in = nary.total_in;
+   ulong num_in = nary.total_in;
 
    for (int current = -1 ;; ++operand[current].next, current = -1) {
-      for (size_t i = 0;  i < kip_data.nop;  ++i)
+      for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (operand[i].next < operand[i].size &&
              (current == -1 || operand[i].q() < operand[current].q()))
             current = int(i);
@@ -202,13 +202,13 @@ kip_inall(one)
    const vec_t &vec = kip_data.vec();
    if (kip_data.nop == 0) return false;  // no operands --> no intersection
 
-   const size_t num_operand = kip_data.nop;
+   const ulong num_operand = kip_data.nop;
    using per_operand = afew_book<inq<real,tag>>;
 #include "kip-macro-workspace.h"
 
    // compute operand information
    bool found = false;
-   for (size_t i = 0;  i < kip_data.nop;  ++i) {
+   for (ulong i = 0;  i < kip_data.nop;  ++i) {
       operand[i].size =
          vec[i].min < qmin &&
          internal::op_all(vec[i].op, kip_etd,
@@ -219,11 +219,11 @@ kip_inall(one)
    }
    if (!found) return kip_less, false;
 
-   size_t num_in = nary.total_in;
+   ulong num_in = nary.total_in;
    ints.reset();
 
    for (int current = -1 ;; ++operand[current].next, current = -1) {
-      for (size_t i = 0;  i < kip_data.nop;  ++i)
+      for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (operand[i].next < operand[i].size &&
              (current == -1 || operand[i].q() < operand[current].q()))
              current = int(i);

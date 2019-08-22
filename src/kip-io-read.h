@@ -2,14 +2,10 @@
 #pragma once
 
 // default shape base
-#ifdef KIP_DEFAULT_TAG_T
-   using default_tag_t = KIP_DEFAULT_TAG_T;
-#else
-   using default_tag_t = rgb;
-#endif
+using default_base = rgb;
 
 // shape - forward declaration
-template<class = default_real_t, class = default_tag_t>
+template<class = default_real, class = default_base>
 class shape;
 
 
@@ -120,13 +116,13 @@ namespace internal {
 
 
 kip_make_read_value(char, "char")
-
 kip_make_read_value(signed char, "signed char")
+kip_make_read_value(unsigned char, "unsigned char")
+
 kip_make_read_value(short, "short")
 kip_make_read_value(int, "int")
 kip_make_read_value(long, "long")
 
-kip_make_read_value(unsigned char, "unsigned char")
 kip_make_read_value(unsigned short, "unsigned short")
 kip_make_read_value(unsigned int, "unsigned int")
 kip_make_read_value(unsigned long, "unsigned long")
@@ -176,19 +172,18 @@ bool read_value(
 
 
 // -----------------------------------------------------------------------------
-// read_color_component - read component (for now, only unsigned char)
-//    of RGB or RGBA
+// read_color_component - read component (for now, only uchar) of RGB or RGBA
 // crayola_or_component
 // read_value(RGB)
 // read_value(RGBA)
 // -----------------------------------------------------------------------------
 
 // read_color_component
-// We don't simply use read_value(unsigned char), because in this context
-// we want to allow for more-descriptive diagnostics than that would allow.
+// We don't simply use read_value(uchar), because in this context we
+// want to allow for more-descriptive diagnostics than that would allow.
 template<class ISTREAM>
 bool read_color_component(
-   ISTREAM &s, unsigned char &x,  // x in {r,g,b,a}
+   ISTREAM &s, uchar &x,  // x in {r,g,b,a}
    const std::string &description = "unsigned char-based color component"
 ) {
    if (!s.prefix('\0', description, false))  // false: eof not okay
@@ -198,7 +193,6 @@ bool read_color_component(
    s.input(ell);
 
    if (!s.fail()) {
-      using uchar = unsigned char;
       const uchar min = std::numeric_limits<uchar>::min();
       const uchar max = std::numeric_limits<uchar>::max();
 
@@ -359,7 +353,7 @@ inline std::istream &operator>>(std::istream &s, crayola &obj)
 template<class>
 kip::ostream &crayola_write(kip::ostream &k, const crayola &obj)
 {
-   const size_t size = crayola::color_table().size();
+   const ulong size = crayola::color_table().size();
    using print_as = unsigned;
 
    if (obj.id() >= size) {

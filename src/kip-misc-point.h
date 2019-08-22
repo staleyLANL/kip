@@ -7,7 +7,7 @@
 // point
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t>
+template<class real = default_real>
 class point {
 public:
    real x, y, z;

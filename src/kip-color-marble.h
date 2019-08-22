@@ -10,7 +10,7 @@
 // zzz make this more hierarchical, e.g. based on full RGB<T> or crayola
 // -----------------------------------------------------------------------------
 
-template<class T = unsigned char, class real = double>
+template<class T = uchar, class real = double>
 class marble {
 public:
    static const char *const description;

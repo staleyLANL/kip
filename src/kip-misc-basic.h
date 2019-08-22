@@ -7,8 +7,13 @@
 // Miscellaneous
 // -----------------------------------------------------------------------------
 
+// u*
+// I prefer this slightly shorter, no-underscore terminology
+using uchar = unsigned char;
+using ulong = std::size_t;
+
 // Default type: real
-using default_real_t = double;
+using default_real = double;
 
 // Key - like key() below, but always on (not turned off by KIP_NOKEY)
 inline void Key()

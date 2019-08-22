@@ -11,8 +11,8 @@
 // -----------------------------------------------------------------------------
 
 template<
-   class real = default_real_t,
-   class base = default_tag_t
+   class real = default_real,
+   class base = default_base
 >
 class model {
    // copy constructor/assignment; deliberately private
@@ -231,7 +231,7 @@ public:
    // clear, assign, size
    void clear();
    model &assign(const model &);
-   size_t size() const;
+   ulong size() const;
 
    // unbound
    void unbound();
@@ -255,8 +255,8 @@ public:
 // -----------------------------------------------------------------------------
 
 template<
-   class real = default_real_t,
-   class base = default_tag_t
+   class real = default_real,
+   class base = default_base
 >
 class loop {
    using pshape = const shape<real,base> *;
@@ -425,13 +425,13 @@ model<real,base>::push_bbox_ptr(
    bbox_representation_t rep;  rep.isbound = true;
 
    // bases
-   const base &default_base = default_parameter(internal::tclass<base>());
+   const base &default_param = default_parameter(internal::tclass<base>());
    const base
-          tight_base = &  _tight_base != &default_base
+          tight_base = &  _tight_base != &default_param
      ?   _tight_base : crayola::black,
-        partial_base = &_partial_base != &default_base
+        partial_base = &_partial_base != &default_param
      ? _partial_base : crayola::gray_medium,
-          loose_base = &  _loose_base != &default_base
+          loose_base = &  _loose_base != &default_param
      ?   _loose_base : crayola::white;
 
    const base xbase =
@@ -541,16 +541,16 @@ model<real,base> &model<real,base>::assign(const model<real,base> &from)
 namespace internal {
    class functor_size {
    public:
-      mutable size_t size;
+      mutable ulong size;
       inline functor_size() : size(0) { }
 
       template<class CONTAINER>
-      inline void operator()(CONTAINER &c) const { size += size_t(c.size()); }
+      inline void operator()(CONTAINER &c) const { size += ulong(c.size()); }
    };
 }
 
 template<class real, class base>
-size_t model<real,base>::size() const
+ulong model<real,base>::size() const
 {
    const internal::functor_size f;
    internal::allshape(*this, f);
@@ -623,8 +623,8 @@ namespace internal {
       template<class CONTAINER>
       inline void operator()(CONTAINER &obj) const
       {
-         const size_t size = obj.size();
-         for (size_t i = 0;  i < size;  ++i)
+         const ulong size = obj.size();
+         for (ulong i = 0;  i < size;  ++i)
             if (obj[i].on && !obj[i].isbound) {
                // next bounding box
                const bbox<real> b = obj[i].aabb();
@@ -800,10 +800,10 @@ bool read_shapes(kip::istream &k, NARY &obj)
       if (ch == ';' || ch == ')') {
          // transfer op to obj.vec(); then done
          obj.vec().clear();
-         const size_t nop = op.size();
+         const ulong nop = op.size();
          obj.vec().reserve(nop);
 
-         for (size_t n = 0;  n < nop;  ++n)
+         for (ulong n = 0;  n < nop;  ++n)
             obj.push().op = op[n];
          return true;
       }

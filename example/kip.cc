@@ -24,7 +24,6 @@ kip::engine<real      > engine;
 kip::image <real,color> image;
 
 // misc
-using ulong = unsigned long;
 int downsize;
 
 
@@ -901,12 +900,6 @@ bool read(
 int main(const int argc, const char *const *const argv)
 {
    /*
-   printval(sizeof(int));
-   printval(sizeof(unsigned int));
-   printval(sizeof(long));
-   printval(sizeof(unsigned long));
-   printval(sizeof(size_t));
-
    printval(sizeof(kip::bicylinder<real,base>));
    printval(sizeof(kip::biwasher  <real,base>));
    printval(sizeof(kip::box       <real,base>));

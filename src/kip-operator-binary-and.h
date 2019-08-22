@@ -220,8 +220,8 @@ kip_infirst(kipand)
       return binary.inb && (q = aq[0], true);
 
    // search for the relevant point
-   const size_t anum = aq.size();  size_t an = 0;  bool ina = binary.ina;
-   const size_t bnum = bq.size();  size_t bn = 0;  bool inb = binary.inb, is_a;
+   const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;
+   const ulong bnum = bq.size();  ulong bn = 0;  bool inb = binary.inb, is_a;
 
    do
       if (an < anum && bn < bnum)
@@ -254,8 +254,8 @@ kip_inall(kipand)
    if (!internal::op_all(binary.b, kip_etd, qmin,bq, insub))
       return binary.inb && ints.assign(aq);
 
-   const size_t anum=aq.size();  size_t an=0;  bool ina=binary.ina, in=interior;
-   const size_t bnum=bq.size();  size_t bn=0;  bool inb=binary.inb, is_a;
+   const ulong anum=aq.size();  ulong an=0;  bool ina=binary.ina, in=interior;
+   const ulong bnum=bq.size();  ulong bn=0;  bool inb=binary.inb, is_a;
 
    for (ints.reset();;) {
       if (an < anum && bn < bnum) is_a = aq[an].q < bq[bn].q;

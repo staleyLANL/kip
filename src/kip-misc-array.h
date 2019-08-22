@@ -39,7 +39,7 @@ namespace internal {
 template<class element>
 class array<0,element> {
    element *ptr;
-   size_t num;
+   ulong num;
 
    // copy constructor/assignment; deliberately private
    inline array(const array &) { }
@@ -51,7 +51,7 @@ public:
    inline explicit array() : ptr(nullptr), num(0) { }
 
    // array(n)
-   inline explicit array(const size_t n) : ptr(new element[n]), num(n) { }
+   inline explicit array(const ulong n) : ptr(new element[n]), num(n) { }
 
    // destructor
    inline ~array()
@@ -64,7 +64,7 @@ public:
    inline const element *data() const { return ptr; }
 
    // size
-   inline size_t size() const { return num; }
+   inline ulong size() const { return num; }
 
    // resize
    // Reallocates to size newsize, if different from present size.
@@ -75,7 +75,7 @@ public:
    {
       if (newsize != size()) {
          delete[] ptr;
-         ptr = new element[num = size_t(newsize)];
+         ptr = new element[num = ulong(newsize)];
       }
       return *this;
    }
@@ -120,7 +120,7 @@ template<class element>
 class array<1,element> : public array<0,element> {
    inline array(const array &) { }
    inline array &operator=(const array &) { return *this; }
-   size_t inum;
+   ulong inum;
 
 public:
 
@@ -128,31 +128,31 @@ public:
    inline explicit array() : array<0,element>(), inum(0) { }
 
    // array(i)
-   inline explicit array(const size_t i) : array<0,element>(i), inum(i) { }
+   inline explicit array(const ulong i) : array<0,element>(i), inum(i) { }
 
    // isize
-   inline const size_t &isize() const { return inum; }
+   inline const ulong &isize() const { return inum; }
 
    // resize
    template<class integer>
    inline typename internal::is_integer<integer,array>::result
    &resize(const integer i)
-      { return array<0,element>::resize((inum = size_t(i))), *this; }
+      { return array<0,element>::resize((inum = ulong(i))), *this; }
 
    // upsize
    template<class integer>
    inline typename internal::is_integer<integer,array>::result
    &upsize(const integer i)
-      { return array<0,element>::upsize((inum = size_t(i))), *this; }
+      { return array<0,element>::upsize((inum = ulong(i))), *this; }
 
    // operator()
-   inline const element &operator()(const size_t i) const
+   inline const element &operator()(const ulong i) const
    {
       kip_assert_index(i < inum);
       return (*this)[i];
    }
 
-   inline element &operator()(const size_t i)
+   inline element &operator()(const ulong i)
    {
       kip_assert_index(i < inum);
       return (*this)[i];
@@ -169,7 +169,7 @@ template<class element>
 class array<2,element> : public array<0,element> {
    inline array(const array &) { }
    inline array &operator=(const array &) { return *this; }
-   size_t inum, jnum;
+   ulong inum, jnum;
 
 public:
 
@@ -177,29 +177,29 @@ public:
    inline explicit array() : array<0,element>(), inum(0), jnum(0) { }
 
    // array(i,j)
-   inline explicit array(const size_t i, const size_t j) :
+   inline explicit array(const ulong i, const ulong j) :
       array<0,element>(i*j), inum(i), jnum(j) { }
 
    // isize, jsize
-   inline const size_t &isize() const { return inum; }
-   inline const size_t &jsize() const { return jnum; }
+   inline const ulong &isize() const { return inum; }
+   inline const ulong &jsize() const { return jnum; }
 
    // resize
-   inline array &resize(const size_t i, const size_t j)
+   inline array &resize(const ulong i, const ulong j)
       { return array<0,element>::resize((inum = i)*(jnum = j)), *this; }
 
    // upsize
-   inline array &upsize(const size_t i, const size_t j)
+   inline array &upsize(const ulong i, const ulong j)
       { return array<0,element>::upsize((inum = i)*(jnum = j)), *this; }
 
    // operator()
-   inline const element &operator()(const size_t i, const size_t j) const
+   inline const element &operator()(const ulong i, const ulong j) const
    {
       kip_assert_index(i < inum && j < jnum);
       return (*this)[i + inum*j];
    }
 
-   inline element &operator()(const size_t i, const size_t j)
+   inline element &operator()(const ulong i, const ulong j)
    {
       kip_assert_index(i < inum && j < jnum);
       return (*this)[i + inum*j];
@@ -216,7 +216,7 @@ template<class element>
 class array<3,element> : public array<0,element> {
    inline array(const array &) { }
    inline array &operator=(const array &) { return *this; }
-   size_t inum, jnum, knum;
+   ulong inum, jnum, knum;
 
 public:
 
@@ -226,36 +226,36 @@ public:
    { }
 
    // array(i,j,k)
-   inline explicit array(const size_t i, const size_t j, const size_t k) :
+   inline explicit array(const ulong i, const ulong j, const ulong k) :
       array<0,element>(i*j*k), inum(i), jnum(j), knum(k) { }
 
    // [ijk]size
-   inline const size_t &isize() const { return inum; }
-   inline const size_t &jsize() const { return jnum; }
-   inline const size_t &ksize() const { return knum; }
+   inline const ulong &isize() const { return inum; }
+   inline const ulong &jsize() const { return jnum; }
+   inline const ulong &ksize() const { return knum; }
 
    // resize
-   inline array &resize(const size_t i, const size_t j, const size_t k)
+   inline array &resize(const ulong i, const ulong j, const ulong k)
    {
       return array<0,element>::resize((inum = i)*(jnum = j)*(knum = k)), *this;
    }
 
    // upsize
-   inline array &upsize(const size_t i, const size_t j, const size_t k)
+   inline array &upsize(const ulong i, const ulong j, const ulong k)
    {
       return array<0,element>::upsize((inum = i)*(jnum = j)*(knum = k)), *this;
    }
 
    // operator()
    inline const element &operator()(
-      const size_t i, const size_t j, const size_t k
+      const ulong i, const ulong j, const ulong k
    ) const {
       kip_assert_index(i < inum && j < jnum && k < knum);
       return (*this)[i + inum*(j + jnum*k)];
    }
 
    inline element &operator()(
-      const size_t i, const size_t j, const size_t k
+      const ulong i, const ulong j, const ulong k
    ) {
       kip_assert_index(i < inum && j < jnum && k < knum);
       return (*this)[i + inum*(j + jnum*k)];

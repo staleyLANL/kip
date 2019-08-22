@@ -9,7 +9,7 @@
 // light
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t>
+template<class real = default_real>
 class light {
 
    // light source
@@ -18,8 +18,8 @@ class light {
 public:
 
    // operator[]
-   inline       point<real> &operator[](const size_t)       { return primary; }
-   inline const point<real> &operator[](const size_t) const { return primary; }
+   inline       point<real> &operator[](const ulong)       { return primary; }
+   inline const point<real> &operator[](const ulong) const { return primary; }
 
    // fix
    inline const light &fix() const

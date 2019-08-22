@@ -46,7 +46,7 @@ private:
    {
       kip_data.vec().reserve(kip_data.nop = from.size());
 
-      for (size_t n = 0;  n < kip_data.nop;  ++n)
+      for (ulong n = 0;  n < kip_data.nop;  ++n)
          kip_data.push().op =
               from.kip_data.vec()[n].op
             ? from.kip_data.vec()[n].op->duplicate()
@@ -64,7 +64,7 @@ private:
 public:
 
    // size
-   inline size_t size() const
+   inline ulong size() const
       { return kip_data.vec().size(); }
 
    // back
@@ -78,7 +78,7 @@ public:
    // clear
    inline void clear()
    {
-      for (size_t n = size();  n ; )
+      for (ulong n = size();  n ; )
          delete kip_data.vec()[--n].op;
       kip_data.vec().clear();
    }
@@ -160,7 +160,7 @@ public:
       diagnostic_t d = diagnostic_t::diagnostic_good;
       kip_data.nop = size();
 
-      for (size_t n = 0;  n < kip_data.nop;  ++n) {
+      for (ulong n = 0;  n < kip_data.nop;  ++n) {
          std::ostringstream oss;
          oss << '[' << n << ']';
 

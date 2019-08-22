@@ -3,8 +3,10 @@
 
 // This file defines the RGB and RGBA class templates, and related functions.
 
-// Default type for red, green, and blue (and alpha)
-using default_rgb_t = unsigned char;
+// Default component type for red, green, and blue (and alpha)
+using default_comp = uchar;
+
+// Forward
 class crayola;
 
 
@@ -109,7 +111,7 @@ inline
    >::result
 endcolor()
 {
-   // e.g., 256 (not 255) for 8-bit unsigned char
+   // e.g., 256 (not 255) for 8-bit uchar
    return to(maxcolor<T>()) + to(1);
 }
 
@@ -137,7 +139,7 @@ endcolor()
 // rgb (not templated)
 // -----------------------------------------------------------------------------
 
-template<class rgb_t = default_rgb_t>
+template<class rgb_t = default_comp>
 class RGB {
 public:
    static const char *const description;
@@ -202,7 +204,7 @@ inline component_t opaque()
 
 
 // RGBA
-template<class rgb_t = default_rgb_t>
+template<class rgb_t = default_comp>
 class RGBA {
 public:
    static const char *const description;
@@ -269,7 +271,7 @@ public:
    }
 
    // border
-   static inline RGBA border(const size_t num, const size_t den)
+   static inline RGBA border(const ulong num, const ulong den)
    {
       const value_t max = internal::maxcolor<value_t>();
 
@@ -352,27 +354,27 @@ inline RGB<
 // Some operators for RGBA
 // -----------------------------------------------------------------------------
 
-// RGBA<A> += RGBA<B>
-template<class A, class B>
-inline RGBA<A> &operator+=(RGBA<A> &lhs, const RGBA<B> &rhs)
+// RGBA<OUT> += RGBA<IN>
+template<class OUT, class IN>
+inline RGBA<OUT> &operator+=(RGBA<OUT> &lhs, const RGBA<IN> &rhs)
 {
-   lhs.r += A(rhs.r);
-   lhs.g += A(rhs.g);
-   lhs.b += A(rhs.b);
-   lhs.a += A(rhs.a);
+   lhs.r += OUT(rhs.r);
+   lhs.g += OUT(rhs.g);
+   lhs.b += OUT(rhs.b);
+   lhs.a += OUT(rhs.a);
    return lhs;
 }
 
 // op::div(RGBA,den)
 namespace op {
-   template<class A, class B>
-   inline RGBA<A> div(const RGBA<B> &value, const unsigned den)
+   template<class OUT, class IN>
+   inline RGBA<OUT> div(const RGBA<IN> &value, const unsigned den)
    {
-      return RGBA<A>(
-         A((value.r + den/2) / den),
-         A((value.g + den/2) / den),
-         A((value.b + den/2) / den),
-         A((value.a + den/2) / den)
+      return RGBA<OUT>(
+         OUT((value.r + den/2) / den),
+         OUT((value.g + den/2) / den),
+         OUT((value.b + den/2) / den),
+         OUT((value.a + den/2) / den)
       );
    }
 }

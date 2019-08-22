@@ -5,7 +5,7 @@
 // washer
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class washer : public shape<real,tag> {
    inline bool inside(const point<real> &) const;
    using shape<real,tag>::interior;

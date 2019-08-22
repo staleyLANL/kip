@@ -116,7 +116,7 @@ Then, you can do the following with obj:
    obj.valid ()         // obj's {x,y,z} all valid
 */
 
-template<class real = default_real_t>
+template<class real = default_real>
 class bbox {
 public:
 

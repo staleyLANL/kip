@@ -8,14 +8,14 @@
 // initialize_pixel: array<2,nothing_per_pixel>
 // no action
 inline void initialize_pixel(
-   array<2,nothing_per_pixel> &, const size_t, const size_t
+   array<2,nothing_per_pixel> &, const ulong, const ulong
 ) {
 }
 
 // initialize_pixel: array<2,pix>
 template<class pix>
 inline void initialize_pixel(
-   array<2,pix> &pixel, const size_t hpixel, const size_t vpixel
+   array<2,pix> &pixel, const ulong hpixel, const ulong vpixel
 ) {
    pixel.upsize(hpixel,vpixel);
 
@@ -59,8 +59,8 @@ inline void trace_vars(
          vars  <real,base > &vars     // auxiliary
 ) {
    (void)model;  (void)light;
-   const size_t hpixel = image.hpixel;
-   const size_t vpixel = image.vpixel;
+   const ulong hpixel = image.hpixel;
+   const ulong vpixel = image.vpixel;
 
    // t2e: target/eyeball rotate
    //    fore: to x-axis
@@ -108,10 +108,8 @@ inline void trace_vars(
    vars.anti2 = image.anti * image.anti;
 
    // rec_anti*
-   vars.rec_anti (real ()) = 1 / real (image.anti);
-   vars.rec_anti2(real ()) = 1 / real (image.anti * image.anti);
-   vars.rec_anti (float()) = 1 / float(image.anti);
-   vars.rec_anti2(float()) = 1 / float(image.anti * image.anti);
+   vars.rec_anti (real ()) = 1/real (image.anti);
+   vars.rec_anti (float()) = 1/float(image.anti);
 }
 
 
@@ -130,8 +128,8 @@ inline void trace_vipt(
    }
    if (image.anti > 1) return;
 
-   const size_t hpixel = image.hpixel;
-   const size_t vpixel = image.vpixel;
+   const ulong hpixel = image.hpixel;
+   const ulong vpixel = image.vpixel;
    const real   aspect = image.aspect;
 
    // New, vs. prior view/image?
@@ -149,12 +147,12 @@ inline void trace_vipt(
 
    if (!(new_fov || new_hpixel || new_vpixel || new_aspect)) {
       // new_d only
-      const size_t npixel = hpixel*vpixel;
+      const ulong npixel = hpixel*vpixel;
       const real diff_d = view.d - view.prior.d;
       #ifdef _OPENMP
          #pragma omp parallel for
       #endif
-      for (size_t n = 0;  n < npixel;  ++n)
+      for (ulong n = 0;  n < npixel;  ++n)
          image.prior.targets[n].x += diff_d;
    } else {
       // general change
@@ -164,11 +162,11 @@ inline void trace_vipt(
       #ifdef _OPENMP
          #pragma omp parallel for
       #endif
-      for (size_t j = 0;  j < vpixel;  ++j) {
+      for (ulong j = 0;  j < vpixel;  ++j) {
          const real v = vmin + real(j)*vars.vfull, tmp = dsq + v*v;
-         real h = hmin;  size_t n = j*hpixel;
+         real h = hmin;  ulong n = j*hpixel;
 
-         for (size_t i = 0;  i < hpixel;  ++i, h += vars.hfull) {
+         for (ulong i = 0;  i < hpixel;  ++i, h += vars.hfull) {
             // a = (d,0,0),  b = (0,h,v),  (x,y,z) = a+(b-a)/mod(b-a)
             const real norm = real(1)/std::sqrt(tmp + h*h);
             image.prior.targets[n++](view.d*(1-norm), h*norm, v*norm);
@@ -192,11 +190,11 @@ inline void trace_bitmap(
    image<real,color> &image  // input/output
 ) {
    // quick-initialize bitmap to background
-   const size_t size = image.hpixel * image.vpixel;
+   const ulong size = image.hpixel * image.vpixel;
    #ifdef _OPENMP
       #pragma omp parallel for
    #endif
-   for (size_t n = 0;  n < size;  ++n)
+   for (ulong n = 0;  n < size;  ++n)
       image.bitmap[n] = image.background;
 }
 
@@ -212,8 +210,8 @@ inline void trace_pixel(
    // but same difference). It doesn't seem like the right comment here...?
 
    // quick-initialize shape pointers to nullptr
-   const size_t hpixel = image.hpixel;
-   const size_t vpixel = image.vpixel;
+   const ulong hpixel = image.hpixel;
+   const ulong vpixel = image.vpixel;
 
    initialize_pixel(pixel, hpixel, vpixel);
 }
@@ -224,7 +222,7 @@ inline void trace_pixel(
 template<class SHAPEVEC>
 inline void object_border_shape(const SHAPEVEC &shape)
 {
-   for (size_t n = shape.size();  n--; ) {
+   for (ulong n = shape.size();  n--; ) {
       const typename SHAPEVEC::value_type &s = shape[n];
       s.mend.imin = s.mend.iend = 0;
       s.mend.jmin = s.mend.jend = 0;
@@ -255,23 +253,23 @@ inline void object_border_shape(const SHAPEVEC &shape, image<real,color> &image)
    const unsigned large = image.border.large;
 
    // for each shape
-   for (size_t n = shape.size();  n--; ) {
+   for (ulong n = shape.size();  n--; ) {
       // the shape
       const typename SHAPEVEC::value_type &s = shape[n];
 
       // its bounds: min and end
-      const size_t imin = s.mend.imin, iend = s.mend.iend;
-      const size_t jmin = s.mend.jmin, jend = s.mend.jend;
+      const ulong imin = s.mend.imin, iend = s.mend.iend;
+      const ulong jmin = s.mend.jmin, jend = s.mend.jend;
 
       // if we want to draw its bounds...
       if (s.on && imin < iend && jmin < jend) {
-         const size_t imax = iend-1;  assert(imax < image.hpixel);
-         const size_t jmax = jend-1;  assert(jmax < image.vpixel);
+         const ulong imax = iend-1;  assert(imax < image.hpixel);
+         const ulong jmax = jend-1;  assert(jmax < image.vpixel);
 
-         for (size_t i = imin;  i < iend;  ++i)
+         for (ulong i = imin;  i < iend;  ++i)
             if ((i % large) < small)
                image(i,jmin) = image(i,jmax) = color(s.base());///color::border();
-         for (size_t j = jmin;  j < jend;  ++j)
+         for (ulong j = jmin;  j < jend;  ++j)
             if ((j % large) < small)
                image(imin,j) = image(imax,j) = color(s.base());///color::border();
       }
@@ -311,7 +309,7 @@ inline void trace_uniform(
 ) {
    // clear *all* bins (each contains an array; could be lots of memory
    // waste if we cleared *only* up to the currently needed size)
-   for (size_t b = vars.uniform.size();  b-- ; )
+   for (ulong b = vars.uniform.size();  b-- ; )
       vars.uniform[b].clear();
 
    // resize (not upsize); speeds future clears above; note that separate
@@ -345,8 +343,8 @@ inline void trace_recursive(
          vars  <real,base > &vars,    // auxiliary
          array<2,pix>  &pixel    // per-pixel information
 ) {
-   const size_t hpixel = image.hpixel;
-   const size_t vpixel = image.vpixel;
+   const ulong hpixel = image.hpixel;
+   const ulong vpixel = image.vpixel;
 
    // bookkeeping
    static shape_vectors<real,base> sv;
@@ -390,7 +388,7 @@ inline void trace_block(
    // Also, we should have "first" to indicate first-time.
    assert(false);
 
-   const size_t cap = vars.block.size();
+   const ulong cap = vars.block.size();
    if (cap == 0) {
       // initialize block --- should just do once for a given model.
       // qqq Do this better later; should check that size and xzone,

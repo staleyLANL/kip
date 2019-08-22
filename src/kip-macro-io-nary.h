@@ -37,13 +37,13 @@ template<class real, class tag>
 kip::ostream &operator<<(
    kip::ostream &k, const kip_class<real,tag> &obj
 ) {
-   const size_t nop = obj.size();
+   const ulong nop = obj.size();
    bool okay;
 
    // stub
    if (format == format_t::format_stub) {
       okay = k << kip_quote(kip_class) "(";
-      for (size_t n = 0;  n < nop && okay;  ++n)
+      for (ulong n = 0;  n < nop && okay;  ++n)
          okay = (n ? bool(k << ", ") : true) &&
                  obj.kip_data.vec()[n].op->write(k);
       okay = okay && k << ')';
@@ -53,7 +53,7 @@ kip::ostream &operator<<(
    else if (format == format_t::format_one) {
       okay = k << kip_quote(kip_class) "(";
 
-      for (size_t n = 0;  n < nop && okay;  ++n)
+      for (ulong n = 0;  n < nop && okay;  ++n)
          okay = (n ? bool(k << ", ") : true) &&
                  obj.kip_data.vec()[n].op->write(k);
 
@@ -67,7 +67,7 @@ kip::ostream &operator<<(
    else if ((okay = k << kip_quote(kip_class) "(\n")) {
       k.level++;
 
-      for (size_t n = 0;  n < nop && okay;  ++n)
+      for (ulong n = 0;  n < nop && okay;  ++n)
          okay = (k << (n ? ",\n" : "")) &&
                  obj.kip_data.vec()[n].op->write(k.indent());
 

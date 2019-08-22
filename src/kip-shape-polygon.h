@@ -5,7 +5,7 @@
 // polygon
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class polygon : public shape<real,tag> {
    using shape<real,tag>::interior;
 
@@ -17,7 +17,7 @@ private:
    mutable rotate<3,real> rot;
    mutable array_simple<xypoint<real>> poly;  // rotated to 2d
    mutable real xlo, xhi, ylo, yhi;  // 2d bounding box
-   mutable size_t npts;
+   mutable ulong npts;
 
 public:
    using shape<real,tag>::basic;
@@ -25,7 +25,7 @@ public:
 
    // vertices
    table_t table;
-   inline size_t size() const { return table.size(); }
+   inline ulong size() const { return table.size(); }
 
    inline point<real> back(const point<real> &from) const { return rot.back(from); }
 
@@ -73,7 +73,7 @@ public:
       xypoint<real> a = poly[npts-1], b;
       bool apos = a.y >= y, inside = false;
 
-      for (size_t j = 0;  j < npts;  a = b, ++j) {
+      for (ulong j = 0;  j < npts;  a = b, ++j) {
          b = poly[j];
          if (apos != (b.y >= y) &&
             (apos = !apos) == ((b.y-y)*(a.x-b.x) >= (b.x-x)*(a.y-b.y)))
@@ -94,8 +94,8 @@ kip_process(polygon)
    interior = false;
    if ((npts = size()) < 3) return 0;
 
-   size_t loc = npts;
-   for (size_t i = 0;  i < npts;  ++i)
+   ulong loc = npts;
+   for (ulong i = 0;  i < npts;  ++i)
       if (mod2(cross(
           table[(i+1) % npts] - table[i],
           table[(i+2) % npts] - table[i]
@@ -123,7 +123,7 @@ kip_process(polygon)
    xlo = op::min(real(0), rot.ex);  ylo = 0;
    xhi = op::max(rot.h,rot.ex);  yhi = rot.ey;
 
-   for (size_t i = 3;  i < npts;  ++i) {
+   for (ulong i = 3;  i < npts;  ++i) {
       const real x = rot.forex(table[i]);
       const real y = rot.forey(table[i]);
       poly[i] = xypoint<real>(x,y);
@@ -138,7 +138,7 @@ kip_process(polygon)
    real minimum = std::numeric_limits<real>::max();
    xypoint<real> a = poly[npts-1], b;
 
-   for (size_t i = 0;  i < npts;  a = b, ++i) {
+   for (ulong i = 0;  i < npts;  a = b, ++i) {
       b = poly[i];
       const real a1 = basic.eye().x - a.x, a2 = b.x - a.x;
       const real b1 = basic.eye().y - a.y, b2 = b.y - a.y, den = a2*a2 + b2*b2;
@@ -172,7 +172,7 @@ kip_aabb(polygon)
    real ymin = table[0].y, ymax = ymin;
    real zmin = table[0].z, zmax = zmin;
 
-   for (size_t i = 1;  i < npts;  ++i) {
+   for (ulong i = 1;  i < npts;  ++i) {
       xmin = op::min(xmin, table[i].x),   xmax = op::max(xmax, table[i].x);
       ymin = op::min(ymin, table[i].y),   ymax = op::max(ymax, table[i].y);
       zmin = op::min(zmin, table[i].z),   zmax = op::max(zmax, table[i].z);
@@ -190,7 +190,7 @@ kip_aabb(polygon)
 // dry
 kip_dry(polygon)
 {
-   for (size_t i = 0;  i < npts;  ++i)
+   for (ulong i = 0;  i < npts;  ++i)
       if (seg.lt(table[i]))
          return false;  // at least one point below
    return true;  // all points above
@@ -239,7 +239,7 @@ kip_check(polygon)
    npts = size();
 
    // Require that no two successive points be equal
-   for (size_t i = 0;  i < npts;  ++i)
+   for (ulong i = 0;  i < npts;  ++i)
       if (table[i] == table[(i+1) % npts]) {
          std::ostringstream oss;
          oss << "polygon has successive coincident vertices [" << i
@@ -255,8 +255,8 @@ kip_check(polygon)
 // randomize
 kip_randomize(polygon)
 {
-   static const size_t max = 16;  // #points = #edges = max
-   const size_t npts = 3 + size_t((max-2)*random_unit<real>());
+   static const ulong max = 16;  // #points = #edges = max
+   const ulong npts = 3 + ulong((max-2)*random_unit<real>());
 
    // rotation to move vertices to their actual locations
    point<real> p;
@@ -271,7 +271,7 @@ kip_randomize(polygon)
    obj.table.clear();
    obj.table.reserve(npts);
 
-   for (size_t i = 0;  i < npts;  ++i)
+   for (ulong i = 0;  i < npts;  ++i)
       obj.table.push_back(move.back(
          point<real>(real(0.3)*random_unit<real>(), real(0.3)*random_unit<real>(), 0)
       ));
@@ -301,7 +301,7 @@ kip_read_value(polygon) {
 
    obj.table.clear();
    s.bail = false;
-   size_t size = 0;
+   ulong size = 0;
 
    bool okay =
       read_left(s) &&
@@ -311,7 +311,7 @@ kip_read_value(polygon) {
       obj.table.reserve(size);
       point<real> p;
 
-      for (size_t i = 0;  i < size && okay;  ++i)
+      for (ulong i = 0;  i < size && okay;  ++i)
          if ((okay =
               read_comma(s) && read_value(s, p.x) &&
               read_comma(s) && read_value(s, p.y) &&
@@ -331,7 +331,7 @@ kip_read_value(polygon) {
 // kip::ostream
 kip_ostream(polygon) {
    bool okay;
-   const size_t npts = obj.size();
+   const ulong npts = obj.size();
 
    // stub
    if (format == format_t::format_stub)
@@ -342,7 +342,7 @@ kip_ostream(polygon) {
    else if (format == format_t::format_one ||
             format == format_t::format_op) {
       okay = k << "polygon(" << npts;
-      for (size_t i = 0;  i < npts && okay;  ++i)
+      for (ulong i = 0;  i < npts && okay;  ++i)
          okay = k << ", " << obj.table[i];
       okay = okay && write_finish(k, obj, true);
    }
@@ -350,7 +350,7 @@ kip_ostream(polygon) {
    // full
    else {
       okay = k << "polygon(\n   " && k.indent() << npts;
-      for (size_t i = 0;  i < npts && okay;  ++i)
+      for (ulong i = 0;  i < npts && okay;  ++i)
          okay = k << ",\n   " && k.indent() << obj.table[i];
       okay = okay && write_finish(k, obj, false);
    }

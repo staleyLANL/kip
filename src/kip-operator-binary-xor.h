@@ -5,7 +5,7 @@
 // kipxor
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class kipxor : public shape<real,tag> {
    using shape<real,tag>::interior;
 
@@ -247,8 +247,8 @@ kip_inall(kipxor)
          internal::op_all(binary.b, kip_etd, qmin,bq,   insub)))
       return ints.assign(aq).reverse(binary.inb);
 
-   const size_t anum = aq.size();  size_t an = 0;  bool ina = binary.ina;
-   const size_t bnum = bq.size();  size_t bn = 0;  bool inb = binary.inb;
+   const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;
+   const ulong bnum = bq.size();  ulong bn = 0;  bool inb = binary.inb;
 
    ints.reset();
    while (an < anum || bn < bnum)

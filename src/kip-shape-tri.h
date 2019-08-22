@@ -54,7 +54,7 @@ public:
 // tri
 // -----------------------------------------------------------------------------
 
-template<class real = default_real_t, class tag = default_tag_t>
+template<class real = default_real, class tag = default_base>
 class tri : public shape<real,tag> {
 
    // transformation
@@ -66,9 +66,9 @@ public:
 
    // u(), v(), w(): retrieve vertices
    using shape<real,tag>::vertex;
-   inline size_t &u() const { return vertex.u; }
-   inline size_t &v() const { return vertex.v; }
-   inline size_t &w() const { return vertex.w; }
+   inline ulong &u() const { return vertex.u; }
+   inline ulong &v() const { return vertex.v; }
+   inline ulong &w() const { return vertex.w; }
 
    // ghi()
    inline point<real> &ghi() const
@@ -86,7 +86,7 @@ public:
 
    // tri(u,v,w)
    inline explicit tri(
-      const size_t &a, const size_t &b, const size_t &c
+      const ulong &a, const ulong &b, const ulong &c
    ) :
       shape<real,tag>(this)
    {
@@ -126,7 +126,7 @@ public:
 
    // operator()(u,v,w)
    inline tri &operator()(
-      const size_t &a, const size_t &b, const size_t &c
+      const ulong &a, const ulong &b, const ulong &c
    ) {
       u() = a;
       v() = b;

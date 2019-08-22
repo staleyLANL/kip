@@ -48,7 +48,7 @@ public:
 // -----------------------------------------------------------------------------
 
 // xypoint
-template<class real = default_real_t>
+template<class real = default_real>
 class xypoint {
 public:
    real x, y;
@@ -57,7 +57,7 @@ public:
 };
 
 // xrpoint
-template<class real = default_real_t>
+template<class real = default_real>
 class xrpoint {
 public:
    real x, r;
@@ -74,7 +74,7 @@ public:
 template<class value_t>
 class array_simple {
    value_t *ptr;
-   size_t size;
+   ulong size;
 
 public:
 
@@ -88,7 +88,7 @@ public:
    }
 
    // resize
-   inline void resize(const size_t newsize)
+   inline void resize(const ulong newsize)
    {
       // does *not* copy old values
       if (size != newsize) {
@@ -98,8 +98,8 @@ public:
    }
 
    // operator[]
-   inline       value_t &operator[](const size_t n)       { return ptr[n]; }
-   inline const value_t &operator[](const size_t n) const { return ptr[n]; }
+   inline       value_t &operator[](const ulong n)       { return ptr[n]; }
+   inline const value_t &operator[](const ulong n) const { return ptr[n]; }
 };
 
 
@@ -229,9 +229,9 @@ class afew {
    // Note: length...
    //    must be >= 2 for convex() to work
    //    must be >= 4 for four() to work
-   static const size_t length = 12;
+   static const ulong length = 12;
    INQ buffer[length], *ptr;
-   size_t bufsize, num;
+   ulong bufsize, num;
 
 public:
 
@@ -255,7 +255,7 @@ public:
       } else
          ptr = new INQ[bufsize = from.bufsize];
 
-      for (size_t i = 0;  i < num;  ++i)
+      for (ulong i = 0;  i < num;  ++i)
          ptr[i] = from.ptr[i];
    }
 
@@ -293,21 +293,21 @@ public:
       }
 
       num = from.num;
-      for (size_t i = 0;  i < num;  ++i)
+      for (ulong i = 0;  i < num;  ++i)
          ptr[i] = from.ptr[i];
       return *this;
    }
 
    // size()
-   inline size_t size() const { return num; }
+   inline ulong size() const { return num; }
 
    // setsize(n) - use only if you know what you're doing
-   inline void setsize(const size_t n) { num = n; }
+   inline void setsize(const ulong n) { num = n; }
 
    // operator[]
-   inline       INQ &operator[](const size_t i)
+   inline       INQ &operator[](const ulong i)
       { kip_assert_index(i < num);  return ptr[i]; }
-   inline const INQ &operator[](const size_t i) const
+   inline const INQ &operator[](const ulong i) const
       { kip_assert_index(i < num);  return ptr[i]; }
 
    // push
@@ -317,7 +317,7 @@ public:
       if (num == bufsize) {
          bufsize += bufsize;
          INQ *const newptr = new INQ[bufsize];
-         for (size_t i = 0;  i < num;  ++i)
+         for (ulong i = 0;  i < num;  ++i)
             newptr[i] = ptr[i];
          if (ptr != buffer)
             delete[] ptr;
@@ -408,7 +408,7 @@ public:
    inline afew &reverse(const bool doit)
    {
       if (doit)
-         for (size_t i = 0;  i < num;  ++i)
+         for (ulong i = 0;  i < num;  ++i)
             ptr[i].reverse();
       return *this;
    }

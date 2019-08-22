@@ -34,18 +34,14 @@ public:
 
    // qqq figure out if we really need the crap below
    // anti-dependent constants
-   // in long double, double, and single: 1/anti, and 1/(anti*anti)
-   mutable long double q_rec_anti, q_rec_anti2;
-   mutable      double d_rec_anti, d_rec_anti2;
-   mutable       float f_rec_anti, f_rec_anti2;
+   // 1/anti in long double, double, and single
+   mutable long double q_rec_anti;
+   mutable      double d_rec_anti;
+   mutable       float f_rec_anti;
 
-   long double &rec_anti (const long double) const { return q_rec_anti ; }
-        double &rec_anti (const      double) const { return d_rec_anti ; }
-         float &rec_anti (const       float) const { return f_rec_anti ; }
-
-   long double &rec_anti2(const long double) const { return q_rec_anti2; }
-        double &rec_anti2(const      double) const { return d_rec_anti2; }
-         float &rec_anti2(const       float) const { return f_rec_anti2; }
+   long double &rec_anti(const long double) const { return q_rec_anti; }
+        double &rec_anti(const      double) const { return d_rec_anti; }
+         float &rec_anti(const       float) const { return f_rec_anti; }
 };
 
 }

@@ -19,8 +19,6 @@ public:
 // colormap_jet
 template<class unused>
 class colormap_jet {
-   using uchar = unsigned char;
-
 public:
    // component, color, vec
    using component = double;
