@@ -23,7 +23,7 @@
 // General #includes
 // -----------------------------------------------------------------------------
 
-// C++ files
+// C++
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -38,7 +38,7 @@
 #include <sstream>
 #include <vector>
 
-// OpenMP files
+// OpenMP
 #ifdef _OPENMP
 #include <omp.h>
 #endif

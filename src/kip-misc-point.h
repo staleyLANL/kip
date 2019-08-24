@@ -1,8 +1,6 @@
 
 #pragma once
 
-// This file defines the point class template and related functions.
-
 // -----------------------------------------------------------------------------
 // point
 // -----------------------------------------------------------------------------
@@ -13,84 +11,85 @@ public:
    real x, y, z;
 
    // point()
-   inline explicit point()
-   { }
+   explicit point() { }
 
    // point(x,y,z)
-   inline explicit point(const real _x, const real _y, const real _z) :
-      x(_x), y(_y), z(_z)
+   explicit point(const real a, const real b, const real c) :
+      x(a), y(b), z(c)
    { }
 
-   // point(point<TFROM>)
-   template<class TFROM>
-   inline explicit point(const point<TFROM> &from) :
+   // point(point<X>)
+   template<class X>
+   explicit point(const point<X> &from) :
       x(real(from.x)), y(real(from.y)), z(real(from.z))
    { }
 
-
    // operator()(x,y,z)
-   inline point &operator()(const real _x, const real _y, const real _z)
+   void operator()(const real a, const real b, const real c)
    {
-      x = _x;
-      y = _y;
-      z = _z;
-      return *this;
+      x = a, y = b, z = c;
    }
 
    // operator()(offset, d,theta,phi)
-   inline point &operator()(
+   // Some testing suggests that other ways of expressing
+   // the formulas give no discernable speed improvements.
+   void operator()(
       const point<real> &offset, const real d, const real theta, const real phi
    ) {
-      const real p = phi  *(pi<real>/180), cosp = std::cos(p);
-      const real t = theta*(pi<real>/180);
+      const real t = theta*(pi<real>*(real(1)/180));
+      const real p = phi  *(pi<real>*(real(1)/180)), dcosp = d*std::cos(p);
 
-      x = offset.x + std::cos(t)*d*cosp;
-      y = offset.y - std::sin(t)*d*cosp;
+      x = offset.x + std::cos(t)*dcosp;
+      y = offset.y - std::sin(t)*dcosp;
       z = offset.z + std::sin(p)*d;
-
-      return *this;
    }
 };
 
 
 
 // -----------------------------------------------------------------------------
-// point: functions
+// functions
 // -----------------------------------------------------------------------------
 
 // random_full
 template<class real>
-inline point<real> &random_full(point<real> &p)
+inline point<real> &random_full(point<real> &u)
 {
-   return p(random_full<real>(), random_full<real>(), random_full<real>());
+   u(random_full<real>(), random_full<real>(), random_full<real>());
+   return u;
 }
-
-
 
 // operator==
 template<class real>
-inline bool operator==(const point<real> &a, const point<real> &b)
+inline bool operator==(const point<real> &u, const point<real> &v)
 {
-   return a.x == b.x && a.y == b.y && a.z == b.z;
+   return u.x == v.x && u.y == v.y && u.z == v.z;
 }
 
-// operator!=
+
+
+// u + v
 template<class real>
-inline bool operator!=(const point<real> &a, const point<real> &b)
+inline point<real> operator+(const point<real> &u, const point<real> &v)
 {
-   return !(a == b);
+   return point<real>(u.x+v.x, u.y+v.y, u.z+v.z);
 }
 
+// u - v
+template<class real>
+inline point<real> operator-(const point<real> &u, const point<real> &v)
+{
+   return point<real>(u.x-v.x, u.y-v.y, u.z-v.z);
+}
 
-
-// real*point
+// c * u
 template<class real>
 inline point<real> operator*(const real c, const point<real> &u)
 {
    return point<real>(c*u.x, c*u.y, c*u.z);
 }
 
-// point *= real
+// u *= c
 template<class real>
 inline point<real> &operator*=(point<real> &u, const real c)
 {
@@ -104,19 +103,15 @@ inline point<real> &operator*=(point<real> &u, const real c)
 
 // dot(u,v)
 template<class real>
-inline real dot(
-   const point<real> &u,
-   const point<real> &v
-) {
+inline real dot(const point<real> &u, const point<real> &v)
+{
    return u.x*v.x + u.y*v.y + u.z*v.z;
 }
 
 // cross(u,v)
 template<class real>
-inline point<real> cross(
-   const point<real> &u,
-   const point<real> &v
-) {
+inline point<real> cross(const point<real> &u, const point<real> &v)
+{
    return point<real>(
       u.y*v.z - u.z*v.y,
       u.z*v.x - u.x*v.z,
@@ -126,35 +121,7 @@ inline point<real> cross(
 
 
 
-// -u
-template<class real>
-inline point<real> operator-(
-   const point<real> &u
-) {
-   return point<real>(-u.x, -u.y, -u.z);
-}
-
-// u-v
-template<class real>
-inline point<real> operator-(
-   const point<real> &u,
-   const point<real> &v
-) {
-   return point<real>(u.x-v.x, u.y-v.y, u.z-v.z);
-}
-
-// u+v
-template<class real>
-inline point<real> operator+(
-   const point<real> &u,
-   const point<real> &v
-) {
-   return point<real>(u.x+v.x, u.y+v.y, u.z+v.z);
-}
-
-
-
-// mod2(u)   ("mod2" as in "mod squared")
+// mod2(u): "mod squared"
 template<class real>
 inline real mod2(const point<real> &u)
 {
@@ -168,96 +135,27 @@ inline real mod(const point<real> &u)
    return std::sqrt(mod2(u));
 }
 
-
-
 // normalize(u)
 template<class real>
 inline point<real> normalize(const point<real> &u)
 {
-   // this tests as somewhat faster than u/mod(u)...
-   const real fac = real(1)/mod(u);
-   return fac*u;
+   return (real(1)/mod(u))*u;
 }
 
+// pline(p,u,v)
+//
+// Distance between the point p and the line containing the points u and v.
+// Must have u != v, which is NOT verified here.
+//
+// Some testing suggests that the following:
+//    std::sqrt(mod2(cross(v-u,u-p))/mod2(v-u)) // equivalent
+//    std::sqrt(mod2(cross(p-u,p-v))*(1/mod2(v-u))) // w/reciprocal
+// were slower or no better, even precomputing v-u in the first one.
 
-
-// pdistance2(u,v): distance squared between the points u and v
-template<class real>
-inline real pdistance2(
-   const point<real> &u,
-   const point<real> &v
-) {
-   return mod2(u-v);
-}
-
-// pdistance(u,v): distance between the points u and v
-template<class real>
-inline real pdistance(
-   const point<real> &u,
-   const point<real> &v
-) {
-   return std::sqrt(pdistance2(u,v));
-}
-
-
-
-// pline2(p,u,v)
-template<class real>
-inline real pline2(
-   const point<real> &p,
-   const point<real> &u, const point<real> &v
-) {
-   return mod2(cross(v-u,u-p)) / mod2(v-u);
-}
-
-// pline(p,u,v): distance between the point p and the line containing
-// the points u and v. Must have u != v, which is NOT verified here.
 template<class real>
 inline real pline(
    const point<real> &p,
    const point<real> &u, const point<real> &v
 ) {
-   return std::sqrt(pline2(p,u,v));
-}
-
-
-
-// skewd2(x1,x2, x3,x4): distance squared between the (skew) lines:
-//    x1 to x2
-//    x3 to x4
-// Works correctly for parallel lines.
-
-template<class real>
-inline real skewd2(
-   const point<real> &x1, const point<real> &x2,
-   const point<real> &x3, const point<real> &x4
-) {
-   const point<real> a = x2 - x1;
-   const point<real> b = x4 - x3, c = cross(a,b);
-
-/*
-zzz think about these...
-
-pline2(x1, x3,x4)
-   p = x1
-   u = x3
-   v = x4
-
-   mod2(cross(x4-x3,x3-x1)) / mod2(x4-x3);
-   mod2(cross(b,x3-x1)) / mod2(b);
-
-OR, could use:
-
-pline2(x3, x1,x2)
-   p = x3
-   u = x1
-   v = x2
-
-   mod2(cross(x2-x1,x1-x3)) / mod2(x2-x1);
-   mod2(cross(a,x1-x3)) / mod2(a);
-   mod2(cross(x3-x1,a)) / mod2(a);
-*/
-
-   const real den = mod2(c);
-   return den == 0 ? pline2(x1, x3,x4) : op::square(dot(x3-x1, c)) / den;
+   return std::sqrt(mod2(cross(p-u,p-v))/mod2(v-u));
 }

@@ -263,8 +263,7 @@ kip_randomize(polygon)
    const rotate<3,real> move(
       pi<real>*random_unit<real>(),
       pi<real>*random_unit<real>(),
-      pi<real>*random_unit<real>(),
-      random_full(p)
+      pi<real>*random_unit<real>(), random_full(p)
    );
 
    // table
