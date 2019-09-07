@@ -26,6 +26,9 @@ kip::image <real,color> image;
 // misc
 int downsize;
 
+// printval
+#define printval(val) std::cout << #val " = " << val << std::endl
+
 
 
 // -----------------------------------------------------------------------------
@@ -895,10 +898,39 @@ bool read(
 // main
 // -----------------------------------------------------------------------------
 
-#define printval(val) std::cout << #val " = " << val << std::endl
-
 int main(const int argc, const char *const *const argv)
 {
+   /*
+   printval(sizeof(kip::array_simple<real>));
+   printval(sizeof(kip::array<0,real>));
+   printval(sizeof(kip::array<1,real>));
+   printval(sizeof(kip::array<2,real>));
+   printval(sizeof(kip::array<3,real>));
+   printval(sizeof(kip::array<4,real>));
+   */
+
+   /*
+   // about 20.8
+   // using rotator = kip::rotate<2,real,false>;
+
+   // about 19.4
+   // Print SIZEOFS again (see below) before doing switchover.
+   using rotator = kip::twop<real>;
+
+   // std::cout << sizeof(rotator) << std::endl;
+   for (ulong n = 0;  n < 200000000;  ++n) {
+      kip::point<real> a; kip::random_full(a);
+      kip::point<real> b; kip::random_full(b);
+      kip::point<real> c; kip::random_full(c);
+
+      const kip::point<real> f = rotator(a,b).fore(c);
+      if (f.x == 0.1 || f.y == 0.2 || f.z == 0.3)
+         std::cout << "foo" << std::endl;
+   }
+
+   return 0;
+   */
+
    /*
    printval(sizeof(kip::bicylinder<real,base>));
    printval(sizeof(kip::biwasher  <real,base>));
@@ -939,6 +971,8 @@ int main(const int argc, const char *const *const argv)
    printval(sizeof(kip::xplane    <real,base>));
    printval(sizeof(kip::yplane    <real,base>));
    printval(sizeof(kip::zplane    <real,base>));
+
+   return 0;
    */
 
    kip::threads = 0;
@@ -958,5 +992,6 @@ int main(const int argc, const char *const *const argv)
    initialize();
 
    // action!
-   return interactive(title);
+   const int rv = interactive(title);
+   return rv;
 }

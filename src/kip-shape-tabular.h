@@ -291,11 +291,11 @@ kip_aabb(tabular)
       // make out-of-order (thus !valid()) in each dimension
       return bbox<real>(false,1,0,false, false,1,0,false, false,1,0,false);
 
-   const rotate<2,real> r2(a,b);
+   const rotate2pt<real> r2(a,b);
 
    const point<real> diff(
-      std::sqrt(r2.m2x*r2.m2x + r2.m3.x*r2.m3.x),
-      std::sqrt(r2.m2y*r2.m2y + r2.m3.y*r2.m3.y), r2.m3.z
+      std::sqrt(r2.m.b.x*r2.m.b.x + r2.m.c.x*r2.m.c.x),
+      std::sqrt(r2.m.b.y*r2.m.b.y + r2.m.c.y*r2.m.c.y), r2.m.c.z
    ), along = normalize(b-a);
 
    real xmin =  std::numeric_limits<real>::max(), ymin = xmin, zmin = xmin;

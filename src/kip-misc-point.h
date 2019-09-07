@@ -5,7 +5,7 @@
 // point
 // -----------------------------------------------------------------------------
 
-template<class real = default_real>
+template<class real>
 class point {
 public:
    real x, y, z;
@@ -32,7 +32,7 @@ public:
 
    // operator()(offset, d,theta,phi)
    // Some testing suggests that other ways of expressing
-   // the formulas give no discernable speed improvements.
+   // the formulas give no discernible speed improvements.
    void operator()(
       const point<real> &offset, const real d, const real theta, const real phi
    ) {

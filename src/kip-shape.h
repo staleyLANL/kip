@@ -725,10 +725,10 @@ inline void bound_abr(
    const point<real> &a, const point<real> &b, const real r,
    point<real> &min, point<real> &max  // output
 ) {
-   const rotate<2,real> m(a,b);
+   const rotate2pt<real> /*rotate<2,real>*/ m(a,b);
 
-   const real dx = r*std::sqrt(m.m2x*m.m2x + m.m3.x*m.m3.x);
-   const real dy = r*std::sqrt(m.m2y*m.m2y + m.m3.y*m.m3.y), dz = r*m.m3.z;
+   const real dx = r*std::sqrt(m.m.b.x*m.m.b.x + m.m.c.x*m.m.c.x);
+   const real dy = r*std::sqrt(m.m.b.y*m.m.b.y + m.m.c.y*m.m.c.y), dz = r*m.m.c.z;
 
    min(a.x-dx, a.y-dy, a.z-dz);
    max(a.x+dx, a.y+dy, a.z+dz);

@@ -124,20 +124,20 @@ namespace internal {
 // aabb
 kip_aabb(spheroid)
 {
-   const rotate<2,real> rot2(real(0.5)*(a+b), b);
+   const rotate2pt<real> rot2(real(0.5)*(a+b), b);
    const real hsq = rot2.h*rot2.h, rsq = r*r;
 
    const real xval =
-      internal::bound_spheroid(rot2.m1.x, rot2.m2x, rot2.m3.x, hsq,rsq);
+      internal::bound_spheroid(rot2.m.a.x, rot2.m.b.x, rot2.m.c.x, hsq,rsq);
    const real yval =
-      internal::bound_spheroid(rot2.m1.y, rot2.m2y, rot2.m3.y, hsq,rsq);
+      internal::bound_spheroid(rot2.m.a.y, rot2.m.b.y, rot2.m.c.y, hsq,rsq);
    const real zval =
-      internal::bound_spheroid(rot2.m1.z, real(0),  rot2.m3.z, hsq,rsq);
+      internal::bound_spheroid(rot2.m.a.z, real(0),    rot2.m.c.z, hsq,rsq);
 
    return bbox<real>(
-      true, rot2.o.x-xval,   rot2.o.x+xval, true,
-      true, rot2.o.y-yval,   rot2.o.y+yval, true,
-      true, rot2.o.z-zval,   rot2.o.z+zval, true
+      true, rot2.shift.x-xval, rot2.shift.x+xval, true,
+      true, rot2.shift.y-yval, rot2.shift.y+yval, true,
+      true, rot2.shift.z-zval, rot2.shift.z+zval, true
    );
 } kip_end
 

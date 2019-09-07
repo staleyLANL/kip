@@ -100,13 +100,13 @@ namespace internal {
 // aabb
 kip_aabb(paraboloid)
 {
-   real xmin, ymin, zmin;  const rotate<2,real> rot2(a,b);
+   real xmin, ymin, zmin;  const rotate2pt<real> /*rotate<2,real>*/ rot2(a,b);
    real xmax, ymax, zmax;  using namespace internal;
    // zzz Should probably avoid ANY "using namespace" (as above) in .h codes
 
-   bound_paraboloid(rot2.m1.x, rot2.m2x, rot2.m3.x, rot2.h,r, a.x,b.x, xmin,xmax);
-   bound_paraboloid(rot2.m1.y, rot2.m2y, rot2.m3.y, rot2.h,r, a.y,b.y, ymin,ymax);
-   bound_paraboloid(rot2.m1.z, real(0),     rot2.m3.z, rot2.h,r, a.z,b.z, zmin,zmax);
+   bound_paraboloid(rot2.m.a.x, rot2.m.b.x, rot2.m.c.x, rot2.h,r, a.x,b.x, xmin,xmax);
+   bound_paraboloid(rot2.m.a.y, rot2.m.b.y, rot2.m.c.y, rot2.h,r, a.y,b.y, ymin,ymax);
+   bound_paraboloid(rot2.m.a.z, real(0),  rot2.m.c.z, rot2.h,r, a.z,b.z, zmin,zmax);
 
    return bbox<real>(
       true,xmin, xmax,true,
