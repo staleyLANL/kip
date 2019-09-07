@@ -33,7 +33,7 @@ inline void initialize_pixel(
 // helpers
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // angle_tweak
 template<class real>
@@ -65,7 +65,7 @@ inline void trace_vars(
    // t2e: target/eyeball rotate
    //    fore: to x-axis
    //    back: to final position
-   vars.t2e = rotate<3,real>(
+   vars.t2e = rotate<3,real,op::full,op::unscaled>(
       #ifdef KIP_ANGLE_TWEAK
          // With slight angle randomization. This is a temporary solution
          // to the cut-plane issue Laura encountered.
@@ -98,7 +98,7 @@ inline void trace_vars(
    vars.veps = engine.fudge * vars.vhalf / real(image.anti);
 
    // behind: right-hand-rule thumb points behind eyeball
-   vars.behind = rotate<-3,real>(
+   vars.behind = rotate<3,real,op::part,op::unscaled>(
       vars.eyeball,
       vars.t2e.back_n01(view.d),  // up from eyeball
       vars.t2e.back_nm0(view.d)   // left of eyeball
@@ -268,10 +268,10 @@ inline void object_border_shape(const SHAPEVEC &shape, image<real,color> &image)
 
          for (ulong i = imin;  i < iend;  ++i)
             if ((i % large) < small)
-               image(i,jmin) = image(i,jmax) = color(s.base());///color::border();
+               image(i,jmin)=image(i,jmax)=color(s.base());///color::border();
          for (ulong j = jmin;  j < jend;  ++j)
             if ((j % large) < small)
-               image(imin,j) = image(imax,j) = color(s.base());///color::border();
+               image(imin,j)=image(imax,j)=color(s.base());///color::border();
       }
    }
 }
@@ -448,7 +448,7 @@ bool trace(
    return true;
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -470,9 +470,9 @@ inline bool trace(
    // qqq Consider putting vars into another class, as "static" makes this
    // particular function non-thread-safe. Then again, perhaps thread safety
    // in this context isn't particularly important.
-   static internal::vars<real,base> vars;
+   static detail::vars<real,base> vars;
 
-   return internal::trace(
+   return detail::trace(
       model,  // has no fix()
       view  .fix(),
       light .fix(),
@@ -494,9 +494,9 @@ inline bool trace(
          array<2,pix>  &pixel    // per-pixel information
 ) {
    // qqq See above remark
-   static internal::vars<real,base> vars;
+   static detail::vars<real,base> vars;
 
-   return internal::trace(
+   return detail::trace(
       model,
       view  .fix(),
       light .fix(),

@@ -12,7 +12,7 @@ using default_color = rgba;
 // border_t
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 class border_t {
 public:
@@ -50,7 +50,7 @@ public:
    }
 };
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -87,7 +87,7 @@ public:
    color background = color::background();       // background color
    real  aspect = real(1);           // pixel aspect ratio
    mutable unsigned anti;  // antialiasing indicator
-   mutable internal::border_t border;  // bin/object border information
+   mutable detail::border_t border;  // bin/object border information
 
    // prior zzz Eventually make private, so users can't disturb
    class _prior {

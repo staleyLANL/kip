@@ -30,7 +30,7 @@ public:
 // smooth
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // linear
 template<class real>
@@ -92,7 +92,7 @@ inline real ran(
    ///const long *const s = (const long *)&seed;
    // zzz darn --- the following doesn't get rid of g++'s warning about
    // type punning. Oh well, we should rewrite this function anyway, as
-   // it's not thread-safe in its present form.
+   // it's not thread-safe right now.
    const long *const s = reinterpret_cast<const long *>(&seed);
    srand48(s[0]^s[1]);
    return drand48();
@@ -120,7 +120,7 @@ inline real smooth(const unsigned i, const int x, const int y, const int z)
    ));
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -128,7 +128,7 @@ inline real smooth(const unsigned i, const int x, const int y, const int z)
 // noise (single function)
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class real>
 inline real noise(
@@ -193,7 +193,7 @@ inline real noise(
    );
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -213,13 +213,13 @@ inline real noise(
       return atotal = 0;
    } else if (nfun == 1) {
       atotal = amp;
-      return op::twice(internal::noise(1, x/per, y/per, z/per) - 0.5);
+      return op::twice(detail::noise(1, x/per, y/per, z/per) - 0.5);
    } else {
       real val = 0, a = amp, p = per;
       atotal = 0;
       for (unsigned i = 0;  i < nfun;  ++i, a *= ampfac, p *= perfac) {
          atotal += a;
-         val += a*(internal::noise(i+1, x/p, y/p, z/p) - 0.5);
+         val += a*(detail::noise(i+1, x/p, y/p, z/p) - 0.5);
       }
       return (val+val)/atotal;
    }
@@ -236,7 +236,7 @@ inline real noise(
 // diffuse_specular
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class outcolor, class real>
 inline outcolor diffuse_specular(
@@ -246,13 +246,13 @@ inline outcolor diffuse_specular(
    const point<real> &light,
    const point<real> &intersection,
    const point<real> &normal,
-   const bool normalized
+   const bool isnormalized
 ) {
    // Assumptions: eyeball != intersection, light != intersection,
    // normal != (0,0,0).
    using ctype = typename outcolor::value_t;
 
-   const point<real> n   = normalized ? normal : normalize(normal);
+   const point<real> n   = isnormalized ? normal : normalize(normal);
    const point<real> i2l = light - intersection;
 
    const real modi =  mod(i2l);
@@ -294,7 +294,7 @@ inline outcolor diffuse_specular(
 #endif
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -392,7 +392,7 @@ inline out kipcolor(
 // get_color
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // get_color
 template<class out, class real, class base, class pix>
@@ -421,7 +421,7 @@ inline out get_color(
    //    const point<real> &light,
    //    const point<real> &intersection,
    //    const point<real> &normal,
-   //    const bool normalized
+   //    const bool isnormalized
 
    /*
    assert(sizeof(out) == 4);
@@ -456,7 +456,7 @@ inline out get_color(
       point<float>(q.n),
 
       // normal-is-normalized
-      q.normalized == normalized_t::yesnorm
+      q.isnormalized == normalized::yes
    );
 #endif
 
@@ -465,4 +465,4 @@ inline out get_color(
    return rv;
 }
 
-} // namespace internal
+} // namespace detail

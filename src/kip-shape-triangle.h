@@ -125,7 +125,7 @@ kip_process(triangle)
       return 0;
 
    // local rot, eye
-   const rotate<3,real> rot(u,v,w);
+   const rotate<3,real,op::full,op::unscaled> rot(u,v,w);
    const point<real> &eye = rot.fore(eyeball);
 
    // Translated/rotated eyeball (ex,ey,ez), and triangle
@@ -208,7 +208,7 @@ kip_infirst(triangle)
       0 <=  dx + dy + dz && aff.den < dz*qmin && (
 
       q.point<real>::operator=(eyeball - real(q = aff.den/dz)*diff),
-      q(ghi(), this, normalized_t::yesnorm), true);
+      q(ghi(), this, normalized::yes), true);
 } kip_end
 
 
@@ -228,7 +228,7 @@ kip_check(triangle)
 {
    static const char *const badvert = "Triangle has coincident vertices ";
    using ostr_t = std::ostringstream;
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    if (u == v) { ostr_t oss;  oss << badvert << "u=v=" << u;  rv = error(oss); }
    if (u == w) { ostr_t oss;  oss << badvert << "u=w=" << u;  rv = error(oss); }
@@ -285,7 +285,7 @@ kip_read_value(triangle) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

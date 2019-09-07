@@ -32,9 +32,9 @@ inline void key()
 }
 
 // default_parameter
-namespace internal { template<class T> class tclass; }
+namespace detail { template<class T> class tclass; }
 template<class T>
-inline T &default_parameter(const internal::tclass<T> &)
+inline T &default_parameter(const detail::tclass<T> &)
 {
    static T value;
    return value;
@@ -84,7 +84,7 @@ enum class method_t {
    block
 };
 
-namespace internal {
+namespace detail {
    // no_action
    inline void no_action() { }
 
@@ -155,14 +155,20 @@ inline format_t format = format_t::format_op;
 // pform (for primitives)
 inline const char *pform()
 {
-   assert(format != format_t::format_stub);  // or we shouldn't have called this function
-   return format == format_t::format_one  || format == format_t::format_op  ? " " : "\n   ";
+   // or we shouldn't have called this function...
+   assert(format != format_t::format_stub);
+
+   return format == format_t::format_one  || format == format_t::format_op
+      ? " "
+      : "\n   ";
 }
 
 // oform (for operators)
 inline const char *oform()
 {
-   return format == format_t::format_stub || format == format_t::format_one ? " " : "\n   ";
+   return format == format_t::format_stub || format == format_t::format_one
+      ? " "
+      : "\n   ";
 }
 
 
@@ -171,17 +177,17 @@ inline const char *oform()
 // Diagnostics - miscellaneous
 // -----------------------------------------------------------------------------
 
-// diagnostic_t
-enum class diagnostic_t {
-   diagnostic_good    = 3,
-   diagnostic_note    = 2,
-   diagnostic_warning = 1,
-   diagnostic_error   = 0
+// diagnostic
+enum class diagnostic {
+   good    = 3,
+   note    = 2,
+   warning = 1,
+   error   = 0
 };
 
 // no-context warning: forward declaration
 template<class MESSAGE>
-inline diagnostic_t warning(const MESSAGE &message);
+inline diagnostic warning(const MESSAGE &message);
 
 // for the user
 inline bool warnings = true;
@@ -194,16 +200,16 @@ inline bool addenda  = true;
 // Diagnostics - functions
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // tostring: helper function
 inline std::string tostring(const char *const         str) { return str; }
 inline std::string tostring(const std::string        &str) { return str; }
 inline std::string tostring(const std::ostringstream &oss) { return oss.str(); }
 
-// diagnostic: helper function
+// diagprint: helper function
 template<class CONTEXT, class MESSAGE>
-void diagnostic(
+void diagprint(
    const char *const type, const CONTEXT &_context, const MESSAGE &_message
 ) {
 // static const char *const prefix = "    | ";  // possibly use this
@@ -237,21 +243,21 @@ void diagnostic(
    kip::cerr << std::endl;
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
 // error
 template<class CONTEXT, class MESSAGE>
-inline diagnostic_t error(const CONTEXT &context, const MESSAGE &message)
+inline diagnostic error(const CONTEXT &context, const MESSAGE &message)
 {
-   internal::diagnostic("error", context, message);
-   return diagnostic_t::diagnostic_error;
+   detail::diagprint("error", context, message);
+   return diagnostic::error;
 }
 
 // no-context
 template<class MESSAGE>
-inline diagnostic_t error(const MESSAGE &message)
+inline diagnostic error(const MESSAGE &message)
 {
    return error("", message);
 }
@@ -260,16 +266,16 @@ inline diagnostic_t error(const MESSAGE &message)
 
 // warning
 template<class CONTEXT, class MESSAGE>
-inline diagnostic_t warning(const CONTEXT &context, const MESSAGE &message)
+inline diagnostic warning(const CONTEXT &context, const MESSAGE &message)
 {
    return warnings
-      ? internal::diagnostic("warning", context, message), diagnostic_t::diagnostic_warning
-      : diagnostic_t::diagnostic_good;
+      ? detail::diagprint("warning", context, message), diagnostic::warning
+      : diagnostic::good;
 }
 
 // no-context
 template<class MESSAGE>
-inline diagnostic_t warning(const MESSAGE &message)
+inline diagnostic warning(const MESSAGE &message)
 {
    return warning("", message);
 }
@@ -278,16 +284,16 @@ inline diagnostic_t warning(const MESSAGE &message)
 
 // note
 template<class CONTEXT, class MESSAGE>
-inline diagnostic_t note(const CONTEXT &context, const MESSAGE &message)
+inline diagnostic note(const CONTEXT &context, const MESSAGE &message)
 {
    return notes
-      ? internal::diagnostic("note", context, message), diagnostic_t::diagnostic_note
-      : diagnostic_t::diagnostic_good;
+      ? detail::diagprint("note", context, message), diagnostic::note
+      : diagnostic::good;
 }
 
 // no-context
 template<class MESSAGE>
-inline diagnostic_t note(const MESSAGE &message)
+inline diagnostic note(const MESSAGE &message)
 {
    return note("", message);
 }
@@ -298,14 +304,14 @@ inline diagnostic_t note(const MESSAGE &message)
 // addendum to previous error, warning, or note (indicated by argument d);
 // always no-context
 template<class MESSAGE>
-inline diagnostic_t addendum(const MESSAGE &message, const diagnostic_t d)
+inline diagnostic addendum(const MESSAGE &message, const diagnostic d)
 {
    if (addenda && (
-       d == diagnostic_t::diagnostic_error                ||
-      (d == diagnostic_t::diagnostic_warning && warnings) ||
-      (d == diagnostic_t::diagnostic_note    && notes   )
+       d == diagnostic::error                ||
+      (d == diagnostic::warning && warnings) ||
+      (d == diagnostic::note    && notes   )
    ))
-      internal::diagnostic("", "", message);
+      detail::diagprint("", "", message);
    return d;
 }
 

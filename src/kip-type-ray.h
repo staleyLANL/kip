@@ -16,7 +16,7 @@ public:
    point<real> normal;                  // shape's surface normal
    real distance;                       // eyeball/intersection distance
    const kip::shape<real,base> *shape;  // shape at this pixel
-   bool normalized;                     // is |normal| == 1?
+   bool isnormalized;                   // is |normal| == 1?
 
    // conversion to bool (meaning: ray hits shape)
    inline operator bool() const
@@ -47,6 +47,6 @@ public:
       shape = q.shape;
 
       // is |normal| == 1 ?
-      normalized = q.normalized == normalized_t::yesnorm;
+      isnormalized = q.isnormalized == normalized::yes;
    }
 };

@@ -8,7 +8,7 @@
 // rshhhd
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // less - forward declaration
 template<class real, class tag> class less;
@@ -38,7 +38,7 @@ public:
    real dmins;
 };
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -68,51 +68,14 @@ public:
 
 
 // -----------------------------------------------------------------------------
-// array_simple
-// -----------------------------------------------------------------------------
-
-template<class value_t>
-class array_simple {
-   value_t *ptr;
-   ulong size;
-
-public:
-
-   // array_simple()
-   inline explicit array_simple() : ptr(nullptr), size(0) { }
-
-   // destructor
-   inline ~array_simple()
-   {
-      delete[] ptr;
-   }
-
-   // resize
-   inline void resize(const ulong newsize)
-   {
-      // does *not* copy old values
-      if (size != newsize) {
-         delete[] ptr;
-         ptr = new value_t[size = newsize];
-      }
-   }
-
-   // operator[]
-   inline       value_t &operator[](const ulong n)       { return ptr[n]; }
-   inline const value_t &operator[](const ulong n) const { return ptr[n]; }
-};
-
-
-
-// -----------------------------------------------------------------------------
 // inq
 //    i for intersection
 //    n for normal
 //    q for parameter
 // -----------------------------------------------------------------------------
 
-// normalized_t
-enum class normalized_t { yesnorm, nonorm };
+// normalized
+enum class normalized { yes, no };
 
 
 
@@ -129,7 +92,7 @@ public:
 
    const kip::shape<real,base> *shape;
    const base *color;
-   normalized_t normalized;
+   normalized isnormalized;
 
    // inq()
    // inq(real)
@@ -147,20 +110,20 @@ public:
    inline operator       real&()       { return q; }
    inline operator const real&() const { return q; }
 
-   // operator()(nx,ny,nz, shape,        normalized [, fac = default])
-   // operator()(n,        shape,        normalized [, fac = default])
-   // operator()(nx,ny,nz, shape, color, normalized [, fac = default])
-   // operator()(n,        shape, color, normalized [, fac = default])
+   // operator()(nx,ny,nz, shape,        isnormalized [, fac = default])
+   // operator()(n,        shape,        isnormalized [, fac = default])
+   // operator()(nx,ny,nz, shape, color, isnormalized [, fac = default])
+   // operator()(n,        shape, color, isnormalized [, fac = default])
 
    inline inq &operator()(
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
-      const normalized_t _normalized,
+      const normalized _isnormalized,
       const real _fac = real(-1)
    ) {
       n.x = nx;  shape = _shape;
       n.y = ny;  color = _shape;
-      n.z = nz;  normalized = _normalized;
+      n.z = nz;  isnormalized = _isnormalized;
       fac = _fac;
       return *this;
    }
@@ -168,11 +131,11 @@ public:
    inline inq &operator()(
       const point<real> &_n,
       const kip::shape<real,base> *const _shape,
-      const normalized_t _normalized,
+      const normalized _isnormalized,
       const real _fac = real(-1)
    ) {
       shape = _shape;  n = _n;
-      color = _shape;  normalized = _normalized;
+      color = _shape;  isnormalized = _isnormalized;
       fac = _fac;
       return *this;
    }
@@ -181,12 +144,12 @@ public:
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
       const base *const _color,
-      const normalized_t _normalized,
+      const normalized _isnormalized,
       const real _fac = real(-1)
    ) {
       n.x = nx;  shape = _shape;
       n.y = ny;  color = _color;
-      n.z = nz;  normalized = _normalized;
+      n.z = nz;  isnormalized = _isnormalized;
       fac = _fac;
       return *this;
    }
@@ -195,11 +158,11 @@ public:
       const point<real> &_n,
       const kip::shape<real,base> *const _shape,
       const base *const _color,
-      const normalized_t _normalized,
+      const normalized _isnormalized,
       const real _fac = real(-1)
    ) {
       shape = _shape;  n = _n;
-      color = _color;  normalized = _normalized;
+      color = _color;  isnormalized = _isnormalized;
       fac = _fac;
       return *this;
    }
@@ -397,7 +360,7 @@ public:
          } else
             std::sort(
                ptr, ptr+num,
-               internal::less<typename INQ::value_t, typename INQ::base_t>()
+               detail::less<typename INQ::value_t, typename INQ::base_t>()
             );
       }
 

@@ -10,7 +10,7 @@ inline ulong nsurf = 6;
 // Helper constructs
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // min_and_part
 template<class SHAPE>
@@ -42,7 +42,7 @@ public:
    }
 };
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -107,7 +107,7 @@ class surf : public shape<real,tag> {
    // mint()
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
    using shape<real,tag>::surfdata;
-   using binner_t = binner<internal::min_and_part<kip::tri<real,tag>>>;
+   using binner_t = binner<detail::min_and_part<kip::tri<real,tag>>>;
    inline binner_t &mint() const
       { return *(binner_t *)(void *)&surfdata.mint[0]; }
 
@@ -220,7 +220,7 @@ public:
 // -----------------------------------------------------------------------------
 
 // uprepare_tri - forward
-namespace internal {
+namespace detail {
    template<class element_t, class real, class base, class BINS>
    inline real uprepare_tri(
       const engine<real> &, const vars<real,base> &,
@@ -252,8 +252,8 @@ kip_process(surf)
 
    // process the tris
    mint().reset(engine);
-   return internal::uprepare_tri<
-      internal::min_and_part<kip::tri<real,tag>>
+   return detail::uprepare_tri<
+      detail::min_and_part<kip::tri<real,tag>>
    >(
       engine,
       vars,
@@ -376,7 +376,7 @@ kip_check(surf)
 {
    const ulong nnode = node.size();
    const ulong ntri  = tri .size();
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // Check each tri...
    for (ulong t = 0;  t < ntri;  ++t) {
@@ -505,14 +505,14 @@ kip_randomize(surf)
 kip_infirst(surf)
 {
    // bookkeeping
-   std::vector<internal::min_and_part<kip::tri<real,tag>>> &bin =
+   std::vector<detail::min_and_part<kip::tri<real,tag>>> &bin =
       mint()[insub.nzone];
    const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint().sorted[insub.nzone]) {
       std::sort(bin.begin(), bin.end(),
-                internal::part_less<kip::tri<real,tag>>());
+                detail::part_less<kip::tri<real,tag>>());
       mint().sorted[insub.nzone] = true;
    }
 
@@ -538,14 +538,14 @@ kip_infirst(surf)
 kip_inall(surf)
 {
    // bookkeeping
-   std::vector<internal::min_and_part<kip::tri<real,tag>>> &bin =
+   std::vector<detail::min_and_part<kip::tri<real,tag>>> &bin =
       mint()[insub.nzone];
    const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint().sorted[insub.nzone]) {
       std::sort(bin.begin(), bin.end(),
-                internal::part_less<kip::tri<real,tag>>());
+                detail::part_less<kip::tri<real,tag>>());
       mint().sorted[insub.nzone] = true;
    }
 
@@ -626,7 +626,7 @@ kip_read_value(surf) {
 
    if (!(okay && read_done(s, obj))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

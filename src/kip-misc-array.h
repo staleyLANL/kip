@@ -3,7 +3,9 @@
 
 // array: default
 template<unsigned dimension, class element>
-class array { };
+class array {
+   static_assert(0 <= dimension && dimension <= 3);
+};
 
 
 

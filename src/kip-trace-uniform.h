@@ -18,7 +18,7 @@
 // segment_various
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // segment_h: compute horizontal segmenters
 template<class real, class base>
@@ -33,10 +33,12 @@ inline void segment_h(const engine<real> &engine, vars<real,base> &vars)
    #endif
    for (int hseg = 0;  hseg < htotal;  ++hseg) {
       const real
-         hmin = real(op::round<unsigned>(vars.hratsub*real(hseg  )))*vars.hfull -
-                vars.hmax,
-         hmax = real(op::round<unsigned>(vars.hratsub*real(hseg+1)))*vars.hfull -
-                vars.hmax;
+         hmin =
+            real(op::round<unsigned>(vars.hratsub*real(hseg  )))*vars.hfull -
+            vars.hmax,
+         hmax =
+            real(op::round<unsigned>(vars.hratsub*real(hseg+1)))*vars.hfull -
+            vars.hmax;
       vars.seg_hneg[hseg] = dry_w(vars, hmin);
       vars.seg_hpos[hseg] = dry_e(vars, hmax);
    }
@@ -57,10 +59,12 @@ inline void segment_v(const engine<real> &engine, vars<real,base> &vars)
    #endif
    for (int vseg = 0;  vseg < vtotal;  ++vseg) {
       const real
-         vmin = real(op::round<unsigned>(vars.vratsub*real(vseg  )))*vars.vfull -
-                vars.vmax,
-         vmax = real(op::round<unsigned>(vars.vratsub*real(vseg+1)))*vars.vfull -
-                vars.vmax;
+         vmin =
+            real(op::round<unsigned>(vars.vratsub*real(vseg  )))*vars.vfull -
+            vars.vmax,
+         vmax =
+            real(op::round<unsigned>(vars.vratsub*real(vseg+1)))*vars.vfull -
+            vars.vmax;
       vars.seg_vneg[vseg] = dry_s(vars, vmin);
       vars.seg_vpos[vseg] = dry_n(vars, vmax);
    }
@@ -254,8 +258,12 @@ inline bool seg_minmax(
 
 // dry() for point
 template<class real>
-inline bool dry(const point<real> &p, const rotate<-3,real> &seg)
-   { return seg.ge(p); }
+inline bool dry(
+   const point<real> &p,
+   const rotate<3,real,op::part,op::unscaled> &seg
+) {
+   return seg.ge(p);
+}
 
 
 
@@ -801,4 +809,4 @@ void utrace(
       (int(nzone), view, light, engine, vars, image, pixel);
 }
 
-} // namespace internal
+} // namespace detail

@@ -11,13 +11,15 @@ class cone : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified cone: (0,0,0), (h,0,0), r
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real rsq, h1, h2;
 
    // get_*
    inline bool
-   get_baseh(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_curve(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_baseh(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_curve(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const;
 
 public:
    using shape<real,tag>::basic;
@@ -27,7 +29,10 @@ public:
    point<real> a, b;
    real r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 #define   kip_class cone
 #include "kip-macro-onetwor-ctor.h"
@@ -42,7 +47,7 @@ public:
 // process
 kip_process(cone)
 {
-   rot = rotate<3,real>(a, b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(a, b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -76,7 +81,7 @@ kip_process(cone)
 kip_aabb(cone)
 {
    point<real> min, max;
-   internal::bound_abr(b,a,r, min,max);
+   detail::bound_abr(b,a,r, min,max);
 
    return bbox<real>(
       true, op::min(a.x,min.x),   op::max(a.x,max.x), true,
@@ -108,7 +113,7 @@ kip_dry(cone)
 // check
 kip_check(cone)
 {
-   return internal::onetwor_check<real>("Cone", *this);
+   return detail::onetwor_check<real>("Cone", *this);
 } kip_end
 
 
@@ -116,7 +121,7 @@ kip_check(cone)
 // randomize
 kip_randomize(cone)
 {
-   return internal::random_abr<real,tag>(obj);
+   return detail::random_abr<real,tag>(obj);
 } kip_end
 
 
@@ -141,13 +146,15 @@ kip_infirst(cone)
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= rsq) {
                q.x = rot.h;
-               return q(1,0,0, this, normalized_t::yesnorm), true;
+               return q(1,0,0, this, normalized::yes), true;
             }
          }
       }
 
       // curve
-      const real f = dx*dx*(1-h1)-1, g = rot.ey*dy + h1*rot.ex*dx, s = g*g + f*h2;
+      const real f = dx*dx*(1-h1)-1;
+      const real g = rot.ey*dy + h1*rot.ex*dx;
+      const real s = g*g + f*h2;
       if (s < 0 || f == 0) return false;
 
       q = (g - std::sqrt(s))/f;
@@ -170,12 +177,14 @@ kip_infirst(cone)
 
          if (op::square(q.y) + op::square(q.z) <= rsq) {
             q.x = rot.h;
-            return q(1,0,0, this, normalized_t::yesnorm), true;
+            return q(1,0,0, this, normalized::yes), true;
          }
       }
 
       // curve
-      const real f = dx*dx*(1-h1)-1, g = rot.ey*dy + h1*rot.ex*dx, s = g*g + f*h2;
+      const real f = dx*dx*(1-h1)-1;
+      const real g = rot.ey*dy + h1*rot.ex*dx;
+      const real s = g*g + f*h2;
       if (s < 0 || f == 0) return false;
 
       q = (g + std::sqrt(s))/f;
@@ -187,7 +196,7 @@ kip_infirst(cone)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(h1*q.x, q.y, q.z, this, normalized_t::nonorm), true;
+   return q(h1*q.x, q.y, q.z, this, normalized::no), true;
 } kip_end
 
 
@@ -215,7 +224,7 @@ inline bool cone<real,tag>::get_baseh(
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= rsq) {
       info.x = rot.h;
-      return info(1,0,0, this, normalized_t::yesnorm), true;
+      return info(1,0,0, this, normalized::yes), true;
    }
    return false;
 }
@@ -240,7 +249,7 @@ inline bool cone<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(h1*info.x, info.y, info.z, this, normalized_t::nonorm), true;
+   return info(h1*info.x, info.y, info.z, this, normalized::no), true;
 }
 
 
@@ -305,7 +314,7 @@ kip_read_value(cone) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -314,7 +323,7 @@ kip_read_value(cone) {
 
 // kip::ostream
 kip_ostream(cone) {
-   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cone");
+   return detail::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cone");
 }
 
 #define   kip_class cone

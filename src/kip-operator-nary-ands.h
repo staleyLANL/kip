@@ -38,7 +38,7 @@ kip_process(ands)
    // The logical-ands operator is mutually reflexive, so we can arbitrarily
    // rearrange its operands. Putting operands with larger minima first tends
    // to speed up the operator.
-   std::sort(min_and_op.begin(), min_and_op.end(), internal::more<real,tag>());
+   std::sort(min_and_op.begin(), min_and_op.end(), detail::more<real,tag>());
 
    // Bookkeeping.
    // Note: if we do input followed by output of an "ands" object, then because
@@ -171,7 +171,7 @@ kip_infirst(ands)
       inq<real,tag> qtmp;  q = qmin;
 
       for (ulong i = 0;  i < kip_data.nop;  ++i)
-         if (internal::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
+         if (detail::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
             q = qtmp;
       return q < qmin;
    }
@@ -186,7 +186,7 @@ kip_infirst(ands)
    // compute operand information
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       const bool found =
-         internal::op_all(vec[i].op, kip_etd, qmin,operand[i].points,
+         detail::op_all(vec[i].op, kip_etd, qmin,operand[i].points,
                       insub);
 
       if (found || vec[i].in) {
@@ -246,7 +246,7 @@ kip_inall(ands)
    // compute operand information
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       const bool found =
-         internal::op_all(vec[i].op, kip_etd, qmin,operand[i].points,
+         detail::op_all(vec[i].op, kip_etd, qmin,operand[i].points,
                       insub);
 
       if (found || vec[i].in) {

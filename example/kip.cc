@@ -901,21 +901,19 @@ bool read(
 int main(const int argc, const char *const *const argv)
 {
    /*
-   printval(sizeof(kip::array_simple<real>));
    printval(sizeof(kip::array<0,real>));
    printval(sizeof(kip::array<1,real>));
    printval(sizeof(kip::array<2,real>));
    printval(sizeof(kip::array<3,real>));
-   printval(sizeof(kip::array<4,real>));
    */
 
    /*
    // about 20.8
-   // using rotator = kip::rotate<2,real,false>;
+   using rotator = kip::rotate<2,real,op::full,op::unscaled>;
 
    // about 19.4
    // Print SIZEOFS again (see below) before doing switchover.
-   using rotator = kip::twop<real>;
+   // using rotator = kip::twop<real>;
 
    // std::cout << sizeof(rotator) << std::endl;
    for (ulong n = 0;  n < 200000000;  ++n) {

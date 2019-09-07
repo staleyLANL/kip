@@ -17,7 +17,7 @@ public:
       { assert(false);  return from; }
 
    inline void propagate_base(const bool force = false) const
-      { internal::propagate_binary(*this,force); }
+      { detail::propagate_binary(*this,force); }
 
 
    // kipand()
@@ -178,8 +178,8 @@ kip_dry(kipand)
 kip_check(kipand)
 {
    // written the following way so that "a" is checked before "b"
-   diagnostic_t d = internal::check_operand("and",binary.a,"a");
-   return op::min(d,internal::check_operand("and",binary.b,"b"));
+   diagnostic d = detail::check_operand("and",binary.a,"a");
+   return op::min(d,detail::check_operand("and",binary.b,"b"));
 } kip_end
 
 
@@ -196,13 +196,13 @@ kip_infirst(kipand)
       // of first intersection with either object's boundary
       inq<real,tag> bq;
       return
-           internal::op_first(binary.a, kip_etd, qmin, q, insub)
-         ? internal::op_first(binary.b, kip_etd, real(q),bq, insub)
+           detail::op_first(binary.a, kip_etd, qmin, q, insub)
+         ? detail::op_first(binary.b, kip_etd, real(q),bq, insub)
               ? q=bq, // b wins
                 true
               : true  // a only
          // b only, or stays in
-         : internal::op_first(binary.b, kip_etd, qmin, q, insub)
+         : detail::op_first(binary.b, kip_etd, qmin, q, insub)
       ;
    }
 
@@ -211,12 +211,12 @@ kip_infirst(kipand)
    // after which we're inside both objects
 
    afew<inq<real,tag>> aq;
-   if (!internal::op_all(binary.a, kip_etd, qmin,aq, insub))
+   if (!detail::op_all(binary.a, kip_etd, qmin,aq, insub))
       return binary.ina &&
-             internal::op_first(binary.b, kip_etd, qmin,q, insub);
+             detail::op_first(binary.b, kip_etd, qmin,q, insub);
 
    afew<inq<real,tag>> bq;
-   if (!internal::op_all(binary.b, kip_etd, qmin,bq, insub))
+   if (!detail::op_all(binary.b, kip_etd, qmin,bq, insub))
       return binary.inb && (q = aq[0], true);
 
    // search for the relevant point
@@ -246,12 +246,12 @@ kip_infirst(kipand)
 kip_inall(kipand)
 {
    afew<inq<real,tag>> aq;
-   if (!internal::op_all(binary.a, kip_etd, qmin,aq, insub))
+   if (!detail::op_all(binary.a, kip_etd, qmin,aq, insub))
       return binary.ina &&
-             internal::op_all(binary.b, kip_etd, qmin,ints, insub);
+             detail::op_all(binary.b, kip_etd, qmin,ints, insub);
 
    afew<inq<real,tag>> bq;
-   if (!internal::op_all(binary.b, kip_etd, qmin,bq, insub))
+   if (!detail::op_all(binary.b, kip_etd, qmin,bq, insub))
       return binary.inb && ints.assign(aq);
 
    const ulong anum=aq.size();  ulong an=0;  bool ina=binary.ina, in=interior;

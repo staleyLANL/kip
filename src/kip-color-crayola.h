@@ -15,7 +15,7 @@ using crayola_rgb_t = uchar;
 // a template, to avoid multiply-defined symbols when multiple-source linking.
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class>
 class crayola_base {
@@ -89,7 +89,7 @@ public:
 template<class unused>
 const char *const crayola_base<unused>::description = "crayola";
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -97,7 +97,7 @@ const char *const crayola_base<unused>::description = "crayola";
 // crayola
 // -----------------------------------------------------------------------------
 
-class crayola : public internal::crayola_base<char> {
+class crayola : public detail::crayola_base<char> {
 public:
 
    // color_table()
@@ -107,7 +107,7 @@ public:
    // crayola(), crayola(crayola_id_t)
    inline explicit crayola() { }
    inline explicit crayola(const crayola_id_t &_index) :
-      internal::crayola_base<char>(_index)
+      detail::crayola_base<char>(_index)
    { }
 
    // crayola(crayola)
@@ -151,7 +151,7 @@ inline crayola &randomize(crayola &obj)
 // color_table
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // color_table_initialize
 template<class>
@@ -315,7 +315,7 @@ void color_table_initialize(
    table.push_back(pair( rgb_t(192, 192, 192), "gray_light"));
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -328,7 +328,7 @@ crayola::color_table()
 
    if (first) {
       first = false;
-      internal::color_table_initialize<char>(table);
+      detail::color_table_initialize<char>(table);
    }
    return table;
 }
@@ -339,7 +339,7 @@ crayola::color_table()
 // Specific colors
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
    // crayola_lookup
    inline crayola crayola_lookup(const char *const name)
    {
@@ -358,14 +358,14 @@ namespace internal {
 #ifdef KIP_GLOBAL_CRAYOLA
    // Make crayola colors available in kip::, too
    #define kip_make_color(name)\
-      namespace internal {\
+      namespace detail {\
          template<class unused>\
          const crayola crayola_base<unused>::name = crayola_lookup(#name);\
       }\
       inline const crayola &name = crayola::name;
 #else
    #define kip_make_color(name)\
-      namespace internal {\
+      namespace detail {\
          template<class unused>\
          const crayola crayola_base<unused>::name = crayola_lookup(#name);\
       }
@@ -556,7 +556,7 @@ bool read_value(
       }
    } else {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

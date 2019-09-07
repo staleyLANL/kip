@@ -29,9 +29,9 @@ public:
 
    // marble()
    inline explicit marble() :
-      r(internal::midcolor<value_t>()),
-      g(internal::midcolor<value_t>()),
-      b(internal::midcolor<value_t>()),
+      r(detail::midcolor<value_t>()),
+      g(detail::midcolor<value_t>()),
+      b(detail::midcolor<value_t>()),
       amp(1), ampfac(0.5),
       per(1), perfac(0.5),
       nfun(1), seed(0),
@@ -116,7 +116,7 @@ bool read_value(
       read_value(s,swirl)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
 
    value.swirl = swirl;

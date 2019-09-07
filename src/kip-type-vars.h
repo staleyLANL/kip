@@ -7,7 +7,7 @@
 // vars
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class real, class tag>  // template arguments defaulted elsewhere
 class vars {
@@ -17,18 +17,19 @@ public:
    array<3,vec_reset<real,tag>> block;
 
    // Miscellaneous
-   rotate<3,real> t2e;
+   rotate<3,real,op::full,op::unscaled> t2e;
    point<real> eyeball;
 
    real hmax, hhalf,hfull, heps, hrat,hratsub;
    real vmax, vhalf,vfull, veps, vrat,vratsub;
 
-   rotate<-3,real> left, right;
-   rotate<-3,real> bottom, top, behind;
+   rotate<3,real,op::part,op::unscaled> left, right;
+   rotate<3,real,op::part,op::unscaled> bottom, top, behind;
 
-   array<1,rotate<-3,real>> seg_hneg, seg_hpos;
-   array<1,rotate<-3,real>> seg_vneg, seg_vpos;
-   array<1,rotate<-3,real>> seg_diag, seg_quad, seg_3060, seg_1575;
+   array<1,rotate<3,real,op::part,op::unscaled>> seg_hneg, seg_hpos;
+   array<1,rotate<3,real,op::part,op::unscaled>> seg_vneg, seg_vpos;
+   array<1,rotate<3,real,op::part,op::unscaled>> seg_diag, seg_quad;
+   array<1,rotate<3,real,op::part,op::unscaled>> seg_3060, seg_1575;
 
    unsigned anti2;
 

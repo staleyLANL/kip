@@ -69,7 +69,7 @@ public:
 // fix: helpers
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // fix_zone_hv
 inline void fix_zone_hv(unsigned &zone, const ulong npixel)
@@ -179,7 +179,7 @@ inline void fix_engine(
       obj.fudge = engine<real>::default_fudge;
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -193,6 +193,6 @@ inline engine<real> engine<real>::fix(
    const ulong hpixel, const ulong vpixel
 ) const {
    engine<real> rv = *this;
-   internal::fix_engine(rv, hpixel,vpixel);
+   detail::fix_engine(rv, hpixel,vpixel);
    return rv;
 }

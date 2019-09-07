@@ -1,7 +1,7 @@
 
 #pragma once
 
-namespace internal {
+namespace detail {
 
 // -----------------------------------------------------------------------------
 // shape_vectors
@@ -248,7 +248,7 @@ inline void grow_portion_specific(
    const tclass<SHAPE>,
    const CURRENT &current,
          PORTION &portion,
-   const rotate<-3,real> seg[6],
+   const rotate<3,real,op::part,op::unscaled> seg[6],
    const char pos
 ) {
    const ulong size = current.size();
@@ -292,7 +292,7 @@ template<class real, class base>
 void grow_portion(
    const shape_vectors<real,base> &current,
          shape_vectors<real,base> &portion,
-   const rotate<-3,real> seg[6],
+   const rotate<3,real,op::part,op::unscaled> seg[6],
    const char pos
 ) {
 #define kip_make_grow(type)\
@@ -328,7 +328,7 @@ inline void rtrace_h(
    const real hhi = real(ihi)*vars.hfull - vars.hmax;
    const char pos = ipart ? ipart < int(engine.hdivision)-1 ? 'C' : 'L' : 'H';
 
-   rotate<-3,real> seg[6];
+   rotate<3,real,op::part,op::unscaled> seg[6];
    if (pos == 'L' || pos == 'C') {
                          seg[0] = dry_w (vars, hlo);  // 0, 2, 4 - west
       if_segmenting_diag(seg[2] = dry_nw(vars, hlo, vmax));
@@ -366,7 +366,7 @@ inline void rtrace_v(
    const real vhi = real(jhi)*vars.vfull - vars.vmax;
    const char pos = jpart ? jpart < int(engine.vdivision)-1 ? 'C' : 'L' : 'H';
 
-   rotate<-3,real> seg[6];
+   rotate<3,real,op::part,op::unscaled> seg[6];
    if (pos == 'L' || pos == 'C') {
                          seg[0] = dry_s (vars, vlo);  // 0, 2, 4 - south
       if_segmenting_diag(seg[2] = dry_se(vars, hmax, vlo));
@@ -487,4 +487,4 @@ void rtrace(
    }
 }
 
-} // namespace internal
+} // namespace detail

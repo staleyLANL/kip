@@ -21,7 +21,7 @@ class shape;
 // -----------------------------------------------------------------------------
 
 // read_specific_character: helper function
-namespace internal {
+namespace detail {
    template<class ISTREAM>
    bool read_specific_character(
       ISTREAM &s, const std::string &description,
@@ -47,7 +47,7 @@ namespace internal {
 template<class ISTREAM>
 inline bool read_comma(ISTREAM &s)
 {
-   return internal::read_specific_character(s, "comma ','", ',');
+   return detail::read_specific_character(s, "comma ','", ',');
 }
 
 // comma , or semicolor ;
@@ -55,7 +55,7 @@ inline bool read_comma(ISTREAM &s)
 template<class ISTREAM>
 inline bool read_comma_or(ISTREAM &s)
 {
-   return internal::read_specific_character
+   return detail::read_specific_character
       (s, "comma ',' or semicolon ';' or right parenthesis ')'", ',', ';');
 }
 
@@ -64,7 +64,7 @@ inline bool read_comma_or(ISTREAM &s)
 template<class ISTREAM>
 inline bool read_semi_or(ISTREAM &s)
 {
-   return internal::read_specific_character
+   return detail::read_specific_character
       (s, "semicolon ';' or right parenthesis ')'", ';');
 }
 
@@ -72,14 +72,14 @@ inline bool read_semi_or(ISTREAM &s)
 template<class ISTREAM>
 inline bool read_left(ISTREAM &s)
 {
-   return internal::read_specific_character(s, "left parenthesis '('", '(');
+   return detail::read_specific_character(s, "left parenthesis '('", '(');
 }
 
 // right parenthesis )
 template<class ISTREAM>
 inline bool read_right(ISTREAM &s)
 {
-   return internal::read_specific_character(s, "right parenthesis ')'", ')');
+   return detail::read_specific_character(s, "right parenthesis ')'", ')');
 }
 
 
@@ -90,7 +90,7 @@ inline bool read_right(ISTREAM &s)
 // -----------------------------------------------------------------------------
 
 // read_specific_pod: helper function
-namespace internal {
+namespace detail {
    template<class ISTREAM, class T>
    bool read_specific_pod(
       ISTREAM &s, T &value,
@@ -111,7 +111,7 @@ namespace internal {
       ISTREAM &s, T &value,\
       const std::string &description = _description\
    ) {\
-      return internal::read_specific_pod(s,value,description);\
+      return detail::read_specific_pod(s,value,description);\
    }
 
 
@@ -251,7 +251,7 @@ bool read_value(
          read_color_component(s,value.b)
    )))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
 
    if (alphabetic) {
@@ -284,7 +284,7 @@ bool read_value(
          read_color_component(s,value.a)
    )))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
 
    if (alphabetic) {
@@ -301,7 +301,7 @@ bool read_value(
 // component_traits
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<
    class T,
@@ -409,7 +409,7 @@ inline std::istream &operator>>(std::istream &s, RGB<T> &obj)
 template<class T>
 inline kip::ostream &operator<<(kip::ostream &k, const RGB<T> &obj)
 {
-   using print_as = typename internal::component_traits<T>::result;
+   using print_as = typename detail::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -453,7 +453,7 @@ inline std::istream &operator>>(std::istream &s, RGBA<T> &obj)
 template<class T>
 inline kip::ostream &operator<<(kip::ostream &k, const RGBA<T> &obj)
 {
-   using print_as = typename internal::component_traits<T>::result;
+   using print_as = typename detail::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -498,7 +498,7 @@ inline std::istream &operator>>(std::istream &s, marble<T,real> &obj)
 template<class T, class real>
 kip::ostream &operator<<(kip::ostream &k, const marble<T,real> &obj)
 {
-   using print_as = typename internal::component_traits<T>::result;
+   using print_as = typename detail::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -542,7 +542,7 @@ bool read_value(
       read_value(s,value.z)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -670,7 +670,7 @@ inline bool write_finish(
 // onetwor_write
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class real, class tag>
 kip::ostream &onetwor_write(

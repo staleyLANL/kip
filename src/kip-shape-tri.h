@@ -137,7 +137,7 @@ public:
    // process - custom version
    inline real process(
       const std::vector<point<real>> &, const point<real> &,
-      const engine<real> &, const internal::vars<real,tag> &
+      const engine<real> &, const detail::vars<real,tag> &
    ) const;
 };
 
@@ -146,7 +146,7 @@ public:
 // Shouldn't call these; call enclosing surf's instead
 kip_process(tri) { assert(false); return real(0);         } kip_end
 kip_dry    (tri) { assert(false); return false;           } kip_end
-kip_check  (tri) { assert(false); return diagnostic_t::diagnostic_good; } kip_end
+kip_check  (tri) { assert(false); return diagnostic::good; } kip_end
 kip_inall  (tri) { assert(false); return false;           } kip_end
 
 kip_aabb  (tri) {
@@ -171,14 +171,15 @@ template<class real, class tag>
 inline real tri<real,tag>::process(
    const std::vector<point<real>> &node,
    const point<real> &eyeball,
-   const engine<real> &, const internal::vars<real,tag> &
+   const engine<real> &, const detail::vars<real,tag> &
 ) const {
    // aff, degenerate ( = non-singular, and eyeball not in tri's plane)
    if ((degenerate = !aff(node[u()], node[v()], node[w()], eyeball, ghi())))
       return 0;
 
    // local rot, eye
-   const rotate<3,real> rot(node[u()], node[v()], node[w()]);
+   const rotate<3,real,op::full,op::unscaled>
+      rot(node[u()], node[v()], node[w()]);
    const point<real> eye = rot.fore(eyeball);
 
    // minimum   zzz Simplification is probably possible here (and in triangle).
@@ -229,7 +230,7 @@ kip_infirst(tri)
       0 <=  dx + dy + dz && aff.den < dz*qmin && (
 
       q.point<real>::operator=(eyeball - real(q = aff.den/dz)*diff),
-      q(ghi(), this, normalized_t::yesnorm), true);
+      q(ghi(), this, normalized::yes), true);
 } kip_end
 
 
@@ -250,7 +251,7 @@ kip_read_value(tri) {
       read_value(s, obj.w())
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
 
    return !s.fail();

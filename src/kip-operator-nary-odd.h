@@ -36,7 +36,7 @@ kip_process(odd)
    // The logical-odd operator is mutually reflexive, so we can arbitrarily
    // rearrange its operands. Putting operands with smaller minima first tends
    // to speed up the operator.
-   std::sort(min_and_op.begin(), min_and_op.end(), internal::less<real,tag>());
+   std::sort(min_and_op.begin(), min_and_op.end(), detail::less<real,tag>());
 
    // Bookkeeping
    nary.total_in = 0;
@@ -66,7 +66,7 @@ kip_aabb(odd)
    kip_data.nop = vec.size();
 
    for (ulong i = 0;  i < kip_data.nop;  ++i)
-      rv = internal::bound_combine(rv, vec[i].op->aabb(), internal::op_less());
+      rv = detail::bound_combine(rv, vec[i].op->aabb(), detail::op_less());
    return rv;
 } kip_end
 
@@ -91,7 +91,7 @@ kip_infirst(odd)
    inq<real,tag> qtmp;  q = qmin;
 
    for (ulong i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
-      if (internal::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
+      if (detail::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
          q = qtmp;
    return q < qmin;
 } kip_end
@@ -113,7 +113,7 @@ kip_inall(odd)
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       operand[i].size =
          vec[i].min < qmin &&
-         internal::op_all(vec[i].op, kip_etd,
+         detail::op_all(vec[i].op, kip_etd,
                       qmin,operand[i].points, insub)
          ? (found = true, operand[i].points.size())
          :  0;

@@ -79,7 +79,7 @@
 inline long double eps = 0;
 
 // for the rest of this file...
-namespace internal {
+namespace detail {
 
 // get_eps
 template<class real>
@@ -905,7 +905,7 @@ void trace_bin(
    }
 }
 
-} // namespace internal
+} // namespace detail
 
 #undef kip_action_plain
 #undef kip_action_lean

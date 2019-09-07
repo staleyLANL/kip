@@ -11,12 +11,18 @@ class ellipsoid : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // rotation: clockwise around x, then y, then z; then +c translation
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable point<real> irsq;
    mutable real bs, is, i;
 
    // get_curve
-   inline bool get_curve(const real,const real,const real,const real, inq<real,tag> &) const;
+   inline bool get_curve(
+      const real,
+      const real,
+      const real,
+      const real,
+      inq<real,tag> &
+   ) const;
 
 public:
    using shape<real,tag>::basic;
@@ -27,7 +33,10 @@ public:
    point<real> a;
    point<real> r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 
 
@@ -124,10 +133,10 @@ public:
 kip_process(ellipsoid)
 {
    // rotation to move ellipsoid to its actual location
-   const rotate<3,real> move(a.x, a.y, a.z, c);
+   const rotate<3,real,op::full,op::unscaled> move(a.x, a.y, a.z, c);
 
    // rot, eye, lie
-   rot = rotate<3,real>(
+   rot = rotate<3,real,op::full,op::unscaled>(
       c,  // == move.back(0,0,0)
       move.back_n00(r.x),
       move.back_0n0(r.y)
@@ -167,7 +176,8 @@ kip_process(ellipsoid)
       // distance to bounding box
       // use eye+r, not eye, because bbox_minimum() is designed for objects
       // from 0 to "+diameter".
-      const real bb = internal::bbox_minimum(point<real>(eye)+r, 2*r.x, 2*r.y, 2*r.z);
+      const real bb =
+         detail::bbox_minimum(point<real>(eye)+r, 2*r.x, 2*r.y, 2*r.z);
 
       return d0 <= bs
          ? bb                 // INSIDE  bounding sphere
@@ -197,24 +207,28 @@ kip_process(ellipsoid)
 // -----------------------------------------------------------------------------
 
 // bound_ellipsoid - helper
-namespace internal {
+namespace detail {
    template<class real>
    inline real bound_ellipsoid(
       const real a, const real b, const real c,
       const point<real> &r
    ) {
-      return std::sqrt(op::square(a*r.x) + op::square(b*r.y) + op::square(c*r.z));
+      return std::sqrt(
+         op::square(a*r.x) +
+         op::square(b*r.y) +
+         op::square(c*r.z)
+      );
    }
 }
 
 // aabb
 kip_aabb(ellipsoid)
 {
-   rot = rotate<3,real>(a.x, a.y, a.z, c);
+   rot = rotate<3,real,op::full,op::unscaled>(a.x, a.y, a.z, c);
 
-   const real xval = internal::bound_ellipsoid(rot.f1.x, rot.f2.x, rot.f3.x, r);
-   const real yval = internal::bound_ellipsoid(rot.f1.y, rot.f2.y, rot.f3.y, r);
-   const real zval = internal::bound_ellipsoid(rot.f1.z, rot.f2.z, rot.f3.z, r);
+   const real xval = detail::bound_ellipsoid(rot.f1.x, rot.f2.x, rot.f3.x, r);
+   const real yval = detail::bound_ellipsoid(rot.f1.y, rot.f2.y, rot.f3.y, r);
+   const real zval = detail::bound_ellipsoid(rot.f1.z, rot.f2.z, rot.f3.z, r);
 
    return bbox<real>(
       true, c.x-xval,   c.x+xval, true,
@@ -241,9 +255,9 @@ kip_dry(ellipsoid)
       cz >= is &&
      (cz >= bs ||
       cz*cz >=
-         op::square( dot(seg.f, point<real>(rot.f1.x, rot.f1.y, rot.f1.z)) * r.x) +
-         op::square( dot(seg.f, point<real>(rot.f2.x, rot.f2.y, rot.f2.z)) * r.y) +
-         op::square( dot(seg.f, point<real>(rot.f3.x, rot.f3.y, rot.f3.z)) * r.z)
+         op::square(dot(seg.f,point<real>(rot.f1.x,rot.f1.y,rot.f1.z))*r.x) +
+         op::square(dot(seg.f,point<real>(rot.f2.x,rot.f2.y,rot.f2.z))*r.y) +
+         op::square(dot(seg.f,point<real>(rot.f3.x,rot.f3.y,rot.f3.z))*r.z)
      );
 } kip_end
 
@@ -254,7 +268,7 @@ kip_check(ellipsoid)
 {
    static const char *const err = "Ellipsoid has non-positive radius r.";
    using ostr_t = std::ostringstream;
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    if (r.x <= real(0)) { ostr_t oss; oss << err << "x=" << r.x; rv=error(oss); }
    if (r.y <= real(0)) { ostr_t oss; oss << err << "y=" << r.y; rv=error(oss); }
@@ -316,7 +330,10 @@ kip_infirst(ellipsoid)
    q.y = eye.y - q*dy;
    q.z = eye.z - q*dz;
 
-   return q(irsq.x*q.x, irsq.y*q.y, irsq.z*q.z, this, normalized_t::nonorm), true;
+   return q(
+      irsq.x*q.x, irsq.y*q.y, irsq.z*q.z,
+      this, normalized::no
+   ), true;
 } kip_end
 
 
@@ -342,7 +359,12 @@ inline bool ellipsoid<real,tag>::get_curve(
    info.z = basic.eye().z - info.q*dz;
 
    // normal
-   return info(irsq.x*info.x, irsq.y*info.y, irsq.z*info.z, this, normalized_t::nonorm), true;
+   return info(
+      irsq.x*info.x,
+      irsq.y*info.y,
+      irsq.z*info.z,
+      this, normalized::no
+   ), true;
 }
 
 
@@ -408,7 +430,7 @@ kip_read_value(ellipsoid) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
 
    obj.a *= pi<real>/180;

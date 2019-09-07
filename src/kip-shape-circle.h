@@ -10,7 +10,7 @@ class circle : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified circle: (0,0,0), r, in yz plane
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real rsq, tmp;
 
 public:
@@ -22,7 +22,10 @@ public:
    point<real> n;
    real r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 #define   kip_aye c
 #define   kip_bee n
@@ -39,7 +42,7 @@ public:
 // process
 kip_process(circle)
 {
-   rot = rotate<3,real>(c, c+n, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(c, c+n, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -59,7 +62,7 @@ kip_process(circle)
 kip_aabb(circle)
 {
    point<real> min, max;
-   internal::bound_abr(c,c+n,r, min,max);
+   detail::bound_abr(c,c+n,r, min,max);
 
    return bbox<real>(
       true,min.x, max.x,true,
@@ -94,7 +97,9 @@ kip_infirst(circle)
 
    return op::square(q.y) + op::square(q.z) <= rsq
       ? q.x = real(0),
-        q(rot.ex < 0 ? real(-1) : real(1), 0, 0, this, normalized_t::yesnorm), true
+        q(
+           rot.ex < 0 ? real(-1) : real(1),
+           0, 0, this, normalized::yes), true
       : false;
 } kip_end
 
@@ -113,7 +118,7 @@ kip_inall(circle)
 // check
 kip_check(circle)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // require n != 0
    if (n == point<real>(0,0,0))
@@ -173,7 +178,7 @@ kip_read_value(circle) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -182,7 +187,7 @@ kip_read_value(circle) {
 
 // kip::ostream
 kip_ostream(circle) {
-   return internal::onetwor_write(k,obj, obj.c,obj.n,obj.r, "circle");
+   return detail::onetwor_write(k,obj, obj.c,obj.n,obj.r, "circle");
 }
 
 #define   kip_class circle

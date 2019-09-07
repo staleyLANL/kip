@@ -11,14 +11,26 @@ class pill : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified pill: (0,0,0), (h,0,0), r
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real rsq, h1, h2, h3;
 
    // get_*
    inline bool
-   get_hemi0(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_hemih(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_curve(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_hemi0(
+      const point<real> &,
+      const real, const real, const real,
+      inq<real,tag> &
+   ) const,
+   get_hemih(
+      const point<real> &,
+      const real, const real, const real,
+      inq<real,tag> &
+   ) const,
+   get_curve(
+      const point<real> &,
+      const real, const real, const real,
+      inq<real,tag> &
+   ) const;
 
 public:
    using shape<real,tag>::basic;
@@ -29,7 +41,10 @@ public:
    point<real> b;
    real r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 #define   kip_class pill
 #include "kip-macro-onetwor-ctor.h"
@@ -44,7 +59,7 @@ public:
 // process
 kip_process(pill)
 {
-   rot = rotate<3,real>(a, b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(a, b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -99,7 +114,7 @@ kip_dry(pill)
 // check
 kip_check(pill)
 {
-   return internal::onetwor_check<real>("Pill", *this);
+   return detail::onetwor_check<real>("Pill", *this);
 } kip_end
 
 
@@ -107,7 +122,7 @@ kip_check(pill)
 // randomize
 kip_randomize(pill)
 {
-   return internal::random_abr<real,tag>(obj);
+   return detail::random_abr<real,tag>(obj);
 } kip_end
 
 
@@ -137,7 +152,7 @@ kip_infirst(pill)
             if (q.x <= 0) {
                q.y = rot.ey + q*dy;
                q.z = q*tar.z;
-               return q(q, this, normalized_t::nonorm), true;
+               return q(q, this, normalized::no), true;
             }
          }
       }
@@ -153,7 +168,7 @@ kip_infirst(pill)
             if (q.x >= rot.h) {
                q.y = rot.ey + q*dy;
                q.z = q*tar.z;
-               return q(q.x-rot.h, q.y, q.z, this, normalized_t::nonorm), true;
+               return q(q.x-rot.h, q.y, q.z, this, normalized::no), true;
             }
          }
       }
@@ -187,7 +202,7 @@ kip_infirst(pill)
             if (!(q < qmin)) return false;
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(q, this, normalized_t::nonorm), true;
+            return q(q, this, normalized::no), true;
          }
       }
 
@@ -203,7 +218,7 @@ kip_infirst(pill)
             if (!(q < qmin)) return false;
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(q.x-rot.h, q.y, q.z, this, normalized_t::nonorm), true;
+            return q(q.x-rot.h, q.y, q.z, this, normalized::no), true;
          }
       }
 
@@ -218,7 +233,7 @@ kip_infirst(pill)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(0, q.y, q.z, this, normalized_t::nonorm), true;
+   return q(0, q.y, q.z, this, normalized::no), true;
 } kip_end
 
 
@@ -247,7 +262,7 @@ inline bool pill<real,tag>::get_hemi0(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(info, this, normalized_t::nonorm), true;
+   return info(info, this, normalized::no), true;
 }
 
 
@@ -270,7 +285,7 @@ inline bool pill<real,tag>::get_hemih(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(info.x-rot.h, info.y, info.z, this, normalized_t::nonorm), true;
+   return info(info.x-rot.h, info.y, info.z, this, normalized::no), true;
 }
 
 
@@ -293,7 +308,7 @@ inline bool pill<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(0, info.y, info.z, this, normalized_t::nonorm), true;
+   return info(0, info.y, info.z, this, normalized::no), true;
 }
 
 
@@ -386,7 +401,7 @@ kip_read_value(pill) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -395,7 +410,7 @@ kip_read_value(pill) {
 
 // kip::ostream
 kip_ostream(pill) {
-   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "pill");
+   return detail::onetwor_write(k,obj, obj.a,obj.b,obj.r, "pill");
 }
 
 #define   kip_class pill

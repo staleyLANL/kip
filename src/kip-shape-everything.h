@@ -46,7 +46,7 @@ kip_aabb(everything)
 kip_dry    (everything) { return false; } kip_end
 kip_infirst(everything) { return false; } kip_end
 kip_inall  (everything) { return false; } kip_end
-kip_check  (everything) { return diagnostic_t::diagnostic_good; } kip_end
+kip_check  (everything) { return diagnostic::good; } kip_end
 
 
 // randomize
@@ -79,7 +79,7 @@ bool read_value(
       read_done(s, obj, '\0')
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

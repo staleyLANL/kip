@@ -89,7 +89,7 @@ public:
       \
       inline kip::type<real,base> &push(const kip::type<real,base> *const ptr)\
       {\
-         internal::tclass<kip::type<real,base>> t;\
+         detail::tclass<kip::type<real,base>> t;\
          return ptr ? push(*ptr) : default_parameter(t);\
       }
 
@@ -185,7 +185,7 @@ private:
 
    // bbox_representation_t, and_tight_t
    using bbox_representation_t = kip::ors<real,base>;
-   using and_tight_t = internal::and_tight<real>;
+   using and_tight_t = detail::and_tight<real>;
 
    // rpush
    void rpush(
@@ -202,9 +202,9 @@ private:
       const real = real(0),  // scale
 
       // bases
-      const base & = default_parameter(internal::tclass<base>()),
-      const base & = default_parameter(internal::tclass<base>()),
-      const base & = default_parameter(internal::tclass<base>())
+      const base & = default_parameter(detail::tclass<base>()),
+      const base & = default_parameter(detail::tclass<base>()),
+      const base & = default_parameter(detail::tclass<base>())
    );
 
 public:
@@ -217,9 +217,9 @@ public:
       const real = real(0),  // scale
 
       // for tight/partial/loose bbox representation
-      const base & = default_parameter(internal::tclass<base>()),
-      const base & = default_parameter(internal::tclass<base>()),
-      const base & = default_parameter(internal::tclass<base>())
+      const base & = default_parameter(detail::tclass<base>()),
+      const base & = default_parameter(detail::tclass<base>()),
+      const base & = default_parameter(detail::tclass<base>())
    );
 
 
@@ -241,9 +241,9 @@ public:
       const bool = false,  // each
       const bool = false,  // overall
       const real   = real(0),  // scale
-      const base & = default_parameter(internal::tclass<base>()),  // tight
-      const base & = default_parameter(internal::tclass<base>()),  // partial
-      const base & = default_parameter(internal::tclass<base>())   // loose
+      const base & = default_parameter(detail::tclass<base>()),  // tight
+      const base & = default_parameter(detail::tclass<base>()),  // partial
+      const base & = default_parameter(detail::tclass<base>())   // loose
    );
 };
 
@@ -358,7 +358,7 @@ shape<real,base> *model<real,base>::push(const shape<real,base> *const ptr)
    if (ptr == nullptr) return nullptr;
 
 #define kip_make_push(type)\
-   if (ptr->id() == internal::get_shape_id<kip::type>::result)\
+   if (ptr->id() == detail::get_shape_id<kip::type>::result)\
       return &push((const kip::type<real,base> *)ptr)
 
    kip_expand(kip_make_push,;)
@@ -419,13 +419,13 @@ model<real,base>::push_bbox_ptr(
    // don't bound shapes that represent bounding boxes themselves, or shapes for
    // which the bounding box is not *entirely* valid or has no finite extent.
    if ((shape && shape->isbound) || !b.valid() || !num)
-      return default_parameter(internal::tclass<bbox_representation_t>());
+      return default_parameter(detail::tclass<bbox_representation_t>());
 
    // initialize rep, a shape that graphically represents bbox
    bbox_representation_t rep;  rep.isbound = true;
 
    // bases
-   const base &default_param = default_parameter(internal::tclass<base>());
+   const base &default_param = default_parameter(detail::tclass<base>());
    const base
           tight_base = &  _tight_base != &default_param
      ?   _tight_base : crayola::black,
@@ -479,7 +479,7 @@ model<real,base>::push_bbox_ptr(
    // finish
    return rep.size()
       ? push(rep)
-      : default_parameter(internal::tclass<bbox_representation_t>());
+      : default_parameter(detail::tclass<bbox_representation_t>());
 }
 
 
@@ -507,7 +507,7 @@ model<real,base>::push_bbox(
 // -----------------------------------------------------------------------------
 
 // clear
-namespace internal {
+namespace detail {
    class functor_clear {
    public:
       template<class CONTAINER>
@@ -518,8 +518,8 @@ namespace internal {
 template<class real, class base>
 void model<real,base>::clear()
 {
-   const internal::functor_clear f;
-   internal::allshape(*this, f);
+   const detail::functor_clear f;
+   detail::allshape(*this, f);
 }
 
 
@@ -538,7 +538,7 @@ model<real,base> &model<real,base>::assign(const model<real,base> &from)
 
 
 // size
-namespace internal {
+namespace detail {
    class functor_size {
    public:
       mutable ulong size;
@@ -552,8 +552,8 @@ namespace internal {
 template<class real, class base>
 ulong model<real,base>::size() const
 {
-   const internal::functor_size f;
-   internal::allshape(*this, f);
+   const detail::functor_size f;
+   detail::allshape(*this, f);
    return f.size;
 }
 
@@ -564,7 +564,7 @@ ulong model<real,base>::size() const
 // -----------------------------------------------------------------------------
 
 // isbound - condition for std::remove_if() in unbound()
-namespace internal {
+namespace detail {
    template<class SHAPE>
    class isbound {
    public:
@@ -574,7 +574,7 @@ namespace internal {
 }
 
 // unbound
-namespace internal {
+namespace detail {
    class functor_unbound {
    public:
       template<class CONTAINER>
@@ -593,8 +593,8 @@ namespace internal {
 template<class real, class base>
 void model<real,base>::unbound()
 {
-   const internal::functor_unbound f;
-   internal::allshape(*this, f);
+   const detail::functor_unbound f;
+   detail::allshape(*this, f);
 }
 
 
@@ -603,7 +603,7 @@ void model<real,base>::unbound()
 // aabb
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
    template<class real, class base>
    class functor_bound {
       kip::model<real,base> &model;  bbox<real> &rv;  const bool each;
@@ -633,18 +633,18 @@ namespace internal {
                if (each) model.push_bbox(
                   b, obj[i], scale,
 
-                  &tight   == &default_parameter(internal::tclass<base>())
+                  &tight   == &default_parameter(detail::tclass<base>())
                      ? obj[i] : tight,
 
-                  &partial == &default_parameter(internal::tclass<base>())
+                  &partial == &default_parameter(detail::tclass<base>())
                      ? obj[i] : partial,
 
-                  &loose   == &default_parameter(internal::tclass<base>())
+                  &loose   == &default_parameter(detail::tclass<base>())
                      ? obj[i] : loose
                );
 
                // update overall result; similar, e.g., to ors::aabb()
-               rv = internal::bound_combine(rv, b, internal::op_leq());
+               rv = detail::bound_combine(rv, b, detail::op_leq());
             }
       }
    };
@@ -662,9 +662,9 @@ bbox<real> model<real,base>::aabb(
    kip::bbox<real> rv(false,1,0,false, false,1,0,false, false,1,0,false);
 
    // compute
-   const internal::functor_bound<real,base>
+   const detail::functor_bound<real,base>
       f(*this, rv,each, scale, tight,partial,loose);
-   internal::allshape(*this, f);
+   detail::allshape(*this, f);
 
    // finish
    if (overall)
@@ -696,7 +696,7 @@ bool shape_select(const std::string &name, ACTION &action)
 
    // shortened names
    #define kip_if_shape(str,type)\
-      else if (name == str) { action.fun(internal::tclass<type<real,base>>()); }
+      else if (name == str) { action.fun(detail::tclass<type<real,base>>()); }
    kip_if_shape("not",  kipnot)
    kip_if_shape("and",  kipand)
    kip_if_shape("cut",  kipcut)
@@ -706,7 +706,7 @@ bool shape_select(const std::string &name, ACTION &action)
 
    // full names
    #define kip_if_shape(shp)\
-      else if (name == #shp) { action.fun(internal::tclass<shp<real,base>>()); }
+      else if (name == #shp) { action.fun(detail::tclass<shp<real,base>>()); }
    kip_expand(kip_if_shape,)
    #undef  kip_if_shape
 
@@ -718,7 +718,7 @@ bool shape_select(const std::string &name, ACTION &action)
 
 
 
-namespace internal {
+namespace detail {
    // allocate_and_read
    template<class real, class base>
    class allocate_and_read {
@@ -763,7 +763,7 @@ bool read_shape(
       return false;
 
    // select shape and take action
-   internal::allocate_and_read<real,tag> action(k,ptr);
+   detail::allocate_and_read<real,tag> action(k,ptr);
    if (!shape_select<real,tag>(word,action)) {
       std::ostringstream oss;
       oss << "Unknown shape \"" << word << '"';
@@ -823,7 +823,7 @@ bool read_shapes(kip::istream &k, NARY &obj)
 // i/o for model
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
    // read_and_submit
    template<class real, class base>
    class read_and_submit {
@@ -874,13 +874,13 @@ bool read_value(
       if (!read_value(s,word)) {
          // unable to read keyword
          if (!s.bad() && s.eof()) { s.clear();  return false; }
-         addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+         addendum("Detected while reading " + description, diagnostic::error);
          if (!s.recover('\0')) return false;
          continue;
       }
 
       // select shape and take action
-      internal::read_and_submit<real,tag> action(s,value);
+      detail::read_and_submit<real,tag> action(s,value);
       if (!shape_select<real,tag>(word,action)) {
          std::ostringstream oss;
          oss << "Unknown keyword \"" << word << '"';
@@ -890,7 +890,7 @@ bool read_value(
 
       // shape input failed, or keyword wasn't recognized
       if (s.fail()) {
-         addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+         addendum("Detected while reading " + description, diagnostic::error);
          if (!s.recover('\0')) return false;
       }
 
@@ -906,7 +906,7 @@ bool read_value(
 
 
 
-namespace internal {
+namespace detail {
    inline bool &write_shape_start()
    {
       static bool value = true;
@@ -941,9 +941,9 @@ kip::ostream &operator<<(
    // the whole model because of specific bad objects.
 
    // write...
-   internal::write_shape_start() = true;
+   detail::write_shape_start() = true;
 
-   #define kip_write_shape(shape) internal::write_shape(k, obj.shape) &&
+   #define kip_write_shape(shape) detail::write_shape(k, obj.shape) &&
    kip_expand(kip_write_shape,)
    #undef kip_write_shape
 

@@ -125,7 +125,7 @@ kip_dry(sphere)
 // check
 kip_check(sphere)
 {
-   if (r > real(0)) return diagnostic_t::diagnostic_good;
+   if (r > real(0)) return diagnostic::good;
    std::ostringstream oss;
    oss << "Sphere has non-positive radius r=" << r;
    return error(oss);
@@ -151,7 +151,7 @@ kip_infirst(sphere)
    if (!(0 < q && q < qmin)) return false;
 
    q.point<real>::operator=(eyeball - real(q)*diff);
-   return q(q - c, this, normalized_t::nonorm), true;
+   return q(q - c, this, normalized::no), true;
 } kip_end
 
 
@@ -166,7 +166,7 @@ kip_inall(sphere)
       ints[0] = p + std::sqrt(h);
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
       ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);
-      ints[0](ints[0] - c, this, normalized_t::nonorm);
+      ints[0](ints[0] - c, this, normalized::no);
       ints.setsize(1);
 
    } else {
@@ -175,12 +175,12 @@ kip_inall(sphere)
       ints[0] = p - hsqrt;
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
       ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);
-      ints[0](ints[0] - c, this, normalized_t::nonorm);
+      ints[0](ints[0] - c, this, normalized::no);
 
       ints[1] = p + hsqrt;
       if (0 < ints[1] && ints[1] < qmin) {
          ints[1].point<real>::operator=(eyeball - real(ints[1])*diff);
-         ints[1](ints[1] - c, this, normalized_t::nonorm);
+         ints[1](ints[1] - c, this, normalized::no);
          ints.setsize(2);
       } else
          ints.setsize(1);
@@ -231,7 +231,7 @@ kip_read_value(sphere) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

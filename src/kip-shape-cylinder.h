@@ -11,14 +11,17 @@ class cylinder : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified cylinder: (0,0,0), (h,0,0), r
-   mutable rotate<3,real,true> rot;
+   mutable rotate<3,real,op::full,op::scaled> rot;
    mutable real h2;
 
    // get_*
    inline bool
-   get_base0(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_baseh(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_curve(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_base0(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_baseh(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_curve(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const;
 
 public:
    using shape<real,tag>::basic;
@@ -29,7 +32,10 @@ public:
    point<real> b;
    real r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(r*from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(r*from);
+   }
 
 #define   kip_class cylinder
 #include "kip-macro-onetwor-ctor.h"
@@ -45,8 +51,8 @@ public:
 kip_process(cylinder)
 {
    rot = mod2(a-eyeball) < mod2(b-eyeball)
-    ? rotate<3,real,true>(a, b, eyeball, 1/r)
-    : rotate<3,real,true>(b, a, eyeball, 1/r);
+    ? rotate<3,real,op::full,op::scaled>(a, b, eyeball, 1/r)
+    : rotate<3,real,op::full,op::scaled>(b, a, eyeball, 1/r);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -67,12 +73,12 @@ kip_process(cylinder)
 
 
 // bound_cylinder - helper
-namespace internal {
+namespace detail {
    template<template<class,class> class shape, class real, class tag>
    bbox<real> bound_cylinder(const shape<real,tag> &obj, const real r)
    {
       point<real> min, max;
-      internal::bound_abr(obj.a,obj.b,r, min,max);
+      detail::bound_abr(obj.a,obj.b,r, min,max);
 
       const real dx = obj.b.x - obj.a.x;
       const real dy = obj.b.y - obj.a.y;
@@ -89,7 +95,7 @@ namespace internal {
 // aabb
 kip_aabb(cylinder)
 {
-   return internal::bound_cylinder(*this, this->r);
+   return detail::bound_cylinder(*this, this->r);
 } kip_end
 
 
@@ -109,8 +115,9 @@ kip_dry(cylinder)
    real az;  if (seg.lt(a,az)) return false;
    real bz;  if (seg.lt(b,bz)) return false;
 
-   // Different from e.g. washer and tabular because we use rotate<3,real,true>,
-   // where "true" turns on scaling - making rot.h = (its usual value) / r.
+   // Different from e.g. washer and tabular because we use
+   //    rotate<3,real,op::full,op::scaled>,
+   // where op::scaling turns on scaling - making rot.h = (its usual value)/r.
    const real tmp = rot.h*r;
    return op::square(rot.h*(op::min(az,bz)-seg.c)) >= (tmp-az+bz)*(tmp+az-bz);
 } kip_end
@@ -120,7 +127,7 @@ kip_dry(cylinder)
 // check
 kip_check(cylinder)
 {
-   return internal::onetwor_check<real>("Cylinder", *this);
+   return detail::onetwor_check<real>("Cylinder", *this);
 } kip_end
 
 
@@ -128,7 +135,7 @@ kip_check(cylinder)
 // randomize
 kip_randomize(cylinder)
 {
-   return internal::random_abr<real,tag>(obj);
+   return detail::random_abr<real,tag>(obj);
 } kip_end
 
 
@@ -153,7 +160,7 @@ kip_infirst(cylinder)
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= 1) {
                q.x = real(0);
-               return q(-1,0,0, this, normalized_t::yesnorm, r), true;
+               return q(-1,0,0, this, normalized::yes, r), true;
             }
          }
       }
@@ -166,7 +173,7 @@ kip_infirst(cylinder)
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= 1) {
                q.x = rot.h;
-               return q(1,0,0, this, normalized_t::yesnorm, r), true;
+               return q(1,0,0, this, normalized::yes, r), true;
             }
          }
       }
@@ -198,7 +205,7 @@ kip_infirst(cylinder)
 
          if (op::square(q.y) + op::square(q.z) <= 1) {
             q.x = real(0);
-            return q(-1,0,0, this, normalized_t::yesnorm, r), true;
+            return q(-1,0,0, this, normalized::yes, r), true;
          }
       }
 
@@ -213,7 +220,7 @@ kip_infirst(cylinder)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(0, q.y, q.z, this, normalized_t::nonorm, r), true;
+   return q(0, q.y, q.z, this, normalized::no, r), true;
 } kip_end
 
 
@@ -242,7 +249,7 @@ inline bool cylinder<real,tag>::get_base0(
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= 1) {
       info.x = real(0);
-      return info(-1,0,0, this, normalized_t::yesnorm, r), true;
+      return info(-1,0,0, this, normalized::yes, r), true;
    }
    return false;
 }
@@ -267,7 +274,7 @@ inline bool cylinder<real,tag>::get_baseh(
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= 1) {
       info.x = rot.h;
-      return info(1,0,0, this, normalized_t::yesnorm, r), true;
+      return info(1,0,0, this, normalized::yes, r), true;
    }
    return false;
 }
@@ -292,7 +299,7 @@ inline bool cylinder<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(0, info.y, info.z, this, normalized_t::nonorm, r), true;
+   return info(0, info.y, info.z, this, normalized::no, r), true;
 }
 
 
@@ -362,7 +369,7 @@ kip_read_value(cylinder) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -371,7 +378,7 @@ kip_read_value(cylinder) {
 
 // kip::ostream
 kip_ostream(cylinder) {
-   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cylinder");
+   return detail::onetwor_write(k,obj, obj.a,obj.b,obj.r, "cylinder");
 }
 
 #define   kip_class cylinder

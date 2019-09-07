@@ -134,7 +134,7 @@ kip_infirst(zplane)
            0, 0, misc.plane.norm, this,
           (int(std::abs(q.x/size.x)) % 2 == (q.x > 0)) ==
           (int(std::abs(q.y/size.y)) % 2 == (q.y > 0)) ? &color : this,
-           normalized_t::yesnorm
+           normalized::yes
         ),
         true
       : false;
@@ -155,7 +155,7 @@ kip_inall(zplane)
 // check
 kip_check(zplane)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // size.x
    if (size.x <= real(0)) {
@@ -219,7 +219,7 @@ kip_read_value(zplane) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -228,7 +228,7 @@ kip_read_value(zplane) {
 
 // kip::ostream
 kip_ostream(zplane) {
-   return internal::plane_write(k, obj, 'z', obj.z, obj.size.x, obj.size.y);
+   return detail::plane_write(k, obj, 'z', obj.z, obj.size.x, obj.size.y);
 }
 
 #define   kip_class zplane

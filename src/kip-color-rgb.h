@@ -15,7 +15,7 @@ class crayola;
 // helper functions
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // if_true
 template<bool, class A, class B = A>
@@ -91,8 +91,8 @@ template<class T>
 inline T midcolor()
 {
    return T(
-      (internal::maxcolor<T>() -
-       internal::mincolor<T>()
+      (detail::maxcolor<T>() -
+       detail::mincolor<T>()
       )/2
    );
 }
@@ -130,7 +130,7 @@ endcolor()
    return to(1);
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -191,14 +191,14 @@ using rgb = RGB<>;
 template<class component_t>
 inline component_t transparent()
 {
-   return internal::mincolor<component_t>();
+   return detail::mincolor<component_t>();
 }
 
 // opaque
 template<class component_t>
 inline component_t opaque()
 {
-   return internal::maxcolor<component_t>();
+   return detail::maxcolor<component_t>();
 }
 
 
@@ -266,14 +266,14 @@ public:
    // background
    static inline RGBA background()
    {
-      const value_t mid = internal::midcolor<value_t>();
+      const value_t mid = detail::midcolor<value_t>();
       return RGBA(mid,mid,mid);
    }
 
    // border
    static inline RGBA border(const ulong num, const ulong den)
    {
-      const value_t max = internal::maxcolor<value_t>();
+      const value_t max = detail::maxcolor<value_t>();
 
       // both nonzero: use fraction
       if (num && den) {
@@ -294,7 +294,7 @@ public:
    // border
    static inline RGBA border()
    {
-      const value_t max = internal::maxcolor<value_t>();
+      const value_t max = detail::maxcolor<value_t>();
       return RGBA(max,max,0);
    }
 };
@@ -314,14 +314,14 @@ using rgba = RGBA<>;
 // randomize(RGB<rgb_t>), for rgb_t = unsigned integral
 template<class rgb_t>
 inline RGB<
-   typename internal::if_true<
+   typename detail::if_true<
       std::numeric_limits<rgb_t>::is_integer &&
      !std::numeric_limits<rgb_t>::is_signed,
       rgb_t
    >::result
 > &randomize(RGB<rgb_t> &obj)
 {
-   static const double scale = internal::endcolor<double,rgb_t>();
+   static const double scale = detail::endcolor<double,rgb_t>();
 
    obj.r = rgb_t(random_unit<double>()*scale);
    obj.g = rgb_t(random_unit<double>()*scale);
@@ -335,8 +335,8 @@ inline RGB<
 // randomize(RGB<rgb_t>), for rgb_t = floating
 template<class rgb_t>
 inline RGB<
-   typename internal::if_true<
-      internal::is_floating<rgb_t>::result,
+   typename detail::if_true<
+      detail::is_floating<rgb_t>::result,
       rgb_t
    >::result
 > &randomize(RGB<rgb_t> &obj)

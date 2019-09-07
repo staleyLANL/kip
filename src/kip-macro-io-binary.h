@@ -24,7 +24,7 @@ bool read_value(
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    } else if (s.level == 0)
       obj.propagate_base();
 

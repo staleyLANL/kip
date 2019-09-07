@@ -11,7 +11,7 @@ class cube : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // rotation: clockwise around x, then y, then z; then +c translation
-   private: mutable rotate<3,real> rot;
+   private: mutable rotate<3,real,op::full,op::unscaled> rot;
    private: mutable point<real> emr;
    public:  mutable point<real> p[8];
    private: mutable real modr2;
@@ -24,7 +24,7 @@ public:
    inline void compute_corners() const
    {
       // rotation to move corners to their actual locations
-      const rotate<3,real> move(a.x, a.y, a.z, c);
+      const rotate<3,real,op::full,op::unscaled> move(a.x, a.y, a.z, c);
 
       // p: the actual corners
       p[0] = move.back(-r, -r, -r);
@@ -194,7 +194,7 @@ kip_process(cube)
    };
 
    // rot
-   rot = rotate<3,real>(
+   rot = rotate<3,real,op::full,op::unscaled>(
       p[order[ppos][0]],
       p[order[ppos][1]],
       p[order[ppos][2]]
@@ -211,7 +211,7 @@ kip_process(cube)
    interior = inside(eyeball);
 
    // minimum distance
-   return internal::bbox_minimum(basic.eye(), rot.ex, rot.ey, rot.h);
+   return detail::bbox_minimum(basic.eye(), rot.ex, rot.ey, rot.h);
 
 } kip_end
 
@@ -273,7 +273,7 @@ kip_dry(cube)
 kip_check(cube)
 {
    static const char *const err = "Cube has non-positive half-size ";
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    if (r <= real(0)) {
       std::ostringstream oss;
@@ -325,36 +325,36 @@ kip_infirst(cube)
          if (0 < (q = -eye.x/dx) && q < qmin &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-            q.x = 0;  return q(-1,0,0, this, normalized_t::yesnorm), true;
+            q.x = 0;  return q(-1,0,0, this, normalized::yes), true;
          }
       } else if (dx > 0 && 0 < (q = (rot.ex - eye.x)/dx) && q < qmin &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.x = rot.ex;  return q(1,0,0, this, normalized_t::yesnorm), true;
+         q.x = rot.ex;  return q(1,0,0, this, normalized::yes), true;
       }
 
       if (dy < 0) {
          if (0 < (q = -eye.y/dy) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-            q.y = 0;  return q(0,-1,0, this, normalized_t::yesnorm), true;
+            q.y = 0;  return q(0,-1,0, this, normalized::yes), true;
          }
       } else if (dy > 0 && 0 < (q = (rot.ey - eye.y)/dy) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.y = rot.ey;  return q(0,1,0, this, normalized_t::yesnorm), true;
+         q.y = rot.ey;  return q(0,1,0, this, normalized::yes), true;
       }
 
       if (dz < 0) {
          if (0 < (q = -eye.z/dz) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey) {
-            q.z = 0;  return q(0,0,-1, this, normalized_t::yesnorm), true;
+            q.z = 0;  return q(0,0,-1, this, normalized::yes), true;
          }
       } else if (dz > 0 && 0 < (q = (rot.h  - eye.z)/dz) && q < qmin &&
              0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey) {
-         q.z = rot.h;  return q(0,0,1, this, normalized_t::yesnorm), true;
+         q.z = rot.h;  return q(0,0,1, this, normalized::yes), true;
       }
 
       return false;
@@ -369,7 +369,7 @@ kip_infirst(cube)
       if (dx <= 0 || (q = -eye.x/dx) >= qmin) return false;
       if (0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey &&
           0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.x = 0;  return q(-1,0,0, this, normalized_t::yesnorm), true;
+         q.x = 0;  return q(-1,0,0, this, normalized::yes), true;
       }
    }
 
@@ -377,7 +377,7 @@ kip_infirst(cube)
       if (dy <= 0 || (q = -eye.y/dy) >= qmin) return false;
       if (0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
           0 <= (q.z = eye.z + q*dz) && q.z <= rot.h) {
-         q.y = 0;  return q(0,-1,0, this, normalized_t::yesnorm), true;
+         q.y = 0;  return q(0,-1,0, this, normalized::yes), true;
       }
    }
 
@@ -385,7 +385,7 @@ kip_infirst(cube)
       if (dz <= 0 || (q = -eye.z/dz) >= qmin) return false;
       if (0 <= (q.x = eye.x + q*dx) && q.x <= rot.ex &&
           0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey) {
-         q.z = 0;  return q(0,0,-1, this, normalized_t::yesnorm), true;
+         q.z = 0;  return q(0,0,-1, this, normalized::yes), true;
       }
    }
 
@@ -424,7 +424,7 @@ kip_inall(cube)
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.x = 0;
-      if (ints.convex(inq(-1,0,0, this, normalized_t::yesnorm))) return true;
+      if (ints.convex(inq(-1,0,0, this, normalized::yes))) return true;
    }
 
    // x max
@@ -432,7 +432,7 @@ kip_inall(cube)
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.x = rot.ex;
-      if (ints.convex(inq(1,0,0, this, normalized_t::yesnorm))) return true;
+      if (ints.convex(inq(1,0,0, this, normalized::yes))) return true;
    }
 
    // y min
@@ -440,7 +440,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.y = 0;
-      if (ints.convex(inq(0,-1,0, this, normalized_t::yesnorm))) return true;
+      if (ints.convex(inq(0,-1,0, this, normalized::yes))) return true;
    }
 
    // y max
@@ -448,7 +448,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.z = eye.z + inq.q*dz) && inq.z <= rot.h) {
       inq.y = rot.ey;
-      if (ints.convex(inq(0,1,0, this, normalized_t::yesnorm))) return true;
+      if (ints.convex(inq(0,1,0, this, normalized::yes))) return true;
    }
 
    // z min
@@ -456,7 +456,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey) {
       inq.z = 0;
-      if (ints.convex(inq(0,0,-1, this, normalized_t::yesnorm))) return true;
+      if (ints.convex(inq(0,0,-1, this, normalized::yes))) return true;
    }
 
    // z max
@@ -464,7 +464,7 @@ kip_inall(cube)
        0 <= (inq.x = eye.x + inq.q*dx) && inq.x <= rot.ex &&
        0 <= (inq.y = eye.y + inq.q*dy) && inq.y <= rot.ey) {
       inq.z = rot.h;
-      if (ints.convex(inq(0,0,1, this, normalized_t::yesnorm))) return true;
+      if (ints.convex(inq(0,0,1, this, normalized::yes))) return true;
    }
 
    return ints.size() > 0;
@@ -495,7 +495,7 @@ kip_read_value(cube) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
 
    obj.a *= pi<real>/180;

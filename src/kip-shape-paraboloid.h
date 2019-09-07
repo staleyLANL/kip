@@ -11,13 +11,21 @@ class paraboloid : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified paraboloid: (0,0,0), (h,0,0), r
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real rsq, h1, h2, h3;
 
    // get_*
    inline bool
-   get_baseh(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_curve(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_baseh(
+      const point<real> &,
+      const real, const real, const real,
+      inq<real,tag> &
+   ) const,
+   get_curve(
+      const point<real> &,
+      const real, const real, const real,
+      inq<real,tag> &
+   ) const;
 
 public:
    using shape<real,tag>::basic;
@@ -27,7 +35,10 @@ public:
    point<real> a, b;
    real r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 #define   kip_class paraboloid
 #include "kip-macro-onetwor-ctor.h"
@@ -41,7 +52,7 @@ public:
 
 kip_process(paraboloid)
 {
-   rot = rotate<3,real>(a, b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(a, b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -58,7 +69,10 @@ kip_process(paraboloid)
       return rot.ex - rot.h;  // east
 
    else if (r*(r - rot.ey) <= 2*rot.h*(rot.ex - rot.h)) {
-      return std::sqrt(op::square(rot.ex-rot.h) + op::square(rot.ey-r));  // northeast
+      return std::sqrt(
+         op::square(rot.ex-rot.h) +
+         op::square(rot.ey-r)
+      );  // northeast
 
    } else {
       // safe - based on bounding cylinder
@@ -80,7 +94,7 @@ kip_process(paraboloid)
 // -----------------------------------------------------------------------------
 
 // bound_paraboloid - helper
-namespace internal {
+namespace detail {
    template<class real>
    inline void bound_paraboloid(
       const real a, const real b, const real c, const real h, const real r,
@@ -100,13 +114,16 @@ namespace internal {
 // aabb
 kip_aabb(paraboloid)
 {
-   real xmin, ymin, zmin;  const rotate2pt<real> /*rotate<2,real>*/ rot2(a,b);
-   real xmax, ymax, zmax;  using namespace internal;
-   // zzz Should probably avoid ANY "using namespace" (as above) in .h codes
+   real xmin, ymin, zmin;
+   const rotate<2,real,op::full,op::unscaled> rot2(a,b);
+   real xmax, ymax, zmax;
 
-   bound_paraboloid(rot2.m.a.x, rot2.m.b.x, rot2.m.c.x, rot2.h,r, a.x,b.x, xmin,xmax);
-   bound_paraboloid(rot2.m.a.y, rot2.m.b.y, rot2.m.c.y, rot2.h,r, a.y,b.y, ymin,ymax);
-   bound_paraboloid(rot2.m.a.z, real(0),  rot2.m.c.z, rot2.h,r, a.z,b.z, zmin,zmax);
+   detail::bound_paraboloid(
+      rot2.mat.a.x, rot2.mat.b.x, rot2.mat.c.x, rot2.h,r, a.x,b.x, xmin,xmax);
+   detail::bound_paraboloid(
+      rot2.mat.a.y, rot2.mat.b.y, rot2.mat.c.y, rot2.h,r, a.y,b.y, ymin,ymax);
+   detail::bound_paraboloid(
+      rot2.mat.a.z, real(0),      rot2.mat.c.z, rot2.h,r, a.z,b.z, zmin,zmax);
 
    return bbox<real>(
       true,xmin, xmax,true,
@@ -142,7 +159,7 @@ kip_dry(paraboloid)
 // check
 kip_check(paraboloid)
 {
-   return internal::onetwor_check<real>("Paraboloid", *this);
+   return detail::onetwor_check<real>("Paraboloid", *this);
 } kip_end
 
 
@@ -150,7 +167,7 @@ kip_check(paraboloid)
 // randomize
 kip_randomize(paraboloid)
 {
-   return internal::random_abr<real,tag>(obj);
+   return detail::random_abr<real,tag>(obj);
 } kip_end
 
 
@@ -175,7 +192,7 @@ kip_infirst(paraboloid)
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= rsq) {
                q.x = rot.h;
-               return q(1,0,0, this, normalized_t::yesnorm), true;
+               return q(1,0,0, this, normalized::yes), true;
             }
          }
       }
@@ -203,7 +220,7 @@ kip_infirst(paraboloid)
 
          if (op::square(q.y) + op::square(q.z) <= rsq) {
             q.x = rot.h;
-            return q(1,0,0, this, normalized_t::yesnorm), true;
+            return q(1,0,0, this, normalized::yes), true;
          }
       }
 
@@ -230,7 +247,7 @@ kip_infirst(paraboloid)
 
    q.y = rot.ey + real(q)*dy;
    q.z = real(q)*tar.z;
-   return q(-1/h2, q.y, q.z, this, normalized_t::nonorm), true;
+   return q(-1/h2, q.y, q.z, this, normalized::no), true;
 } kip_end
 
 
@@ -258,7 +275,7 @@ inline bool paraboloid<real,tag>::get_baseh(
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= rsq) {
       info.x = rot.h;
-      return info(1,0,0, this, normalized_t::yesnorm), true;
+      return info(1,0,0, this, normalized::yes), true;
    }
    return false;
 }
@@ -283,7 +300,7 @@ inline bool paraboloid<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(-1/h2, info.y, info.z, this, normalized_t::nonorm), true;
+   return info(-1/h2, info.y, info.z, this, normalized::no), true;
 }
 
 
@@ -344,7 +361,7 @@ kip_read_value(paraboloid) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -353,7 +370,7 @@ kip_read_value(paraboloid) {
 
 // kip::ostream
 kip_ostream(paraboloid) {
-   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "paraboloid");
+   return detail::onetwor_write(k,obj, obj.a,obj.b,obj.r, "paraboloid");
 }
 
 #define   kip_class paraboloid

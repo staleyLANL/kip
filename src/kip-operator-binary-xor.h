@@ -17,7 +17,7 @@ public:
       { assert(false);  return from; }
 
    inline void propagate_base(const bool force = false) const
-      { internal::propagate_binary(*this,force); }
+      { detail::propagate_binary(*this,force); }
 
 
    // kipxor()
@@ -146,9 +146,9 @@ kip_aabb(kipxor)
    // bound comparisons. Otherwise, possible exact cancellations could mean
    // an or-tight bound is not xor-tight.
 
-   return internal::bound_combine(
+   return detail::bound_combine(
       binary.a->aabb(),
-      binary.b->aabb(), internal::op_less()
+      binary.b->aabb(), detail::op_less()
    );
 } kip_end
 
@@ -169,8 +169,8 @@ kip_dry(kipxor)
 kip_check(kipxor)
 {
    // written the following way so that "a" is checked before "b"
-   diagnostic_t d = internal::check_operand("xor",binary.a,"a");
-   return op::min(d,internal::check_operand("xor",binary.b,"b"));
+   diagnostic d = detail::check_operand("xor",binary.a,"a");
+   return op::min(d,detail::check_operand("xor",binary.b,"b"));
 } kip_end
 
 
@@ -217,13 +217,13 @@ kip_infirst(kipxor)
    inq<real,tag> bq;
    return
         binary.amin < qmin &&
-        internal::op_first(binary.a, kip_etd, qmin, q, insub)
+        detail::op_first(binary.a, kip_etd, qmin, q, insub)
       ? binary.bmin < q    &&
-        internal::op_first(binary.b, kip_etd, real(q),bq, insub)
+        detail::op_first(binary.b, kip_etd, real(q),bq, insub)
            ? (q=bq).reverse(binary.ina), true   // b wins
            : (q    .reverse(binary.inb), true)  // a only
       : binary.bmin < qmin &&
-        internal::op_first(binary.b, kip_etd, qmin, q, insub)
+        detail::op_first(binary.b, kip_etd, qmin, q, insub)
            ?  q    .reverse(binary.ina), true   // b only
            :  false  // always (up to qmin) the same status
    ;
@@ -236,15 +236,15 @@ kip_inall(kipxor)
 {
    afew<inq<real,tag>> aq;
    if (!(binary.amin < qmin &&
-         internal::op_all(binary.a, kip_etd, qmin,aq,   insub)))
+         detail::op_all(binary.a, kip_etd, qmin,aq,   insub)))
       return
          binary.bmin < qmin &&
-         internal::op_all(binary.b, kip_etd, qmin,ints, insub) &&
+         detail::op_all(binary.b, kip_etd, qmin,ints, insub) &&
          ints.reverse(binary.ina);
 
    afew<inq<real,tag>> bq;
    if (!(binary.bmin < qmin &&
-         internal::op_all(binary.b, kip_etd, qmin,bq,   insub)))
+         detail::op_all(binary.b, kip_etd, qmin,bq,   insub)))
       return ints.assign(aq).reverse(binary.inb);
 
    const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;

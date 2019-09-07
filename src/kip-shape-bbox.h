@@ -7,7 +7,7 @@
 // bbox - helpers
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // and_tight
 template<class real>
@@ -44,7 +44,7 @@ public:
    }
 };
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -56,7 +56,7 @@ template<class real>
 class bbox_component {
 public:
    // min, max
-   internal::and_tight<real> min, max;
+   detail::and_tight<real> min, max;
 
    // bbox_component(min_tight,min, max,max_tight)
    inline explicit bbox_component(
@@ -184,7 +184,7 @@ inline std::ostream &operator<<(
 // bound_combine
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // op_leq
 class op_leq {
@@ -276,4 +276,4 @@ inline bbox<real> bound_combine(
    );
 }
 
-} // namespace internal
+} // namespace detail

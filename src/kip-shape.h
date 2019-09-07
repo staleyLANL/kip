@@ -5,7 +5,7 @@
 // functionality for use by shape and by classes derived from shape.
 
 // vars
-namespace internal {
+namespace detail {
    template<class real = default_real, class tag = default_base>
    class vars;
 }
@@ -51,7 +51,7 @@ public:
 // these allow for a smaller sizeof(shape<>).
 using shape_id_t = uchar;
 
-namespace internal {
+namespace detail {
    // unique_number
    template<class T>
    inline T unique_number()
@@ -70,7 +70,7 @@ namespace internal {
 
    template<template<class,class> class SHAPE>
    const shape_id_t get_shape_id<SHAPE>::result = unique_number<shape_id_t>();
-} // namespace internal
+} // namespace detail
 
 
 
@@ -89,7 +89,7 @@ public:
 
 
 // subinfo
-namespace internal {
+namespace detail {
    class subinfo {
    public:
       minend mend;
@@ -139,7 +139,7 @@ public:
 // forward declarations
 template<class real, class tag> class tri;
 
-namespace internal {
+namespace detail {
    template<class SHAPE>
    class min_and_part;
 }
@@ -297,7 +297,7 @@ public:
       class {
       public:
          mutable char mint
-            [sizeof(binner<internal::min_and_part<tri<real,tag>>>)];
+            [sizeof(binner<detail::min_and_part<tri<real,tag>>>)];
       } surfdata;
    };
    */
@@ -348,7 +348,7 @@ public:
    class union_surfdata {
    public:
       mutable char mint
-         [sizeof(binner<internal::min_and_part<tri<real,tag>>>)];
+         [sizeof(binner<detail::min_and_part<tri<real,tag>>>)];
    };
 
    // union'd data, as we only need one-at-a-time
@@ -469,29 +469,29 @@ public:
    // process
    virtual real process(
       const point<real> &, const point<real> &,
-      const engine<real> &, const internal::vars<real,tag> &
+      const engine<real> &, const detail::vars<real,tag> &
    ) const = 0;
 
    // aabb
    virtual bbox<real> aabb() const = 0;
 
    // dry
-   virtual bool dry(const rotate<-3,real> &) const = 0;
+   virtual bool dry(const rotate<3,real,op::part,op::unscaled> &) const = 0;
 
    // infirst
    virtual bool infirst(
       const eyetardiff<real> &,
-      const real, inq<real,tag> &, const internal::subinfo &
+      const real, inq<real,tag> &, const detail::subinfo &
    ) const = 0;
 
    // inall
    virtual bool inall(
       const eyetardiff<real> &,
-      const real, afew<inq<real,tag>> &, const internal::subinfo &
+      const real, afew<inq<real,tag>> &, const detail::subinfo &
    ) const = 0;
 
    // check
-   virtual diagnostic_t check() const = 0;
+   virtual diagnostic check() const = 0;
 
    // back
    virtual point<real> back(const point<real> &) const = 0;
@@ -521,7 +521,7 @@ public:
 // kip_virtual_id
 #define kip_virtual_id(kip_class)\
    inline shape_id_t id() const\
-      { return internal::get_shape_id<kip_class>::result; }
+      { return detail::get_shape_id<kip_class>::result; }
 
 
 
@@ -546,27 +546,27 @@ public:
       const kip::point<real> &,\
       const kip::point<real> &,\
       const engine<real> &,\
-      const internal::vars<real,tag> &\
+      const detail::vars<real,tag> &\
    ) const;\
    \
    inline bbox<real> aabb() const;\
-   inline bool dry(const rotate<-3,real> &) const;\
+   inline bool dry(const rotate<3,real,op::part,op::unscaled> &) const;\
    \
    inline bool infirst(\
       const eyetardiff<real> &,\
       const real,\
       inq<real,tag> &,\
-      const internal::subinfo &\
+      const detail::subinfo &\
    ) const;\
    \
    inline bool inall(\
       const eyetardiff<real> &,\
       const real,\
       afew<inq<real,tag>> &,\
-      const internal::subinfo &\
+      const detail::subinfo &\
    ) const;\
    \
-   inline diagnostic_t check() const
+   inline diagnostic check() const
    // no ';' at end - semicolons at *invocation* points help emacs indent
 
 
@@ -582,7 +582,7 @@ public:
       const kip::point<real> &eyeball,\
       const kip::point<real> &light,\
       const engine<real> &engine,\
-      const internal::vars<real,tag> &vars\
+      const detail::vars<real,tag> &vars\
    ) const {\
       (void)eyeball;  (void)light;\
       (void)engine;   (void)vars;
@@ -605,8 +605,9 @@ public:
 // kip_dry
 #define kip_dry(type)\
    template<class real, class tag>\
-   inline bool type<real,tag>::dry(const rotate<-3,real> &seg) const\
-   {\
+   inline bool type<real,tag>::dry(\
+      const rotate<3,real,op::part,op::unscaled> &seg\
+   ) const {\
       (void)seg;
 
 
@@ -621,7 +622,7 @@ public:
       const eyetardiff<real> &etd,\
       const real qmin,\
       inq<real,tag> &q,\
-      const internal::subinfo &insub\
+      const detail::subinfo &insub\
    ) const {\
       const kip::point<real> &eyeball = etd.eyeball;\
       const kip::point<real> &target  = etd.target;\
@@ -637,7 +638,7 @@ public:
       const eyetardiff<real> &etd,\
       const real qmin,\
       afew<inq<real,tag>> &ints,\
-      const internal::subinfo &insub\
+      const detail::subinfo &insub\
    ) const {\
       const kip::point<real> &eyeball = etd.eyeball;\
       const kip::point<real> &target  = etd.target;\
@@ -649,7 +650,7 @@ public:
 // kip_check
 #define kip_check(type)\
    template<class real, class tag>\
-   inline diagnostic_t type<real,tag>::check() const\
+   inline diagnostic type<real,tag>::check() const\
    {
 
 // kip_randomize
@@ -693,12 +694,12 @@ public:
 // bound_abr
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class real, class OBJ>
-inline diagnostic_t onetwor_check(const char *const name, const OBJ &obj)
+inline diagnostic onetwor_check(const char *const name, const OBJ &obj)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // r
    if (obj.r <= real(0)) {
@@ -725,16 +726,17 @@ inline void bound_abr(
    const point<real> &a, const point<real> &b, const real r,
    point<real> &min, point<real> &max  // output
 ) {
-   const rotate2pt<real> /*rotate<2,real>*/ m(a,b);
+   const rotate<2,real,op::full,op::unscaled> m(a,b);
 
-   const real dx = r*std::sqrt(m.m.b.x*m.m.b.x + m.m.c.x*m.m.c.x);
-   const real dy = r*std::sqrt(m.m.b.y*m.m.b.y + m.m.c.y*m.m.c.y), dz = r*m.m.c.z;
+   const real dx = r*std::sqrt(op::square(m.mat.b.x) + op::square(m.mat.c.x));
+   const real dy = r*std::sqrt(op::square(m.mat.b.y) + op::square(m.mat.c.y));
+   const real dz = r*m.mat.c.z;
 
    min(a.x-dx, a.y-dy, a.z-dz);
    max(a.x+dx, a.y+dy, a.z+dz);
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -742,7 +744,7 @@ inline void bound_abr(
 // bbox_minimum
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class real>
 real bbox_minimum(
@@ -796,7 +798,9 @@ real bbox_minimum(
          else if (e.x < xsize)
             return e.z-zsize;
          else
-            return pline(e,point<real>(xsize,0,zsize),point<real>(xsize,ysize,zsize));
+            return pline(e,
+                         point<real>(xsize,0,zsize),
+                         point<real>(xsize,ysize,zsize));
    else
       if (e.z < 0)
          if (e.x < 0)
@@ -811,17 +815,21 @@ real bbox_minimum(
          else if (e.x < xsize)
             return e.y-ysize;
          else
-            return pline(e,point<real>(xsize,ysize,0),point<real>(xsize,ysize,zsize));
+            return pline(e,
+                         point<real>(xsize,ysize,0),
+                         point<real>(xsize,ysize,zsize));
       else
          if (e.x < 0)
             return mod(e - point<real>(0,ysize,zsize));
          else if (e.x < xsize)
-            return pline(e,point<real>(0,ysize,zsize),point<real>(xsize,ysize,zsize));
+            return pline(e,
+                         point<real>(0,ysize,zsize),
+                         point<real>(xsize,ysize,zsize));
          else
             return mod(e - point<real>(xsize,ysize,zsize));
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -829,7 +837,7 @@ real bbox_minimum(
 // random_abr: randomize shape with {a,b,r}
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 template<class real, class tag, class SHAPE>
 SHAPE &random_abr(SHAPE &obj)
@@ -852,7 +860,7 @@ SHAPE &random_abr(SHAPE &obj)
    return obj;
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -862,11 +870,11 @@ SHAPE &random_abr(SHAPE &obj)
 // op_all   (declaration)
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // check_operand
 template<class real, class tag>
-inline diagnostic_t check_operand(
+inline diagnostic check_operand(
    const char *const logical,
    const shape<real,tag> *const p,
    const char *const description
@@ -878,15 +886,15 @@ inline diagnostic_t check_operand(
       return error(oss);
    }
 
-   const diagnostic_t diag = p->check();
-   if (diag != diagnostic_t::diagnostic_good) {
+   const diagnostic diag = p->check();
+   if (diag != diagnostic::good) {
       std::ostringstream oss;
       oss << "Detected while checking \"" << description
           << "\" operand of logical-" << logical;
       return addendum(oss,diag);
    }
 
-   return diagnostic_t::diagnostic_good;
+   return diagnostic::good;
 }
 
 
@@ -913,7 +921,7 @@ inline bool op_all(
    const subinfo &
 );
 
-} // namespace internal
+} // namespace detail
 
 
 
@@ -964,7 +972,7 @@ public:
 // less, same, more
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // less
 template<class real, class tag>
@@ -1031,4 +1039,4 @@ public:
    inline bool operator()(const real a, const real b) const { return a > b; }
 };
 
-} // namespace internal
+} // namespace detail

@@ -36,7 +36,7 @@ kip_process(even)
    // The logical-even operator is mutually reflexive, so we can arbitrarily
    // rearrange its operands. Putting operands with smaller minima first tends
    // to speed up the operator.
-   std::sort(min_and_op.begin(), min_and_op.end(), internal::less<real,tag>());
+   std::sort(min_and_op.begin(), min_and_op.end(), detail::less<real,tag>());
 
    // Bookkeeping
    nary.total_in = 0;
@@ -76,7 +76,7 @@ kip_process(even)
 // -----------------------------------------------------------------------------
 
 // twosort - helper
-namespace internal {
+namespace detail {
    template<class CONTAINER, class COMPARE>
    inline void twosort(CONTAINER &c, const COMPARE &comp)
    {
@@ -110,17 +110,26 @@ kip_aabb(even)
          if (b.z.max.finite()) zmax.push_back(b.z.max); }
    }
 
-   twosort(xmin,internal::less<real,tag>()), twosort(xmax,internal::more<real,tag>());
-   twosort(ymin,internal::less<real,tag>()), twosort(ymax,internal::more<real,tag>());
-   twosort(zmin,internal::less<real,tag>()), twosort(zmax,internal::more<real,tag>());
+   twosort(xmin,detail::less<real,tag>()),
+   twosort(xmax,detail::more<real,tag>());
+   twosort(ymin,detail::less<real,tag>()),
+   twosort(ymax,detail::more<real,tag>());
+   twosort(zmin,detail::less<real,tag>()),
+   twosort(zmax,detail::more<real,tag>());
 
    return bbox<real>(
-      false, xmin.size() > 1 ? xmin[1] : +std::numeric_limits<real>::max(),
-             xmax.size() > 1 ? xmax[1] : -std::numeric_limits<real>::max(), false,
-      false, ymin.size() > 1 ? ymin[1] : +std::numeric_limits<real>::max(),
-             ymax.size() > 1 ? ymax[1] : -std::numeric_limits<real>::max(), false,
-      false, zmin.size() > 1 ? zmin[1] : +std::numeric_limits<real>::max(),
-             zmax.size() > 1 ? zmax[1] : -std::numeric_limits<real>::max(), false
+      false,
+      xmin.size() > 1 ? xmin[1] : +std::numeric_limits<real>::max(),
+      xmax.size() > 1 ? xmax[1] : -std::numeric_limits<real>::max(),
+      false,
+      false,
+      ymin.size() > 1 ? ymin[1] : +std::numeric_limits<real>::max(),
+      ymax.size() > 1 ? ymax[1] : -std::numeric_limits<real>::max(),
+      false,
+      false,
+      zmin.size() > 1 ? zmin[1] : +std::numeric_limits<real>::max(),
+      zmax.size() > 1 ? zmax[1] : -std::numeric_limits<real>::max(),
+      false
    );
 } kip_end
 
@@ -179,7 +188,7 @@ kip_infirst(even)
    if (nary.total_in > 1) {
       inq<real,tag> qtmp;  q = qmin;
       for (ulong i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
-         if (internal::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
+         if (detail::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
             q = qtmp;
       return q < qmin;
    }
@@ -194,7 +203,7 @@ kip_infirst(even)
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       operand[i].size =
          vec[i].min < qmin &&
-         internal::op_all(vec[i].op, kip_etd,
+         detail::op_all(vec[i].op, kip_etd,
                       qmin,operand[i].points, insub)
          ? (found = true, operand[i].points.size())
          :  0;
@@ -246,7 +255,7 @@ kip_inall(even)
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       operand[i].size =
          vec[i].min < qmin &&
-         internal::op_all(vec[i].op, kip_etd,
+         detail::op_all(vec[i].op, kip_etd,
                       qmin,operand[i].points, insub)
          ? (found = true, operand[i].points.size())
          :  0;

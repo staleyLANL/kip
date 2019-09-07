@@ -25,7 +25,7 @@
       const unsigned unsigned_num_operand = unsigned(num_operand);
       array< 1, per_operand > operand(unsigned_num_operand);
       #undef  kip_less
-      #define kip_less internal::no_action()
+      #define kip_less detail::no_action()
    #endif
 
 #endif

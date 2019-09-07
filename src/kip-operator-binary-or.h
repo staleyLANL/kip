@@ -17,7 +17,7 @@ public:
       { assert(false);  return from; }
 
    inline void propagate_base(const bool force = false) const
-      { internal::propagate_binary(*this,force); }
+      { detail::propagate_binary(*this,force); }
 
 
    // kipor()
@@ -149,9 +149,9 @@ kip_process(kipor)
 // aabb
 kip_aabb(kipor)
 {
-   return internal::bound_combine(
+   return detail::bound_combine(
       binary.a->aabb(),
-      binary.b->aabb(), internal::op_leq()
+      binary.b->aabb(), detail::op_leq()
    );
 } kip_end
 
@@ -169,8 +169,8 @@ kip_dry(kipor)
 kip_check(kipor)
 {
    // written the following way so that "a" is checked before "b"
-   diagnostic_t d = internal::check_operand("or",binary.a,"a");
-   return op::min(d,internal::check_operand("or",binary.b,"b"));
+   diagnostic d = detail::check_operand("or",binary.a,"a");
+   return op::min(d,detail::check_operand("or",binary.b,"b"));
 } kip_end
 
 
@@ -221,14 +221,14 @@ kip_infirst(kipor)
       inq<real,tag> bq;
       return
            binary.amin < qmin &&
-           internal::op_first(binary.a, kip_etd, qmin, q, insub)
+           detail::op_first(binary.a, kip_etd, qmin, q, insub)
          ? binary.bmin < q    &&
-           internal::op_first(binary.b, kip_etd, real(q),bq, insub)
+           detail::op_first(binary.b, kip_etd, real(q),bq, insub)
               ? q=bq, // b wins
                 true
               : true  // a only
          : binary.bmin < qmin &&
-           internal::op_first(binary.b, kip_etd, qmin, q, insub)
+           detail::op_first(binary.b, kip_etd, qmin, q, insub)
               // b only, or stays outside
       ;
    }
@@ -239,14 +239,14 @@ kip_infirst(kipor)
 
    afew<inq<real,tag>> aq;
    if (binary.amin >= qmin ||
-      !internal::op_all(binary.a, kip_etd, qmin,aq, insub))
+      !detail::op_all(binary.a, kip_etd, qmin,aq, insub))
       return
         !binary.ina && binary.bmin < qmin &&
-         internal::op_first(binary.b, kip_etd, qmin,q, insub);
+         detail::op_first(binary.b, kip_etd, qmin,q, insub);
 
    afew<inq<real,tag>> bq;
    if (binary.bmin >= qmin ||
-      !internal::op_all(binary.b, kip_etd, qmin,bq, insub))
+      !detail::op_all(binary.b, kip_etd, qmin,bq, insub))
       return !binary.inb && (q = aq[0], true);
 
    // search for the relevant point
@@ -277,14 +277,14 @@ kip_inall(kipor)
 {
    afew<inq<real,tag>> aq;
    if (!(binary.amin < qmin &&
-         internal::op_all(binary.a, kip_etd, qmin,aq,   insub)))
+         detail::op_all(binary.a, kip_etd, qmin,aq,   insub)))
       return
         !binary.ina && binary.bmin < qmin &&
-         internal::op_all(binary.b, kip_etd, qmin,ints, insub);
+         detail::op_all(binary.b, kip_etd, qmin,ints, insub);
 
    afew<inq<real,tag>> bq;
    if (!(binary.bmin < qmin &&
-         internal::op_all(binary.b, kip_etd, qmin,bq,   insub)))
+         detail::op_all(binary.b, kip_etd, qmin,bq,   insub)))
       return !binary.inb && ints.assign(aq);
 
    const ulong anum=aq.size();  ulong an=0;  bool ina=binary.ina, in=interior;

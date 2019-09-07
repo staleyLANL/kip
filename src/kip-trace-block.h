@@ -3,7 +3,7 @@
 
 // zzz Need to consider shape.on in this algorithm.
 
-namespace internal {
+namespace detail {
 
 // -----------------------------------------------------------------------------
 // block_setup_shape
@@ -302,7 +302,7 @@ void btrace(
                } else
                   bin[obj].minimum = bin[obj].shape->minimum;
 
-            std::sort(bin.begin(), bin.end(), internal::less<real,base>());
+            std::sort(bin.begin(), bin.end(), detail::less<real,base>());
             vars.block[seg].reset = false;
          }
 
@@ -312,7 +312,7 @@ void btrace(
          for ( ;  s < size;  ++s)
             if (bin[s].shape->lastpix < npix) {
                bin[s].shape->lastpix = npix;
-               if (internal::op_first(bin[s].shape,
+               if (detail::op_first(bin[s].shape,
                                   view.eyeball, view.target, diff,
                                   qmin,*qused, insub)) {
                   const real q = qused->q;
@@ -325,7 +325,7 @@ void btrace(
          for ( ;  s < size && bin[s].minimum < qmin;  ++s)
             if (bin[s].shape->lastpix < npix) {
                bin[s].shape->lastpix = npix;
-               if (internal::op_first(bin[s].shape,
+               if (detail::op_first(bin[s].shape,
                                   eyeball, target, diff,
                                   qmin, *qnext, insub)) {
                   const real q = qnext->q;
@@ -339,10 +339,10 @@ void btrace(
 
       // color
       if (ptr)
-         image(h,v) = internal::get_color<color>(*qused);
+         image(h,v) = detail::get_color<color>(*qused);
    }
    }
 #endif
 }
 
-} // namespace internal
+} // namespace detail

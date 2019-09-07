@@ -11,7 +11,7 @@
 // users may prefer the shorter name, "shape_id", without the "_t" suffix
 using shape_id = shape_id_t;
 
-namespace internal {
+namespace detail {
 
 // id_t
 template<class>
@@ -39,6 +39,6 @@ kip_expand(kip_make_id,;)
 kip_extra (kip_make_id,;)
 #undef kip_make_id
 
-} // namespace internal
+} // namespace detail
 
-using id = internal::id_t<char>;
+using id = detail::id_t<char>;

@@ -11,23 +11,29 @@ class washer : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified washer: (0,0,0), (h,0,0), i, o
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real isq, osq, hsq, hin, hout, p;
 
    inline bool first_in(
-      const point<real> &tar, const real dx, const real dy, const real qmin, inq<real,tag> &q
+      const point<real> &tar,
+      const real dx, const real dy, const real qmin, inq<real,tag> &q
    ) const;
 
    inline bool first_out(
-      const point<real> &tar, const real dx, const real dy, const real qmin, inq<real,tag> &q
+      const point<real> &tar,
+      const real dx, const real dy, const real qmin, inq<real,tag> &q
    ) const;
 
    // get_*
    inline bool
-   get_base0(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_baseh(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_inner(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_outer(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_base0(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_baseh(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_inner(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_outer(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const;
 
 public:
    using shape<real,tag>::basic;
@@ -37,7 +43,10 @@ public:
    point<real> a, b;
    real i, o;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 
 
@@ -150,8 +159,8 @@ public:
 kip_process(washer)
 {
    rot = mod2(a-eyeball) < mod2(b-eyeball)
-      ? rotate<3,real>(a, b, eyeball)
-      : rotate<3,real>(b, a, eyeball);
+      ? rotate<3,real,op::full,op::unscaled>(a, b, eyeball)
+      : rotate<3,real,op::full,op::unscaled>(b, a, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -213,7 +222,7 @@ kip_process(washer)
 kip_aabb(washer)
 {
    // same as for cylinder - cutout doesn't change bounds
-   return internal::bound_cylinder(*this, this->o);
+   return detail::bound_cylinder(*this, this->o);
 } kip_end
 
 
@@ -260,7 +269,7 @@ inline bool washer<real,tag>::first_in(
             if (0 <= q.x && q.x <= rot.h) {
                q.y = rot.ey + q*dy;
                q.z = q*tar.z;
-               return q(0, -q.y, -q.z, this, normalized_t::nonorm), true;
+               return q(0, -q.y, -q.z, this, normalized::no), true;
             }
          }
       }
@@ -275,7 +284,7 @@ inline bool washer<real,tag>::first_in(
          if (0 <= q.x && q.x <= rot.h) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(0, q.y, q.z, this, normalized_t::nonorm), true;
+            return q(0, q.y, q.z, this, normalized::no), true;
          }
       }
    }
@@ -290,7 +299,7 @@ inline bool washer<real,tag>::first_in(
          const real tmp = op::square(q.y) + op::square(q.z);
          if (isq <= tmp && tmp <= osq) {
             q.x = real(0);
-            return q(-1,0,0, this, normalized_t::yesnorm), true;
+            return q(-1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -305,7 +314,7 @@ inline bool washer<real,tag>::first_in(
          const real tmp = op::square(q.y) + op::square(q.z);
          if (isq <= tmp && tmp <= osq) {
             q.x = rot.h;
-            return q(1,0,0, this, normalized_t::yesnorm), true;
+            return q(1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -341,7 +350,7 @@ inline bool washer<real,tag>::first_out(
       const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
          q.x = real(0);
-         return q(-1,0,0, this, normalized_t::yesnorm), true;
+         return q(-1,0,0, this, normalized::yes), true;
       }
    }
 
@@ -359,7 +368,7 @@ inline bool washer<real,tag>::first_out(
       if (0 <= q.x && q.x <= rot.h) {
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
-         return q(0, q.y, q.z, this, normalized_t::nonorm), true;
+         return q(0, q.y, q.z, this, normalized::no), true;
       }
    }
 
@@ -375,7 +384,7 @@ inline bool washer<real,tag>::first_out(
       if (0 <= q.x && q.x <= rot.h) {
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
-         return q(0, -q.y, -q.z, this, normalized_t::nonorm), true;
+         return q(0, -q.y, -q.z, this, normalized::no), true;
       }
    }
 
@@ -420,7 +429,7 @@ inline bool washer<real,tag>::get_base0(
       const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
          q.x = real(0);
-         return q(-1,0,0, this, normalized_t::yesnorm), true;
+         return q(-1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -442,7 +451,7 @@ inline bool washer<real,tag>::get_baseh(
       const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
          q.x = rot.h;
-         return q(1,0,0, this, normalized_t::yesnorm), true;
+         return q(1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -461,7 +470,7 @@ inline bool washer<real,tag>::get_inner(
       if (0 <= q.x && q.x <= rot.h) {
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
-         return q(0, -q.y, -q.z, this, normalized_t::nonorm), true;
+         return q(0, -q.y, -q.z, this, normalized::no), true;
       }
    }
    return false;
@@ -480,7 +489,7 @@ inline bool washer<real,tag>::get_outer(
       if (0 <= q.x && q.x <= rot.h) {
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
-         return q(0, q.y, q.z, this, normalized_t::nonorm), true;
+         return q(0, q.y, q.z, this, normalized::no), true;
       }
    }
    return false;
@@ -538,7 +547,7 @@ kip_inall(washer)
 
 kip_check(washer)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // i
    // I think we're allowing == 0, just not < 0
@@ -625,7 +634,7 @@ kip_read_value(washer) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

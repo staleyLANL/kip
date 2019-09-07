@@ -307,7 +307,7 @@ std::string istream::context(const unused) const
             oss << char(ch);
             if (long(themark) == -1 || tell() <= themark)
                carat += ch == '\t' ? '\t' : ' ';  // give it a shot :-/
-            // don't bother with nonsense like vertical tabs and form feeds
+            // don't bother with nonsense like vertical tabs and formfeeds
          }
          oss << '\n' << carat << '^';
       } else

@@ -17,7 +17,7 @@ public:
       { assert(false);  return from; }
 
    inline void propagate_base(const bool force = false) const
-      { internal::propagate_binary(*this,force); }
+      { detail::propagate_binary(*this,force); }
 
 
    // kipcut()
@@ -185,8 +185,8 @@ kip_dry(kipcut)
 kip_check(kipcut)
 {
    // written the following way so that "a" is checked before "b"
-   diagnostic_t d = internal::check_operand("cut",binary.a,"a");
-   return op::min(d,internal::check_operand("cut",binary.b,"b"));
+   diagnostic d = detail::check_operand("cut",binary.a,"a");
+   return op::min(d,detail::check_operand("cut",binary.b,"b"));
 } kip_end
 
 
@@ -240,14 +240,14 @@ kip_infirst(kipcut)
       inq<real,tag> bq;
       return
            binary.amin < qmin &&
-           internal::op_first(binary.a, kip_etd, qmin, q, insub)
+           detail::op_first(binary.a, kip_etd, qmin, q, insub)
          ? binary.bmin < q    &&
-           internal::op_first(binary.b, kip_etd, real(q),bq, insub)
+           detail::op_first(binary.b, kip_etd, real(q),bq, insub)
               ? (q=bq).reverse(), // b wins
                  true
               :  true             // a only
          : binary.bmin < qmin &&
-           internal::op_first(binary.b, kip_etd, qmin, q, insub)
+           detail::op_first(binary.b, kip_etd, qmin, q, insub)
               ? (q   ).reverse(), // b only
                  true
               :  false  // always (up to qmin) inside
@@ -260,16 +260,16 @@ kip_infirst(kipcut)
 
    afew<inq<real,tag>> aq;
    if (binary.amin >= qmin ||
-      !internal::op_all(binary.a, kip_etd, qmin,aq, insub))
+      !detail::op_all(binary.a, kip_etd, qmin,aq, insub))
       return
          binary.ina &&
          binary.bmin < qmin &&
-         internal::op_first(binary.b, kip_etd, qmin,q, insub) &&
+         detail::op_first(binary.b, kip_etd, qmin,q, insub) &&
         (q.reverse(), true);
 
    afew<inq<real,tag>> bq;
    if (binary.bmin >= qmin ||
-      !internal::op_all(binary.b, kip_etd, qmin,bq, insub))
+      !detail::op_all(binary.b, kip_etd, qmin,bq, insub))
       return !binary.inb && (q = aq[0], true);
 
    // search for the relevant point
@@ -300,15 +300,15 @@ kip_inall(kipcut)
 {
    afew<inq<real,tag>> aq;
    if (!(binary.amin < qmin &&
-         internal::op_all(binary.a, kip_etd, qmin,aq, insub)))
+         detail::op_all(binary.a, kip_etd, qmin,aq, insub)))
       return
          binary.ina && binary.bmin < qmin &&
-         internal::op_all(binary.b, kip_etd, qmin,ints, insub) &&
+         detail::op_all(binary.b, kip_etd, qmin,ints, insub) &&
          ints.reverse();
 
    afew<inq<real,tag>> bq;
    if (!(binary.bmin < qmin &&
-         internal::op_all(binary.b, kip_etd, qmin,bq, insub)))
+         detail::op_all(binary.b, kip_etd, qmin,bq, insub)))
       return !binary.inb && ints.assign(aq);
 
    const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;

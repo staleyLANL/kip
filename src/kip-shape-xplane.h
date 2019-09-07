@@ -134,7 +134,7 @@ kip_infirst(xplane)
            misc.plane.norm, 0, 0, this,
           (int(std::abs(q.y/size.y)) % 2 == (q.y > 0)) ==
           (int(std::abs(q.z/size.z)) % 2 == (q.z > 0)) ? &color : this,
-           normalized_t::yesnorm
+           normalized::yes
         ),
         true
       : false;
@@ -155,7 +155,7 @@ kip_inall(xplane)
 // check
 kip_check(xplane)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // size.y
    if (size.y <= real(0)) {
@@ -219,14 +219,14 @@ kip_read_value(xplane) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
 
 
 
-namespace internal {
+namespace detail {
 
 // plane_write
 template<class real, class tag, template<class,class> class OBJ>
@@ -264,13 +264,13 @@ kip::ostream &plane_write(
    return k;
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
 // kip::ostream
 kip_ostream(xplane) {
-   return internal::plane_write(k, obj, 'x', obj.x, obj.size.y, obj.size.z);
+   return detail::plane_write(k, obj, 'x', obj.x, obj.size.y, obj.size.z);
 }
 
 #define   kip_class xplane

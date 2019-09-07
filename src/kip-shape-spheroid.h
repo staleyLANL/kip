@@ -11,13 +11,14 @@ class spheroid : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified spheroid: (-h,0,0), (h,0,0), r
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real irsq, ihsq, eyr, exh, i;
    mutable real r2h2, rsq;
 
    // get_curve
    inline bool
-   get_curve(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_curve(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const;
 
 public:
    using shape<real,tag>::basic;
@@ -28,7 +29,10 @@ public:
    point<real> b;
    real r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 #define   kip_class spheroid
 #include "kip-macro-onetwor-ctor.h"
@@ -42,7 +46,7 @@ public:
 
 kip_process(spheroid)
 {
-   rot = rotate<3,real>(real(0.5)*(a+b), b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(real(0.5)*(a+b), b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -73,11 +77,11 @@ kip_process(spheroid)
       const real bb =
           rot.ex <= -rot.h
        ?  rot.ey >= r
-       ?  std::sqrt(op::square(rot.ex + rot.h) + op::square(rot.ey - r))  // northwest
+       ?  std::sqrt(op::square(rot.ex + rot.h) + op::square(rot.ey - r))  // nw
        : -rot.h - rot.ex  // west
        :  rot.ex >= rot.h
        ?  rot.ey >= r
-       ?  std::sqrt(op::square(rot.ex - rot.h) + op::square(rot.ey - r))  // northeast
+       ?  std::sqrt(op::square(rot.ex - rot.h) + op::square(rot.ey - r))  // ne
        :  rot.ex - rot.h  // east
        :  rot.ey - r  // north
        ;
@@ -111,7 +115,7 @@ kip_process(spheroid)
 // -----------------------------------------------------------------------------
 
 // bound_spheroid - helper
-namespace internal {
+namespace detail {
    template<class real>
    inline real bound_spheroid(
       const real a, const real b, const real c,
@@ -124,15 +128,15 @@ namespace internal {
 // aabb
 kip_aabb(spheroid)
 {
-   const rotate2pt<real> rot2(real(0.5)*(a+b), b);
+   const rotate<2,real,op::full,op::unscaled> rot2(real(0.5)*(a+b), b);
    const real hsq = rot2.h*rot2.h, rsq = r*r;
 
    const real xval =
-      internal::bound_spheroid(rot2.m.a.x, rot2.m.b.x, rot2.m.c.x, hsq,rsq);
+      detail::bound_spheroid(rot2.mat.a.x, rot2.mat.b.x, rot2.mat.c.x, hsq,rsq);
    const real yval =
-      internal::bound_spheroid(rot2.m.a.y, rot2.m.b.y, rot2.m.c.y, hsq,rsq);
+      detail::bound_spheroid(rot2.mat.a.y, rot2.mat.b.y, rot2.mat.c.y, hsq,rsq);
    const real zval =
-      internal::bound_spheroid(rot2.m.a.z, real(0),    rot2.m.c.z, hsq,rsq);
+      detail::bound_spheroid(rot2.mat.a.z, real(0),      rot2.mat.c.z, hsq,rsq);
 
    return bbox<real>(
       true, rot2.shift.x-xval, rot2.shift.x+xval, true,
@@ -164,7 +168,7 @@ kip_dry(spheroid)
 // check
 kip_check(spheroid)
 {
-   return internal::onetwor_check<real>("Spheroid", *this);
+   return detail::onetwor_check<real>("Spheroid", *this);
 } kip_end
 
 
@@ -172,7 +176,7 @@ kip_check(spheroid)
 // randomize
 kip_randomize(spheroid)
 {
-   return internal::random_abr<real,tag>(obj);
+   return detail::random_abr<real,tag>(obj);
 } kip_end
 
 
@@ -202,7 +206,7 @@ kip_infirst(spheroid)
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
 
-   return q(ihsq*q.x, irsq*q.y, irsq*q.z, this, normalized_t::nonorm), true;
+   return q(ihsq*q.x, irsq*q.y, irsq*q.z, this, normalized::no), true;
 } kip_end
 
 
@@ -227,7 +231,12 @@ inline bool spheroid<real,tag>::get_curve(
    info.z = info.q*tar.z;
 
    // normal
-   return info(ihsq*info.x, irsq*info.y, irsq*info.z, this, normalized_t::nonorm), true;
+   return info(
+      ihsq*info.x,
+      irsq*info.y,
+      irsq*info.z,
+      this, normalized::no
+   ), true;
 }
 
 
@@ -290,7 +299,7 @@ kip_read_value(spheroid) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -299,7 +308,7 @@ kip_read_value(spheroid) {
 
 // kip::ostream
 kip_ostream(spheroid) {
-   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "spheroid");
+   return detail::onetwor_write(k,obj, obj.a,obj.b,obj.r, "spheroid");
 }
 
 #define   kip_class spheroid

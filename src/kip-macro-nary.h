@@ -73,7 +73,7 @@ public:
 
    // propagate_base
    inline void propagate_base(const bool force = false) const
-      { internal::propagate_nary(kip_data.vec(), base(), force); }
+      { detail::propagate_nary(kip_data.vec(), base(), force); }
 
    // clear
    inline void clear()
@@ -157,7 +157,7 @@ public:
 
    kip_functions(kip_class)  // ends with check() header
    {
-      diagnostic_t d = diagnostic_t::diagnostic_good;
+      diagnostic d = diagnostic::good;
       kip_data.nop = size();
 
       for (ulong n = 0;  n < kip_data.nop;  ++n) {
@@ -166,7 +166,7 @@ public:
 
          d = op::min(
             d,
-            internal::check_operand(
+            detail::check_operand(
                kip_quote(kip_class), kip_data.vec()[n].op, oss.str().c_str())
          );
       }

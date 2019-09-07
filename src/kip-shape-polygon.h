@@ -14,8 +14,8 @@ public:
 
 private:
    // modified polygon: (0,0,0), (h,0,0), (ex,ey,0), ... (all with z == 0)
-   mutable rotate<3,real> rot;
-   mutable array_simple<xypoint<real>> poly;  // rotated to 2d
+   mutable rotate<3,real,op::full,op::unscaled> rot;
+   mutable array<0,xypoint<real>> poly;  // rotated to 2d
    mutable real xlo, xhi, ylo, yhi;  // 2d bounding box
    mutable ulong npts;
 
@@ -27,7 +27,10 @@ public:
    table_t table;
    inline ulong size() const { return table.size(); }
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 
    // polygon([base])
@@ -105,7 +108,7 @@ kip_process(polygon)
    if (loc == npts) return 0;  // shouldn't happen if it's a genuine polygon
 
    // rot, eye, lie
-   rot = rotate<3,real>(
+   rot = rotate<3,real,op::full,op::unscaled>(
       table[loc],
       table[(loc+1) % npts],
       table[(loc+2) % npts]
@@ -216,7 +219,9 @@ kip_infirst(polygon)
 
    // done
    return point_in_poly(q.x,q.y)
-      ? q.z=0, q(0,0,basic.eye().z > 0 ? real(1) : real(-1),this,normalized_t::yesnorm),true
+      ? q.z=0, q(0,0,basic.eye().z > 0
+                 ? real(1)
+                 : real(-1),this,normalized::yes),true
       : false;
 } kip_end
 
@@ -235,7 +240,7 @@ kip_inall(polygon)
 // check
 kip_check(polygon)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
    npts = size();
 
    // Require that no two successive points be equal
@@ -260,7 +265,7 @@ kip_randomize(polygon)
 
    // rotation to move vertices to their actual locations
    point<real> p;
-   const rotate<3,real> move(
+   const rotate<3,real,op::full,op::unscaled> move(
       pi<real>*random_unit<real>(),
       pi<real>*random_unit<real>(),
       pi<real>*random_unit<real>(), random_full(p)
@@ -272,7 +277,11 @@ kip_randomize(polygon)
 
    for (ulong i = 0;  i < npts;  ++i)
       obj.table.push_back(move.back(
-         point<real>(real(0.3)*random_unit<real>(), real(0.3)*random_unit<real>(), 0)
+         point<real>(
+            real(0.3)*random_unit<real>(),
+            real(0.3)*random_unit<real>(),
+            0
+         )
       ));
 
    // base
@@ -320,7 +329,7 @@ kip_read_value(polygon) {
 
    if (!(okay && read_done(s, obj))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

@@ -5,7 +5,7 @@
 // propagate_*
 // -----------------------------------------------------------------------------
 
-namespace internal {
+namespace detail {
 
 // propagate_unary
 template<class real, class tag>
@@ -57,7 +57,7 @@ void propagate_nary(const VEC &vec, const tag &base, const bool force)
    }
 }
 
-} // namespace internal
+} // namespace detail
 
 
 

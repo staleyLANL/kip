@@ -17,7 +17,7 @@ public:
       { assert(false);  return from; }
 
    inline void propagate_base(const bool force = false) const
-      { internal::propagate_unary(*this,force); }
+      { detail::propagate_unary(*this,force); }
 
 
    // kipnot()
@@ -124,7 +124,7 @@ kip_dry(kipnot)
 // check
 kip_check(kipnot)
 {
-   return internal::check_operand("not",unary.a,"a");
+   return detail::check_operand("not",unary.a,"a");
 } kip_end
 
 
@@ -166,7 +166,7 @@ kip_randomize(kipnot)
 // infirst
 kip_infirst(kipnot)
 {
-   return internal::op_first(unary.a, kip_etd, qmin,q, insub)
+   return detail::op_first(unary.a, kip_etd, qmin,q, insub)
       ? q.reverse(), true : false;
 } kip_end
 
@@ -175,7 +175,7 @@ kip_infirst(kipnot)
 // inall
 kip_inall(kipnot)
 {
-   return internal::op_all(unary.a, kip_etd, qmin,ints, insub)
+   return detail::op_all(unary.a, kip_etd, qmin,ints, insub)
       ? ints.reverse() : false;
 } kip_end
 
@@ -205,7 +205,7 @@ bool read_value(
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    } else if (s.level == 0)
       obj.propagate_base();
 

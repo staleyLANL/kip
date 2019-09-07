@@ -18,12 +18,12 @@ public:
    using table_t = std::vector<xrpoint<real>>;
 
 private:
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
 
    // actual begin/end (along a --> b) of tabular
    mutable point<real> atabular, btabular;
 
-   mutable array_simple<internal::rshhhd<real>> pre;
+   mutable array<0,detail::rshhhd<real>> pre;
    mutable real hdr, rmaxsq, f, left, right;
 
 private:
@@ -180,7 +180,7 @@ public:
 
 kip_process(tabular)
 {
-   rot = rotate<3,real>(a, b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(a, b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -226,7 +226,7 @@ kip_process(tabular)
       const xrpoint<real>
          &last = table[i-1],  // point to the left  of segment
          &next = table[i  ];  // point to the right of segment
-      internal::rshhhd<real> &seg = pre[i-1];  // segment
+      detail::rshhhd<real> &seg = pre[i-1];  // segment
 
       // Computations for point...
       pre[i].rsq = op::square(next.r);
@@ -256,10 +256,12 @@ kip_process(tabular)
           ))
        : (last.r - next.r)*(rot.ey - last.r) >=
          (next.x - last.x)*(rot.ex - last.x)
-       ?  std::sqrt(op::square(rot.ex - last.x) + op::square(rot.ey - last.r))  // nw
+       ?  std::sqrt(op::square(rot.ex - last.x) +
+                    op::square(rot.ey - last.r))  // nw
        : (last.r - next.r)*(rot.ey - next.r) <=
          (next.x - last.x)*(rot.ex - next.x)
-       ?  std::sqrt(op::square(rot.ex - next.x) + op::square(rot.ey - next.r))  // ne
+       ?  std::sqrt(op::square(rot.ex - next.x) +
+                    op::square(rot.ey - next.r))  // ne
        :  std::abs(seg.slope*(rot.ex - last.x) +
              last.r - rot.ey) / std::sqrt(seg.h1)  // north
       ;
@@ -291,11 +293,11 @@ kip_aabb(tabular)
       // make out-of-order (thus !valid()) in each dimension
       return bbox<real>(false,1,0,false, false,1,0,false, false,1,0,false);
 
-   const rotate2pt<real> r2(a,b);
+   const rotate<2,real,op::full,op::unscaled> r2(a,b);
 
    const point<real> diff(
-      std::sqrt(r2.m.b.x*r2.m.b.x + r2.m.c.x*r2.m.c.x),
-      std::sqrt(r2.m.b.y*r2.m.b.y + r2.m.c.y*r2.m.c.y), r2.m.c.z
+      std::sqrt(op::square(r2.mat.b.x) + op::square(r2.mat.c.x)),
+      std::sqrt(op::square(r2.mat.b.y) + op::square(r2.mat.c.y)), r2.mat.c.z
    ), along = normalize(b-a);
 
    real xmin =  std::numeric_limits<real>::max(), ymin = xmin, zmin = xmin;
@@ -353,7 +355,7 @@ inline bool tabular<real,tag>::cap_lo(
    q.z = q*tar_z;
 
    return q.y*q.y + q.z*q.z <= pre[0].rsq
-      ? q.x = table[0].x, q(-1,0,0, this, normalized_t::yesnorm), true
+      ? q.x = table[0].x, q(-1,0,0, this, normalized::yes), true
       : false;
 }
 
@@ -374,7 +376,7 @@ inline bool tabular<real,tag>::cap_hi(
    q.z = q*tar_z;
 
    return q.y*q.y + q.z*q.z <= pre[P].rsq
-      ? q.x = table[P].x, q( 1,0,0, this, normalized_t::yesnorm), true
+      ? q.x = table[P].x, q( 1,0,0, this, normalized::yes), true
       : false;
 }
 
@@ -400,7 +402,8 @@ inline bool tabular<real,tag>::hit_bounding_cylinder(
 // get_bounds
 template<class real, class tag>
 inline bool tabular<real,tag>::get_bounds(
-   const real s, const real den, const real eydy, const real dx, const real qmin,
+   const real s, const real den,
+   const real eydy, const real dx, const real qmin,
    const ulong P, const ulong C,
    ulong &cmin, ulong &cmax
 ) const {
@@ -476,7 +479,7 @@ inline bool tabular<real,tag>::segment(
    const ulong i
 ) const {
    // We're dealing with cell i, which is between points table[i] and table[i+1]
-   const internal::rshhhd<real> &cell = pre[i];
+   const detail::rshhhd<real> &cell = pre[i];
 
    if (cell.dmins < qmin) {
       const real m = 1 - tmp1*cell.h1;
@@ -494,7 +497,7 @@ inline bool tabular<real,tag>::segment(
             cell.slope*(cell.slope*(table[i].x-q.x) - table[i].r),
             q.y = rot.ey + q*dy,
             q.z = q*tar.z,
-            this, normalized_t::nonorm
+            this, normalized::no
          ), true;
    }
    return false;
@@ -518,7 +521,7 @@ inline void tabular<real,tag>::registerq(
             slope*(slope*(table[i].x - qtmp.x) - table[i].r),
             qtmp.y = rot.ey + q*dy,
             qtmp.z = q*tar_z,
-            this, normalized_t::nonorm
+            this, normalized::no
          ) = q
       );
 }
@@ -533,7 +536,7 @@ inline void tabular<real,tag>::segment2(
    const ulong i
 ) const {
    // We're dealing with cell i, which is between points table[i] and table[i+1]
-   const internal::rshhhd<real> &cell = pre[i];
+   const detail::rshhhd<real> &cell = pre[i];
 
    if (cell.dmins < qmin) {
       const real m = 1 - tmp1*cell.h1;
@@ -663,7 +666,7 @@ kip_inall(tabular)
 
 kip_check(tabular)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
    npts = size();
 
    // npts
@@ -803,14 +806,14 @@ kip_read_value(tabular) {
 
    if (!(okay && read_done(s, obj))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
 
 
 
-namespace internal {
+namespace detail {
 
 // tabular_write
 template<class real, class tag, template<class,class> class OBJ>
@@ -853,13 +856,13 @@ kip::ostream &tabular_write(
    return k;
 }
 
-} // namespace internal
+} // namespace detail
 
 
 
 // kip::ostream
 kip_ostream(tabular) {
-   return internal::tabular_write(k, obj, "tabular");
+   return detail::tabular_write(k, obj, "tabular");
 }
 
 #define   kip_class tabular

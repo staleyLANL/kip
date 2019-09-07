@@ -11,14 +11,17 @@ class silo : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified silo: (0,0,0), (h,0,0), r
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real rsq, hsq, h1, h2, m;
 
    // get_*
    inline bool
-   get_hemi0(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_baseh(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_curve(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_hemi0(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_baseh(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_curve(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const;
 
 public:
    using shape<real,tag>::basic;
@@ -28,7 +31,10 @@ public:
    point<real> a, b;
    real r;
 
-   inline point<real> back(const point<real> &from) const { return rot.back(from); }
+   inline point<real> back(const point<real> &from) const
+   {
+      return rot.back(from);
+   }
 
 #define   kip_class silo
 #include "kip-macro-onetwor-ctor.h"
@@ -43,7 +49,7 @@ public:
 // process
 kip_process(silo)
 {
-   rot = rotate<3,real>(a, b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(a, b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -77,7 +83,7 @@ kip_process(silo)
 kip_aabb(silo)
 {
    point<real> min, max;
-   internal::bound_abr(b,a,r, min,max);
+   detail::bound_abr(b,a,r, min,max);
 
    return bbox<real>(
       true, op::min(a.x-r, min.x),   op::max(a.x+r, max.x), true,
@@ -110,7 +116,7 @@ kip_dry(silo)
 // check
 kip_check(silo)
 {
-   return internal::onetwor_check<real>("Silo", *this);
+   return detail::onetwor_check<real>("Silo", *this);
 } kip_end
 
 
@@ -118,7 +124,7 @@ kip_check(silo)
 // randomize
 kip_randomize(silo)
 {
-   return internal::random_abr<real,tag>(obj);
+   return detail::random_abr<real,tag>(obj);
 } kip_end
 
 
@@ -145,7 +151,7 @@ kip_infirst(silo)
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= rsq) {
                q.x = rot.h;
-               return q(1,0,0, this, normalized_t::yesnorm), true;
+               return q(1,0,0, this, normalized::yes), true;
             }
          }
       }
@@ -161,7 +167,7 @@ kip_infirst(silo)
             if (q.x <= 0) {
                q.y = rot.ey + q*dy;
                q.z = q*tar.z;
-               return q(q, this, normalized_t::nonorm), true;
+               return q(q, this, normalized::no), true;
             }
          }
       }
@@ -200,7 +206,7 @@ kip_infirst(silo)
 
          if (op::square(q.y) + op::square(q.z) <= rsq) {
             q.x = rot.h;
-            return q(1,0,0, this, normalized_t::yesnorm), true;
+            return q(1,0,0, this, normalized::yes), true;
          }
       }
 
@@ -216,7 +222,7 @@ kip_infirst(silo)
             if (!(q < qmin)) return false;
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(q, this, normalized_t::nonorm), true;
+            return q(q, this, normalized::no), true;
          }
       }
 
@@ -231,7 +237,7 @@ kip_infirst(silo)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(0, q.y, q.z, this, normalized_t::nonorm), true;
+   return q(0, q.y, q.z, this, normalized::no), true;
 } kip_end
 
 
@@ -260,7 +266,7 @@ inline bool silo<real,tag>::get_hemi0(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(info, this, normalized_t::nonorm), true;
+   return info(info, this, normalized::no), true;
 }
 
 
@@ -284,7 +290,7 @@ inline bool silo<real,tag>::get_baseh(
 
    if (op::square(info.y) + op::square(info.z) <= rsq) {
       info.x = rot.h;
-      return info(1,0,0, this, normalized_t::yesnorm), true;
+      return info(1,0,0, this, normalized::yes), true;
    }
    return false;
 }
@@ -309,7 +315,7 @@ inline bool silo<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(0, info.y, info.z, this, normalized_t::nonorm), true;
+   return info(0, info.y, info.z, this, normalized::no), true;
 }
 
 
@@ -395,7 +401,7 @@ kip_read_value(silo) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
@@ -404,7 +410,7 @@ kip_read_value(silo) {
 
 // kip::ostream
 kip_ostream(silo) {
-   return internal::onetwor_write(k,obj, obj.a,obj.b,obj.r, "silo");
+   return detail::onetwor_write(k,obj, obj.a,obj.b,obj.r, "silo");
 }
 
 #define   kip_class silo

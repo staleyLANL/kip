@@ -11,22 +11,33 @@ class biwasher : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified biwasher: (0,0,0), (h,0,0), i.a,i.b, o.a,o.b
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real iasq, oasq, islope, itmp1, itmp2, itmp3;
    mutable real ibsq, obsq, oslope, otmp1, otmp2, otmp3;
 
    // first_in/first_out: called by infirst() when inside/outside
-   inline bool first_in
-      (const point<real> &, const real, const real, const real, inq<real,tag> &) const;
-   inline bool first_out
-      (const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   inline bool
+      first_in(
+         const point<real> &,
+         const real, const real, const real,
+         inq<real,tag> &
+      ) const,
+      first_out(
+         const point<real> &,
+         const real, const real, const real,
+         inq<real,tag> &
+      ) const;
 
    // get_*
    inline bool
-   get_base0(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_baseh(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_inner(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_outer(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_base0(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_baseh(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_inner(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_outer(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const;
 
 public:
    using shape<real,tag>::basic;
@@ -164,7 +175,7 @@ public:
 
 kip_process(biwasher)
 {
-   rot = rotate<3,real>(a, b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(a, b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -237,7 +248,7 @@ kip_process(biwasher)
 kip_aabb(biwasher)
 {
    // same as for bicylinder - cutout doesn't change bounds
-   return internal::bound_bicylinder(*this, this->o.a, this->o.b);
+   return detail::bound_bicylinder(*this, this->o.a, this->o.b);
 } kip_end
 
 
@@ -271,7 +282,7 @@ kip_dry(biwasher)
 // check
 kip_check(biwasher)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // require 0 <= i.a <= o.a
    if (!(0 <= i.a && i.a <= o.a)) {
@@ -345,7 +356,7 @@ inline bool biwasher<real,tag>::first_in(
          const real tmp = op::square(q.y) + op::square(q.z);
          if (iasq <= tmp && tmp <= oasq) {
             q.x = real(0);
-            return q(-1,0,0, this, normalized_t::yesnorm), true;
+            return q(-1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -361,7 +372,7 @@ inline bool biwasher<real,tag>::first_in(
          const real tmp = op::square(q.y) + op::square(q.z);
          if (ibsq <= tmp && tmp <= obsq) {
             q.x = rot.h;
-            return q(1,0,0, this, normalized_t::yesnorm), true;
+            return q(1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -380,7 +391,8 @@ inline bool biwasher<real,tag>::first_in(
          if (0 <= q.x && q.x <= rot.h) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(-oslope*(o.a + oslope*q.x), q.y, q.z, this, normalized_t::nonorm), true;
+            return q(-oslope*(o.a + oslope*q.x), q.y, q.z,
+                     this, normalized::no), true;
          }
       }
    }
@@ -398,7 +410,8 @@ inline bool biwasher<real,tag>::first_in(
          if (0 <= q.x && q.x <= rot.h) {
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
-            return q(islope*(i.a + islope*q.x), -q.y, -q.z, this, normalized_t::nonorm), true;
+            return q(islope*(i.a + islope*q.x), -q.y, -q.z,
+                     this, normalized::no), true;
          }
       }
    }
@@ -430,7 +443,7 @@ inline bool biwasher<real,tag>::first_out(
       const real tmp = op::square(q.y) + op::square(q.z);
       if (iasq <= tmp && tmp <= oasq) {
          q.x = real(0);
-         return q(-1,0,0, this, normalized_t::yesnorm), true;
+         return q(-1,0,0, this, normalized::yes), true;
       }
 
    // x = h
@@ -446,7 +459,7 @@ inline bool biwasher<real,tag>::first_out(
       const real tmp = op::square(q.y) + op::square(q.z);
       if (ibsq <= tmp && tmp <= obsq) {
          q.x = rot.h;
-         return q(1,0,0, this, normalized_t::yesnorm), true;
+         return q(1,0,0, this, normalized::yes), true;
       }
    }
 
@@ -465,7 +478,8 @@ inline bool biwasher<real,tag>::first_out(
       if (0 <= q.x && q.x <= rot.h) {
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
-         return q(-oslope*(o.a + oslope*q.x), q.y, q.z, this, normalized_t::nonorm), true;
+         return q(-oslope*(o.a + oslope*q.x), q.y, q.z,
+                  this, normalized::no), true;
       }
    }
 
@@ -482,7 +496,8 @@ inline bool biwasher<real,tag>::first_out(
    if (0 <= q.x && q.x <= rot.h) {
       q.y = rot.ey + q*dy;
       q.z = q*tar.z;
-      return q(islope*(i.a + islope*q.x), -q.y, -q.z, this, normalized_t::nonorm), true;
+      return q(islope*(i.a + islope*q.x), -q.y, -q.z,
+               this, normalized::no), true;
    }
 
    return false;
@@ -512,7 +527,7 @@ inline bool biwasher<real,tag>::get_base0(
       const real tmp = op::square(q.y) + op::square(q.z);
       if (iasq <= tmp && tmp <= oasq) {
          q.x = real(0);
-         return q(-1,0,0, this, normalized_t::yesnorm), true;
+         return q(-1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -535,7 +550,7 @@ inline bool biwasher<real,tag>::get_baseh(
       const real tmp = op::square(q.y) + op::square(q.z);
       if (ibsq <= tmp && tmp <= obsq) {
          q.x = rot.h;
-         return q(1,0,0, this, normalized_t::yesnorm), true;
+         return q(1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -554,7 +569,8 @@ inline bool biwasher<real,tag>::get_inner(
       if (0 <= q.x && q.x <= rot.h) {
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
-         return q(islope*(i.a + islope*q.x), -q.y, -q.z, this, normalized_t::nonorm), true;
+         return q(islope*(i.a + islope*q.x), -q.y, -q.z,
+                  this, normalized::no), true;
       }
    }
    return false;
@@ -573,7 +589,8 @@ inline bool biwasher<real,tag>::get_outer(
       if (0 <= q.x && q.x <= rot.h) {
          q.y = rot.ey + q*dy;
          q.z = q*tar.z;
-         return q(-oslope*(o.a + oslope*q.x), q.y, q.z, this, normalized_t::nonorm), true;
+         return q(-oslope*(o.a + oslope*q.x), q.y, q.z,
+                  this, normalized::no), true;
       }
    }
    return false;
@@ -674,7 +691,7 @@ kip_read_value(biwasher) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }

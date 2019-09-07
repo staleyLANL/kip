@@ -11,14 +11,17 @@ class bicylinder : public shape<real,tag> {
    using shape<real,tag>::interior;
 
    // modified bicylinder: (0,0,0), (h,0,0), r.a,r.b
-   mutable rotate<3,real> rot;
+   mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real rasq, rbsq, hsq, rao, rbo, slope, h1, h2, h3;
 
    // get_*
    inline bool
-   get_base0(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_baseh(const point<real> &, const real, const real, const real, inq<real,tag> &) const,
-   get_curve(const point<real> &, const real, const real, const real, inq<real,tag> &) const;
+   get_base0(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_baseh(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const,
+   get_curve(const point<real> &,
+             const real, const real, const real, inq<real,tag> &) const;
 
 public:
    using shape<real,tag>::basic;
@@ -154,7 +157,7 @@ public:
 
 kip_process(bicylinder)
 {
-   rot = rotate<3,real>(a, b, eyeball);
+   rot = rotate<3,real,op::full,op::unscaled>(a, b, eyeball);
    basic.eye()(rot.ex, rot.ey, 0);
    basic.lie() = point<float>(rot.fore(light));
 
@@ -188,10 +191,10 @@ kip_process(bicylinder)
       );
 
    if ((r.a-r.b)*(rot.ey-r.a) >= rot.h*rot.ex)
-      return std::sqrt(op::square(rot.ex) + op::square(rot.ey-r.a));  // northwest
+      return std::sqrt(op::square(rot.ex) + op::square(rot.ey-r.a));  // nw
 
    if ((r.a-r.b)*(rot.ey-r.b) <= rot.h*(rot.ex-rot.h))
-      return std::sqrt(op::square(rot.ex-rot.h) + op::square(rot.ey-r.b)); // northeast
+      return std::sqrt(op::square(rot.ex-rot.h) + op::square(rot.ey-r.b)); // ne
 
    return std::abs(slope*rot.ex+r.a-rot.ey)/std::sqrt(h1);  // north
 } kip_end
@@ -203,12 +206,15 @@ kip_process(bicylinder)
 // -----------------------------------------------------------------------------
 
 // bound_bicylinder - helper
-namespace internal {
+namespace detail {
    template<template<class,class> class shape, class real, class tag>
-   bbox<real> bound_bicylinder(const shape<real,tag> &obj, const real ra, const real rb)
-   {
-      point<real> amin, amax;  internal::bound_abr(obj.a, obj.b, ra, amin,amax);
-      point<real> bmin, bmax;  internal::bound_abr(obj.b, obj.a, rb, bmin,bmax);
+   bbox<real> bound_bicylinder(
+      const shape<real,tag> &obj,
+      const real ra,
+      const real rb
+   ) {
+      point<real> amin, amax;  detail::bound_abr(obj.a, obj.b, ra, amin,amax);
+      point<real> bmin, bmax;  detail::bound_abr(obj.b, obj.a, rb, bmin,bmax);
 
       return bbox<real>(
          true, op::min(amin.x, bmin.x),   op::max(amax.x, bmax.x), true,
@@ -223,7 +229,7 @@ namespace internal {
 // aabb
 kip_aabb(bicylinder)
 {
-   return internal::bound_bicylinder(*this, this->r.a, this->r.b);
+   return detail::bound_bicylinder(*this, this->r.a, this->r.b);
 } kip_end
 
 
@@ -253,7 +259,7 @@ kip_dry(bicylinder)
 // check
 kip_check(bicylinder)
 {
-   diagnostic_t rv = diagnostic_t::diagnostic_good;
+   diagnostic rv = diagnostic::good;
 
    // r.a
    if (r.a < real(0)) {
@@ -327,7 +333,7 @@ kip_infirst(bicylinder)
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= rasq) {
                q.x = real(0);
-               return q(-1,0,0, this, normalized_t::yesnorm), true;
+               return q(-1,0,0, this, normalized::yes), true;
             }
          }
       }
@@ -340,7 +346,7 @@ kip_infirst(bicylinder)
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= rbsq) {
                q.x = rot.h;
-               return q(1,0,0, this, normalized_t::yesnorm), true;
+               return q(1,0,0, this, normalized::yes), true;
             }
          }
       }
@@ -372,7 +378,7 @@ kip_infirst(bicylinder)
 
          if (op::square(q.y) + op::square(q.z) <= rasq) {
             q.x = real(0);
-            return q(-1,0,0, this, normalized_t::yesnorm), true;
+            return q(-1,0,0, this, normalized::yes), true;
          }
       }
 
@@ -387,7 +393,7 @@ kip_infirst(bicylinder)
 
          if (op::square(q.y) + op::square(q.z) <= rbsq) {
             q.x = rot.h;
-            return q(1,0,0, this, normalized_t::yesnorm), true;
+            return q(1,0,0, this, normalized::yes), true;
          }
       }
 
@@ -403,7 +409,10 @@ kip_infirst(bicylinder)
 
    q.y = rot.ey + q*dy;
    q.z = q*tar.z;
-   return q(-slope*(r.a + slope*q.x), q.y, q.z, this, normalized_t::nonorm), true;
+
+   return q(
+      -slope*(r.a + slope*q.x), q.y, q.z, this, normalized::no
+   ), true;
 } kip_end
 
 
@@ -432,7 +441,7 @@ inline bool bicylinder<real,tag>::get_base0(
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= rasq) {
       info.x = real(0);
-      return info(-1,0,0, this, normalized_t::yesnorm), true;
+      return info(-1,0,0, this, normalized::yes), true;
    }
    return false;
 }
@@ -457,7 +466,7 @@ inline bool bicylinder<real,tag>::get_baseh(
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= rbsq) {
       info.x = rot.h;
-      return info(1,0,0, this, normalized_t::yesnorm), true;
+      return info(1,0,0, this, normalized::yes), true;
    }
    return false;
 }
@@ -482,7 +491,9 @@ inline bool bicylinder<real,tag>::get_curve(
    info.y = rot.ey + info.q*dy;
    info.z = info.q*tar.z;
 
-   return info(-slope*(r.a + slope*info.x), info.y, info.z, this, normalized_t::nonorm), true;
+   return info(
+      -slope*(r.a + slope*info.x), info.y, info.z, this, normalized::no
+   ), true;
 }
 
 
@@ -556,7 +567,7 @@ kip_read_value(bicylinder) {
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading "+description, diagnostic_t::diagnostic_error);
+      addendum("Detected while reading " + description, diagnostic::error);
    }
    return !s.fail();
 }
