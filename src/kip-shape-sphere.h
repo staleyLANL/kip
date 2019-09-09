@@ -118,7 +118,7 @@ kip_inside(sphere)
 kip_dry(sphere)
 {
    // perhaps slightly faster than: return seg.forez(c) >= r;
-   real cz;  (void)seg.lt(c,cz);  return cz >= r+seg.c;
+   real cz;  (void)seg.lt(c,cz);  return cz >= r+seg.valz;
 } kip_end
 
 

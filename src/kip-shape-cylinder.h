@@ -119,7 +119,9 @@ kip_dry(cylinder)
    //    rotate<3,real,op::full,op::scaled>,
    // where op::scaling turns on scaling - making rot.h = (its usual value)/r.
    const real tmp = rot.h*r;
-   return op::square(rot.h*(op::min(az,bz)-seg.c)) >= (tmp-az+bz)*(tmp+az-bz);
+   return
+      op::square(rot.h*(op::min(az,bz)-seg.valz)) >=
+      (tmp-az+bz)*(tmp+az-bz);
 } kip_end
 
 

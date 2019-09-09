@@ -273,8 +273,8 @@ kip_dry(biwasher)
 
    const real tmp = (rot.h-az+bz)*(rot.h+az-bz);
    return
-      op::square((az-seg.c)*rot.h) >= oasq*tmp &&
-      op::square((bz-seg.c)*rot.h) >= obsq*tmp;
+      op::square((az-seg.valz)*rot.h) >= oasq*tmp &&
+      op::square((bz-seg.valz)*rot.h) >= obsq*tmp;
 } kip_end
 
 

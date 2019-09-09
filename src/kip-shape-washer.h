@@ -241,7 +241,7 @@ kip_dry(washer)
 {
    real az;  if (seg.lt(a,az)) return false;
    real bz;  if (seg.lt(b,bz)) return false;
-   return op::square(op::min(az,bz)-seg.c) >= p*(rot.h-az+bz)*(rot.h+az-bz);
+   return op::square(op::min(az,bz)-seg.valz) >= p*(rot.h-az+bz)*(rot.h+az-bz);
 } kip_end
 
 

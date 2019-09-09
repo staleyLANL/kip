@@ -330,7 +330,9 @@ kip_dry(tabular)
    // because it's so much simpler --- and lots of culling happens in infirst()
    real az;  if (seg.lt(atabular,az)) return false;
    real bz;  if (seg.lt(btabular,bz)) return false;
-   return op::square(hdr*(op::min(az,bz)-seg.c)) >= (rot.h-az+bz)*(rot.h+az-bz);
+   return
+      op::square(hdr*(op::min(az,bz)-seg.valz)) >=
+      (rot.h-az+bz)*(rot.h+az-bz);
 } kip_end
 
 

@@ -160,7 +160,7 @@ kip_dry(spheroid)
 {
    real az;  if (seg.lt(a,az)) return false;
    real bz;  if (seg.lt(b,bz)) return false;
-   return (bz-seg.c)*(az-seg.c) + op::square((az-bz)*r2h2) >= rsq;
+   return (bz-seg.valz)*(az-seg.valz) + op::square((az-bz)*r2h2) >= rsq;
 } kip_end
 
 

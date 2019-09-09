@@ -78,7 +78,7 @@ kip_dry(circle)
 {
    real az;  if (seg.lt(c,az)) return false;
    real bz;  (void)seg.lt(n,bz);
-   return op::square(az-seg.c) >= tmp*(rot.h+bz)*(rot.h-bz);
+   return op::square(az-seg.valz) >= tmp*(rot.h+bz)*(rot.h-bz);
 } kip_end
 
 

@@ -149,8 +149,8 @@ kip_dry(paraboloid)
    real bz;  if (seg.lt(b,bz)) return false;
 
    const real tmp = h1*h1*(rot.h-az+bz)*(rot.h+az-bz);
-   az -= seg.c;
-   bz -= seg.c;
+   az -= seg.valz;
+   bz -= seg.valz;
    return bz*bz >= tmp && (bz <= az || az*az >= tmp || 4*(bz-az)*az >= tmp);
 } kip_end
 

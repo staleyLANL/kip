@@ -105,7 +105,7 @@ kip_dry(cone)
 {
    real az;  if (seg.lt(a,az)) return false;
    real bz;  if (seg.lt(b,bz)) return false;
-   return op::square(bz-seg.c) >= h1*(az-bz-rot.h)*(az-bz+rot.h);
+   return op::square(bz-seg.valz) >= h1*(az-bz-rot.h)*(az-bz+rot.h);
 } kip_end
 
 

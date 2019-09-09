@@ -107,7 +107,7 @@ kip_dry(silo)
 {
    const real az = seg.forez(a);  if (az < r) return false;  // hemisphere
    real bz;  if (seg.lt(b,bz)) return false;  // flat end
-   bz -= seg.c;
+   bz -= seg.valz;
    return bz*bz >= h1*(rot.h-az+bz)*(rot.h+az-bz);
 } kip_end
 

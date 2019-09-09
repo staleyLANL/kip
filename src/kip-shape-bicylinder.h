@@ -249,8 +249,8 @@ kip_dry(bicylinder)
    real bz;  if (seg.lt(b,bz)) return false;
 
    const real tmp = (rot.h-az+bz) * (rot.h+az-bz);
-   az -= seg.c;
-   bz -= seg.c;
+   az -= seg.valz;
+   bz -= seg.valz;
    return az*az >= rao*tmp && bz*bz >= rbo*tmp;
 } kip_end
 

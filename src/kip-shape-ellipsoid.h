@@ -226,9 +226,9 @@ kip_aabb(ellipsoid)
 {
    rot = rotate<3,real,op::full,op::unscaled>(a.x, a.y, a.z, c);
 
-   const real xval = detail::bound_ellipsoid(rot.f1.x, rot.f2.x, rot.f3.x, r);
-   const real yval = detail::bound_ellipsoid(rot.f1.y, rot.f2.y, rot.f3.y, r);
-   const real zval = detail::bound_ellipsoid(rot.f1.z, rot.f2.z, rot.f3.z, r);
+   const real xval = detail::bound_ellipsoid(rot.mat.a.x, rot.mat.b.x, rot.mat.c.x, r);
+   const real yval = detail::bound_ellipsoid(rot.mat.a.y, rot.mat.b.y, rot.mat.c.y, r);
+   const real zval = detail::bound_ellipsoid(rot.mat.a.z, rot.mat.b.z, rot.mat.c.z, r);
 
    return bbox<real>(
       true, c.x-xval,   c.x+xval, true,
@@ -255,10 +255,11 @@ kip_dry(ellipsoid)
       cz >= is &&
      (cz >= bs ||
       cz*cz >=
-         op::square(dot(seg.f,point<real>(rot.f1.x,rot.f1.y,rot.f1.z))*r.x) +
-         op::square(dot(seg.f,point<real>(rot.f2.x,rot.f2.y,rot.f2.z))*r.y) +
-         op::square(dot(seg.f,point<real>(rot.f3.x,rot.f3.y,rot.f3.z))*r.z)
+         op::square(dot(seg.matc,rot.mat.a)*r.x) +
+         op::square(dot(seg.matc,rot.mat.b)*r.y) +
+         op::square(dot(seg.matc,rot.mat.c)*r.z)
      );
+
 } kip_end
 
 

@@ -27,7 +27,9 @@ kip::image <real,color> image;
 int downsize;
 
 // printval
+#ifndef printval
 #define printval(val) std::cout << #val " = " << val << std::endl
+#endif
 
 
 
@@ -901,35 +903,17 @@ bool read(
 int main(const int argc, const char *const *const argv)
 {
    /*
+   printval(sizeof(kip::mmm<double>));
+   printval(sizeof(kip::rotate<2,double,kip::op::full,kip::op::unscaled>));
+   printval(sizeof(kip::rotate<3,double,kip::op::full,kip::op::unscaled>));
+   printval(sizeof(kip::rotate<3,double,kip::op::part,kip::op::unscaled>));
+   printval(sizeof(kip::rotate<3,double,kip::op::full,kip::op::  scaled>));
+
    printval(sizeof(kip::array<0,real>));
    printval(sizeof(kip::array<1,real>));
    printval(sizeof(kip::array<2,real>));
    printval(sizeof(kip::array<3,real>));
-   */
 
-   /*
-   // about 20.8
-   using rotator = kip::rotate<2,real,op::full,op::unscaled>;
-
-   // about 19.4
-   // Print SIZEOFS again (see below) before doing switchover.
-   // using rotator = kip::twop<real>;
-
-   // std::cout << sizeof(rotator) << std::endl;
-   for (ulong n = 0;  n < 200000000;  ++n) {
-      kip::point<real> a; kip::random_full(a);
-      kip::point<real> b; kip::random_full(b);
-      kip::point<real> c; kip::random_full(c);
-
-      const kip::point<real> f = rotator(a,b).fore(c);
-      if (f.x == 0.1 || f.y == 0.2 || f.z == 0.3)
-         std::cout << "foo" << std::endl;
-   }
-
-   return 0;
-   */
-
-   /*
    printval(sizeof(kip::bicylinder<real,base>));
    printval(sizeof(kip::biwasher  <real,base>));
    printval(sizeof(kip::box       <real,base>));
