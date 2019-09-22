@@ -215,7 +215,7 @@ kip_read_value(zplane) {
       read_value(s, obj.z, "z value") && read_comma(s) &&
       read_value(s, obj.size.x, "x size") && read_comma(s) &&
       read_value(s, obj.size.y, "y size") && read_comma(s) &&
-      read_value(s, obj.color, "color") &&
+      read_value(s, obj.color /*, "color"*/ ) &&
       read_done(s, obj)
    )) {
       s.add(std::ios::failbit);

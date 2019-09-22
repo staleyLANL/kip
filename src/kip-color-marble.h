@@ -29,9 +29,9 @@ public:
 
    // marble()
    inline explicit marble() :
-      r(detail::midcolor<value_t>()),
-      g(detail::midcolor<value_t>()),
-      b(detail::midcolor<value_t>()),
+      r(detail::avgcolor<value_t>()),
+      g(detail::avgcolor<value_t>()),
+      b(detail::avgcolor<value_t>()),
       amp(1), ampfac(0.5),
       per(1), perfac(0.5),
       nfun(1), seed(0),
@@ -122,11 +122,3 @@ bool read_value(
    value.swirl = swirl;
    return !s.fail();
 }
-
-/*
-   const real _amp = 1, const real _ampfac = 0.5,
-   const real _per = 1, const real _perfac = 0.5,
-   const unsigned _nfun = 1,
-   const unsigned _seed = 0,
-   const bool _swirl = false
-*/

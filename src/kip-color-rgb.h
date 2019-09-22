@@ -1,133 +1,99 @@
 
 #pragma once
 
-// This file defines the RGB and RGBA class templates, and related functions.
-
-// Default component type for red, green, and blue (and alpha)
-using default_comp = uchar;
-
-// Forward
-class crayola;
-
 
 
 // -----------------------------------------------------------------------------
-// helper functions
+// mincolor
+// maxcolor
+// endcolor
+// avgcolor
+//
+// I'd have preferred midcolor (middle color, midway between min and max colors)
+// instead of avgcolor, but "midcolor" reads a little too close to "mincolor".
 // -----------------------------------------------------------------------------
 
 namespace detail {
 
-// if_true
-template<bool, class A, class B = A>
-class if_true { };
-
-template<class A, class B>
-class if_true<true,A,B> {
-public:
-   using result = B;
-};
-
-// is_floating: default
-template<class T> class is_floating
-   { public: static const bool result = false; };
-
-// is_floating: float, double, long double
-template<> class is_floating<float>
-   { public: static const bool result = true; };
-template<> class is_floating<double>
-   { public: static const bool result = true; };
-template<> class is_floating<long double>
-   { public: static const bool result = true; };
-
-
-
-// mincolor, for unsigned integral
-// mincolor, for floating
-template<class T>
-inline
-   typename if_true<
-     (std::numeric_limits<T>::is_integer &&
-     !std::numeric_limits<T>::is_signed) ||
-      is_floating<T>::result,
-      T
-   >::result
-mincolor()
+// mincolor, for unsigned integral and floating-point
+template<class comp>
+inline constexpr typename std::enable_if<
+  (std::is_unsigned<comp>::value &&
+   std::is_integral<comp>::value) ||
+   std::is_floating_point<comp>::value,
+   comp
+>::type mincolor()
 {
-   return T(0);
+   // 0, or 0.0
+   return comp(0);
 }
 
 
 
 // maxcolor, for unsigned integral
-template<class T>
-inline
-   typename if_true<
-      std::numeric_limits<T>::is_integer &&
-     !std::numeric_limits<T>::is_signed,
-      T
-   >::result
-maxcolor()
+template<class comp>
+inline constexpr typename std::enable_if<
+   std::is_unsigned<comp>::value &&
+   std::is_integral<comp>::value,
+   comp
+>::type maxcolor()
 {
-   return std::numeric_limits<T>::max();
+   // e.g. 255 for comp = 8-bit unsigned char
+   return std::numeric_limits<comp>::max();
 }
 
-// maxcolor, for floating
-template<class T>
-inline
-   typename if_true<
-      is_floating<T>::result,
-      T
-   >::result
-maxcolor()
+// maxcolor, for floating-point
+template<class comp>
+inline constexpr typename std::enable_if<
+   std::is_floating_point<comp>::value,
+   comp
+>::type maxcolor()
 {
-   return T(1);
-}
-
-
-
-// midcolor, for unsigned integral
-// midcolor, for floating
-template<class T>
-inline T midcolor()
-{
-   return T(
-      (detail::maxcolor<T>() -
-       detail::mincolor<T>()
-      )/2
-   );
+   // 1.0, as for a normalized, 0.0..1.0 floating-point color channel
+   return comp(1);
 }
 
 
 
 // endcolor, for unsigned integral
-// Result type: "to"
-template<class to, class T>
-inline
-   typename if_true<
-      std::numeric_limits<T>::is_integer &&
-     !std::numeric_limits<T>::is_signed,
-      T,
-      to
-   >::result
-endcolor()
+// Result type: to
+template<class to, class comp>
+inline constexpr typename std::enable_if<
+   std::is_unsigned<comp>::value &&
+   std::is_integral<comp>::value,
+   to
+>::type endcolor()
 {
-   // e.g., 256 (not 255) for 8-bit uchar
-   return to(maxcolor<T>()) + to(1);
+   // e.g. 256 (not 255) for comp = 8-bit unsigned char; the
+   // result type "to" should be larger, to handle the +1
+   return to(maxcolor<comp>()) + to(1);
 }
 
 // endcolor, for floating
-// Result type: "to"
-template<class to, class T>
-inline
-   typename if_true<
-      is_floating<T>::result,
-      T,
-      to
-   >::result
-endcolor()
+// Result type: to
+template<class to, class comp>
+inline constexpr typename std::enable_if<
+   std::is_floating_point<comp>::value,
+   to
+>::type endcolor()
 {
-   // same as maxcolor
+   // same as maxcolor()
    return to(1);
+}
+
+
+
+// avgcolor, for unsigned integral and floating-point
+template<class comp>
+inline constexpr typename std::enable_if<
+  (std::is_unsigned<comp>::value &&
+   std::is_integral<comp>::value) ||
+   std::is_floating_point<comp>::value,
+   comp
+>::type avgcolor()
+{
+   // e.g. 127 (=255/2) for comp = 8-bit unsigned char; 0.5 for floating-point
+   return comp((maxcolor<comp>() - mincolor<comp>())/2);
 }
 
 } // namespace detail
@@ -135,151 +101,170 @@ endcolor()
 
 
 // -----------------------------------------------------------------------------
-// RGB (templated)
-// rgb (not templated)
+// RGB<comp>
+// rgb
 // -----------------------------------------------------------------------------
 
-template<class rgb_t = default_comp>
+template<class comp>
 class RGB {
 public:
-   static const char *const description;
-   using value_t = rgb_t;
+   // for i/o
+   static const std::string description;
 
-
-   // components
-   union { value_t r, red  ; };
-   union { value_t g, green; };
-   union { value_t b, blue ; };
-
+   // channels
+   union { comp r, red  ; };
+   union { comp g, green; };
+   union { comp b, blue ; };
 
    // RGB()
-   inline explicit RGB() : r(0), g(0), b(0) { }
+   explicit RGB()
+      // I'm not sure I want any initialization in the default constructor,
+      // but at the moment I'm getting "...may be used uninitialized..."
+      // errors if I don't have it.
+    : r(comp(0)),
+      g(comp(0)),
+      b(comp(0))
+   { }
 
    // RGB(r,g,b)
-   inline explicit RGB(
-      const value_t &_r, const value_t &_g, const value_t &_b
-   ) : r(_r), g(_g), b(_b) { }
+   explicit RGB(const comp rfrom, const comp gfrom, const comp bfrom)
+    : r(rfrom),
+      g(gfrom),
+      b(bfrom)
+   { }
 
-   // conversion from crayola
-   inline RGB(const crayola &from);
-
-   // operator()(r,g,b), for convenience
-   inline RGB &operator()(
-      const value_t &_r, const value_t &_g, const value_t &_b
-   ) {
-      r = _r;
-      g = _g;
-      b = _b;
-      return *this;
+   // set(r,g,b)
+   void set(const comp rfrom, const comp gfrom, const comp bfrom)
+   {
+      r = rfrom;
+      g = gfrom;
+      b = bfrom;
    }
 };
 
 // description
-template<class rgb_t> const char *const RGB<rgb_t>::description = "RGB";///
+template<class comp> const std::string RGB<comp>::description = "RGB";
 
 // for users
-using rgb = RGB<>;
+using rgb = RGB<uchar>;
 
 
 
 // -----------------------------------------------------------------------------
-// RGBA (templated)
-// rgba (not templated)
+// RGBA<comp>
+// rgba
 // -----------------------------------------------------------------------------
 
 // transparent
-template<class component_t>
-inline component_t transparent()
-{
-   return detail::mincolor<component_t>();
-}
+template<class comp>
+inline constexpr comp transparent()
+   { return detail::mincolor<comp>(); }
 
 // opaque
-template<class component_t>
-inline component_t opaque()
-{
-   return detail::maxcolor<component_t>();
-}
+template<class comp>
+inline constexpr comp opaque()
+   { return detail::maxcolor<comp>(); }
 
 
 
 // RGBA
-template<class rgb_t = default_comp>
+template<class comp>
 class RGBA {
 public:
-   static const char *const description;
-   using value_t = rgb_t;
+   // for i/o
+   static const std::string description;
 
-
-   // components
-   union { value_t r, red  ; };
-   union { value_t g, green; };
-   union { value_t b, blue ; };
-   union { value_t a, alpha; };
-
+   // channels
+   union { comp r, red  ; };
+   union { comp g, green; };
+   union { comp b, blue ; };
+   union { comp a, alpha; };
 
    // RGBA()
-   inline explicit RGBA() { }
-
-   // RGBA(r,g,b[,a])
-   inline explicit RGBA(
-      const value_t &_r, const value_t &_g, const value_t &_b,
-      const value_t &_a = opaque<rgb_t>()
-   ) : r(_r), g(_g), b(_b), a(_a) { }
-
-   // conversion from RGB
-   inline RGBA(const RGB<rgb_t> &from) :
-      r(from.r), g(from.g), b(from.b), a(opaque<rgb_t>())
+   explicit RGBA()
+   /*
+    : r(comp(0)),
+      g(comp(0)),
+      b(comp(0)),
+      a(opaque<comp>())
+   */
    { }
 
-   // conversion from crayola
-   inline RGBA(const crayola &from);
+   // RGBA(r,g,b[,a])
+   explicit RGBA(
+      const comp rfrom, const comp gfrom, const comp bfrom,
+      const comp afrom = opaque<comp>()
+   )
+    : r(rfrom),
+      g(gfrom),
+      b(bfrom),
+      a(afrom)
+   { }
 
-   // operator()(r,g,b[,a]), for convenience
-   inline RGBA &operator()(
-      const value_t &_r, const value_t &_g, const value_t &_b
-      // "a" not given
-   ) {
-      r = _r;
-      g = _g;
-      b = _b;
-      // keep existing "a"
-      return *this;
-   }
+   /*
+   // RGBA(RGB[,a])
+   explicit RGBA(
+      const RGB<comp> from,
+      const comp afrom = opaque<comp>()
+   )
+    : r(from.r),
+      g(from.g),
+      b(from.b),
+      a(afrom)
+   { }
+   */
 
-   inline RGBA &operator()(
-      const value_t &_r, const value_t &_g, const value_t &_b,
-      // "a" given
-      const value_t &_a
-   ) {
-      r = _r;
-      g = _g;
-      b = _b;
-      a = _a;  // use given "a"
-      return *this;
-   }
-
-   // alpha meanings
-   // static const value_t transparent;
-   // static const value_t opaque;
-
-   // background
-   static inline RGBA background()
+   template<
+      class real,
+      class = typename std::enable_if<
+         std::is_floating_point<real>::value,
+         void
+      >::type
+   >
+   explicit RGBA(const RGBA<real> rhs)
    {
-      const value_t mid = detail::midcolor<value_t>();
+      r = comp(rhs.r);
+      g = comp(rhs.g);
+      b = comp(rhs.b);
+   }
+
+   // set(r,g,b[,a])
+   void set(
+      const comp rfrom, const comp gfrom, const comp bfrom,
+      const comp afrom = opaque<comp>()
+   ) {
+      r = rfrom;
+      g = gfrom;
+      b = bfrom;
+      a = afrom;
+   }
+
+   // zzz think about the following...
+
+   // background()
+   static constexpr RGBA background()
+   {
+      constexpr comp mid = detail::avgcolor<comp>();
       return RGBA(mid,mid,mid);
    }
 
-   // border
-   static inline RGBA border(const ulong num, const ulong den)
+   // border()
+   static constexpr RGBA border()
    {
-      const value_t max = detail::maxcolor<value_t>();
+      constexpr comp max = detail::maxcolor<comp>();
+      return RGBA(max,max,0);
+   }
+
+   // border(num,den)
+   static const/*zzzexpr*/ RGBA border(const ulong num, const ulong den)
+   {
+      constexpr comp max = detail::maxcolor<comp>();
 
       // both nonzero: use fraction
       if (num && den) {
          if (!(num <= den))
             return RGBA(max, 0, 0);  // shouldn't happen; give red as warning
-         const value_t level = value_t(max*num/den);
+         const comp level = comp(max*num/den);
          return RGBA(level, level, level);
       }
 
@@ -290,62 +275,143 @@ public:
       // bin size is zero, in any event
       return RGBA(0, 0, 0);
    }
-
-   // border
-   static inline RGBA border()
-   {
-      const value_t max = detail::maxcolor<value_t>();
-      return RGBA(max,max,0);
-   }
 };
 
 // description
-template<class rgb_t> const char *const RGBA<rgb_t>::description = "RGBA";
+template<class comp> const std::string RGBA<comp>::description = "RGBA";
 
 // for users
-using rgba = RGBA<>;
+using rgba = RGBA<uchar>;
 
 
 
 // -----------------------------------------------------------------------------
 // randomize(RGB)
+// randomize(RGBA)
 // -----------------------------------------------------------------------------
 
-// randomize(RGB<rgb_t>), for rgb_t = unsigned integral
-template<class rgb_t>
-inline RGB<
-   typename detail::if_true<
-      std::numeric_limits<rgb_t>::is_integer &&
-     !std::numeric_limits<rgb_t>::is_signed,
-      rgb_t
-   >::result
-> &randomize(RGB<rgb_t> &obj)
+namespace detail {
+
+// helper: randomize_channel_ui
+template<class comp>
+inline typename std::enable_if<
+   sizeof(comp) < sizeof(unsigned),
+   comp
+>::type randomize_channel_ui()
 {
-   static const double scale = detail::endcolor<double,rgb_t>();
+   /*
+   Consider that rand() returns an int \in [0..RAND_MAX], where RAND_MAX,
+   per the standard, must be at least 32767. In practice, say that ints
+   are 32-bit. Then, RAND_MAX might be (but is not guaranteed to be)
+   pow(2,31)-1, or 2147483647, the same as 32-bit int's maximum possible
+   value. Next, consider that we'd like to produce a random value of type
+   comp, \in [0..maxcolor<comp>()]. For example, with an 8-bit unsigned
+   char for comp, we want a value in [0..255]. Or, for a 16-bit unsigned
+   short for comp, we want a value in [0..65535]. Beginning with a rand()
+   value computed via rand(), we must modulo with 256 (or 65536). These
+   one-beyond-the-max values come from end = endcolor<unsigned,comp>()
+   below. Our strict less-than condition, sizeof(comp) < sizeof(unsigned),
+   is required so we don't try to compute one-beyond-the-max, of unsigned,
+   into unsigned itself (which of course would overflow). Unsigned itself
+   was chosen, in turn, for size compatibility with int, as from rand().
+   If someone ever needs to handle larger sizeof(comp)s, we'll consider
+   modifying this function at that time. Note: we suggest that callers
+   of this function do the sizeof check themselves, so a compiler emits
+   better errors regarding any misuse.
+   */
+   static constexpr unsigned end = endcolor<unsigned,comp>();
+   return comp(unsigned(rand()) % end);
+}
 
-   obj.r = rgb_t(random_unit<double>()*scale);
-   obj.g = rgb_t(random_unit<double>()*scale);
-   obj.b = rgb_t(random_unit<double>()*scale);
+// helper: randomize_channel_fp
+template<class comp>
+inline comp randomize_channel_fp()
+{
+   return random_unit<comp>();
+}
 
+} // namespace detail
+
+
+
+// randomize(RGB<comp>), for unsigned integral
+template<class comp>
+inline typename std::enable_if<
+   std::is_unsigned<comp>::value &&
+   std::is_integral<comp>::value &&
+   sizeof(comp) < sizeof(unsigned), // see remark in randomize_channel_ui()
+   RGB<comp>
+>::type &randomize(RGB<comp> &obj)
+{
+   obj.r = detail::randomize_channel_ui<comp>();
+   obj.g = detail::randomize_channel_ui<comp>();
+   obj.b = detail::randomize_channel_ui<comp>();
+   return obj;
+}
+
+// randomize(RGB<comp>), for floating-point
+template<class comp>
+inline typename std::enable_if<
+   std::is_floating_point<comp>::value,
+   RGB<comp>
+>::type &randomize(RGB<comp> &obj)
+{
+   obj.r = detail::randomize_channel_fp<comp>();
+   obj.g = detail::randomize_channel_fp<comp>();
+   obj.b = detail::randomize_channel_fp<comp>();
    return obj;
 }
 
 
 
-// randomize(RGB<rgb_t>), for rgb_t = floating
-template<class rgb_t>
-inline RGB<
-   typename detail::if_true<
-      detail::is_floating<rgb_t>::result,
-      rgb_t
-   >::result
-> &randomize(RGB<rgb_t> &obj)
+// randomize(RGBA<comp>), for unsigned integral
+template<class comp>
+inline typename std::enable_if<
+   std::is_unsigned<comp>::value &&
+   std::is_integral<comp>::value &&
+   sizeof(comp) < sizeof(unsigned), // see remark in randomize_channel_ui()
+   RGBA<comp>
+>::type &randomize(RGBA<comp> &obj)
 {
-   obj.r = random_unit<rgb_t>();
-   obj.g = random_unit<rgb_t>();
-   obj.b = random_unit<rgb_t>();
-
+   obj.r = detail::randomize_channel_ui<comp>();
+   obj.g = detail::randomize_channel_ui<comp>();
+   obj.b = detail::randomize_channel_ui<comp>();
+   obj.a = detail::randomize_channel_ui<comp>();
    return obj;
+}
+
+// randomize(RGBA<comp>), for floating-point
+template<class comp>
+inline typename std::enable_if<
+   std::is_floating_point<comp>::value,
+   RGBA<comp>
+>::type &randomize(RGBA<comp> &obj)
+{
+   obj.r = detail::randomize_channel_fp<comp>();
+   obj.g = detail::randomize_channel_fp<comp>();
+   obj.b = detail::randomize_channel_fp<comp>();
+   obj.a = detail::randomize_channel_fp<comp>();
+   return obj;
+}
+
+
+
+// -----------------------------------------------------------------------------
+// convert
+// -----------------------------------------------------------------------------
+
+// RGB<comp> ==> RGB<comp>
+template<class comp>
+inline void convert(const RGB<comp> in, RGB<comp> &out)
+{
+   out = in;
+}
+
+// RGB<comp> ==> RGBA<comp>
+template<class comp>
+inline void convert(const RGB<comp> in, RGBA<comp> &out)
+{
+   out.set(in.r, in.g, in.b);
 }
 
 
@@ -356,7 +422,7 @@ inline RGB<
 
 // RGBA<OUT> += RGBA<IN>
 template<class OUT, class IN>
-inline RGBA<OUT> &operator+=(RGBA<OUT> &lhs, const RGBA<IN> &rhs)
+inline RGBA<OUT> &operator+=(RGBA<OUT> &lhs, const RGBA<IN> rhs)
 {
    lhs.r += OUT(rhs.r);
    lhs.g += OUT(rhs.g);
@@ -368,7 +434,7 @@ inline RGBA<OUT> &operator+=(RGBA<OUT> &lhs, const RGBA<IN> &rhs)
 // op::div(RGBA,den)
 namespace op {
    template<class OUT, class IN>
-   inline RGBA<OUT> div(const RGBA<IN> &value, const unsigned den)
+   inline RGBA<OUT> div(const RGBA<IN> value, const unsigned den)
    {
       return RGBA<OUT>(
          OUT((value.r + den/2) / den),
@@ -377,4 +443,42 @@ namespace op {
          OUT((value.a + den/2) / den)
       );
    }
+}
+
+
+
+// -----------------------------------------------------------------------------
+// Arithmetic
+// -----------------------------------------------------------------------------
+
+// real * RGBA
+template<class real, class comp>
+inline typename std::enable_if<
+   std::is_floating_point<real>::value,
+   RGBA<real>
+>::type
+operator*(const real lhs, const RGBA<comp> rhs)
+{
+   return RGBA<real>(
+      lhs*rhs.r,
+      lhs*rhs.g,
+      lhs*rhs.b,
+      lhs*rhs.a
+   );
+}
+
+// RGBA + real
+template<class real, class comp>
+inline typename std::enable_if<
+   std::is_floating_point<real>::value,
+   RGBA<real>
+>::type
+operator+(const RGBA<comp> obj, const real f)
+{
+   return RGBA<real>(
+      obj.r + f,
+      obj.g + f,
+      obj.b + f,
+      obj.a + f
+   );
 }

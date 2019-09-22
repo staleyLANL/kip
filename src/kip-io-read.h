@@ -4,7 +4,7 @@
 // default shape base
 using default_base = rgb;
 
-// shape - forward declaration
+// forward: shape
 template<class = default_real, class = default_base>
 class shape;
 
@@ -216,13 +216,13 @@ bool read_color_component(
 
 
 // crayola_or_component
-// See what's next, expecting either a crayola color or a color component.
-// The character is only peeked.
+// See what's next, expecting either a crayola::complete color,
+// or a color component. The character is only peeked.
 template<class ISTREAM>
 inline bool crayola_or_component(ISTREAM &s, bool &alphabetic)
 {
    const std::string &description =
-     "crayola color, or unsigned char-based color component";
+     "crayola::complete color, or unsigned char-based color component";
    if (!s.prefix('\0', description, false))  // false: eof not okay
       return false;
 
@@ -234,11 +234,9 @@ inline bool crayola_or_component(ISTREAM &s, bool &alphabetic)
 
 // RGB
 template<class ISTREAM, class T>
-bool read_value(
-   ISTREAM &s, RGB<T> &value,
-   const std::string &description = "RGB"  /// should improve when <default>
-) {
-   crayola cray;  bool alphabetic = false;
+bool read_value(ISTREAM &s, RGB<T> &value)
+{
+   crayola::complete cray;  bool alphabetic = false;
    s.bail = false;
 
    if (!(
@@ -251,13 +249,11 @@ bool read_value(
          read_color_component(s,value.b)
    )))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic::error);
+      addendum("Detected while reading RGB", diagnostic::error);
    }
 
-   if (alphabetic) {
-      const RGB<crayola_rgb_t> from = cray;
-      value(from.r, from.g, from.b);
-   }
+   if (alphabetic)
+      convert(cray,value);
 
    return !s.fail();
 }
@@ -266,11 +262,9 @@ bool read_value(
 
 // RGBA
 template<class ISTREAM, class T>
-bool read_value(
-   ISTREAM &s, RGBA<T> &value,
-   const std::string &description = "RGBA"  /// should improve when <default>
-) {
-   crayola cray;  bool alphabetic = false;
+bool read_value(ISTREAM &s, RGBA<T> &value)
+{
+   crayola::complete cray;  bool alphabetic = false;
    s.bail = false;
 
    if (!(
@@ -284,13 +278,11 @@ bool read_value(
          read_color_component(s,value.a)
    )))) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic::error);
+      addendum("Detected while reading RGBA", diagnostic::error);
    }
 
-   if (alphabetic) {
-      const RGB<crayola_rgb_t> from = cray;
-      value(from.r, from.g, from.b);
-   }
+   if (alphabetic)
+      convert(cray,value);
 
    return !s.fail();
 }
@@ -325,60 +317,6 @@ public:
    using result = unsigned long;
 };
 
-}
-
-
-
-// -----------------------------------------------------------------------------
-// istream >> crayola
-// ostream << crayola
-// -----------------------------------------------------------------------------
-
-// kip::istream >> crayola
-inline kip::istream &operator>>(kip::istream &k, crayola &obj)
-{
-   read_value(k,obj);
-   return k;
-}
-
-// std::istream >> crayola
-inline std::istream &operator>>(std::istream &s, crayola &obj)
-{
-   kip::istream k(s);
-   k >> obj;
-   return s;
-}
-
-// kip::ostream << crayola
-template<class>
-kip::ostream &crayola_write(kip::ostream &k, const crayola &obj)
-{
-   const ulong size = crayola::color_table().size();
-   using print_as = unsigned;
-
-   if (obj.id() >= size) {
-      std::ostringstream oss;
-      oss << "Index " << print_as(obj.id()) << " for crayola color"
-         " is outside allowable range [0,"
-          << size-1 << "]\nWriting as \"unknown\"";
-      warning(oss);
-      return k << crayola::color_table()[0].second;
-   }
-
-   return k << crayola::color_table()[obj.id()].second;
-}
-
-inline kip::ostream &operator<<(kip::ostream &k, const crayola &obj)
-{
-   return crayola_write<char>(k,obj);
-}
-
-// std::ostream << crayola
-inline std::ostream &operator<<(std::ostream &s, const crayola &obj)
-{
-   kip::ostream k(s);
-   k << obj;
-   return s;
 }
 
 

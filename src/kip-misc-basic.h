@@ -1,7 +1,7 @@
 
 #pragma once
 
-// This file provides some basic macros, types, functions, classes, etc.
+
 
 // -----------------------------------------------------------------------------
 // Miscellaneous
@@ -185,7 +185,7 @@ enum class diagnostic {
    error   = 0
 };
 
-// no-context warning: forward declaration
+// forward: warning, no-context
 template<class MESSAGE>
 inline diagnostic warning(const MESSAGE &message);
 

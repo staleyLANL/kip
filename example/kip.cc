@@ -566,19 +566,19 @@ bool xyz(const int n)
          kip::xplane<real,base> *const x = new kip::xplane<real,base>;
          x->size.y = real(0.1)*kip::random_unit<real>();
          x->size.z = real(0.1)*kip::random_unit<real>(); x->x = s->c.x;
-         kip::randomize(x->color), kip::randomize(x->base()); p = x;
+         randomize(x->color), randomize(x->base()); p = x;
       } else if (r < 2/real(3)) {
          // yplane
          kip::yplane<real,base> *const y = new kip::yplane<real,base>;
          y->size.x = real(0.1)*kip::random_unit<real>();
          y->size.z = real(0.1)*kip::random_unit<real>(); y->y = s->c.y;
-         kip::randomize(y->color), kip::randomize(y->base()); p = y;
+         randomize(y->color), randomize(y->base()); p = y;
       } else {
          // zplane
          kip::zplane<real,base> *const z = new kip::zplane<real,base>;
          z->size.x = real(0.1)*kip::random_unit<real>();
          z->size.y = real(0.1)*kip::random_unit<real>(); z->z = s->c.z;
-         kip::randomize(z->color), kip::randomize(z->base()); p = z;
+         randomize(z->color), randomize(z->base()); p = z;
       }
 
       // and

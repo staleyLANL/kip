@@ -219,7 +219,7 @@ public:
 // Functions
 // -----------------------------------------------------------------------------
 
-// uprepare_tri - forward
+// forward: uprepare_tri
 namespace detail {
    template<class element_t, class real, class base, class BINS>
    inline real uprepare_tri(

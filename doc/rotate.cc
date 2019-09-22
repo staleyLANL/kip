@@ -32,7 +32,7 @@ int main(const int, const char *const *const argv)
 
    // Template parameters
    typedef double       real_t;
-   typedef kip::crayola base_t;  // <-- each shape will contain one of these
+   typedef kip::crayola::complete base_t;  // <-- each shape will contain one of these
    typedef kip::rgba   color_t;  // <-- the output bitmap will consist of these
 
    // Scene constituents
@@ -48,7 +48,7 @@ int main(const int, const char *const *const argv)
    // ------------------------
 
    // push()
-   model.push(kip::sphere<real_t,base_t>(0,0,0, 1, kip::crayola::black));
+   model.push(kip::sphere<real_t,base_t>(0,0,0, 1, kip::crayola::complete::black));
 
    // size()
    assert(model.size() == 1);
@@ -157,7 +157,7 @@ int main(const int, const char *const *const argv)
 
    // background color
    // Note: this is a color_t (an rgba), not a base_t (a crayola)
-   image.background(127,127,127);
+   image.background = kip::rgba(127,127,127);
 
    // pixel v/h aspect ratio
    image.aspect = 1.0;

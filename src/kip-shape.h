@@ -136,15 +136,17 @@ public:
 // shape
 // -----------------------------------------------------------------------------
 
-// forward declarations
-template<class real, class tag> class tri;
+// forward: tri, min_and_part, binner
+template<class real, class tag>
+class tri;
 
 namespace detail {
    template<class SHAPE>
    class min_and_part;
 }
 
-template<class T> class binner;
+template<class T>
+class binner;
 
 
 

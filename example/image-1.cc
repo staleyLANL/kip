@@ -6,7 +6,7 @@ int main()
    kip::image<> image;
 
    // Set image background color to a medium gray.
-   image.background(127,127,127);
+   image.background = kip::rgba(127,127,127);
 
    // Pixel height/width aspect ratio. 1.0 for square pixels.
    image.aspect = 1.0;

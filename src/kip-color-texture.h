@@ -238,9 +238,9 @@ inline real noise(
 
 namespace detail {
 
-template<class outcolor, class real>
-inline outcolor diffuse_specular(
-   const RGB<uchar> &rgbval,
+template<class color, class real>
+inline color diffuse_specular(
+   const color &shapecol,
    const real q,
    const point<real> &eyeball,
    const point<real> &light,
@@ -248,9 +248,10 @@ inline outcolor diffuse_specular(
    const point<real> &normal,
    const bool isnormalized
 ) {
-   // Assumptions: eyeball != intersection, light != intersection,
-   // normal != (0,0,0).
-   using ctype = typename outcolor::value_t;
+   // Assumptions:
+   // eyeball != intersection
+   // light   != intersection,
+   // normal  != (0,0,0).
 
    const point<real> n   = isnormalized ? normal : normalize(normal);
    const point<real> i2l = light - intersection;
@@ -260,36 +261,23 @@ inline outcolor diffuse_specular(
    const real diff = (dotp+modi)/(modi+modi);
 
 #ifdef KIP_COLOR_DIFFUSE
-   (void)q;
-   (void)eyeball;
 
    // diffuse
-   return outcolor(
-      ctype(diff*real(rgbval.r)),
-      ctype(diff*real(rgbval.g)),
-      ctype(diff*real(rgbval.b))
-   );
+   return color(diff*shapecol);
 
 #else
 
    // diffuse + specular
    const real d = dot((dotp+dotp)*n - i2l, eyeball - intersection);
    if (d < 0)
-      return outcolor(
-         ctype(diff*real(rgbval.r)),
-         ctype(diff*real(rgbval.g)),
-         ctype(diff*real(rgbval.b))
-      );
+      return color(diff*shapecol);
 
    const real s = std::pow(d/(q*modi),real(20));
    const real f = diff*(1-s);
+   using ctype = uchar; // qqq do something about this...
    const real spec = s*endcolor<real,ctype>();
 
-   return outcolor(
-      ctype(f*real(rgbval.r) + spec),
-      ctype(f*real(rgbval.g) + spec),
-      ctype(f*real(rgbval.b) + spec)
-   );
+   return color(f*shapecol + spec);
 
 #endif
 }
@@ -303,79 +291,91 @@ inline outcolor diffuse_specular(
 // -----------------------------------------------------------------------------
 
 // general
-template<class out, class real, class base>
-inline out kipcolor(
-   const shape<real,base> *const, const base &qcolor,
-   const point<real> &
+template<class color, class real, class base>
+inline color kipcolor(
+   const kip::shape<real,base> &shape,
+   const base &in,
+   const kip::point<real> &inter
 ) {
-   return qcolor;
-}
-
-
+   (void)shape;
+   (void)inter;
 
    /*
-// RGB
-template<class real, class rgb_t>
-inline RGB<rgb_t> kipcolor(
-   const shape<real,RGB<rgb_t>> *const,
-   const RGB<rgb_t> &qcolor,
-   const point<real> &
-) {
-   return qcolor;
-}
-
-// crayola
-template<class real>
-inline RGB<crayola_rgb_t> kipcolor(
-   const shape<real,crayola> *const,
-   const crayola &qcolor,
-   const point<real> &
-) {
-   return qcolor;
-}
+   static std::ofstream ofs("surface.kip");
+   if (random_unit<double>() < 0.01) {
+      ofs << sphere<real,base>(
+         shape.back(inter),
+         0.005,
+         crayola::metallic::black
+      );
+      ofs << std::endl;
+   }
    */
+
+   // original!!!
+   color out;
+   convert(in,out);
+   return out;
+
+   /*
+   // test: stripes
+   const point<real> exact = shape.back(inter);
+   color out;
+
+   const bool x = int(40*(exact.x)) % 2;
+   const bool y = int(40*(exact.y)) % 2;
+   const bool z = int(40*(exact.z)) % 2;
+
+   if ((x == y) != z)
+      out.set(255,255,255);
+   else
+      convert(in,out);
+
+   return out;
+   */
+}
 
 
 
 // marble
-template<class out, class real, class rgb_t, class mreal>
-inline out kipcolor(
-   const shape<real,marble<rgb_t,mreal>> *const qshape,
-   const marble<rgb_t,mreal> &qcolor,
-   const point<real> &_intersection
+template<class color, class real, class comp, class mreal>
+inline color kipcolor(
+   const kip::shape<real,marble<comp,mreal>> &shape,
+   const marble<comp,mreal> &in,
+   const point<real> &inter
 ) {
-   const point<real> intersection = qshape->back(_intersection);
-   const real seed = qcolor.seed;
+   const point<real> exact = shape.back(inter);
+   const real seed = in.seed;
    mreal atotal;
 
    // basic marble texture
    real noise = kip::noise(
-      intersection.x + seed,
-      intersection.y + seed,
-      intersection.z + seed,
-      qcolor.amp, qcolor.ampfac,
-      qcolor.per, qcolor.perfac,
-      qcolor.nfun, atotal
+      exact.x + seed,
+      exact.y + seed,
+      exact.z + seed,
+      in.amp, in.ampfac,
+      in.per, in.perfac,
+      in.nfun, atotal
    );
    const real fac = atotal*std::sin(noise);
 
-   int r = qcolor.r;
-   int g = qcolor.g;
-   int b = qcolor.b;
+   int r = in.r;
+   int g = in.g;
+   int b = in.b;
 
    r = op::clip(0, int(r + (255-r)*fac), 255);
    g = op::clip(0, int(g + (255-g)*fac), 255);
    b = op::clip(0, int(b + (255-b)*fac), 255);
 
    // black swirls
-   if (qcolor.swirl) {
+   if (in.swirl) {
       real sw_noise = kip::noise(
-         intersection.x + 100*seed,
-         intersection.y + 10000*seed,
-         intersection.z + 1000000*seed,
-         qcolor.amp, qcolor.ampfac,
-         qcolor.per, qcolor.perfac,
-         qcolor.nfun, atotal
+         exact.x + 100*seed,
+         exact.y + 10000*seed,
+         exact.z + 1000000*seed,
+         in.amp, in.ampfac,
+         in.per, in.perfac,
+         in.nfun, atotal
       );
       const real p = 5*op::min(real(0),0.8+std::cos(20*sw_noise));
       r = op::clip(0, int(r + r*p), 255);
@@ -383,7 +383,7 @@ inline out kipcolor(
       b = op::clip(0, int(b + b*p), 255);
    }
 
-   return out(rgb_t(r), rgb_t(g), rgb_t(b));
+   return color(comp(r), comp(g), comp(b));
 }
 
 
@@ -395,8 +395,8 @@ inline out kipcolor(
 namespace detail {
 
 // get_color
-template<class out, class real, class base, class pix>
-inline out get_color(
+template<class color, class real, class base, class pix>
+inline color get_color(
    const point<real> &eyeball,
    const point<real> &light,
    const inq<real,base> &q,
@@ -410,8 +410,8 @@ inline out get_color(
    // flat
    (void)eyeball; (void)light; (void)pixel;
    const RGB<uchar> c = *q.color;
-   ///kipcolor<out>(q, q.fac > 0 ? q.fac*q : point<real>(q));
-   const out rv(c.r, c.g, c.b);
+   ///kipcolor<color>(q, q.fac > 0 ? q.fac*q : point<real>(q));
+   const color rv(c.r, c.g, c.b);
 
 #else
    // diffuse or specular
@@ -423,18 +423,19 @@ inline out get_color(
    //    const point<real> &normal,
    //    const bool isnormalized
 
-   /*
-   assert(sizeof(out) == 4);
-   assert(sizeof(out().r) == 1);
-   */
+   ///   std::cout << "q.fac = " << q.fac << std::endl;
+   ///   std::cout << "point = " << point<real>(q) << std::endl;
 
-   const out rv = diffuse_specular<out>(
-      // RGB
-      kipcolor<RGB<uchar>>(
-         q.shape,
-        *q.color,
-         q.fac > 0 ? q.fac*q : point<real>(q)  // true intersection
-      ),
+   // shape color at ray intersection
+   const color cshape = kipcolor<color>(
+     *q.shape,
+     *q.color,
+      q.fac > 0 ? q.fac*q : point<real>(q)
+   );
+
+   // final color, after effect from light
+   const color rv = diffuse_specular<color>(
+      cshape,
 
       // scaled q needed by diffuse_specular()
       float(q.fac > 0 ? q.q/q.fac : q.q),

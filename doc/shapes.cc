@@ -5,7 +5,7 @@ using namespace kip;
 
 // Types
 typedef double  real;
-typedef crayola base;
+typedef crayola::complete base;
 typedef rgba    out;
 
 // Visualization
@@ -60,7 +60,7 @@ int main(const int, const char *const *const argv)
    s.resize(960,800);
    ///s.anti = 3;
    s.theta=75, s.phi=15, s.d=250;
-   s.background = crayola::black;
+   s.background = kip::rgba(0,0,0);///crayola::complete::black;
 
 
    // ------------------------
@@ -68,34 +68,34 @@ int main(const int, const char *const *const argv)
    // ------------------------
 
    // bicylinder(a.x,a.y,a.z, b.x,b.y,b.z, r.a,r.b, color)
-   s.push(bicylinder<real,base>(-23,0,20, -17,0,20, 3,2, crayola::red));
+   s.push(bicylinder<real,base>(-23,0,20, -17,0,20, 3,2, crayola::complete::red));
 
    // biwasher(a.x,a.y,a.z, b.x,b.y,b.z, i.a,i.b, o.a,o.b, color)
-   s.push(biwasher<real,base>(-15,0,20, -9,0,20, 2,1, 3,2, crayola::red));
+   s.push(biwasher<real,base>(-15,0,20, -9,0,20, 2,1, 3,2, crayola::complete::red));
 
    // box(c.x,c.y,c.z, a.x,a.y,a.z, r.x,r.y,r.z, color)
-   s.push(box<real,base>(-4,0,20, 0,0,0, 3,1,2, crayola::red));
+   s.push(box<real,base>(-4,0,20, 0,0,0, 3,1,2, crayola::complete::red));
 
    // circle(c.x,c.y,c.z, n.x,n.y,n.z, r, color)
-   s.push(circle<real,base>(-20,0,-10, 0,1,0, 4, crayola::red));
+   s.push(circle<real,base>(-20,0,-10, 0,1,0, 4, crayola::complete::red));
 
    // cone(a.x,a.y,a.z, b.x,b.y,b.z, r, color)
-   s.push(cone<real,base>(1,0,20, 7,0,20, 2, crayola::red));
+   s.push(cone<real,base>(1,0,20, 7,0,20, 2, crayola::complete::red));
 
    // cylinder(a.x,a.y,a.z, b.x,b.y,b.z, r, color)
-   s.push(cylinder<real,base>(9,0,20, 15,0,20, 2, crayola::red));
+   s.push(cylinder<real,base>(9,0,20, 15,0,20, 2, crayola::complete::red));
 
    // ellipsoid(c.x,c.y,c.z, a.x,a.y,a.z, r.x,r.y,r.z, color)
-   s.push(ellipsoid<real,base>(20,0,20, 0,0,0, 3,1,2, crayola::red));
+   s.push(ellipsoid<real,base>(20,0,20, 0,0,0, 3,1,2, crayola::complete::red));
 
    // half(p.x,p.y,p.z, n.x,n.y,n.z, color)
-   s.push(half<real,base>(-550,2750,-950, 1,-1,1, crayola::gray));
+   s.push(half<real,base>(-550,2750,-950, 1,-1,1, crayola::complete::gray));
 
    // paraboloid(a.x,a.y,a.z, b.x,b.y,b.z, r, color)
-   s.push(paraboloid<real,base>(-23,0,10, -17,0,10, 3, crayola::red));
+   s.push(paraboloid<real,base>(-23,0,10, -17,0,10, 3, crayola::complete::red));
 
    // pill(a.x,a.y,a.z, b.x,b.y,b.z, r, color)
-   s.push(pill<real,base>(-13,0,10, -11,0,10, 2, crayola::red));
+   s.push(pill<real,base>(-13,0,10, -11,0,10, 2, crayola::complete::red));
 
    // polygon(
    //    n,
@@ -105,7 +105,7 @@ int main(const int, const char *const *const argv)
    //    color
    // )
    // Create, then populate with (x,y,z) points
-   s.push(polygon<real,base>(crayola::red));
+   s.push(polygon<real,base>(crayola::complete::red));
    {
       s.polygon.back().push(-7, 0,  6);
       s.polygon.back().push(-7, 0, 14);
@@ -115,19 +115,19 @@ int main(const int, const char *const *const argv)
    }
 
    // silo(a.x,a.y,a.z, b.x,b.y,b.z, r, color)
-   s.push(silo<real,base>(3,0,10, 7,0,10, 2, crayola::red));
+   s.push(silo<real,base>(3,0,10, 7,0,10, 2, crayola::complete::red));
 
    // sphere(c.x,c.y,c.z, r, color)
-   s.push(sphere<real,base>(12,0,10, 2, crayola::red));
+   s.push(sphere<real,base>(12,0,10, 2, crayola::complete::red));
 
    // spheroid(a.x,a.y,a.z, b.x,b.y,b.z, r, color)
-   s.push(spheroid<real,base>(17,0,10, 23,0,10, 2, crayola::red));
+   s.push(spheroid<real,base>(17,0,10, 23,0,10, 2, crayola::complete::red));
 
    // triangle(u.x,u.y,u.z, v.x,v.y,v.z, w.x,w.y,w.z, color)
-   s.push(triangle<real,base>(-23,0,-4, -20,0,4, -17,0,-4, crayola::red));
+   s.push(triangle<real,base>(-23,0,-4, -20,0,4, -17,0,-4, crayola::complete::red));
 
    // washer(a.x,a.y,a.z, b.x,b.y,b.z, i,o, color)
-   s.push(washer<real,base>(-7,0,0, -1,0,0, 1,2, crayola::red));
+   s.push(washer<real,base>(-7,0,0, -1,0,0, 1,2, crayola::complete::red));
 
    // tabular(
    //    a.x,a.y,a.z, b.x,b.y,b.z,
@@ -138,7 +138,7 @@ int main(const int, const char *const *const argv)
    //    color
    // )
    // Create, then populate with (x,r) points
-   s.push(tabular<real,base>(0,0,0, 1,0,0, crayola::red));
+   s.push(tabular<real,base>(0,0,0, 1,0,0, crayola::complete::red));
    {
       s.tabular.back().push(1, 0);
       s.tabular.back().push(2, 2);
@@ -152,21 +152,21 @@ int main(const int, const char *const *const argv)
    // xplane(x, size.y,size.z, color,second-color)
    // Logical-and with a sphere, for viz purposes
    s.push(kipand<real,base>(
-      xplane<real,base>(-12,1,2, crayola::red, crayola::gray),
+      xplane<real,base>(-12,1,2, crayola::complete::red, crayola::complete::gray),
       sphere<real,base>(-12,0,0, 4)
    ));
 
    // yplane(y, size.x,size.z, color,second-color)
    // Logical-and with a sphere, for viz purposes
    s.push(kipand<real,base>(
-      yplane<real,base>(0,1,2, crayola::green, crayola::gray),
+      yplane<real,base>(0,1,2, crayola::complete::green, crayola::complete::gray),
       sphere<real,base>(12,0,0, 4)
    ));
 
    // zplane(z, size.x,size.y, color,second-color)
    // Logical-and with a sphere, for viz purposes
    s.push(kipand<real,base>(
-      zplane<real,base>(0,1,2, crayola::blue, crayola::gray),
+      zplane<real,base>(0,1,2, crayola::complete::blue, crayola::complete::gray),
       sphere<real,base>(20,0,0, 4)
    ));
 
@@ -179,7 +179,7 @@ int main(const int, const char *const *const argv)
    // Write "kipnot", as this is C++
    // Visually, this not(box) gives us the "room" we're in
    s.push(kipnot<real,base>(
-      box<real,base>(0,-200,0, 0,0,0, 600,3000,1000, crayola::gray)
+      box<real,base>(0,-200,0, 0,0,0, 600,3000,1000, crayola::complete::gray)
    ));
 
 
@@ -198,7 +198,7 @@ int main(const int, const char *const *const argv)
             cylinder<real,base>(-3,-3,-10, -3,3,-10, 3)
          ),
          cylinder<real,base>(-4,-2,-10, -4,2,-10, 5),
-         crayola::green
+         crayola::complete::green
       )
    );
 
@@ -211,7 +211,7 @@ int main(const int, const char *const *const argv)
             cylinder<real,base>(5,-3,-10,  5,3,-10, 3)
          ),
          cylinder<real,base>(4,-2,-10,  4,2,-10, 5),
-         crayola::green
+         crayola::complete::green
       )
    );
 
@@ -224,7 +224,7 @@ int main(const int, const char *const *const argv)
             cylinder<real,base>(13,-3,-10, 13,3,-10, 3)
          ),
          cylinder<real,base>(12,-2,-10, 12,2,-10, 5),
-         crayola::green
+         crayola::complete::green
       )
    );
 
@@ -237,7 +237,7 @@ int main(const int, const char *const *const argv)
             cylinder<real,base>(21,-3,-10, 21,3,-10, 3)
          ),
          cylinder<real,base>(20,-2,-10, 20,2,-10, 5),
-         crayola::green
+         crayola::complete::green
       )
    );
 
@@ -252,42 +252,42 @@ int main(const int, const char *const *const argv)
    ands<real,base> ANDS;  // create, then populate...
    ANDS.push(cyl0);  ANDS.push(cyl1);  ANDS.push(cyl2);  ANDS.push(cyl3);
    ANDS.push(cyl4);  ANDS.push(cyl5);  ANDS.push(cyl6);  ANDS.push(cyl7);
-   s.push(kipand<real,base>(ANDS, mask, crayola::blue));
+   s.push(kipand<real,base>(ANDS, mask, crayola::complete::blue));
    move_cylinders();
 
    // even([a, ...] [; color])
    even<real,base> EVEN;  // create, then populate...
    EVEN.push(cyl0);  EVEN.push(cyl1);  EVEN.push(cyl2);  EVEN.push(cyl3);
    EVEN.push(cyl4);  EVEN.push(cyl5);  EVEN.push(cyl6);  EVEN.push(cyl7);
-   s.push(kipand<real,base>(EVEN, mask, crayola::blue));
+   s.push(kipand<real,base>(EVEN, mask, crayola::complete::blue));
    move_cylinders();
 
    // odd([a, ...] [; color])
    odd<real,base> ODD;  // create, then populate...
    ODD.push(cyl0);  ODD.push(cyl1);  ODD.push(cyl2);  ODD.push(cyl3);
    ODD.push(cyl4);  ODD.push(cyl5);  ODD.push(cyl6);  ODD.push(cyl7);
-   s.push(kipand<real,base>(ODD, mask, crayola::blue));
+   s.push(kipand<real,base>(ODD, mask, crayola::complete::blue));
    move_cylinders();
 
    // one([a, ...] [; color])
    one<real,base> ONE;  // create, then populate...
    ONE.push(cyl0);  ONE.push(cyl1);  ONE.push(cyl2);  ONE.push(cyl3);
    ONE.push(cyl4);  ONE.push(cyl5);  ONE.push(cyl6);  ONE.push(cyl7);
-   s.push(kipand<real,base>(ONE, mask, crayola::blue));
+   s.push(kipand<real,base>(ONE, mask, crayola::complete::blue));
    move_cylinders();
 
    // ors([a, ...] [; color])
    ors<real,base> ORS;  // create, then populate...
    ORS.push(cyl0);  ORS.push(cyl1);  ORS.push(cyl2);  ORS.push(cyl3);
    ORS.push(cyl4);  ORS.push(cyl5);  ORS.push(cyl6);  ORS.push(cyl7);
-   s.push(kipand<real,base>(ORS, mask, crayola::blue));
+   s.push(kipand<real,base>(ORS, mask, crayola::complete::blue));
    move_cylinders();
 
    // some([a, ...] [; color])
    some<real,base> SOME;  // create, then populate...
    SOME.push(cyl0);  SOME.push(cyl1);  SOME.push(cyl2);  SOME.push(cyl3);
    SOME.push(cyl4);  SOME.push(cyl5);  SOME.push(cyl6);  SOME.push(cyl7);
-   s.push(kipand<real,base>(SOME, mask, crayola::blue));
+   s.push(kipand<real,base>(SOME, mask, crayola::complete::blue));
    move_cylinders();
 
 

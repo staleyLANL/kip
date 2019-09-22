@@ -1,601 +1,574 @@
 
 #pragma once
 
-// This file defines the crayola class, which supports Crayola crayon colors.
-
-class crayola;
-using crayola_id_t = uchar;
-using crayola_rgb_t = uchar;
+namespace crayola {
 
 
 
 // -----------------------------------------------------------------------------
-// crayola_base
-// Effectively hides crayola's description string and specific colors inside
-// a template, to avoid multiply-defined symbols when multiple-source linking.
+// crayola::base
 // -----------------------------------------------------------------------------
 
-namespace detail {
-
-template<class>
-class crayola_base {
+template<class derived>
+class base {
+   using pair = std::pair<std::string,rgb>;
 
 protected:
-   crayola_id_t index;
+   static std::vector<pair> vec;
+   uchar index;
 
 public:
-   inline explicit crayola_base() : index(0) { }
-   inline explicit crayola_base(const crayola_id_t &_index) : index(_index) { }
-   static const char *const description;
 
-   // specific colors
-   static const crayola
-      unknown,
+   // ------------------------
+   // constructors
+   // ------------------------
 
-      almond, antique_brass, apricot, aquamarine,
-      asparagus, atomic_tangerine, banana_mania, beaver,
-      bittersweet, black, blizzard_blue, blue,
+   // base(n)
+   explicit base(const uchar n = 0) : index(n)
+   {
+      kip_assert(n < vec.size());
+   }
 
-      blue_bell, /*blue_gray,*/ blue_green, blue_violet,
-      brick_red, brink_pink, brown, burnt_orange,
-      burnt_sienna, cadet_blue, canary, caribbean_green,
+   // base(string)
+   explicit base(const std::string &str)
+   {
+      static bool first = true;
+      first = first && (derived::initialize(), false);
 
-      carnation_pink, cerise, cerulean, chartreuse,
-      chestnut, copper, cornflower, cotton_candy,
-      cranberry, dandelion, denim, desert_sand,
+      for (ulong n = vec.size();  n-- ; )
+         if (str == vec[n].first) {
+            index = uchar(n);
+            return;
+         }
+      assert(false);
+   }
 
-      eggplant, electric_lime, fern, flesh,
-      forest_green, fuchsia, fuzzy_wuzzy_brown, gold,
-      goldenrod, granny_smith_apple, gray, green,
-
-      /*green_blue,*/ green_yellow, hot_magenta, inch_worm,
-      indian_red, indigo, jazzberry_jam, jungle_green,
-      laser_lemon, lavender, /*lemon_yellow,*/ macaroni_and_cheese,
-
-      magenta, magic_mint, mahogany, /*maize,*/
-      manatee, mango_tango, maroon, mauvelous,
-      melon, midnight_blue, mountain_meadow, mulberry,
-
-      navy_blue, neon_carrot, olive_green, orange,
-      /*orange_red,*/ /*orange_yellow,*/ orchid, outer_space,
-      outrageous_orange, pacific_blue, peach, periwinkle,
-
-      pig_pink, pine_green, pink_flamingo, plum,
-      prussian_blue, purple_heart, purple_mountains_majesty, purple_pizzazz,
-      radical_red, raw_sienna, /*raw_umber,*/ razzle_dazzle_rose,
-
-      razzmatazz, red, red_orange, red_violet,
-      robins_egg_blue, royal_purple, salmon, scarlet,
-      screamin_green, sea_green, sepia, shadow,
-
-      shamrock, shocking_pink, silver, sky_blue,
-      spring_green, sunglow, sunset_orange, tan,
-      /*teal_blue,*/ /*thistle,*/ tickle_me_pink, timberwolf,
-
-      torch_red, tropical_rain_forest, tumbleweed, turquoise_blue,
-      /*ultra_blue,*/ ultra_green, ultra_orange, ultra_pink,
-      ultra_red, ultra_yellow, unmellow_yellow, violet,
-
-      /*violet_blue,*/ violet_red, vivid_tangerine, vivid_violet,
-      white, wild_blue_yonder, wild_strawberry, wild_watermelon,
-      wisteria, yellow, yellow_green, yellow_orange,
-
-      // the following are kip-specific; they aren't from crayola
-      gray_dark, gray_medium, gray_light
-   ;
-};
-
-// description
-template<class unused>
-const char *const crayola_base<unused>::description = "crayola";
-
-} // namespace detail
-
-
-
-// -----------------------------------------------------------------------------
-// crayola
-// -----------------------------------------------------------------------------
-
-class crayola : public detail::crayola_base<char> {
-public:
-
-   // color_table()
-   static inline std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &
-      color_table();
-
-   // crayola(), crayola(crayola_id_t)
-   inline explicit crayola() { }
-   inline explicit crayola(const crayola_id_t &_index) :
-      detail::crayola_base<char>(_index)
-   { }
-
-   // crayola(crayola)
-   constexpr crayola(const crayola &) = default;
+   // ------------------------
+   // functions: regular
+   // ------------------------
 
    // id()
-   inline crayola_id_t id() const { return index; }
+   uchar id() const
+   {
+      return index;
+   }
 
-   // operator=
-   inline crayola &operator=(const crayola &from)
-      { index = from.index;  return *this; }
+   // r(), g(), b()
+   uchar r() const { return vec[index].second.r; }
+   uchar g() const { return vec[index].second.g; }
+   uchar b() const { return vec[index].second.b; }
 
-   /*
-   // conversion to RGB<crayola_rgb_t>
-   inline operator const RGB<crayola_rgb_t> &() const
-      { return color_table()[index].first; }
+   // randomize()
+   void randomize()
+   {
+      kip_assert(vec.size() != 0);
+      index = uchar(rand() % vec.size());
+   }
 
-   // conversion to RGBA<crayola_rgb_t>
-   inline operator RGBA<crayola_rgb_t>() const
-      { return color_table()[index].first; }
-   */
+   // ------------------------
+   // functions: static
+   // ------------------------
+
+   // table()
+   static const std::vector<pair> &table()
+   {
+      return vec;
+   }
+
+   // description()
+   static std::string description() { return derived::description; }
 };
 
+
+// vec
+template<class derived>
+std::vector<std::pair<std::string,rgb>> base<derived>::vec;
 
 
 // randomize
-inline crayola &randomize(crayola &obj)
+template<class derived>
+inline void randomize(base<derived> &obj)
 {
-   // doesn't include "unknown"
-   return obj = crayola(
-      crayola_id_t(
-         1 +
-         random_unit<double>() * double(crayola::color_table().size() - 1)
-      )
-   );
+   obj.randomize();
 }
 
 
 
 // -----------------------------------------------------------------------------
-// color_table
+// -----------------------------------------------------------------------------
+// crayola::*
+// -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
-namespace detail {
-
-// color_table_initialize
-template<class>
-void color_table_initialize(
-   std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &table
-) {
-   assert(table.size() == 0);  // should visit this function only once
-
-   using rgb_t = RGB<crayola_rgb_t>;
-   using pair = std::pair<rgb_t,std::string>;
-
-   table.push_back(pair( rgb_t(0x00, 0x00, 0x00), "unknown"));
-   table.push_back(pair( rgb_t(0xee, 0xd9, 0xc4), "almond"));
-   table.push_back(pair( rgb_t(0xc8, 0x8a, 0x65), "antique_brass"));
-   table.push_back(pair( rgb_t(0xfd, 0xd5, 0xb1), "apricot"));
-   table.push_back(pair( rgb_t(0x71, 0xd9, 0xe2), "aquamarine"));
-   table.push_back(pair( rgb_t(0x7b, 0xa0, 0x5b), "asparagus"));
-   table.push_back(pair( rgb_t(0xff, 0x99, 0x66), "atomic_tangerine"));
-   table.push_back(pair( rgb_t(0xfb, 0xe7, 0xb2), "banana_mania"));
-   table.push_back(pair( rgb_t(0x92, 0x6f, 0x5b), "beaver"));
-   table.push_back(pair( rgb_t(0xfe, 0x6f, 0x5e), "bittersweet"));
-   table.push_back(pair( rgb_t(0x00, 0x00, 0x00), "black"));
-   table.push_back(pair( rgb_t(0xa3, 0xe3, 0xed), "blizzard_blue"));
-   table.push_back(pair( rgb_t(0x00, 0x66, 0xff), "blue"));
-   table.push_back(pair( rgb_t(0x99, 0x99, 0xcc), "blue_bell"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "blue_gray"));
-   table.push_back(pair( rgb_t(0x00, 0x95, 0xb6), "blue_green"));
-   table.push_back(pair( rgb_t(0x64, 0x56, 0xb7), "blue_violet"));
-   table.push_back(pair( rgb_t(0xc6, 0x2d, 0x42), "brick_red"));
-   table.push_back(pair( rgb_t(0xfb, 0x60, 0x7f), "brink_pink"));
-   table.push_back(pair( rgb_t(0xaf, 0x59, 0x3e), "brown"));
-   table.push_back(pair( rgb_t(0xff, 0x70, 0x34), "burnt_orange"));
-   table.push_back(pair( rgb_t(0xe9, 0x74, 0x51), "burnt_sienna"));
-   table.push_back(pair( rgb_t(0xa9, 0xb2, 0xc3), "cadet_blue"));
-   table.push_back(pair( rgb_t(0xff, 0xff, 0x99), "canary"));
-   table.push_back(pair( rgb_t(0x00, 0xcc, 0x99), "caribbean_green"));
-   table.push_back(pair( rgb_t(0xff, 0xa6, 0xc9), "carnation_pink"));
-   table.push_back(pair( rgb_t(0xda, 0x32, 0x87), "cerise"));
-   table.push_back(pair( rgb_t(0x02, 0xa4, 0xd3), "cerulean"));
-   table.push_back(pair( rgb_t(0xff, 0x99, 0x66), "chartreuse"));
-   table.push_back(pair( rgb_t(0xb9, 0x4e, 0x48), "chestnut"));
-   table.push_back(pair( rgb_t(0xda, 0x8a, 0x67), "copper"));
-   table.push_back(pair( rgb_t(0x93, 0xcc, 0xea), "cornflower"));
-   table.push_back(pair( rgb_t(0xff, 0xb7, 0xd5), "cotton_candy"));
-   table.push_back(pair( rgb_t(0xdb, 0x50, 0x79), "cranberry"));
-   table.push_back(pair( rgb_t(0xfe, 0xd8, 0x5d), "dandelion"));
-   table.push_back(pair( rgb_t(0x15, 0x60, 0xbd), "denim"));
-   table.push_back(pair( rgb_t(0xed, 0xc9, 0xaf), "desert_sand"));
-   table.push_back(pair( rgb_t(0x61, 0x40, 0x51), "eggplant"));
-   table.push_back(pair( rgb_t(0xcc, 0xff, 0x00), "electric_lime"));
-   table.push_back(pair( rgb_t(0x63, 0xb7, 0x6c), "fern"));
-   table.push_back(pair( rgb_t(0xff, 0xcb, 0xa4), "flesh"));
-   table.push_back(pair( rgb_t(0x5f, 0xa7, 0x77), "forest_green"));
-   table.push_back(pair( rgb_t(0xc1, 0x54, 0xc1), "fuchsia"));
-   table.push_back(pair( rgb_t(0xc4, 0x56, 0x55), "fuzzy_wuzzy_brown"));
-   table.push_back(pair( rgb_t(0xe6, 0xbe, 0x8a), "gold"));
-   table.push_back(pair( rgb_t(0xfc, 0xd6, 0x67), "goldenrod"));
-   table.push_back(pair( rgb_t(0x9d, 0xe0, 0x93), "granny_smith_apple"));
-   table.push_back(pair( rgb_t(0x8b, 0x86, 0x80), "gray"));
-   table.push_back(pair( rgb_t(0x01, 0xa3, 0x68), "green"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "green_blue"));
-   table.push_back(pair( rgb_t(0xf1, 0xe7, 0x88), "green_yellow"));
-   table.push_back(pair( rgb_t(0xff, 0x00, 0xcc), "hot_magenta"));
-   table.push_back(pair( rgb_t(0xb0, 0xe3, 0x13), "inch_worm"));
-   table.push_back(pair( rgb_t(0xb9, 0x4e, 0x48), "indian_red"));
-   table.push_back(pair( rgb_t(0x4f, 0x69, 0xc6), "indigo"));
-   table.push_back(pair( rgb_t(0xa5, 0x0b, 0x5e), "jazzberry_jam"));
-   table.push_back(pair( rgb_t(0x29, 0xab, 0x87), "jungle_green"));
-   table.push_back(pair( rgb_t(0xff, 0xff, 0x66), "laser_lemon"));
-   table.push_back(pair( rgb_t(0xfb, 0xae, 0xd2), "lavender"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "lemon_yellow"));
-   table.push_back(pair( rgb_t(0xff, 0xb9, 0x7b), "macaroni_and_cheese"));
-   table.push_back(pair( rgb_t(0xf6, 0x53, 0xa6), "magenta"));
-   table.push_back(pair( rgb_t(0xaa, 0xf0, 0xd1), "magic_mint"));
-   table.push_back(pair( rgb_t(0xca, 0x34, 0x35), "mahogany"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "maize"));
-   table.push_back(pair( rgb_t(0x8d, 0x90, 0xa1), "manatee"));
-   table.push_back(pair( rgb_t(0xe7, 0x72, 0x00), "mango_tango"));
-   table.push_back(pair( rgb_t(0xc3, 0x21, 0x48), "maroon"));
-   table.push_back(pair( rgb_t(0xf0, 0x91, 0xa9), "mauvelous"));
-   table.push_back(pair( rgb_t(0xfe, 0xba, 0xad), "melon"));
-   table.push_back(pair( rgb_t(0x00, 0x33, 0x66), "midnight_blue"));
-   table.push_back(pair( rgb_t(0x1a, 0xb3, 0x85), "mountain_meadow"));
-   table.push_back(pair( rgb_t(0xc5, 0x4b, 0x8c), "mulberry"));
-   table.push_back(pair( rgb_t(0x00, 0x66, 0xcc), "navy_blue"));
-   table.push_back(pair( rgb_t(0xff, 0x99, 0x33), "neon_carrot"));
-   table.push_back(pair( rgb_t(0xb5, 0xb3, 0x5c), "olive_green"));
-   table.push_back(pair( rgb_t(0xff, 0x68, 0x1f), "orange"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "orange_red"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "orange_yellow"));
-   table.push_back(pair( rgb_t(0xe2, 0x9c, 0xd2), "orchid"));
-   table.push_back(pair( rgb_t(0x2d, 0x38, 0x3a), "outer_space"));
-   table.push_back(pair( rgb_t(0xff, 0x60, 0x37), "outrageous_orange"));
-   table.push_back(pair( rgb_t(0x00, 0x9d, 0xc4), "pacific_blue"));
-   table.push_back(pair( rgb_t(0xff, 0xcb, 0xa4), "peach"));
-   table.push_back(pair( rgb_t(0xc3, 0xcd, 0xe6), "periwinkle"));
-   table.push_back(pair( rgb_t(0xfd, 0xd7, 0xe4), "pig_pink"));
-   table.push_back(pair( rgb_t(0x01, 0x79, 0x6f), "pine_green"));
-   table.push_back(pair( rgb_t(0xff, 0x66, 0xff), "pink_flamingo"));
-   table.push_back(pair( rgb_t(0x84, 0x31, 0x79), "plum"));
-   table.push_back(pair( rgb_t(0x00, 0x33, 0x66), "prussian_blue"));
-   table.push_back(pair( rgb_t(0x65, 0x2d, 0xc1), "purple_heart"));
-   table.push_back(pair( rgb_t(0x96, 0x78, 0xb6), "purple_mountains_majesty"));
-   table.push_back(pair( rgb_t(0xff, 0x00, 0xcc), "purple_pizzazz"));
-   table.push_back(pair( rgb_t(0xff, 0x35, 0x5e), "radical_red"));
-   table.push_back(pair( rgb_t(0xd2, 0x7d, 0x46), "raw_sienna"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "raw_umber"));
-   table.push_back(pair( rgb_t(0xff, 0x33, 0xcc), "razzle_dazzle_rose"));
-   table.push_back(pair( rgb_t(0xe3, 0x0b, 0x5c), "razzmatazz"));
-   table.push_back(pair( rgb_t(0xed, 0x0a, 0x3f), "red"));
-   table.push_back(pair( rgb_t(0xff, 0x3f, 0x34), "red_orange"));
-   table.push_back(pair( rgb_t(0xbb, 0x33, 0x85), "red_violet"));
-   table.push_back(pair( rgb_t(0x00, 0xcc, 0xcc), "robins_egg_blue"));
-   table.push_back(pair( rgb_t(0x6b, 0x3f, 0xa0), "royal_purple"));
-   table.push_back(pair( rgb_t(0xff, 0x91, 0xa4), "salmon"));
-   table.push_back(pair( rgb_t(0xfd, 0x0e, 0x35), "scarlet"));
-   table.push_back(pair( rgb_t(0x66, 0xff, 0x66), "screamin_green"));
-   table.push_back(pair( rgb_t(0x93, 0xdf, 0xb8), "sea_green"));
-   table.push_back(pair( rgb_t(0x9e, 0x5b, 0x40), "sepia"));
-   table.push_back(pair( rgb_t(0x83, 0x70, 0x50), "shadow"));
-   table.push_back(pair( rgb_t(0x33, 0xcc, 0x99), "shamrock"));
-   table.push_back(pair( rgb_t(0xff, 0x6f, 0xff), "shocking_pink"));
-   table.push_back(pair( rgb_t(0xc9, 0xc0, 0xbb), "silver"));
-   table.push_back(pair( rgb_t(0x76, 0xd7, 0xea), "sky_blue"));
-   table.push_back(pair( rgb_t(0xec, 0xeb, 0xbd), "spring_green"));
-   table.push_back(pair( rgb_t(0xff, 0xcc, 0x33), "sunglow"));
-   table.push_back(pair( rgb_t(0xfe, 0x4c, 0x40), "sunset_orange"));
-   table.push_back(pair( rgb_t(0xfa, 0x9d, 0x5a), "tan"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "teal_blue"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "thistle"));
-   table.push_back(pair( rgb_t(0xfc, 0x80, 0xa5), "tickle_me_pink"));
-   table.push_back(pair( rgb_t(0xd9, 0xd6, 0xcf), "timberwolf"));
-   table.push_back(pair( rgb_t(0xfd, 0x0e, 0x35), "torch_red"));
-   table.push_back(pair( rgb_t(0x00, 0x75, 0x5e), "tropical_rain_forest"));
-   table.push_back(pair( rgb_t(0xde, 0xa6, 0x81), "tumbleweed"));
-   table.push_back(pair( rgb_t(0x6c, 0xda, 0xe7), "turquoise_blue"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "ultra_blue"));
-   table.push_back(pair( rgb_t(0x66, 0xff, 0x66), "ultra_green"));
-   table.push_back(pair( rgb_t(0xff, 0x60, 0x37), "ultra_orange"));
-   table.push_back(pair( rgb_t(0xff, 0x6f, 0xff), "ultra_pink"));
-   table.push_back(pair( rgb_t(0xfd, 0x5b, 0x78), "ultra_red"));
-   table.push_back(pair( rgb_t(0xff, 0xff, 0x66), "ultra_yellow"));
-   table.push_back(pair( rgb_t(0xff, 0xff, 0x66), "unmellow_yellow"));
-   table.push_back(pair( rgb_t(0x83, 0x59, 0xa3), "violet"));
-// table.push_back(pair( rgb_t(0x??, 0x??, 0x??), "violet_blue"));
-   table.push_back(pair( rgb_t(0xf7, 0x46, 0x8a), "violet_red"));
-   table.push_back(pair( rgb_t(0xff, 0x99, 0x80), "vivid_tangerine"));
-   table.push_back(pair( rgb_t(0x80, 0x37, 0x90), "vivid_violet"));
-   table.push_back(pair( rgb_t(0xff, 0xff, 0xff), "white"));
-   table.push_back(pair( rgb_t(0x7a, 0x89, 0xb8), "wild_blue_yonder"));
-   table.push_back(pair( rgb_t(0xff, 0x33, 0x99), "wild_strawberry"));
-   table.push_back(pair( rgb_t(0xfd, 0x5b, 0x78), "wild_watermelon"));
-   table.push_back(pair( rgb_t(0xc9, 0xa0, 0xdc), "wisteria"));
-   table.push_back(pair( rgb_t(0xfb, 0xe8, 0x70), "yellow"));
-   table.push_back(pair( rgb_t(0xc5, 0xe1, 0x7a), "yellow_green"));
-   table.push_back(pair( rgb_t(0xff, 0xae, 0x42), "yellow_orange"));
-
-   // kip-specific
-   table.push_back(pair( rgb_t( 64,  64,  64), "gray_dark"));
-   table.push_back(pair( rgb_t(128, 128, 128), "gray_medium"));
-   table.push_back(pair( rgb_t(192, 192, 192), "gray_light"));
-}
-
-} // namespace detail
-
-
-
-// crayola::color_table
-inline std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> &
-crayola::color_table()
-{
-   static std::vector<std::pair<RGB<crayola_rgb_t>, std::string>> table;
-   static bool first = true;
-
-   if (first) {
-      first = false;
-      detail::color_table_initialize<char>(table);
-   }
-   return table;
-}
+#define kip_make_table(ns,str,alt,r,g,b) { #str, rgb(r,g,b) },
+#define kip_make_decl( ns,str,alt,r,g,b) static const ns str;
+#define kip_make_alias(ns,str,alt,r,g,b) static constexpr const ns &alt=str;
+#define kip_make_defn( ns,str,alt,r,g,b) const ns ns::str(#str);
 
 
 
 // -----------------------------------------------------------------------------
-// Specific colors
+// crayola::pure
 // -----------------------------------------------------------------------------
 
-namespace detail {
-   // crayola_lookup
-   inline crayola crayola_lookup(const char *const name)
+#define kip_make_pure(macro) \
+   macro( pure, Black, black,   0,   0,   0 ) \
+   macro( pure, White, white, 255, 255, 255 ) \
+   macro( pure, Red,     red,     255,   0,   0 ) \
+   macro( pure, Green,   green,     0, 255,   0 ) \
+   macro( pure, Blue,    blue,      0,   0, 255 ) \
+   macro( pure, Cyan,    cyan,      0, 255, 255 ) \
+   macro( pure, Magenta, magenta, 255,   0, 255 ) \
+   macro( pure, Yellow,  yellow,  255, 255,   0 )
+
+class pure : public base<pure> {
+public:
+   static constexpr const char *const description = "crayola::pure";
+
+   explicit pure() : base<pure>() { }
+   explicit pure(const std::string &str) : base<pure>(str) { }
+
+   static void initialize()
    {
-      const crayola_id_t size = crayola_id_t(crayola::color_table().size());
-      for (crayola_id_t c = 0;  c < size;  ++c)
-         if (name == crayola::color_table()[c].second)
-            return crayola(c);
-
-      ///assert(false);
-      return crayola::unknown;
+      assert(vec.size() == 0);
+      vec = { kip_make_pure(kip_make_table) };
    }
-}
 
+   kip_make_pure(kip_make_decl)
+   kip_make_pure(kip_make_alias)
+};
 
-
-#ifdef KIP_GLOBAL_CRAYOLA
-   // Make crayola colors available in kip::, too
-   #define kip_make_color(name)\
-      namespace detail {\
-         template<class unused>\
-         const crayola crayola_base<unused>::name = crayola_lookup(#name);\
-      }\
-      inline const crayola &name = crayola::name;
-#else
-   #define kip_make_color(name)\
-      namespace detail {\
-         template<class unused>\
-         const crayola crayola_base<unused>::name = crayola_lookup(#name);\
-      }
-#endif
-
-   kip_make_color( unknown )
-   kip_make_color( almond )
-   kip_make_color( antique_brass )
-   kip_make_color( apricot )
-   kip_make_color( aquamarine )
-   kip_make_color( asparagus )
-   kip_make_color( atomic_tangerine )
-   kip_make_color( banana_mania )
-   kip_make_color( beaver )
-   kip_make_color( bittersweet )
-   kip_make_color( black )
-   kip_make_color( blizzard_blue )
-   kip_make_color( blue )
-   kip_make_color( blue_bell )
-// kip_make_color( blue_gray )
-   kip_make_color( blue_green )
-   kip_make_color( blue_violet )
-   kip_make_color( brick_red )
-   kip_make_color( brink_pink )
-   kip_make_color( brown )
-   kip_make_color( burnt_orange )
-   kip_make_color( burnt_sienna )
-   kip_make_color( cadet_blue )
-   kip_make_color( canary )
-   kip_make_color( caribbean_green )
-   kip_make_color( carnation_pink )
-   kip_make_color( cerise )
-   kip_make_color( cerulean )
-   kip_make_color( chartreuse )
-   kip_make_color( chestnut )
-   kip_make_color( copper )
-   kip_make_color( cornflower )
-   kip_make_color( cotton_candy )
-   kip_make_color( cranberry )
-   kip_make_color( dandelion )
-   kip_make_color( denim )
-   kip_make_color( desert_sand )
-   kip_make_color( eggplant )
-   kip_make_color( electric_lime )
-   kip_make_color( fern )
-   kip_make_color( flesh )
-   kip_make_color( forest_green )
-   kip_make_color( fuchsia )
-   kip_make_color( fuzzy_wuzzy_brown )
-   kip_make_color( gold )
-   kip_make_color( goldenrod )
-   kip_make_color( granny_smith_apple )
-   kip_make_color( gray )
-   kip_make_color( green )
-// kip_make_color( green_blue )
-   kip_make_color( green_yellow )
-   kip_make_color( hot_magenta )
-   kip_make_color( inch_worm )
-   kip_make_color( indian_red )
-   kip_make_color( indigo )
-   kip_make_color( jazzberry_jam )
-   kip_make_color( jungle_green )
-   kip_make_color( laser_lemon )
-   kip_make_color( lavender )
-// kip_make_color( lemon_yellow )
-   kip_make_color( macaroni_and_cheese )
-   kip_make_color( magenta )
-   kip_make_color( magic_mint )
-   kip_make_color( mahogany )
-// kip_make_color( maize )
-   kip_make_color( manatee )
-   kip_make_color( mango_tango )
-   kip_make_color( maroon )
-   kip_make_color( mauvelous )
-   kip_make_color( melon )
-   kip_make_color( midnight_blue )
-   kip_make_color( mountain_meadow )
-   kip_make_color( mulberry )
-   kip_make_color( navy_blue )
-   kip_make_color( neon_carrot )
-   kip_make_color( olive_green )
-   kip_make_color( orange )
-// kip_make_color( orange_red )
-// kip_make_color( orange_yellow )
-   kip_make_color( orchid )
-   kip_make_color( outer_space )
-   kip_make_color( outrageous_orange )
-   kip_make_color( pacific_blue )
-   kip_make_color( peach )
-   kip_make_color( periwinkle )
-   kip_make_color( pig_pink )
-   kip_make_color( pine_green )
-   kip_make_color( pink_flamingo )
-   kip_make_color( plum )
-   kip_make_color( prussian_blue )
-   kip_make_color( purple_heart )
-   kip_make_color( purple_mountains_majesty )
-   kip_make_color( purple_pizzazz )
-   kip_make_color( radical_red )
-   kip_make_color( raw_sienna )
-// kip_make_color( raw_umber )
-   kip_make_color( razzle_dazzle_rose )
-   kip_make_color( razzmatazz )
-   kip_make_color( red )
-   kip_make_color( red_orange )
-   kip_make_color( red_violet )
-   kip_make_color( robins_egg_blue )
-   kip_make_color( royal_purple )
-   kip_make_color( salmon )
-   kip_make_color( scarlet )
-   kip_make_color( screamin_green )
-   kip_make_color( sea_green )
-   kip_make_color( sepia )
-   kip_make_color( shadow )
-   kip_make_color( shamrock )
-   kip_make_color( shocking_pink )
-   kip_make_color( silver )
-   kip_make_color( sky_blue )
-   kip_make_color( spring_green )
-   kip_make_color( sunglow )
-   kip_make_color( sunset_orange )
-   kip_make_color( tan )
-// kip_make_color( teal_blue )
-// kip_make_color( thistle )
-   kip_make_color( tickle_me_pink )
-   kip_make_color( timberwolf )
-   kip_make_color( torch_red )
-   kip_make_color( tropical_rain_forest )
-   kip_make_color( tumbleweed )
-   kip_make_color( turquoise_blue )
-// kip_make_color( ultra_blue )
-   kip_make_color( ultra_green )
-   kip_make_color( ultra_orange )
-   kip_make_color( ultra_pink )
-   kip_make_color( ultra_red )
-   kip_make_color( ultra_yellow )
-   kip_make_color( unmellow_yellow )
-   kip_make_color( violet )
-// kip_make_color( violet_blue )
-   kip_make_color( violet_red )
-   kip_make_color( vivid_tangerine )
-   kip_make_color( vivid_violet )
-   kip_make_color( white )
-   kip_make_color( wild_blue_yonder )
-   kip_make_color( wild_strawberry )
-   kip_make_color( wild_watermelon )
-   kip_make_color( wisteria )
-   kip_make_color( yellow )
-   kip_make_color( yellow_green )
-   kip_make_color( yellow_orange )
-
-   // kip-specific
-   kip_make_color( gray_dark )
-   kip_make_color( gray_medium )
-   kip_make_color( gray_light )
-
-#undef kip_make_color
+// colors
+kip_make_pure(kip_make_defn)
 
 
 
 // -----------------------------------------------------------------------------
-// read_value(crayola)
+// Silver Swirls
 // -----------------------------------------------------------------------------
 
-template<class ISTREAM>
-bool read_value(
-   ISTREAM &s, crayola &value,
-   const std::string &description = "crayola"
-) {
+#define kip_make_silver(macro) \
+   macro( silver, Black, black, 0,   0,     0 ) \
+   macro( silver, White, white, 255, 255, 255 ) \
+   macro( silver, AztecGold,        aztec,       195, 153,  83 ) \
+   macro( silver, BurnishedBrown,   burnished,   161, 122, 116 ) \
+   macro( silver, CeruleanFrost,    cerulean,    109, 155, 195 ) \
+   macro( silver, CinnamonSatin,    cinnamon,    205,  96, 126 ) \
+   macro( silver, CopperPenny,      copper,      173, 111, 105 ) \
+   macro( silver, CosmicCobalt,     cosmic,       46,  45, 136 ) \
+   macro( silver, GlossyGrape,      glossy,      171, 146, 179 ) \
+   macro( silver, GraniteGray,      granite,     103, 103, 103 ) \
+   macro( silver, GreenSheen,       green,       110, 174, 161 ) \
+   macro( silver, LilacLuster,      lilac,       174, 152, 170 ) \
+   macro( silver, MistyMoss,        misty,       187, 180, 119 ) \
+   macro( silver, MysticMaroon,     mystic,      173,  67, 121 ) \
+   macro( silver, PearlyPurple,     pearly,      183, 104, 162 ) \
+   macro( silver, PewterBlue,       pewter,      139, 168, 183 ) \
+   macro( silver, PolishedPine,     polished,     93, 164, 147 ) \
+   macro( silver, QuickSilver,      quick,       166, 166, 166 ) \
+   macro( silver, RoseDust,         rose,        158,  94, 111 ) \
+   macro( silver, RustyRed,         rusty,       218,  44,  67 ) \
+   macro( silver, ShadowBlue,       shadow,      119, 139, 165 ) \
+   macro( silver, ShinyShamrock,    shiny,        95, 167, 120 ) \
+   macro( silver, SteelTeal,        steel,        95, 138, 139 ) \
+   macro( silver, SugarPlum,        sugar,       145,  78, 117 ) \
+   macro( silver, TwilightLavender, twilight,    138,  73, 107 ) \
+   macro( silver, WintergreenDream, wintergreen,  86, 136, 125 )
+
+class silver : public base<silver> {
+public:
+   static constexpr const char *const description = "crayola::silver";
+
+   explicit silver() : base<silver>() { }
+   explicit silver(const std::string &str) : base<silver>(str) { }
+
+   static void initialize()
+   {
+      assert(vec.size() == 0);
+      vec = { kip_make_silver(kip_make_table) };
+   }
+
+   kip_make_silver(kip_make_decl)
+   kip_make_silver(kip_make_alias)
+};
+
+// colors
+kip_make_silver(kip_make_defn)
+
+// alternative name
+using SilverSwirls = silver;
+
+
+
+// -----------------------------------------------------------------------------
+// Gem Tones
+// -----------------------------------------------------------------------------
+
+#define kip_make_gem(macro) \
+   macro( gem, Black, black,   0,   0,   0 ) \
+   macro( gem, White, white, 255, 255, 255 ) \
+   macro( gem, Amethyst,    amethyst,  100,  96, 154 ) \
+   macro( gem, Citrine,     citrine,   147,  55,   9 ) \
+   macro( gem, Emerald,     emerald,    20, 169, 137 ) \
+   macro( gem, Jade,        jade,       70, 154, 132 ) \
+   macro( gem, Jasper,      jasper,    208,  83,  64 ) \
+   macro( gem, LapisLazuli, lapis,      67, 108, 185 ) \
+   macro( gem, Malachite,   malachite,  70, 148, 150 ) \
+   macro( gem, Moonstone,   moonstone,  58, 168, 193 ) \
+   macro( gem, Onyx,        onyx,       53,  56,  57 ) \
+   macro( gem, Peridot,     peridot,   171, 173,  72 ) \
+   macro( gem, PinkPearl,   pink,      176, 112, 128 ) \
+   macro( gem, RoseQuartz,  rose,      189,  85, 156 ) \
+   macro( gem, Ruby,        ruby,      170,  64, 105 ) \
+   macro( gem, Sapphire,    sapphire,   45,  93, 161 ) \
+   macro( gem, SmokeyTopaz, smokey,    131,  42,  13 ) \
+   macro( gem, TigersEye,   tigers,    181, 105,  23 )
+
+class gem : public base<gem> {
+public:
+   static constexpr const char *const description = "crayola::gem";
+
+   explicit gem() : base<gem>() { }
+   explicit gem(const std::string &str) : base<gem>(str) { }
+
+   static void initialize()
+   {
+      assert(vec.size() == 0);
+      vec = { kip_make_gem(kip_make_table) };
+   }
+
+   kip_make_gem(kip_make_decl)
+   kip_make_gem(kip_make_alias)
+};
+
+// colors
+kip_make_gem(kip_make_defn)
+
+// alternative name
+using GemTones = gem;
+
+
+
+// -----------------------------------------------------------------------------
+// Metallic FX
+// -----------------------------------------------------------------------------
+
+#define kip_make_metallic(macro) \
+   macro( metallic, Black, black,   0,   0,   0 ) \
+   macro( metallic, White, white, 255, 255, 255 ) \
+   macro( metallic, AlloyOrange,         alloy,        196,  98,  16 ) \
+   macro( metallic, BdazzledBlue,        bdazzled,      46,  88, 148 ) \
+   macro( metallic, BigDipORuby,         big,          156,  37,  66 ) \
+   macro( metallic, BittersweetShimmer,  bittersweet,  191,  79,  81 ) \
+   macro( metallic, BlastOffBronze,      blast,        165, 113, 100 ) \
+   macro( metallic, CyberGrape,          cyber,         88,  66, 124 ) \
+   macro( metallic, DeepSpaceSparkle,    deep,          74, 100, 108 ) \
+   macro( metallic, GoldFusion,          gold,         133, 117,  78 ) \
+   macro( metallic, IlluminatingEmerald, illuminating,  49, 145, 119 ) \
+   macro( metallic, MetallicSeaweed,     seaweed,       10, 126, 140 ) \
+   macro( metallic, MetallicSunburst,    sunburst,     156, 124,  56 ) \
+   macro( metallic, RazzmicBerry,        razzmic,      141,  78, 133 ) \
+   macro( metallic, SheenGreen,          sheen,        143, 212,   0 ) \
+   macro( metallic, ShimmeringBlush,     shimmering,   217, 134, 149 ) \
+   macro( metallic, SonicSilver,         sonic,        117, 117, 117 ) \
+   macro( metallic, SteelBlue,           steel,          0, 129, 171 )
+
+// Above, for the original names:
+//    Metallic Seaweed
+//    Metallic Sunburst
+// we used the second word instead of the first as the short names, for the
+// obvious reason. Elsewhere, our convention has been to use the first word.
+
+class metallic : public base<metallic> {
+public:
+   static constexpr const char *const description = "crayola::metallic";
+
+   explicit metallic() : base<metallic>() { }
+   explicit metallic(const std::string &str) : base<metallic>(str) { }
+
+   static void initialize()
+   {
+      assert(vec.size() == 0);
+      vec = { kip_make_metallic(kip_make_table) };
+   }
+
+   kip_make_metallic(kip_make_decl)
+   kip_make_metallic(kip_make_alias)
+};
+
+// colors
+kip_make_metallic(kip_make_defn)
+
+// alternative name
+using MetallicFX = metallic;
+
+
+
+// -----------------------------------------------------------------------------
+// crayola::complete
+// zzz Put in all of these!!
+// -----------------------------------------------------------------------------
+
+/*
+
+Almond               EFDBC5   239,219,197
+Antique Brass        CD9575   205,149,117
+Apricot              FDD9B5   253,217,181
+Aquamarine           78DBE2   120,219,226
+Asparagus            87A96B   135,169,107
+Atomic Tangerine     FFA474   255,164,116
+Banana Mania         FAE7B5   250,231,181
+Beaver               9F8170   159,129,112
+Bittersweet          FD7C6E   253,124,110
+Black                232323   35,35,35
+Blue                 1F75FE   31,117,254
+Blue Bell            ADADD6   173,173,214
+Blue Green           199EBD   25,158,189
+Blue Violet          2E5090   115,102,189
+Bluetiful            7366BD   46,80,144
+Blush                DE5D83   222,93,131
+Brick Red            CB4154   203,65,84
+Brown                B5674D   180,103,77
+Burnt Orange         FF7F49   255,127,73
+Burnt Sienna         EA7E5D   234,126,93
+Cadet Blue           B0B7C6   176,183,198
+Canary               FFFF99   255,255,159
+Caribbean Green      1CD3A2   28,211,162
+Carnation Pink       FFAACC   255,170,204
+Cerise               FF43A4   221,68,146
+Cerulean             1DACD6   29,172,214
+Chesnut              BC5D58   188,93,88
+Copper               DD9475   221,148,117
+Cornflower           9ACEEB   154,206,235
+Cotton Candy         FFBCD9   255,188,217
+Denim                2B6CC4   43,108,196
+Desert Sand          EFCDB8   239,205,184
+Eggplant             DD4492   110,81,96
+Electric Lime        1DF914   29,249,20
+Fern                 71BC78   113,188,120
+Forest Green         6DAE81   109,174,129
+Fuchisia             C364C5   195,100,197
+Fuzzy Wuzzy Brown    CC6666   204,102,102
+Gold                 E7C697   231,198,151
+Goldenrod            FCD975   255,217,117
+Granny Smith Apple   A8E4A0   168,228,160
+Gray                 95918C   149,145,140
+Green                1CAC78   28,172,120
+Green Yellow         F0E891   240,232,145
+Hot Magenta          FF1DCE   255,29,206
+Inch Worm            B2EC5D   178,236,93
+Indigo               5D76CB   93,118,203
+Jazzberry Jam        CA3767   202,55,103
+Jungle Green         3BB08F   59,176,143
+Laser Lemon          FDFC74   253,252,116
+Lavender             FCB4D5   252,180,213
+Macaroni and Cheese  FFBD88   255,189,136
+Magenta              FCB4D5   246,100,175
+Mahogany             CD4A4A   205,74,74
+Manatee              979AAA   151,154,170
+Mango Tango          FF8243   255,130,67
+Maroon               C8385A   200,56,90
+Mauvelous            EF98AA   239,152,170
+Melon                FDBCB4   253,188,180
+Midnight Blue        1A4876   26,72,118
+Mountain Meadow      30BA8F   48,186,143
+Navy Blue            1974D2   25,116,210
+Neon Carrot          FFA343   255,163,67
+Olive Green          BAB86C   186,184,108
+Orange               FF7538   255,117,56
+Orichid              C0448F   230,168,215
+Outer Space          414AAC   65,74,76
+Outrageous Orange    FF6E4A   255,110,74
+Pacific Blue         1CA9C9   28,169,201
+Peach                FFCFAB   255,207,171
+Periwinkle           C5D0E6   197,208,230
+Piggy Pink           FDD7E4   253,215,228
+Pine Green           158078   21,128,120
+Pink Flamingo        FC74FD   252,116,253
+Pink Sherbet         F780A1   247,128,161
+Plum                 8E4584   142,69,133
+Purple Heart         7442C8   116,66,200
+Purple Mountains' Magesty  9D81BA   157,129,186
+Purple Pizza         FF1DCE   255,29,206
+Radical Red          FF496C   255,73,107
+Raw Sienna           D68A59   214,138,89
+Razzle Dazzle Rose   E6A8D7   255,72,208
+Razzmatazz           E3256B   227,37,107
+Red                  EE204D   238,32,77
+Red Orange           FF5349   255,83,73
+Red Violet           c0448f   192,68,143
+Robin Egg Blue       1FCECB   31,206,203
+Royal Purple         7851A9   120,81,169
+Salmon               FF9BAA   255,155,170
+Scarlet              FC2847   242,40,71
+Screamin Green       76FF7A   118,255,122
+Sea Green            9FE2BF   159,226,191
+Sepia                A5694F   165,105,79
+Shadow               8A795D   138,121,93
+Shamrock             45CEA2   69,206,162
+Shocking Pink        FB7EFD   251,126,253
+Silver               CDC5C2   205,197,194
+Sky Blue             80DAEB   128,218,235
+Spring Green         ECEABE   236,234,190
+Sunglow              FFCF48   255,207,72
+Sunset Orange        FD5E53   253,94,83
+Tan                  FAA76C   250,167,108
+Tickle Me Pink       FC89AC   252,137,172
+Timberwolf           DBD7D2   219,215,210
+Tropical Rain Forest 17806D   23,128,109
+Tumbleweed           DEAA88   222,170,136
+Turquoise Blue       77DDE7   119,221,231
+Unmellow Yellow      FDFC74   253,252,116
+Violet (Purple)      926EAE   146,110,174
+Violet Red           F75394   247,83,148
+Vivid Tangerine      FFA089   255,160,137
+Vivid Violet         8F509D   143,80,157
+White                EDEDED   237,237,237
+Wild Blue Wonder     A2ADD0   162,173,208
+Wild Strawberry      F664AF   255,67,164
+Wild Watermelon      FC6C85   252,108,133
+Wisteria             CDA4DE   205,164,222
+Yellow               FCE883   252,232,131
+Yellow Green         C5E384   197,227,132
+Yellow Orange        FFB653   255,182,83
+
+*/
+
+#define kip_make_complete(macro) \
+   macro( complete, Black,   black,     0,   0,   0 ) \
+   macro( complete, White,   white,   255, 255, 255 )
+
+class complete : public base<complete> {
+public:
+   static constexpr const char *const description = "crayola::complete";
+
+   explicit complete() : base<complete>() { }
+   explicit complete(const std::string &str) : base<complete>(str) { }
+
+   static void initialize()
+   {
+      assert(vec.size() == 0);
+      vec = { kip_make_complete(kip_make_table) };
+   }
+
+   kip_make_complete(kip_make_decl)
+   kip_make_complete(kip_make_alias)
+};
+
+// colors
+kip_make_complete(kip_make_defn)
+
+
+
+// -----------------------------------------------------------------------------
+// read_value
+// -----------------------------------------------------------------------------
+
+// 2019-sep-18
+// I think ISTREAM is always a kip::istream, but to make compilation
+// work with the change, some reordering is apparently needed.
+template<class ISTREAM, class derived>
+bool read_value(ISTREAM &s, crayola::base<derived> &value)
+{
    s.bail = false;
+   const std::string label = value.description();
+
    std::string word;
-
    if (read_value(s,word)) {
-      bool found = false;
+      for (ulong n = value.table().size();  n-- ; )
+         if (word == value.table()[n].first)
+            return value = crayola::base<derived>(uchar(n)), !s.fail();
 
-      const crayola_id_t size = crayola_id_t(crayola::color_table().size());
-      for (crayola_id_t c = 0;  c < size;  ++c)
-         if (word == crayola::color_table()[c].second) {
-            value = crayola(c);
-            found = true;  break;
-         }
-      if (!found) {
-         std::ostringstream oss;
-         oss << "Unknown crayola color \"" << word
-             << "\"\nSetting to \"unknown\" (is (0,0,0))";
-         s.warning(oss);
-         value = crayola(0);
-      }
-   } else {
-      s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic::error);
+      std::ostringstream oss;
+      oss << "Unknown " << label << " color \"" << word
+          << "\"\nSetting to " << label << "(0) (rgb (0,0,0))";
+      s.warning(oss);
+      return value = crayola::base<derived>(0), !s.fail();
    }
+
+   s.add(std::ios::failbit);
+   addendum("Detected while reading " + label, diagnostic::error);
    return !s.fail();
 }
 
 
 
 // -----------------------------------------------------------------------------
-// crayola::operator==
+// istream >> crayola::base
+// ostream << crayola::base
 // -----------------------------------------------------------------------------
 
-inline bool operator==(const crayola &a, const crayola &b)
-{
-   return a.id() == b.id();
+// kip::istream >> crayola::base
+template<class derived>
+inline kip::istream &operator>>(
+   kip::istream &k,
+   base<derived> &obj
+) {
+   read_value(k,obj);
+   return k;
+}
+
+// std::istream >> crayola::base
+template<class derived>
+inline std::istream &operator>>(
+   std::istream &s,
+   base<derived> &obj
+) {
+   kip::istream k(s);
+   k >> obj;
+   return s;
+}
+
+// kip::ostream << crayola::base
+template<class derived>
+inline kip::ostream &operator<<(
+   kip::ostream &k,
+   const base<derived> &obj
+) {
+   const ulong size = obj.table().size();
+
+   if (ulong(obj.id()) >= size) {
+      const std::string label = obj.description();
+      std::ostringstream oss;
+      oss << "Index " << unsigned(obj.id()) << " for " << label << " color "
+          << "is outside valid range [0,"
+          <<  size-1 << "]\nWriting as " << label << "(0) (rgb (0,0,0))";
+      warning(oss);
+      return k << obj.table()[0].first;
+   }
+
+   return k << obj.table()[obj.id()].first;
+}
+
+// std::ostream << crayola::base
+template<class derived>
+inline std::ostream &operator<<(
+   std::ostream &s,
+   const base<derived> &obj
+) {
+   kip::ostream k(s);
+   k << obj;
+   return s;
 }
 
 
 
 // -----------------------------------------------------------------------------
-// RGB(crayola)
-// RGBA(crayola)
+// convert
 // -----------------------------------------------------------------------------
 
-// RGB(crayola)
-template<class rgb_t>
-inline RGB<rgb_t>::RGB(const crayola &from)
+// crayola::base<derived> ==> RGB<comp>
+template<class derived, class comp>
+inline void convert(const crayola::base<derived> &in, RGB<comp> &out)
 {
-   const RGB value = crayola::color_table()[from.id()].first;
-   r = value.r;
-   g = value.g;
-   b = value.b;
+   out.set(in.r(), in.g(), in.b());
 }
 
-// RGBA(crayola)
-template<class rgb_t>
-inline RGBA<rgb_t>::RGBA(const crayola &from)
+// crayola::base<derived> ==> RGBA<comp>
+template<class derived, class comp>
+inline void convert(const crayola::base<derived> &in, RGBA<comp> &out)
 {
-   const RGB<rgb_t> value(from);
-   r = value.r;
-   g = value.g;
-   b = value.b;
-   a = opaque<rgb_t>();
+   out.set(in.r(), in.g(), in.b());
 }
+
+} // namespace crayola

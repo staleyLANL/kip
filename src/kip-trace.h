@@ -266,12 +266,23 @@ inline void object_border_shape(const SHAPEVEC &shape, image<real,color> &image)
          const ulong imax = iend-1;  assert(imax < image.hpixel);
          const ulong jmax = jend-1;  assert(jmax < image.vpixel);
 
+         color out;
          for (ulong i = imin;  i < iend;  ++i)
-            if ((i % large) < small)
-               image(i,jmin)=image(i,jmax)=color(s.base());///color::border();
+            if ((i % large) < small) {
+               convert(s.base(),out);
+               //image(i,jmin)=image(i,jmax)=color(s.base());///color::border();
+               image(i,jmin) =
+               image(i,jmax) =
+                  out;///color(s.base());///color::border();
+            }
          for (ulong j = jmin;  j < jend;  ++j)
-            if ((j % large) < small)
-               image(imin,j)=image(imax,j)=color(s.base());///color::border();
+            if ((j % large) < small) {
+               convert(s.base(),out);
+               //image(imin,j)=image(imax,j)=color(s.base());///color::border();
+               image(imin,j) =
+               image(imax,j) =
+                  out;///color(s.base());///color::border();
+            }
       }
    }
 }

@@ -24,7 +24,7 @@ int main(const int argc, char *const argv[])
    scene.theta = 60;
    scene.phi = 30;
    scene.d = 10;
-   scene.background(150,150,150);
+   scene.background = kip::rgba(150,150,150);
    scene.resize(800,800);  // window size
 
    // ray trace

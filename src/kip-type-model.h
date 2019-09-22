@@ -426,13 +426,16 @@ model<real,base>::push_bbox_ptr(
 
    // bases
    const base &default_param = default_parameter(detail::tclass<base>());
+   // zzz do something about the old use of crayola here
    const base
-          tight_base = &  _tight_base != &default_param
-     ?   _tight_base : crayola::black,
-        partial_base = &_partial_base != &default_param
-     ? _partial_base : crayola::gray_medium,
-          loose_base = &  _loose_base != &default_param
-     ?   _loose_base : crayola::white;
+      tight_base = &  _tight_base != &default_param
+      ?   _tight_base : base{};///crayola::black,
+   const base
+      partial_base = &_partial_base != &default_param
+      ? _partial_base : base{};///crayola::gray_medium,
+   const base
+      loose_base = &  _loose_base != &default_param
+      ?   _loose_base : base{};///crayola::white;
 
    const base xbase =
       b.x.min.tight() && b.x.max.tight() ?   tight_base

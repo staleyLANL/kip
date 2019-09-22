@@ -78,10 +78,10 @@ kip_process(even)
 // twosort - helper
 namespace detail {
    template<class CONTAINER, class COMPARE>
-   inline void twosort(CONTAINER &c, const COMPARE &comp)
+   inline void twosort(CONTAINER &c, const COMPARE &compare)
    {
       if (c.size() > 1)
-         std::partial_sort(c.begin(), c.begin()+2, c.end(), comp);
+         std::partial_sort(c.begin(), c.begin()+2, c.end(), compare);
    }
 }
 

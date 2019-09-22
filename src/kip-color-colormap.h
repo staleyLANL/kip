@@ -134,9 +134,9 @@ public:
    // ------------------------
 
    // zzz Need to work on generality here!!!
-   // zzz For now, assuming double index, and RGB<uchar> output
+   // zzz For now, assuming double index, and rgb output
 
-   inline RGB<uchar> operator[](const double &d) const
+   inline rgb operator[](const double &d) const
    {
       initialize();
 
@@ -156,8 +156,7 @@ public:
       const double g = one*vec[lo].g + two*vec[hi].g;
       const double b = one*vec[lo].b + two*vec[hi].b;
 
-      const RGB<uchar> rv(uchar(255*r), uchar(255*g), uchar(255*b));
-      return rv;
+      return rgb(uchar(255*r), uchar(255*g), uchar(255*b));
 
       /*
       const real rcolor = real(0.9999)*(ncolor-1)*(h-hmin)/(hmax-hmin);
@@ -166,7 +165,7 @@ public:
       const real a = 255*(1-f);
       const real b = 255*f;
 
-      const RGB<> color(
+      const RGB<uchar> color(
          uchar(a*spectrum[icolor][0] + b*spectrum[icolor+1][0]),
          uchar(a*spectrum[icolor][1] + b*spectrum[icolor+1][1]),
          uchar(a*spectrum[icolor][2] + b*spectrum[icolor+1][2])

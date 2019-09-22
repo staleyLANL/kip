@@ -65,7 +65,7 @@ void propagate_nary(const VEC &vec, const tag &base, const bool force)
 // Miscellaneous
 // -----------------------------------------------------------------------------
 
-// read_shapes - forward declaration
+// forward: read_shapes
 template<class real, class tag, class NARY>
 bool read_shapes(kip::istream &, NARY &);
 

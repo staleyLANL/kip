@@ -17,7 +17,7 @@ int main(const int, const char *const *const argv)
    s.d = 20;
 
    // Miscellaneous information
-   s.background(127,127,127);  // gray background
+   s.background = kip::rgba(127,127,127);  // gray background
    s.resize(1024,768);  // window size
    // Set other values, as desired, in scene s
 

@@ -3,6 +3,8 @@
 
 // This file provides miscellaneous functionality related to shapes.
 
+
+
 // -----------------------------------------------------------------------------
 // allshape
 // rshhhd
@@ -10,7 +12,7 @@
 
 namespace detail {
 
-// less - forward declaration
+// forward: less
 template<class real, class tag> class less;
 
 
@@ -115,6 +117,8 @@ public:
    // operator()(nx,ny,nz, shape, color, isnormalized [, fac = default])
    // operator()(n,        shape, color, isnormalized [, fac = default])
 
+
+
    inline inq &operator()(
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
@@ -140,6 +144,8 @@ public:
       return *this;
    }
 
+   // qqq I think we need the following only because xplane,
+   // yplane, and zplane actually involve two colors...
    inline inq &operator()(
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
@@ -150,19 +156,6 @@ public:
       n.x = nx;  shape = _shape;
       n.y = ny;  color = _color;
       n.z = nz;  isnormalized = _isnormalized;
-      fac = _fac;
-      return *this;
-   }
-
-   inline inq &operator()(
-      const point<real> &_n,
-      const kip::shape<real,base> *const _shape,
-      const base *const _color,
-      const normalized _isnormalized,
-      const real _fac = real(-1)
-   ) {
-      shape = _shape;  n = _n;
-      color = _color;  isnormalized = _isnormalized;
       fac = _fac;
       return *this;
    }

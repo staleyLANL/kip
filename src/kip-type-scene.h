@@ -4,14 +4,15 @@
 // This file provides the "scene" class, which derives from the other
 // major classes: model, view, light, engine, image.
 
-// forward declarations: scene, trace(scene), trace(scene,array)
-template<class real, class tag, class color> class scene;
+// forward: scene, trace(scene), trace(scene,array)
+template<class real, class base, class color>
+class scene;
 
-template<class real, class tag, class color>
-bool trace(scene<real,tag,color> &);
+template<class real, class base, class color>
+bool trace(scene<real,base,color> &);
 
-template<class real, class tag, class color, class pix>
-bool trace(scene<real,tag,color> &, array<2,pix> &);
+template<class real, class base, class color, class pix>
+bool trace(scene<real,base,color> &, array<2,pix> &);
 
 
 
@@ -21,11 +22,11 @@ bool trace(scene<real,tag,color> &, array<2,pix> &);
 
 template<
    class real  = default_real,
-   class tag   = default_base,
+   class base  = default_base,
    class color = default_color
 >
 class scene :
-   public model <real,tag>,
+   public model <real,base>,
    public view  <real>,
    public light <real>,
    public engine<real>,
@@ -39,7 +40,7 @@ public:
    inline explicit scene() { }
 
    // direct access to constituents
-   inline kip::model <real,tag>   &model () { return *this; }
+   inline kip::model <real,base>  &model () { return *this; }
    inline kip::view  <real>       &view  () { return *this; }
    inline kip::light <real>       &light () { return *this; }
    inline kip::engine<real>       &engine() { return *this; }

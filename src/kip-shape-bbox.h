@@ -229,17 +229,17 @@ public:
 
 
 // bound_combine_component
-template<class real, class COMP>
+template<class real, class COMPARE>
 bbox_component<real> bound_combine_component(
    const bbox_component<real> &a,
-   const bbox_component<real> &b, const COMP &comp
+   const bbox_component<real> &b, const COMPARE &compare
 ) {
    return
       a.valid() && b.valid()
     ? bbox_component<real>(
          // min tight?
-         ((comp(a.min, b.min) || !b.min.finite()) && a.min.tight()) ||
-         ((comp(b.min, a.min) || !a.min.finite()) && b.min.tight()),
+         ((compare(a.min, b.min) || !b.min.finite()) && a.min.tight()) ||
+         ((compare(b.min, a.min) || !a.min.finite()) && b.min.tight()),
 
          // min
          a.min <= b.min
@@ -252,8 +252,8 @@ bbox_component<real> bound_combine_component(
             : b.max.finite() ? b.max : a.max,
 
          // max tight?
-         ((comp(a.max, b.max) || !a.max.finite()) && b.max.tight()) ||
-         ((comp(b.max, a.max) || !b.max.finite()) && a.max.tight())
+         ((compare(a.max, b.max) || !a.max.finite()) && b.max.tight()) ||
+         ((compare(b.max, a.max) || !b.max.finite()) && a.max.tight())
       )
 
     : a.valid() ? a
@@ -265,14 +265,14 @@ bbox_component<real> bound_combine_component(
 
 
 // bound_combine
-template<class real, class COMP>
+template<class real, class COMPARE>
 inline bbox<real> bound_combine(
-   const bbox<real> &a, const bbox<real> &b, const COMP &comp
+   const bbox<real> &a, const bbox<real> &b, const COMPARE &compare
 ) {
    return bbox<real>(
-      bound_combine_component(a.x, b.x, comp),
-      bound_combine_component(a.y, b.y, comp),
-      bound_combine_component(a.z, b.z, comp)
+      bound_combine_component(a.x, b.x, compare),
+      bound_combine_component(a.y, b.y, compare),
+      bound_combine_component(a.z, b.z, compare)
    );
 }
 
