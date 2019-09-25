@@ -300,39 +300,9 @@ inline color kipcolor(
    (void)shape;
    (void)inter;
 
-   /*
-   static std::ofstream ofs("surface.kip");
-   if (random_unit<double>() < 0.01) {
-      ofs << sphere<real,base>(
-         shape.back(inter),
-         0.005,
-         crayola::metallic::black
-      );
-      ofs << std::endl;
-   }
-   */
-
-   // original!!!
    color out;
    convert(in,out);
    return out;
-
-   /*
-   // test: stripes
-   const point<real> exact = shape.back(inter);
-   color out;
-
-   const bool x = int(40*(exact.x)) % 2;
-   const bool y = int(40*(exact.y)) % 2;
-   const bool z = int(40*(exact.z)) % 2;
-
-   if ((x == y) != z)
-      out.set(255,255,255);
-   else
-      convert(in,out);
-
-   return out;
-   */
 }
 
 
@@ -342,7 +312,7 @@ template<class color, class real, class comp, class mreal>
 inline color kipcolor(
    const kip::shape<real,marble<comp,mreal>> &shape,
    const marble<comp,mreal> &in,
-   const point<real> &inter
+   const kip::point<real> &inter
 ) {
    const point<real> exact = shape.back(inter);
    const real seed = in.seed;

@@ -6,6 +6,36 @@ namespace crayola {
 
 
 // -----------------------------------------------------------------------------
+// macros
+// -----------------------------------------------------------------------------
+
+#define kip_make_table(type,str,alt,r,g,b) { #str, rgb(r,g,b) },
+#define kip_make_decl( type,str,alt,r,g,b) static const type str;
+#define kip_make_alias(type,str,alt,r,g,b) static constexpr const type &alt=str;
+#define kip_make_defn( type,str,alt,r,g,b) const type type::str(#str);
+
+#define kip_make_standard(theclass,macro) \
+   macro( theclass, PureBlack,   pureblack,     0,   0,   0 ) \
+   macro( theclass, PureWhite,   purewhite,   255, 255, 255 ) \
+   macro( theclass, PureRed,     purered,     255,   0,   0 ) \
+   macro( theclass, PureGreen,   puregreen,     0, 255,   0 ) \
+   macro( theclass, PureBlue,    pureblue,      0,   0, 255 ) \
+   macro( theclass, PureCyan,    purecyan,      0, 255, 255 ) \
+   macro( theclass, PureMagenta, puremagenta, 255,   0, 255 ) \
+   macro( theclass, PureYellow,  pureyellow,  255, 255,   0 ) \
+   macro( theclass, GrayDark,    graydark,     64,  64,  64 ) \
+   macro( theclass, GrayMedium,  graymedium,  128, 128, 128 ) \
+   macro( theclass, GrayLight,   graylight,   192, 192, 192 )
+
+// MAGIC NUMBER ALERT
+// Number of values given in the above list of colors
+namespace detail {
+   inline const ulong crayola_standard_count = 11;
+}
+
+
+
+// -----------------------------------------------------------------------------
 // crayola::base
 // -----------------------------------------------------------------------------
 
@@ -61,8 +91,8 @@ public:
    // randomize()
    void randomize()
    {
-      kip_assert(vec.size() != 0);
-      index = uchar(rand() % vec.size());
+      kip_assert(vec.size() > detail::crayola_standard_count);
+      index = uchar(rand() % (vec.size() - detail::crayola_standard_count));
    }
 
    // ------------------------
@@ -95,31 +125,22 @@ inline void randomize(base<derived> &obj)
 
 
 // -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// crayola::*
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-#define kip_make_table(ns,str,alt,r,g,b) { #str, rgb(r,g,b) },
-#define kip_make_decl( ns,str,alt,r,g,b) static const ns str;
-#define kip_make_alias(ns,str,alt,r,g,b) static constexpr const ns &alt=str;
-#define kip_make_defn( ns,str,alt,r,g,b) const ns ns::str(#str);
-
-
-
-// -----------------------------------------------------------------------------
 // crayola::pure
 // -----------------------------------------------------------------------------
 
 #define kip_make_pure(macro) \
-   macro( pure, Black, black,   0,   0,   0 ) \
-   macro( pure, White, white, 255, 255, 255 ) \
+   macro( pure, Black,   black,     0,   0,   0 ) \
+   macro( pure, White,   white,   255, 255, 255 ) \
    macro( pure, Red,     red,     255,   0,   0 ) \
    macro( pure, Green,   green,     0, 255,   0 ) \
    macro( pure, Blue,    blue,      0,   0, 255 ) \
    macro( pure, Cyan,    cyan,      0, 255, 255 ) \
    macro( pure, Magenta, magenta, 255,   0, 255 ) \
-   macro( pure, Yellow,  yellow,  255, 255,   0 )
+   macro( pure, Yellow,  yellow,  255, 255,   0 ) \
+   macro( pure, Dark,    dark,     64,  64,  64 ) \
+   macro( pure, Medium,  medium,  128, 128, 128 ) \
+   macro( pure, Light,   light,   192, 192, 192 ) \
+   kip_make_standard(pure,macro) // give last
 
 class pure : public base<pure> {
 public:
@@ -138,7 +159,6 @@ public:
    kip_make_pure(kip_make_alias)
 };
 
-// colors
 kip_make_pure(kip_make_defn)
 
 
@@ -148,8 +168,6 @@ kip_make_pure(kip_make_defn)
 // -----------------------------------------------------------------------------
 
 #define kip_make_silver(macro) \
-   macro( silver, Black, black, 0,   0,     0 ) \
-   macro( silver, White, white, 255, 255, 255 ) \
    macro( silver, AztecGold,        aztec,       195, 153,  83 ) \
    macro( silver, BurnishedBrown,   burnished,   161, 122, 116 ) \
    macro( silver, CeruleanFrost,    cerulean,    109, 155, 195 ) \
@@ -173,7 +191,8 @@ kip_make_pure(kip_make_defn)
    macro( silver, SteelTeal,        steel,        95, 138, 139 ) \
    macro( silver, SugarPlum,        sugar,       145,  78, 117 ) \
    macro( silver, TwilightLavender, twilight,    138,  73, 107 ) \
-   macro( silver, WintergreenDream, wintergreen,  86, 136, 125 )
+   macro( silver, WintergreenDream, wintergreen,  86, 136, 125 ) \
+   kip_make_standard(silver,macro) // give last
 
 class silver : public base<silver> {
 public:
@@ -192,7 +211,6 @@ public:
    kip_make_silver(kip_make_alias)
 };
 
-// colors
 kip_make_silver(kip_make_defn)
 
 // alternative name
@@ -205,8 +223,6 @@ using SilverSwirls = silver;
 // -----------------------------------------------------------------------------
 
 #define kip_make_gem(macro) \
-   macro( gem, Black, black,   0,   0,   0 ) \
-   macro( gem, White, white, 255, 255, 255 ) \
    macro( gem, Amethyst,    amethyst,  100,  96, 154 ) \
    macro( gem, Citrine,     citrine,   147,  55,   9 ) \
    macro( gem, Emerald,     emerald,    20, 169, 137 ) \
@@ -222,7 +238,8 @@ using SilverSwirls = silver;
    macro( gem, Ruby,        ruby,      170,  64, 105 ) \
    macro( gem, Sapphire,    sapphire,   45,  93, 161 ) \
    macro( gem, SmokeyTopaz, smokey,    131,  42,  13 ) \
-   macro( gem, TigersEye,   tigers,    181, 105,  23 )
+   macro( gem, TigersEye,   tigers,    181, 105,  23 ) \
+   kip_make_standard(gem,macro) // give last
 
 class gem : public base<gem> {
 public:
@@ -241,7 +258,6 @@ public:
    kip_make_gem(kip_make_alias)
 };
 
-// colors
 kip_make_gem(kip_make_defn)
 
 // alternative name
@@ -254,8 +270,6 @@ using GemTones = gem;
 // -----------------------------------------------------------------------------
 
 #define kip_make_metallic(macro) \
-   macro( metallic, Black, black,   0,   0,   0 ) \
-   macro( metallic, White, white, 255, 255, 255 ) \
    macro( metallic, AlloyOrange,         alloy,        196,  98,  16 ) \
    macro( metallic, BdazzledBlue,        bdazzled,      46,  88, 148 ) \
    macro( metallic, BigDipORuby,         big,          156,  37,  66 ) \
@@ -271,7 +285,8 @@ using GemTones = gem;
    macro( metallic, SheenGreen,          sheen,        143, 212,   0 ) \
    macro( metallic, ShimmeringBlush,     shimmering,   217, 134, 149 ) \
    macro( metallic, SonicSilver,         sonic,        117, 117, 117 ) \
-   macro( metallic, SteelBlue,           steel,          0, 129, 171 )
+   macro( metallic, SteelBlue,           steel,          0, 129, 171 ) \
+   kip_make_standard(metallic,macro) // give last
 
 // Above, for the original names:
 //    Metallic Seaweed
@@ -296,7 +311,6 @@ public:
    kip_make_metallic(kip_make_alias)
 };
 
-// colors
 kip_make_metallic(kip_make_defn)
 
 // alternative name
@@ -306,137 +320,136 @@ using MetallicFX = metallic;
 
 // -----------------------------------------------------------------------------
 // crayola::complete
-// zzz Put in all of these!!
 // -----------------------------------------------------------------------------
 
-/*
-
-Almond               EFDBC5   239,219,197
-Antique Brass        CD9575   205,149,117
-Apricot              FDD9B5   253,217,181
-Aquamarine           78DBE2   120,219,226
-Asparagus            87A96B   135,169,107
-Atomic Tangerine     FFA474   255,164,116
-Banana Mania         FAE7B5   250,231,181
-Beaver               9F8170   159,129,112
-Bittersweet          FD7C6E   253,124,110
-Black                232323   35,35,35
-Blue                 1F75FE   31,117,254
-Blue Bell            ADADD6   173,173,214
-Blue Green           199EBD   25,158,189
-Blue Violet          2E5090   115,102,189
-Bluetiful            7366BD   46,80,144
-Blush                DE5D83   222,93,131
-Brick Red            CB4154   203,65,84
-Brown                B5674D   180,103,77
-Burnt Orange         FF7F49   255,127,73
-Burnt Sienna         EA7E5D   234,126,93
-Cadet Blue           B0B7C6   176,183,198
-Canary               FFFF99   255,255,159
-Caribbean Green      1CD3A2   28,211,162
-Carnation Pink       FFAACC   255,170,204
-Cerise               FF43A4   221,68,146
-Cerulean             1DACD6   29,172,214
-Chesnut              BC5D58   188,93,88
-Copper               DD9475   221,148,117
-Cornflower           9ACEEB   154,206,235
-Cotton Candy         FFBCD9   255,188,217
-Denim                2B6CC4   43,108,196
-Desert Sand          EFCDB8   239,205,184
-Eggplant             DD4492   110,81,96
-Electric Lime        1DF914   29,249,20
-Fern                 71BC78   113,188,120
-Forest Green         6DAE81   109,174,129
-Fuchisia             C364C5   195,100,197
-Fuzzy Wuzzy Brown    CC6666   204,102,102
-Gold                 E7C697   231,198,151
-Goldenrod            FCD975   255,217,117
-Granny Smith Apple   A8E4A0   168,228,160
-Gray                 95918C   149,145,140
-Green                1CAC78   28,172,120
-Green Yellow         F0E891   240,232,145
-Hot Magenta          FF1DCE   255,29,206
-Inch Worm            B2EC5D   178,236,93
-Indigo               5D76CB   93,118,203
-Jazzberry Jam        CA3767   202,55,103
-Jungle Green         3BB08F   59,176,143
-Laser Lemon          FDFC74   253,252,116
-Lavender             FCB4D5   252,180,213
-Macaroni and Cheese  FFBD88   255,189,136
-Magenta              FCB4D5   246,100,175
-Mahogany             CD4A4A   205,74,74
-Manatee              979AAA   151,154,170
-Mango Tango          FF8243   255,130,67
-Maroon               C8385A   200,56,90
-Mauvelous            EF98AA   239,152,170
-Melon                FDBCB4   253,188,180
-Midnight Blue        1A4876   26,72,118
-Mountain Meadow      30BA8F   48,186,143
-Navy Blue            1974D2   25,116,210
-Neon Carrot          FFA343   255,163,67
-Olive Green          BAB86C   186,184,108
-Orange               FF7538   255,117,56
-Orichid              C0448F   230,168,215
-Outer Space          414AAC   65,74,76
-Outrageous Orange    FF6E4A   255,110,74
-Pacific Blue         1CA9C9   28,169,201
-Peach                FFCFAB   255,207,171
-Periwinkle           C5D0E6   197,208,230
-Piggy Pink           FDD7E4   253,215,228
-Pine Green           158078   21,128,120
-Pink Flamingo        FC74FD   252,116,253
-Pink Sherbet         F780A1   247,128,161
-Plum                 8E4584   142,69,133
-Purple Heart         7442C8   116,66,200
-Purple Mountains' Magesty  9D81BA   157,129,186
-Purple Pizza         FF1DCE   255,29,206
-Radical Red          FF496C   255,73,107
-Raw Sienna           D68A59   214,138,89
-Razzle Dazzle Rose   E6A8D7   255,72,208
-Razzmatazz           E3256B   227,37,107
-Red                  EE204D   238,32,77
-Red Orange           FF5349   255,83,73
-Red Violet           c0448f   192,68,143
-Robin Egg Blue       1FCECB   31,206,203
-Royal Purple         7851A9   120,81,169
-Salmon               FF9BAA   255,155,170
-Scarlet              FC2847   242,40,71
-Screamin Green       76FF7A   118,255,122
-Sea Green            9FE2BF   159,226,191
-Sepia                A5694F   165,105,79
-Shadow               8A795D   138,121,93
-Shamrock             45CEA2   69,206,162
-Shocking Pink        FB7EFD   251,126,253
-Silver               CDC5C2   205,197,194
-Sky Blue             80DAEB   128,218,235
-Spring Green         ECEABE   236,234,190
-Sunglow              FFCF48   255,207,72
-Sunset Orange        FD5E53   253,94,83
-Tan                  FAA76C   250,167,108
-Tickle Me Pink       FC89AC   252,137,172
-Timberwolf           DBD7D2   219,215,210
-Tropical Rain Forest 17806D   23,128,109
-Tumbleweed           DEAA88   222,170,136
-Turquoise Blue       77DDE7   119,221,231
-Unmellow Yellow      FDFC74   253,252,116
-Violet (Purple)      926EAE   146,110,174
-Violet Red           F75394   247,83,148
-Vivid Tangerine      FFA089   255,160,137
-Vivid Violet         8F509D   143,80,157
-White                EDEDED   237,237,237
-Wild Blue Wonder     A2ADD0   162,173,208
-Wild Strawberry      F664AF   255,67,164
-Wild Watermelon      FC6C85   252,108,133
-Wisteria             CDA4DE   205,164,222
-Yellow               FCE883   252,232,131
-Yellow Green         C5E384   197,227,132
-Yellow Orange        FFB653   255,182,83
-
-*/
-
 #define kip_make_complete(macro) \
-   macro( complete, Black,   black,     0,   0,   0 ) \
-   macro( complete, White,   white,   255, 255, 255 )
+   macro( complete, Almond,                 almond,          239, 219, 197 ) \
+   macro( complete, AntiqueBrass,           antique,         205, 149, 117 ) \
+   macro( complete, Apricot,                apricot,         253, 217, 181 ) \
+   macro( complete, Aquamarine,             aquamarine,      120, 219, 226 ) \
+   macro( complete, Asparagus,              asparagus,       135, 169, 107 ) \
+   macro( complete, AtomicTangerine,        atomic,          255, 164, 116 ) \
+   macro( complete, BananaMania,            banana,          250, 231, 181 ) \
+   macro( complete, Beaver,                 beaver,          159, 129, 112 ) \
+   macro( complete, Bittersweet,            bittersweet,     253, 124, 110 ) \
+   macro( complete, Black,                  black,            35,  35,  35 ) \
+   macro( complete, Blue,                   blue,             31, 117, 254 ) \
+   macro( complete, BlueBell,               bluebell,        173, 173, 214 ) \
+   macro( complete, BlueGreen,              bluegreen,        25, 158, 189 ) \
+   macro( complete, BlueViolet,             blueviolet,      115, 102, 189 ) \
+   macro( complete, Bluetiful,              bluetiful,        46,  80, 144 ) \
+   macro( complete, Blush,                  blush,           222,  93, 131 ) \
+   macro( complete, BrickRed,               brick,           203,  65,  84 ) \
+   macro( complete, Brown,                  brown,           180, 103,  77 ) \
+   macro( complete, BurntOrange,            burntorange,     255, 127,  73 ) \
+   macro( complete, BurntSienna,            burntsienna,     234, 126,  93 ) \
+   macro( complete, CadetBlue,              cadet,           176, 183, 198 ) \
+   macro( complete, Canary,                 canary,          255, 255, 159 ) \
+   macro( complete, CaribbeanGreen,         caribbean,        28, 211, 162 ) \
+   macro( complete, CarnationPink,          carnation,       255, 170, 204 ) \
+   macro( complete, Cerise,                 cerise,          221,  68, 146 ) \
+   macro( complete, Cerulean,               cerulean,         29, 172, 214 ) \
+   macro( complete, Chestnut,               chestnut,        188,  93,  88 ) \
+   macro( complete, Copper,                 copper,          221, 148, 117 ) \
+   macro( complete, Cornflower,             cornflower,      154, 206, 235 ) \
+   macro( complete, CottonCandy,            cotton,          255, 188, 217 ) \
+   macro( complete, Denim,                  denim,            43, 108, 196 ) \
+   macro( complete, DesertSand,             desert,          239, 205, 184 ) \
+   macro( complete, Eggplant,               eggplant,        110,  81,  96 ) \
+   macro( complete, ElectricLime,           electric,         29, 249,  20 ) \
+   macro( complete, Fern,                   fern,            113, 188, 120 ) \
+   macro( complete, ForestGreen,            forest,          109, 174, 129 ) \
+   macro( complete, Fuchsia,                fuchsia,         195, 100, 197 ) \
+   macro( complete, FuzzyWuzzyBrown,        fuzzy,           204, 102, 102 ) \
+   macro( complete, Gold,                   gold,            231, 198, 151 ) \
+   macro( complete, Goldenrod,              goldenrod,       255, 217, 117 ) \
+   macro( complete, GrannySmithApple,       granny,          168, 228, 160 ) \
+   macro( complete, Gray,                   gray,            149, 145, 140 ) \
+   macro( complete, Green,                  green,            28, 172, 120 ) \
+   macro( complete, GreenYellow,            greenyellow,     240, 232, 145 ) \
+   macro( complete, HotMagenta,             hot,             255,  29, 206 ) \
+   macro( complete, InchWorm,               inch,            178, 236,  93 ) \
+   macro( complete, Indigo,                 indigo,           93, 118, 203 ) \
+   macro( complete, JazzberryJam,           jazzberry,       202,  55, 103 ) \
+   macro( complete, JungleGreen,            jungle,           59, 176, 143 ) \
+   macro( complete, LaserLemon,             laser,           253, 252, 116 ) \
+   macro( complete, Lavender,               lavender,        252, 180, 213 ) \
+   macro( complete, MacaroniandCheese,      macaroni,        255, 189, 136 ) \
+   macro( complete, Magenta,                magenta,         246, 100, 175 ) \
+   macro( complete, Mahogany,               mahogany,        205,  74,  74 ) \
+   macro( complete, Manatee,                manatee,         151, 154, 170 ) \
+   macro( complete, MangoTango,             mango,           255, 130,  67 ) \
+   macro( complete, Maroon,                 maroon,          200,  56,  90 ) \
+   macro( complete, Mauvelous,              mauvelous,       239, 152, 170 ) \
+   macro( complete, Melon,                  melon,           253, 188, 180 ) \
+   macro( complete, MidnightBlue,           midnight,         26,  72, 118 ) \
+   macro( complete, MountainMeadow,         mountain,         48, 186, 143 ) \
+   macro( complete, NavyBlue,               navy,             25, 116, 210 ) \
+   macro( complete, NeonCarrot,             neon,            255, 163,  67 ) \
+   macro( complete, OliveGreen,             olive,           186, 184, 108 ) \
+   macro( complete, Orange,                 orange,          255, 117,  56 ) \
+   macro( complete, Orchid,                 orchid,          230, 168, 215 ) \
+   macro( complete, OuterSpace,             outer,            65,  74,  76 ) \
+   macro( complete, OutrageousOrange,       outrageous,      255, 110,  74 ) \
+   macro( complete, PacificBlue,            pacific,          28, 169, 201 ) \
+   macro( complete, Peach,                  peach,           255, 207, 171 ) \
+   macro( complete, Periwinkle,             periwinkle,      197, 208, 230 ) \
+   macro( complete, PiggyPink,              piggy,           253, 215, 228 ) \
+   macro( complete, PineGreen,              pine,             21, 128, 120 ) \
+   macro( complete, PinkFlamingo,           pinkflamingo,    252, 116, 253 ) \
+   macro( complete, PinkSherbet,            pinksherbet,     247, 128, 161 ) \
+   macro( complete, Plum,                   plum,            142,  69, 133 ) \
+   macro( complete, PurpleHeart,            purpleheart,     116,  66, 200 ) \
+   macro( complete, PurpleMountainsMajesty, purplemountains, 157, 129, 186 ) \
+   macro( complete, PurplePizza,            purplepizza,     255,  29, 206 ) \
+   macro( complete, RadicalRed,             radical,         255,  73, 107 ) \
+   macro( complete, RawSienna,              raw,             214, 138,  89 ) \
+   macro( complete, RazzleDazzleRose,       razzle,          255,  72, 208 ) \
+   macro( complete, Razzmatazz,             razzmatazz,      227,  37, 107 ) \
+   macro( complete, Red,                    red,             238,  32,  77 ) \
+   macro( complete, RedOrange,              redorange,       255,  83,  73 ) \
+   macro( complete, RedViolet,              redviolet,       192,  68, 143 ) \
+   macro( complete, RobinEggBlue,           robin,            31, 206, 203 ) \
+   macro( complete, RoyalPurple,            royal,           120,  81, 169 ) \
+   macro( complete, Salmon,                 salmon,          255, 155, 170 ) \
+   macro( complete, Scarlet,                scarlet,         242,  40,  71 ) \
+   macro( complete, ScreaminGreen,          screamin,        118, 255, 122 ) \
+   macro( complete, SeaGreen,               sea,             159, 226, 191 ) \
+   macro( complete, Sepia,                  sepia,           165, 105,  79 ) \
+   macro( complete, Shadow,                 shadow,          138, 121,  93 ) \
+   macro( complete, Shamrock,               shamrock,         69, 206, 162 ) \
+   macro( complete, ShockingPink,           shocking,        251, 126, 253 ) \
+   macro( complete, Silver,                 silver,          205, 197, 194 ) \
+   macro( complete, SkyBlue,                sky,             128, 218, 235 ) \
+   macro( complete, SpringGreen,            spring,          236, 234, 190 ) \
+   macro( complete, Sunglow,                sunglow,         255, 207,  72 ) \
+   macro( complete, SunsetOrange,           sunset,          253,  94,  83 ) \
+   macro( complete, Tan,                    tan,             250, 167, 108 ) \
+   macro( complete, TickleMePink,           tickle,          252, 137, 172 ) \
+   macro( complete, Timberwolf,             timberwolf,      219, 215, 210 ) \
+   macro( complete, TropicalRainForest,     tropical,         23, 128, 109 ) \
+   macro( complete, Tumbleweed,             tumbleweed,      222, 170, 136 ) \
+   macro( complete, TurquoiseBlue,          turquoise,       119, 221, 231 ) \
+   macro( complete, UnmellowYellow,         unmellow,        253, 252, 116 ) \
+   macro( complete, Violet, /* see below */ violet,          146, 110, 174 ) \
+   macro( complete, Purple, /* see below */ purple,          146, 110, 174 ) \
+   macro( complete, VioletRed,              violetred,       247,  83, 148 ) \
+   macro( complete, VividTangerine,         vividtangerine,  255, 160, 137 ) \
+   macro( complete, VividViolet,            vividviolet,     143,  80, 157 ) \
+   macro( complete, White,                  white,           237, 237, 237 ) \
+   macro( complete, WildBlueWonder,         wildblue,        162, 173, 208 ) \
+   macro( complete, WildStrawberry,         wildstrawberry,  255,  67, 164 ) \
+   macro( complete, WildWatermelon,         wildwatermelon,  252, 108, 133 ) \
+   macro( complete, Wisteria,               wisteria,        205, 164, 222 ) \
+   macro( complete, Yellow,                 yellow,          252, 232, 131 ) \
+   macro( complete, YellowGreen,            yellowgreen,     197, 227, 132 ) \
+   macro( complete, YellowOrange,           yelloworange,    255, 182,  83 ) \
+   kip_make_standard(complete,macro) // give last
+
+// Above, Violet and Purple are the same color. We have both simply because
+// we found both terms being used. They're given as two different entries,
+// as opposed to one being a reference to the other, so that the associated
+// string name (for example, with I/O) will reflect the one that's used.
 
 class complete : public base<complete> {
 public:
@@ -455,8 +468,13 @@ public:
    kip_make_complete(kip_make_alias)
 };
 
-// colors
 kip_make_complete(kip_make_defn)
+
+// alternative name
+// The above are from the 120 count box, so I'll give them the following name.
+// Note that we actually have more than 120 because we have our standard list
+// including black, white, grays, etc. and the Violet/Purple issue (see above).
+using OneTwenty = complete;
 
 
 
@@ -465,25 +483,26 @@ kip_make_complete(kip_make_defn)
 // -----------------------------------------------------------------------------
 
 // 2019-sep-18
-// I think ISTREAM is always a kip::istream, but to make compilation
-// work with the change, some reordering is apparently needed.
+// I think ISTREAM is always kip::istream, but in order to make compilation
+// work with kip::istream directly, some reordering is apparently necessary.
 template<class ISTREAM, class derived>
-bool read_value(ISTREAM &s, crayola::base<derived> &value)
+bool read_value(ISTREAM &s, crayola::base<derived> &obj)
 {
    s.bail = false;
-   const std::string label = value.description();
+   const std::string label = obj.description();
 
    std::string word;
    if (read_value(s,word)) {
-      for (ulong n = value.table().size();  n-- ; )
-         if (word == value.table()[n].first)
-            return value = crayola::base<derived>(uchar(n)), !s.fail();
+      for (ulong n = obj.table().size();  n-- ; )
+         if (word == obj.table()[n].first)
+            return obj = crayola::base<derived>(uchar(n)), !s.fail();
 
+      const derived Default = derived::PureBlack;
       std::ostringstream oss;
-      oss << "Unknown " << label << " color \"" << word
-          << "\"\nSetting to " << label << "(0) (rgb (0,0,0))";
+      oss << "Unknown " << label << " color \"" << word << "\"\n"
+          << "Setting to " << label << "::" << obj.table()[Default.id()].first;
       s.warning(oss);
-      return value = crayola::base<derived>(0), !s.fail();
+      return obj = Default, !s.fail();
    }
 
    s.add(std::ios::failbit);
@@ -521,7 +540,7 @@ inline std::istream &operator>>(
 
 // kip::ostream << crayola::base
 template<class derived>
-inline kip::ostream &operator<<(
+kip::ostream &operator<<(
    kip::ostream &k,
    const base<derived> &obj
 ) {
@@ -529,12 +548,14 @@ inline kip::ostream &operator<<(
 
    if (ulong(obj.id()) >= size) {
       const std::string label = obj.description();
+
+      const derived Default = derived::PureBlack;
       std::ostringstream oss;
-      oss << "Index " << unsigned(obj.id()) << " for " << label << " color "
-          << "is outside valid range [0,"
-          <<  size-1 << "]\nWriting as " << label << "(0) (rgb (0,0,0))";
+      oss << "Index " << ulong(obj.id()) << " for " << label << " color "
+          << "is outside valid range [0," <<  size-1 << "]\n"
+          << "Writing as " << label << "::" << obj.table()[Default.id()].first;
       warning(oss);
-      return k << obj.table()[0].first;
+      return k << obj.table()[Default.id()].first;
    }
 
    return k << obj.table()[obj.id()].first;
