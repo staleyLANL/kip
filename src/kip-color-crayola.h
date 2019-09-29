@@ -485,6 +485,7 @@ using OneTwenty = complete;
 // 2019-sep-18
 // I think ISTREAM is always kip::istream, but in order to make compilation
 // work with kip::istream directly, some reordering is apparently necessary.
+// Same remark may apply to read_value for marble.
 template<class ISTREAM, class derived>
 bool read_value(ISTREAM &s, crayola::base<derived> &obj)
 {

@@ -1,24 +1,25 @@
 
 #pragma once
 
-// This file provides functions that support procedural textures.
-
-#define KIP_COSINE
-#define KIP_SMOOTH
+// Without cosine: very little speed difference
+// Without smooth: about 3x faster!
+// I don't think I see a qualitative improvement w/cosine
+///#define KIP_COSINE
+///#define KIP_SMOOTH
 
 class nothing_per_pixel {
 public:
-   inline void initialize() const
+   void initialize() const
    {
       assert(false);
    }
 
    template<class real, class base>
-   inline void set(const inq<real,base> &) const
-   {
-      // assert(false);
-   }
+   void set(const inq<real,base> &) const
+   { }
 };
+
+namespace detail {
 
 
 
@@ -30,8 +31,6 @@ public:
 // smooth
 // -----------------------------------------------------------------------------
 
-namespace detail {
-
 // linear
 template<class real>
 inline real linear(const real a, const real t, const real b)
@@ -39,7 +38,7 @@ inline real linear(const real a, const real t, const real b)
 
 template<class real>
 inline real linear(const real a, const real t, const real b, const char)
-   { return a*(1-t) + b*t; }
+{ return linear(a, t, b); }
 
 // cosine
 template<class real>
@@ -57,25 +56,30 @@ template<class real>
 inline real interpolate(const real a, const real t, const real b)
 {
 #ifdef KIP_COSINE
-   return cosine(a,t,b);
+   return cosine(a,t,b); // ==> cosine()
 #else
-   return linear(a,t,b);
+   return linear(a,t,b); // ==> linear()
 #endif
 }
 
+// qqq Could we fold these down?
+
+/*
 template<class real>
-inline real interpolate(const real a, const real t, const real b, const char ch)
+inline real interpolate(const real a, const real t, const real b, const char)
 {
 #ifdef KIP_COSINE
-   return cosine(a,t,b,ch);
+   return cosine(a,t,b,char{}); // ==> linear()
 #else
-   return linear(a,t,b,ch);
+   return linear(a,t,b,char{}); // ==> linear()
 #endif
 }
+*/
 
 
 
 // ran
+// zzz need to make thread safe
 template<class real>
 inline real ran(
    const unsigned i,
@@ -84,43 +88,46 @@ inline real ran(
    const int z
 ) {
    /*
-   // zzz Need to change srand48() and drand48() calls,
-   // so that we instead use kip's random_* functions.
+   // also a bit too "regular"
+   srand48((long(i)<<32) + (long(x)<<24) + (long(y)<<16) + (long(z)<<8));
+   return drand48();
 
-   srand48((long(i)<<6) + (long(x)<<12) + (long(y)<<18) + (long(z)<<24));
-   const double seed = drand48();
-   ///const long *const s = (const long *)&seed;
-   // zzz darn --- the following doesn't get rid of g++'s warning about
-   // type punning. Oh well, we should rewrite this function anyway, as
-   // it's not thread-safe right now.
-   const long *const s = reinterpret_cast<const long *>(&seed);
-   srand48(s[0]^s[1]);
+   // how about this?
+   // probably a bit too "regular"
+   srand48(long(i) + long(x) + long(y) + long(z));
+   return drand48();
+
+   // this one is interesting
+   srand48(long(i) + (long(x) << 6) + (long(y) << 12) + (long(z) << 18));
    return drand48();
    */
 
-   (void)i;
-   (void)x;
-   (void)y;
-   (void)z;
-   return 0.12345678;
+   // regular
+   union { double seed; int s[2]; } u;
+   kip_assert(sizeof(u) == sizeof(double));
+
+   srand48((long(i)<<6) + (long(x)<<12) + (long(y)<<18) + (long(z)<<24));
+   u.seed = drand48();
+   srand48(u.s[0]^u.s[1]);
+   return drand48();
 }
+
+// zzz i,x,y,z terminology doesn't seem very good; consider n,i,j,k
 
 // smooth
 template<class real>
 inline real smooth(const unsigned i, const int x, const int y, const int z)
 {
    return real(0.5)*(
-      ran<real>(i,x,  y,  z  ) + real(1)/6*(
-    + ran<real>(i,x+1,y,  z  )
-    + ran<real>(i,x-1,y,  z  )
-    + ran<real>(i,x,  y+1,z  )
-    + ran<real>(i,x,  y-1,z  )
-    + ran<real>(i,x,  y,  z+1)
-    + ran<real>(i,x,  y,  z-1)
+      ran<real>( i, x,   y,   z   ) + real(1)/6*(
+    + ran<real>( i, x+1, y,   z   )
+    + ran<real>( i, x-1, y,   z   )
+    + ran<real>( i, x,   y+1, z   )
+    + ran<real>( i, x,   y-1, z   )
+    + ran<real>( i, x,   y,   z+1 )
+    + ran<real>( i, x,   y,   z-1 )
    ));
 }
-
-} // namespace detail
 
 
 
@@ -128,11 +135,12 @@ inline real smooth(const unsigned i, const int x, const int y, const int z)
 // noise (single function)
 // -----------------------------------------------------------------------------
 
-namespace detail {
-
 template<class real>
-inline real noise(
-   const unsigned i, const real x, const real y, const real z
+real noise(
+   const unsigned i,
+   const real x,
+   const real y,
+   const real z
 ) {
    // These assume that we haven't passed some absurdly large x, y, or z value
    // that doesn't properly convert to int. If we did that, then the "z-zint"
@@ -178,22 +186,20 @@ inline real noise(
 
    return interpolate(
       interpolate(
-         interpolate(tmp1,tx,tmp2,'c'),
+         interpolate(tmp1,tx,tmp2/*,'c'*/),
          ty,
-         interpolate(tmp3,tx,tmp4,'c'), 'c'
+         interpolate(tmp3,tx,tmp4/*,'c'*/)/*,'c'*/
       ),
 
       z-zint,
 
       interpolate(
-         interpolate(tmp5,tx,tmp6,'c'),
+         interpolate(tmp5,tx,tmp6/*,'c'*/),
          ty,
-         interpolate(tmp7,tx,tmp8,'c'), 'c'
+         interpolate(tmp7,tx,tmp8/*,'c'*/)/*,'c'*/
       )
    );
 }
-
-} // namespace detail
 
 
 
@@ -202,11 +208,14 @@ inline real noise(
 // -----------------------------------------------------------------------------
 
 template<class real>
-inline real noise(
-   const real x, const real y, const real z,
+real noise(
+   const real x,
+   const real y,
+   const real z,
    const real amp, const real ampfac,
-   const real per, const real perfac, const unsigned nfun,
-   real &atotal
+   const real per, const real perfac,
+   const unsigned nfun,
+   real &atotal // output
 ) {
    // normalize by total possible amplitude; return value in [-1,1]
    if (nfun == 0) {
@@ -233,13 +242,85 @@ inline real noise(
 
 
 // -----------------------------------------------------------------------------
+// kipcolor
+// -----------------------------------------------------------------------------
+
+// general
+template<class COLOR, class real, class BASE>
+inline COLOR kipcolor(
+   const kip::shape<real,BASE> &,
+   const BASE &base,
+   const kip::point<real> &
+) {
+   COLOR color;
+   convert(base,color);
+   return color;
+}
+
+
+
+// marble
+// T for marble is probably the same as real, but may be different
+template<class COLOR, class real, class BASE, class T>
+COLOR kipcolor(
+   const kip::shape<real,marble<BASE,T>> &shape,
+   const marble<BASE,T> &in,
+   const kip::point<real> &inter
+) {
+   const point<real> exact = shape.back(inter);
+   T atotal;
+
+   // basic marble texture
+   const real noise = detail::noise(
+      exact.x + in.seed,
+      exact.y + in.seed,
+      exact.z + in.seed,
+      in.amp, in.ampfac,
+      in.per, in.perfac,
+      in.nfun,
+      atotal // output
+   );
+   const real fac = atotal*std::sin(noise);
+
+   COLOR color;
+   convert(in,color);
+
+   const int r = op::clip(0, int(color.r + (255-color.r)*fac), 255);
+   const int g = op::clip(0, int(color.g + (255-color.g)*fac), 255);
+   const int b = op::clip(0, int(color.b + (255-color.b)*fac), 255);
+
+   // black swirls
+   if (in.swirl) {
+      const real sw_noise = detail::noise(
+         exact.x + in.seed*100,
+         exact.y + in.seed*10000,
+         exact.z + in.seed*1000000,
+         in.amp, in.ampfac,
+         in.per, in.perfac,
+         in.nfun,
+         atotal
+      );
+      const real p = 5*op::min(real(0),0.5+std::cos(20*sw_noise));
+      color.r = uchar(op::clip(0, int(r + r*p), 255));
+      color.g = uchar(op::clip(0, int(g + g*p), 255));
+      color.b = uchar(op::clip(0, int(b + b*p), 255));
+   } else {
+      color.r = uchar(r);
+      color.g = uchar(g);
+      color.b = uchar(b);
+   }
+
+   return color;
+}
+
+
+
+// -----------------------------------------------------------------------------
 // diffuse_specular
 // -----------------------------------------------------------------------------
 
-namespace detail {
-
 template<class color, class real>
-inline color diffuse_specular(
+color diffuse_specular(
    const color &shapecol,
    const real q,
    const point<real> &eyeball,
@@ -282,91 +363,15 @@ inline color diffuse_specular(
 #endif
 }
 
-} // namespace detail
-
-
-
-// -----------------------------------------------------------------------------
-// kipcolor
-// -----------------------------------------------------------------------------
-
-// general
-template<class color, class real, class base>
-inline color kipcolor(
-   const kip::shape<real,base> &shape,
-   const base &in,
-   const kip::point<real> &inter
-) {
-   (void)shape;
-   (void)inter;
-
-   color out;
-   convert(in,out);
-   return out;
-}
-
-
-
-// marble
-template<class color, class real, class comp, class mreal>
-inline color kipcolor(
-   const kip::shape<real,marble<comp,mreal>> &shape,
-   const marble<comp,mreal> &in,
-   const kip::point<real> &inter
-) {
-   const point<real> exact = shape.back(inter);
-   const real seed = in.seed;
-   mreal atotal;
-
-   // basic marble texture
-   real noise = kip::noise(
-      exact.x + seed,
-      exact.y + seed,
-      exact.z + seed,
-      in.amp, in.ampfac,
-      in.per, in.perfac,
-      in.nfun, atotal
-   );
-   const real fac = atotal*std::sin(noise);
-
-   int r = in.r;
-   int g = in.g;
-   int b = in.b;
-
-   r = op::clip(0, int(r + (255-r)*fac), 255);
-   g = op::clip(0, int(g + (255-g)*fac), 255);
-   b = op::clip(0, int(b + (255-b)*fac), 255);
-
-   // black swirls
-   if (in.swirl) {
-      real sw_noise = kip::noise(
-         exact.x + 100*seed,
-         exact.y + 10000*seed,
-         exact.z + 1000000*seed,
-         in.amp, in.ampfac,
-         in.per, in.perfac,
-         in.nfun, atotal
-      );
-      const real p = 5*op::min(real(0),0.8+std::cos(20*sw_noise));
-      r = op::clip(0, int(r + r*p), 255);
-      g = op::clip(0, int(g + g*p), 255);
-      b = op::clip(0, int(b + b*p), 255);
-   }
-
-   return color(comp(r), comp(g), comp(b));
-}
-
 
 
 // -----------------------------------------------------------------------------
 // get_color
 // -----------------------------------------------------------------------------
-
-namespace detail {
 
 // get_color
 template<class color, class real, class base, class pix>
-inline color get_color(
+color get_color(
    const point<real> &eyeball,
    const point<real> &light,
    const inq<real,base> &q,

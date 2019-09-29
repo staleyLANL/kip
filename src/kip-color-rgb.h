@@ -109,7 +109,7 @@ template<class comp>
 class RGB {
 public:
    // for i/o
-   static const std::string description;
+   static constexpr const char *const description = "RGB";
 
    // channels
    union { comp r, red  ; };
@@ -142,8 +142,10 @@ public:
    }
 };
 
+/*
 // description
 template<class comp> const std::string RGB<comp>::description = "RGB";
+*/
 
 // for users
 using rgb = RGB<uchar>;
@@ -172,7 +174,7 @@ template<class comp>
 class RGBA {
 public:
    // for i/o
-   static const std::string description;
+   static constexpr const char *const description = "RGBA";
 
    // channels
    union { comp r, red  ; };
@@ -183,6 +185,7 @@ public:
    // RGBA()
    explicit RGBA()
    /*
+   // zzz Check if we need these when used as input/base (not just output/color)
     : r(comp(0)),
       g(comp(0)),
       b(comp(0)),
@@ -277,8 +280,10 @@ public:
    }
 };
 
+/*
 // description
 template<class comp> const std::string RGBA<comp>::description = "RGBA";
+*/
 
 // for users
 using rgba = RGBA<uchar>;

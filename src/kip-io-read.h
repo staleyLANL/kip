@@ -416,16 +416,16 @@ inline std::ostream &operator<<(std::ostream &s, const RGBA<T> &obj)
 // -----------------------------------------------------------------------------
 
 // kip::istream >> marble
-template<class T, class real>
-inline kip::istream &operator>>(kip::istream &k, marble<T,real> &obj)
+template<class BASE, class real>
+inline kip::istream &operator>>(kip::istream &k, marble<BASE,real> &obj)
 {
    read_value(k,obj);
    return k;
 }
 
 // std::istream >> marble
-template<class T, class real>
-inline std::istream &operator>>(std::istream &s, marble<T,real> &obj)
+template<class BASE, class real>
+inline std::istream &operator>>(std::istream &s, marble<BASE,real> &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -433,9 +433,21 @@ inline std::istream &operator>>(std::istream &s, marble<T,real> &obj)
 }
 
 // kip::ostream << marble
-template<class T, class real>
-kip::ostream &operator<<(kip::ostream &k, const marble<T,real> &obj)
+template<class BASE, class real>
+inline kip::ostream &operator<<(kip::ostream &k, const marble<BASE,real> &obj)
 {
+   return k
+      << obj.base   << ','
+      << obj.amp    << ','
+      << obj.ampfac << ','
+      << obj.per    << ','
+      << obj.perfac << ','
+      << obj.nfun   << ','
+      << obj.seed   << ','
+      <<(obj.swirl ? '1' : '0')
+   ;
+
+   /*
    using print_as = typename detail::component_traits<T>::result;
    return
       k << print_as(obj.r) << ','
@@ -450,11 +462,12 @@ kip::ostream &operator<<(kip::ostream &k, const marble<T,real> &obj)
         << obj.seed   << ','
         <<(obj.swirl ? '1' : '0')
       ;
+   */
 }
 
 // std::ostream << marble
-template<class T, class real>
-inline std::ostream &operator<<(std::ostream &s, const marble<T,real> &obj)
+template<class BASE, class real>
+inline std::ostream &operator<<(std::ostream &s, const marble<BASE,real> &obj)
 {
    kip::ostream k(s);
    k << obj;

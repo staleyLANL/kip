@@ -1,124 +1,119 @@
 
 #pragma once
 
-// This file defines the marble class template and related functions.
-
 
 
 // -----------------------------------------------------------------------------
 // marble
-// zzz make this more hierarchical, e.g. based on full RGB<T> or crayola
 // -----------------------------------------------------------------------------
 
-template<class T = uchar, class real = double>
+template<class BASE, class real = default_real>
 class marble {
 public:
-   static const char *const description;
-   using value_t = T;
+   // for i/o
+   static const std::string description;
 
-   // components
-   union { mutable value_t r, red; };
-   union { mutable value_t g, green; };
-   union { mutable value_t b, blue; };
+   // underlying value
+   BASE base;
 
    // noise information
-   mutable real amp, ampfac;
-   mutable real per, perfac;
-   mutable unsigned nfun, seed;
-   mutable bool swirl;
+   real amp, ampfac;
+   real per, perfac;
+   unsigned nfun;
+   unsigned seed;
+   bool swirl;
 
-   // marble()
-   inline explicit marble() :
-      r(detail::avgcolor<value_t>()),
-      g(detail::avgcolor<value_t>()),
-      b(detail::avgcolor<value_t>()),
-      amp(1), ampfac(0.5),
-      per(1), perfac(0.5),
-      nfun(1), seed(0),
-      swirl(false)
-   { }
-
-   // marble(r,g,b[, amp[,ampfac[, per[,perfac[, nfun[,seed[, swirl]]]]]]])
-   inline explicit marble(
-      const value_t _r, const value_t _g, const value_t _b,
+   // marble([base[,amp[,ampfac[,per[,perfac[,nfun[,seed[,swirl]]]]]]]])
+   explicit marble(
+      const BASE &_base = BASE{},
       const real _amp = 1, const real _ampfac = 0.5,
       const real _per = 1, const real _perfac = 0.5,
       const unsigned _nfun = 1,
       const unsigned _seed = 0,
       const bool _swirl = false
    ) :
-      r(_r), g(_g), b(_b),
+      base(_base),
       amp(_amp), ampfac(_ampfac),
       per(_per), perfac(_perfac),
-      nfun(_nfun), seed(_seed),
+      nfun(_nfun),
+      seed(_seed),
       swirl(_swirl)
    { }
 };
 
-template<class T, class real>
-const char *const marble<T,real>::description = "marble";
+// description
+template<class basis, class real>
+const std::string marble<basis,real>::description =
+   std::string("marble<") + basis::description + ">";
 
 
 
+// -----------------------------------------------------------------------------
 // randomize
-template<class C, class real>
-inline marble<C,real> &randomize(marble<C,real> &obj)
-{
-   RGB<C> tmp;
-   randomize(tmp);
+// -----------------------------------------------------------------------------
 
-   obj.r = tmp.r;
-   obj.g = tmp.g;
-   obj.b = tmp.b;
+template<class BASE, class real>
+inline marble<BASE,real> &randomize(marble<BASE,real> &obj)
+{
+   randomize(obj.base);
 
    obj.amp    = 1 + random_unit<real>();
    obj.ampfac = 1;
-
-   obj.per    = 0.005*(1 + random_unit<real>());
+   obj.per    = 0.05*(1 + random_unit<real>());
    obj.perfac = 1;
+   obj.nfun   = 1;
+   obj.seed   = unsigned(1000000*random_unit<real>());
+   obj.swirl  = false;
 
-   obj.nfun = 1;
-   obj.seed = unsigned(1000000*random_unit<real>());
-
-   obj.swirl = false;
    return obj;
 }
 
 
 
 // -----------------------------------------------------------------------------
-// read_value(marble)
+// read_value
 // -----------------------------------------------------------------------------
 
-template<class ISTREAM, class C, class real>
-bool read_value(
-   ISTREAM &s, marble<C,real> &value,
-   const std::string &description = "marble"
-) {
-   // r,g,b, amp,ampfac, per,perfac, nfun,seed, swirl
-
-   int swirl;  // so we read as int, not bool
+template<class ISTREAM, class BASE, class real>
+bool read_value(ISTREAM &s, marble<BASE,real> &obj)
+{
    s.bail = false;
+   int swirl = 0; // so we read as int, not bool
 
    if (!(
-      read_color_component(s,value.r) && read_comma(s) &&
-      read_color_component(s,value.g) && read_comma(s) &&
-      read_color_component(s,value.b) && read_comma(s) &&
-
-      read_value(s,value.amp   ) && read_comma(s) &&
-      read_value(s,value.ampfac) && read_comma(s) &&
-
-      read_value(s,value.per   ) && read_comma(s) &&
-      read_value(s,value.perfac) && read_comma(s) &&
-
-      read_value(s,value.nfun) && read_comma(s) &&
-      read_value(s,value.seed) && read_comma(s) &&
+      read_value(s,obj.base  ) && read_comma(s) &&
+      read_value(s,obj.amp   ) && read_comma(s) &&
+      read_value(s,obj.ampfac) && read_comma(s) &&
+      read_value(s,obj.per   ) && read_comma(s) &&
+      read_value(s,obj.perfac) && read_comma(s) &&
+      read_value(s,obj.nfun  ) && read_comma(s) &&
+      read_value(s,obj.seed  ) && read_comma(s) &&
       read_value(s,swirl)
    )) {
       s.add(std::ios::failbit);
-      addendum("Detected while reading " + description, diagnostic::error);
+      addendum("Detected while reading " + obj.description, diagnostic::error);
    }
 
-   value.swirl = swirl;
+   obj.swirl = swirl;
    return !s.fail();
+}
+
+
+
+// -----------------------------------------------------------------------------
+// convert
+// -----------------------------------------------------------------------------
+
+// marble<BASE,real> ==> RGB<comp>
+template<class BASE, class real, class comp>
+inline void convert(const marble<BASE,real> &in, kip::RGB<comp> &out)
+{
+   convert(in.base,out);
+}
+
+// marble<BASE,real> ==> RGBA<comp>
+template<class BASE, class real, class comp>
+inline void convert(const marble<BASE,real> &in, kip::RGBA<comp> &out)
+{
+   convert(in.base,out);
 }
