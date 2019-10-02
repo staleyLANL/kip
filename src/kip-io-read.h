@@ -566,7 +566,7 @@ bool read_done(ISTREAM &s, kip::shape<T,tag> &shape, const char sep = ',')
    char ch = 0;
    s.input(ch);
    if (ch == ')') {
-      base = tag();  // default
+      convert(tag{},base); // default
       shape.baseset = false;
       return true;
    }

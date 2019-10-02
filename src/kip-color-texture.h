@@ -1,11 +1,7 @@
 
 #pragma once
 
-// Without cosine: very little speed difference
-// Without smooth: about 3x faster!
-// I don't think I see a qualitative improvement w/cosine
-///#define KIP_COSINE
-///#define KIP_SMOOTH
+// #define KIP_SMOOTH
 
 class nothing_per_pixel {
 public:
@@ -26,106 +22,64 @@ namespace detail {
 // -----------------------------------------------------------------------------
 // linear
 // cosine
-// interpolate
 // ran
 // smooth
 // -----------------------------------------------------------------------------
 
-// linear
+// linear interpolation
 template<class real>
 inline real linear(const real a, const real t, const real b)
    { return a*(1-t) + b*t; }
 
-template<class real>
-inline real linear(const real a, const real t, const real b, const char)
-{ return linear(a, t, b); }
-
-// cosine
+// cosine interpolation
 template<class real>
 inline real cosine(const real a, const real t, const real b)
    { return linear(a, real(0.5)*(1-std::cos(pi<real>*t)), b); }
 
-template<class real>
-inline real cosine(const real a, const real t, const real b, const char)
-   { return linear(a, t, b); }
-
-
-
-// interpolate
-template<class real>
-inline real interpolate(const real a, const real t, const real b)
-{
-#ifdef KIP_COSINE
-   return cosine(a,t,b); // ==> cosine()
-#else
-   return linear(a,t,b); // ==> linear()
-#endif
-}
-
-// qqq Could we fold these down?
-
-/*
-template<class real>
-inline real interpolate(const real a, const real t, const real b, const char)
-{
-#ifdef KIP_COSINE
-   return cosine(a,t,b,char{}); // ==> linear()
-#else
-   return linear(a,t,b,char{}); // ==> linear()
-#endif
-}
-*/
-
 
 
 // ran
-// zzz need to make thread safe
+// zzz make this thread safe
 template<class real>
 inline real ran(
-   const unsigned i,
-   const int x,
-   const int y,
-   const int z
+   const unsigned n,
+   const int i,
+   const int j,
+   const int k
 ) {
    /*
-   // also a bit too "regular"
-   srand48((long(i)<<32) + (long(x)<<24) + (long(y)<<16) + (long(z)<<8));
-   return drand48();
-
-   // how about this?
-   // probably a bit too "regular"
-   srand48(long(i) + long(x) + long(y) + long(z));
-   return drand48();
-
-   // this one is interesting
-   srand48(long(i) + (long(x) << 6) + (long(y) << 12) + (long(z) << 18));
+   // Original; slower
+   union { double seed; int s[2]; } u;
+   kip_assert(sizeof(u) == sizeof(double));
+   srand48((long(n)<<6) + (long(i)<<12) + (long(j)<<18) + (long(k)<<24));
+   u.seed = drand48();
+   srand48(u.s[0] ^ u.s[1]);
    return drand48();
    */
 
-   // regular
-   union { double seed; int s[2]; } u;
-   kip_assert(sizeof(u) == sizeof(double));
-
-   srand48((long(i)<<6) + (long(x)<<12) + (long(y)<<18) + (long(z)<<24));
-   u.seed = drand48();
-   srand48(u.s[0]^u.s[1]);
+   // Much faster, but a bit blocky looking; try some variations
+   srand48((long(n)<<6) + (long(i)<<12) + (long(j)<<18) + (long(k)<<24));
    return drand48();
 }
 
-// zzz i,x,y,z terminology doesn't seem very good; consider n,i,j,k
+
 
 // smooth
 template<class real>
-inline real smooth(const unsigned i, const int x, const int y, const int z)
-{
+inline real smooth(
+   const unsigned n,
+   const int i,
+   const int j,
+   const int k
+) {
    return real(0.5)*(
-      ran<real>( i, x,   y,   z   ) + real(1)/6*(
-    + ran<real>( i, x+1, y,   z   )
-    + ran<real>( i, x-1, y,   z   )
-    + ran<real>( i, x,   y+1, z   )
-    + ran<real>( i, x,   y-1, z   )
-    + ran<real>( i, x,   y,   z+1 )
-    + ran<real>( i, x,   y,   z-1 )
+      ran<real>( n, i,   j,   k   ) + real(1)/6*(
+    + ran<real>( n, i-1, j,   k   )
+    + ran<real>( n, i+1, j,   k   )
+    + ran<real>( n, i,   j-1, k   )
+    + ran<real>( n, i,   j+1, k   )
+    + ran<real>( n, i,   j,   k-1 )
+    + ran<real>( n, i,   j,   k+1 )
    ));
 }
 
@@ -184,20 +138,10 @@ real noise(
    const real tx = real(0.5)*(1 - std::cos(pi<real>*(x-xint)));
    const real ty = real(0.5)*(1 - std::cos(pi<real>*(y-yint)));
 
-   return interpolate(
-      interpolate(
-         interpolate(tmp1,tx,tmp2/*,'c'*/),
-         ty,
-         interpolate(tmp3,tx,tmp4/*,'c'*/)/*,'c'*/
-      ),
-
+   return cosine(
+      linear(linear(tmp1,tx,tmp2), ty, linear(tmp3,tx,tmp4)),
       z-zint,
-
-      interpolate(
-         interpolate(tmp5,tx,tmp6/*,'c'*/),
-         ty,
-         interpolate(tmp7,tx,tmp8/*,'c'*/)/*,'c'*/
-      )
+      linear(linear(tmp5,tx,tmp6), ty, linear(tmp7,tx,tmp8))
    );
 }
 
@@ -222,13 +166,13 @@ real noise(
       return atotal = 0;
    } else if (nfun == 1) {
       atotal = amp;
-      return op::twice(detail::noise(1, x/per, y/per, z/per) - 0.5);
+      return op::twice(noise(1, x/per, y/per, z/per) - 0.5);
    } else {
       real val = 0, a = amp, p = per;
       atotal = 0;
       for (unsigned i = 0;  i < nfun;  ++i, a *= ampfac, p *= perfac) {
          atotal += a;
-         val += a*(detail::noise(i+1, x/p, y/p, z/p) - 0.5);
+         val += a*(noise(i+1, x/p, y/p, z/p) - 0.5);
       }
       return (val+val)/atotal;
    }

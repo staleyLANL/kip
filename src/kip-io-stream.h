@@ -214,7 +214,7 @@ public:
    std::ostream  &stream;  //_stream or std::ostream (constructor-dependent)
    int level;
 
-   // Possible user option to put in: user-defined indentation amount
+   // Possible option to have: settable indentation amount
 
    // ------------------------
    // Constructors

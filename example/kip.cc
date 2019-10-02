@@ -13,10 +13,7 @@ extern "C" {
 
 // kip: types
 using real  = double;
-///using base  = kip::rgb;
-///using base  = kip::crayola::metallic;
-using base  = kip::marble<kip::crayola::metallic,double>;
-///using base  = kip::marble<kip::rgb,double>;
+using base  = kip::rgb;///kip::marble<kip::crayola::metallic>;
 using color = kip::rgba;
 
 // kip: objects

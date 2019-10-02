@@ -26,7 +26,7 @@ public:
    static std::vector<color> vec;
 
    // size()
-   inline unsigned size() const { return vec.size(); }
+   unsigned size() const { return vec.size(); }
 
 
    // ------------------------
@@ -34,14 +34,14 @@ public:
    // ------------------------
 
    // push(color)
-   inline color &push(const color &from) const
+   color &push(const color &from) const
    {
       vec.push_back(from);
       return vec.back();
    }
 
    // push(r,g,b)
-   inline color &push(
+   color &push(
       const component &r,
       const component &g,
       const component &b
@@ -54,7 +54,7 @@ public:
    // initialize
    // ------------------------
 
-   inline void initialize() const
+   void initialize() const
    {
       static bool first = true;
       if (first) {
@@ -136,7 +136,7 @@ public:
    // zzz Need to work on generality here!!!
    // zzz For now, assuming double index, and rgb output
 
-   inline rgb operator[](const double &d) const
+   rgb operator[](const double d) const
    {
       initialize();
 

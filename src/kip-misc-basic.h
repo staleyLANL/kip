@@ -108,28 +108,27 @@ namespace op {
 
 // -----------------------------------------------------------------------------
 // random_*
-// int rand() \in [0..RAND_MAX]
 // -----------------------------------------------------------------------------
 
-// random_unit: [0,1]
+// random_unit: [0,1)
 template<class real>
 inline real random_unit()
 {
-   return rand()*(real(1)/RAND_MAX);
+   return real(drand48());
 }
 
 // random_full: [-1,1)
 template<class real>
 inline real random_full()
 {
-   return (rand()-RAND_MAX/2)*(real(1)/(-1-RAND_MAX/2));
+   return real(2*drand48()-1);
 }
 
 // random_half: [-0.5,0.5)
 template<class real>
 inline real random_half()
 {
-   return (rand()-RAND_MAX/2)*(real(1)/(-1-RAND_MAX));
+   return real(drand48()-0.5);
 }
 
 

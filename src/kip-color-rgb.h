@@ -405,18 +405,26 @@ inline typename std::enable_if<
 // convert
 // -----------------------------------------------------------------------------
 
-// RGB<comp> ==> RGB<comp>
-template<class comp>
-inline void convert(const RGB<comp> in, RGB<comp> &out)
-{
-   out = in;
-}
-
 // RGB<comp> ==> RGBA<comp>
 template<class comp>
-inline void convert(const RGB<comp> in, RGBA<comp> &out)
+inline void convert(const RGB<comp> &in, RGBA<comp> &out)
 {
    out.set(in.r, in.g, in.b);
+}
+
+// RGBA<comp> ==> RGB<comp>
+template<class comp>
+inline void convert(const RGBA<comp> &in, RGB<comp> &out)
+{
+   out.set(in.r, in.g, in.b);
+}
+
+// T ==> T
+// Thus general; not just for RGB or RGBA
+template<class T>
+inline void convert(const T &in, T &out)
+{
+   out = in;
 }
 
 

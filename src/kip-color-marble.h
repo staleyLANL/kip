@@ -13,14 +13,11 @@ public:
    // for i/o
    static const std::string description;
 
-   // underlying value
-   BASE base;
-
-   // noise information
    real amp, ampfac;
    real per, perfac;
    unsigned nfun;
    unsigned seed;
+   BASE base;
    bool swirl;
 
    // marble([base[,amp[,ampfac[,per[,perfac[,nfun[,seed[,swirl]]]]]]]])
@@ -32,11 +29,11 @@ public:
       const unsigned _seed = 0,
       const bool _swirl = false
    ) :
-      base(_base),
       amp(_amp), ampfac(_ampfac),
       per(_per), perfac(_perfac),
       nfun(_nfun),
       seed(_seed),
+      base(_base),
       swirl(_swirl)
    { }
 };
@@ -62,7 +59,7 @@ inline marble<BASE,real> &randomize(marble<BASE,real> &obj)
    obj.per    = 0.05*(1 + random_unit<real>());
    obj.perfac = 1;
    obj.nfun   = 1;
-   obj.seed   = unsigned(1000000*random_unit<real>());
+   obj.seed   = rand() % 1000000;
    obj.swirl  = false;
 
    return obj;

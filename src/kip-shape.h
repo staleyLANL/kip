@@ -96,7 +96,7 @@ namespace detail {
       ulong i, j;
       unsigned nzone;
 
-      inline explicit subinfo(
+      explicit subinfo(
          const ulong _i,
          const ulong _j,
          const unsigned _nzone,
@@ -119,7 +119,7 @@ public:
    point<real> target;
    point<real> diff;
 
-   inline explicit eyetardiff(
+   explicit eyetardiff(
       const point<real> e,
       const point<real> t,
       const point<real> d
@@ -175,11 +175,11 @@ public:
    mutable minend mend;
 
    // get_interior(), because some g++s don't realize interior is public
-   inline bool get_interior() const { return interior; }
+   bool get_interior() const { return interior; }
 
    // base()
-   inline const tag &base() const { return *this; }
-   inline       tag &base()       { return *this; }
+   const tag &base() const { return *this; }
+   tag &base() { return *this; }
 
 
 
@@ -207,8 +207,7 @@ public:
       class {
          mutable char _f[sizeof(point<real>)];
       public:
-         inline point<real> &f() const
-            { return *(point<real> *)(void *)&_f[0]; }
+         point<real> &f() const { return *(point<real> *)(void *)&_f[0]; }
          mutable real m;
       } sphere;
 
@@ -222,9 +221,9 @@ public:
          private: mutable char _per[sizeof(vec_t)];
       public:
          mutable ulong nop;
-         inline vec_t &vec() const { return *(vec_t *)(void *)&_per[0]; }
-         inline element_t &push() const
-            { return vec().push_back(element_t()), vec().back(); }
+         vec_t &vec() const { return *(vec_t *)(void *)&_per[0]; }
+         element_t &push() const
+         { return vec().push_back(element_t()), vec().back(); }
          mutable ulong total_in;
       } ands;
    };
@@ -237,9 +236,9 @@ public:
       private: mutable char _per[sizeof(vec_t)];
    public:
       mutable ulong nop;
-      inline vec_t &vec() const
+      vec_t &vec() const
          { return *(vec_t *)(void *)&_per[0]; }
-      inline element_t &push() const
+      element_t &push() const
          { return vec().push_back(element_t()), vec().back(); }
       mutable ulong total_in;
    };
@@ -255,9 +254,9 @@ public:
          mutable char _eye[sizeof(point<real >)];
          mutable char _lie[sizeof(point<float>)];
       public:
-         inline point<real > &eye() const
+         point<real > &eye() const
             { return *(point<real > *)(void *)&_eye[0]; }
-         inline point<float> &lie() const
+         point<float> &lie() const
             { return *(point<float> *)(void *)&_lie[0]; }
       } basic;
 
@@ -309,9 +308,9 @@ public:
       mutable char _eye[sizeof(point<real >)];
       mutable char _lie[sizeof(point<float>)];
    public:
-      inline point<real > &eye() const
+      point<real > &eye() const
          { return *(point<real > *)(void *)&_eye[0]; }
-      inline point<float> &lie() const
+      point<float> &lie() const
          { return *(point<float> *)(void *)&_lie[0]; }
    };
 
@@ -381,19 +380,18 @@ public:
 
    // shape(derived *)
    template<template<class,class> class derived, class _real, class _tag>
-   inline explicit shape(const derived<_real,_tag> *const) :
+   explicit shape(const derived<_real,_tag> *const) :
       tag    ( tag() ),
       eyelie  ( true   ),
       on      ( true   ),
       solid   ( true   ),
       isbound ( false  ),
-      baseset ( false  ),
-      user    (nullptr )
+      baseset ( false  )
    { }
 
    // shape(derived *, base)
    template<template<class,class> class derived, class _real, class _tag>
-   inline explicit shape(
+   explicit shape(
       const derived<_real,_tag> *const,
       const tag &thebase
    ) :
@@ -402,21 +400,19 @@ public:
       on      ( true    ),
       solid   ( true    ),
       isbound ( false   ),
-      baseset ( true    ),
-      user    ( nullptr )
+      baseset ( true    )
    { }
 
    // shape(shape)
    // zzz Think about some fields, e.g. baseset; correct semantics may
    // depend on context. May need to delegate to two or more copy() functions.
-   inline shape(const shape &from) :
+   shape(const shape &from) :
       tag    ( from.base()  ),
       eyelie  ( from.eyelie  ),
       on      ( from.on      ),
       solid   ( from.solid   ),
       isbound ( from.isbound ),
-      baseset ( from.baseset ),
-      user    ( from.user    )
+      baseset ( from.baseset )
    { }
 
 
@@ -427,7 +423,7 @@ public:
 
    // shape = shape
    // zzz Similar remark as that for copy c'tor.
-   inline shape &operator=(const shape &from)
+   shape &operator=(const shape &from)
    {
       this->tag::operator=(from.base());
 
@@ -436,13 +432,12 @@ public:
       solid   = from.solid;
       isbound = from.isbound;
       baseset = from.baseset;
-      user    = from.user;
 
       return *this;
    }
 
    // destructor
-   virtual inline ~shape() { }
+   virtual ~shape() { }
 
 
 
@@ -504,14 +499,7 @@ public:
    // ----------------
 
    // propagate_base; overridden with meaningful propagation iff "operator"
-   virtual inline void propagate_base(const bool = false) const { }
-
-
-   // --------------------------------
-   // Generic pointer; use as you wish
-   // --------------------------------
-
-   void *user;
+   virtual void propagate_base(const bool = false) const { }
 };
 
 
@@ -943,8 +931,8 @@ public:
    minimum_t minimum;
    SHAPE *shape;
 
-   inline explicit minimum_and_ptr() { }
-   inline explicit minimum_and_ptr(const real _minimum, SHAPE &_ptr) :
+   explicit minimum_and_ptr() { }
+   explicit minimum_and_ptr(const real _minimum, SHAPE &_ptr) :
       minimum(minimum_t(_minimum)), shape(&_ptr) { }
 };
 
@@ -952,8 +940,8 @@ public:
 template<class real, class base>
 class minimum_and_shape : public minimum_and_ptr<real,shape<real,base>> {
 public:
-   inline explicit minimum_and_shape() { }
-   inline explicit minimum_and_shape(
+   explicit minimum_and_shape() { }
+   explicit minimum_and_shape(
       const real _minimum, shape<real,base> &_shape
    ) : minimum_and_ptr<real, shape<real,base>>(_minimum,_shape) { }
 };
@@ -981,7 +969,7 @@ template<class real, class tag>
 class less {
 public:
    // for minimum_and_shape
-   inline bool operator()(
+   bool operator()(
       const minimum_and_shape<real,tag> &a,
       const minimum_and_shape<real,tag> &b
    ) const {
@@ -989,10 +977,10 @@ public:
    }
 
    // for real
-   inline bool operator()(const real a, const real b) const { return a < b; }
+   bool operator()(const real a, const real b) const { return a < b; }
 
    // for inq
-   inline bool operator()(const inq<real,tag> &a, const inq<real,tag> &b) const
+   bool operator()(const inq<real,tag> &a, const inq<real,tag> &b) const
       { return a.q < b.q; }
 };
 
@@ -1005,7 +993,7 @@ template<class real>
 class less_mmi {
 public:
    // for mmi
-   inline bool operator()(
+   bool operator()(
       const mmi<real> &a,
       const mmi<real> &b
    ) const
@@ -1019,7 +1007,7 @@ template<class real>
 class same {
 public:
    // for point
-   inline bool operator()(const point<real> &a, const point<real> &b) const
+   bool operator()(const point<real> &a, const point<real> &b) const
       { return a == b; }
 };
 
@@ -1030,7 +1018,7 @@ template<class real, class tag>
 class more {
 public:
    // for minimum_and_shape
-   inline bool operator()(
+   bool operator()(
       const minimum_and_shape<real,tag> &a,
       const minimum_and_shape<real,tag> &b
    ) const {
@@ -1038,7 +1026,7 @@ public:
    }
 
    // for real
-   inline bool operator()(const real a, const real b) const { return a > b; }
+   bool operator()(const real a, const real b) const { return a > b; }
 };
 
 } // namespace detail
