@@ -1,6 +1,4 @@
 
-#pragma once
-
 // nsurf
 inline ulong nsurf = 6;
 

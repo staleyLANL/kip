@@ -1,6 +1,4 @@
 
-#pragma once
-
 // This file provides a few additional constructs related to the (now-defined)
 // shape class template.
 

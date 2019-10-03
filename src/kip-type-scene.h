@@ -1,9 +1,4 @@
 
-#pragma once
-
-// This file provides the "scene" class, which derives from the other
-// major classes: model, view, light, engine, image.
-
 // forward: scene, trace(scene), trace(scene,array)
 template<class real, class base, class color>
 class scene;
@@ -18,6 +13,7 @@ bool trace(scene<real,base,color> &, array<2,pix> &);
 
 // -----------------------------------------------------------------------------
 // scene
+// Derives from the other major classes: model, view, light, engine, image
 // -----------------------------------------------------------------------------
 
 template<

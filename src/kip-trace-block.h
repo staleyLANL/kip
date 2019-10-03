@@ -1,6 +1,4 @@
 
-#pragma once
-
 // zzz Need to consider shape.on in this algorithm.
 
 namespace detail {

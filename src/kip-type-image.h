@@ -1,13 +1,4 @@
 
-#pragma once
-
-// This file provides the "image" class template.
-
-// Default type: color
-using default_color = rgba;
-
-
-
 // -----------------------------------------------------------------------------
 // border_t
 // -----------------------------------------------------------------------------
@@ -57,6 +48,9 @@ public:
 // -----------------------------------------------------------------------------
 // image
 // -----------------------------------------------------------------------------
+
+// Default type: color
+using default_color = rgba;
 
 template<
    class real  = default_real,

@@ -1,6 +1,4 @@
 
-#pragma once
-
 // ntabular
 inline ulong ntabular = 16;
 

@@ -1,6 +1,4 @@
 
-#pragma once
-
 // This file defines the shape class template, related functions, and other
 // functionality for use by shape and by classes derived from shape.
 

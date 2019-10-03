@@ -1,14 +1,4 @@
 
-#pragma once
-
-#define kip_dry_function(name)\
-   template<class real, class base>\
-   inline rotate<3,real,op::part,op::unscaled> name(\
-      const detail::vars<real,base> &vars, const real h, const real v\
-   )
-
-
-
 // -----------------------------------------------------------------------------
 // n: North
 // s: South
@@ -60,6 +50,13 @@ inline auto dry_w(const detail::vars<real,base> &vars, const real h)
 // se: SouthEast
 // sw: SouthWest
 // -----------------------------------------------------------------------------
+
+// macro: kip_dry_function
+#define kip_dry_function(name)\
+   template<class real, class base>\
+   inline rotate<3,real,op::part,op::unscaled> name(\
+      const detail::vars<real,base> &vars, const real h, const real v\
+   )
 
 // ne
 kip_dry_function(dry_ne) {

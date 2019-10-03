@@ -1,6 +1,4 @@
 
-#pragma once
-
 // For uniform:
 //    KIP_SEGMENTING_LINEAR
 //    KIP_SEGMENTING_BINARY

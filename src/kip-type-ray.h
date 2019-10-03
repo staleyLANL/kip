@@ -1,11 +1,7 @@
 
-#pragma once
-
-// This file provides the "indsn" (intersection, normal, distance, shape,
-// normalized) class template.
-
 // -----------------------------------------------------------------------------
 // indsn
+// Meaning: "intersection, normal, distance, shape, normalized"
 // -----------------------------------------------------------------------------
 
 template<class real, class base>

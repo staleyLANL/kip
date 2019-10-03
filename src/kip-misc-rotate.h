@@ -1,6 +1,4 @@
 
-#pragma once
-
 // Empty classes for rotate's use. The namespace isn't really the best place
 // for these, but it's short, and I don't want to pollute the main namespace.
 namespace op {

@@ -1,10 +1,4 @@
 
-#pragma once
-
-// This file provides miscellaneous functionality related to shapes.
-
-
-
 // -----------------------------------------------------------------------------
 // allshape
 // rshhhd

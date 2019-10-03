@@ -1,8 +1,4 @@
 
-#pragma once
-
-
-
 // -----------------------------------------------------------------------------
 // mincolor
 // maxcolor
@@ -142,11 +138,6 @@ public:
    }
 };
 
-/*
-// description
-template<class comp> const std::string RGB<comp>::description = "RGB";
-*/
-
 // for users
 using rgb = RGB<uchar>;
 
@@ -204,19 +195,7 @@ public:
       a(afrom)
    { }
 
-   /*
-   // RGBA(RGB[,a])
-   explicit RGBA(
-      const RGB<comp> from,
-      const comp afrom = opaque<comp>()
-   )
-    : r(from.r),
-      g(from.g),
-      b(from.b),
-      a(afrom)
-   { }
-   */
-
+   // RGBA(RGBA<real>)
    template<
       class real,
       class = typename std::enable_if<
@@ -279,11 +258,6 @@ public:
       return RGBA(0, 0, 0);
    }
 };
-
-/*
-// description
-template<class comp> const std::string RGBA<comp>::description = "RGBA";
-*/
 
 // for users
 using rgba = RGBA<uchar>;

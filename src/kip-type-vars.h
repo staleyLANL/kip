@@ -1,10 +1,7 @@
 
-#pragma once
-
-// This file provides the "vars" class template, which kip uses internally.
-
 // -----------------------------------------------------------------------------
 // vars
+// For internal use
 // -----------------------------------------------------------------------------
 
 namespace detail {

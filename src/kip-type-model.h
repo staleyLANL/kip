@@ -1,11 +1,4 @@
 
-#pragma once
-
-// This file provides the "model" class, objects of which are designed
-// to contain models for ray tracing.
-
-
-
 // -----------------------------------------------------------------------------
 // model
 // -----------------------------------------------------------------------------

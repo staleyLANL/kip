@@ -1,6 +1,4 @@
 
-#pragma once
-
 // default shape base
 using default_base = rgb;
 
@@ -446,23 +444,6 @@ inline kip::ostream &operator<<(kip::ostream &k, const marble<BASE,real> &obj)
       << obj.seed   << ','
       <<(obj.swirl ? '1' : '0')
    ;
-
-   /*
-   using print_as = typename detail::component_traits<T>::result;
-   return
-      k << print_as(obj.r) << ','
-        << print_as(obj.g) << ','
-        << print_as(obj.b) << ','
-
-        << obj.amp    << ','
-        << obj.ampfac << ','
-        << obj.per    << ','
-        << obj.perfac << ','
-        << obj.nfun   << ','
-        << obj.seed   << ','
-        <<(obj.swirl ? '1' : '0')
-      ;
-   */
 }
 
 // std::ostream << marble

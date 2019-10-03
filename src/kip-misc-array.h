@@ -1,6 +1,4 @@
 
-#pragma once
-
 // array: default
 template<unsigned dimension, class element>
 class array {

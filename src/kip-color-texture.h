@@ -1,7 +1,5 @@
 
-#pragma once
-
-// #define KIP_SMOOTH
+///#define KIP_SMOOTH
 
 class nothing_per_pixel {
 public:
@@ -38,8 +36,12 @@ inline real cosine(const real a, const real t, const real b)
 
 
 
+inline int fastrand(const unsigned seed)
+{ 
+   return ((214013 * seed + 2531011) >> 16) & 0x7FFF; 
+} 
+
 // ran
-// zzz make this thread safe
 template<class real>
 inline real ran(
    const unsigned n,
@@ -47,19 +49,17 @@ inline real ran(
    const int j,
    const int k
 ) {
-   /*
-   // Original; slower
-   union { double seed; int s[2]; } u;
-   kip_assert(sizeof(u) == sizeof(double));
-   srand48((long(n)<<6) + (long(i)<<12) + (long(j)<<18) + (long(k)<<24));
-   u.seed = drand48();
-   srand48(u.s[0] ^ u.s[1]);
-   return drand48();
-   */
+   // new version; seems a bit direction-biased, so could use some work
+   return fastrand(
+      (n <<  6) +
+      (i <<  8) +
+      (j << 10) +
+      (k << 12)
+   )/real(0x7FFF);
 
-   // Much faster, but a bit blocky looking; try some variations
-   srand48((long(n)<<6) + (long(i)<<12) + (long(j)<<18) + (long(k)<<24));
-   return drand48();
+   // old version; wasn't thread-safe
+   // srand48((long(n)<<6) + (long(i)<<8) + (long(j)<<10) + (long(k)<<12));
+   // return drand48();
 }
 
 
@@ -91,7 +91,7 @@ inline real smooth(
 
 template<class real>
 real noise(
-   const unsigned i,
+   const unsigned n,
    const real x,
    const real y,
    const real z
@@ -116,23 +116,23 @@ real noise(
    */
 
 #ifdef KIP_SMOOTH
-   const real tmp1 = smooth<real>(i, xint,  yint,   zint  );
-   const real tmp2 = smooth<real>(i, xint+1,yint,   zint  );
-   const real tmp3 = smooth<real>(i, xint,  yint+1, zint  );
-   const real tmp4 = smooth<real>(i, xint+1,yint+1, zint  );
-   const real tmp5 = smooth<real>(i, xint,  yint,   zint+1);
-   const real tmp6 = smooth<real>(i, xint+1,yint,   zint+1);
-   const real tmp7 = smooth<real>(i, xint,  yint+1, zint+1);
-   const real tmp8 = smooth<real>(i, xint+1,yint+1, zint+1);
+   const real tmp1 = smooth<real>(n, xint,  yint,   zint  );
+   const real tmp2 = smooth<real>(n, xint+1,yint,   zint  );
+   const real tmp3 = smooth<real>(n, xint,  yint+1, zint  );
+   const real tmp4 = smooth<real>(n, xint+1,yint+1, zint  );
+   const real tmp5 = smooth<real>(n, xint,  yint,   zint+1);
+   const real tmp6 = smooth<real>(n, xint+1,yint,   zint+1);
+   const real tmp7 = smooth<real>(n, xint,  yint+1, zint+1);
+   const real tmp8 = smooth<real>(n, xint+1,yint+1, zint+1);
 #else
-   const real tmp1 = ran   <real>(i, xint,  yint,   zint  );
-   const real tmp2 = ran   <real>(i, xint+1,yint,   zint  );
-   const real tmp3 = ran   <real>(i, xint,  yint+1, zint  );
-   const real tmp4 = ran   <real>(i, xint+1,yint+1, zint  );
-   const real tmp5 = ran   <real>(i, xint,  yint,   zint+1);
-   const real tmp6 = ran   <real>(i, xint+1,yint,   zint+1);
-   const real tmp7 = ran   <real>(i, xint,  yint+1, zint+1);
-   const real tmp8 = ran   <real>(i, xint+1,yint+1, zint+1);
+   const real tmp1 = ran   <real>(n, xint,  yint,   zint  );
+   const real tmp2 = ran   <real>(n, xint+1,yint,   zint  );
+   const real tmp3 = ran   <real>(n, xint,  yint+1, zint  );
+   const real tmp4 = ran   <real>(n, xint+1,yint+1, zint  );
+   const real tmp5 = ran   <real>(n, xint,  yint,   zint+1);
+   const real tmp6 = ran   <real>(n, xint+1,yint,   zint+1);
+   const real tmp7 = ran   <real>(n, xint,  yint+1, zint+1);
+   const real tmp8 = ran   <real>(n, xint+1,yint+1, zint+1);
 #endif
 
    const real tx = real(0.5)*(1 - std::cos(pi<real>*(x-xint)));
@@ -166,7 +166,7 @@ real noise(
       return atotal = 0;
    } else if (nfun == 1) {
       atotal = amp;
-      return op::twice(noise(1, x/per, y/per, z/per) - 0.5);
+      return 2*noise(1,x/per,y/per,z/per) - 1;
    } else {
       real val = 0, a = amp, p = per;
       atotal = 0;
@@ -248,11 +248,8 @@ COLOR kipcolor(
       color.r = uchar(op::clip(0, int(r + r*p), 255));
       color.g = uchar(op::clip(0, int(g + g*p), 255));
       color.b = uchar(op::clip(0, int(b + b*p), 255));
-   } else {
-      color.r = uchar(r);
-      color.g = uchar(g);
-      color.b = uchar(b);
-   }
+   } else
+      color.set(uchar(r), uchar(g), uchar(b));
 
    return color;
 }
