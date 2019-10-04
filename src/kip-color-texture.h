@@ -49,17 +49,23 @@ inline real ran(
    const int j,
    const int k
 ) {
-   // new version; seems a bit direction-biased, so could use some work
+   // perhaps a bit less direction-biased that our other variant
    return fastrand(
-      (n <<  6) +
-      (i <<  8) +
-      (j << 10) +
-      (k << 12)
+      (n <<  8) +
+      (i << 10) +
+      (j << 12) +
+      (k << 14)
    )/real(0x7FFF);
 
-   // old version; wasn't thread-safe
-   // srand48((long(n)<<6) + (long(i)<<8) + (long(j)<<10) + (long(k)<<12));
-   // return drand48();
+   /*
+   // seems a bit direction-biased, so could use some work
+   return fastrand(
+      (n <<  6) +
+      (i << 12) +
+      (j << 18) +
+      (k << 24)
+   )/real(0x7FFF);
+   */
 }
 
 
@@ -236,11 +242,12 @@ COLOR kipcolor(
    // black swirls
    if (in.swirl) {
       const real sw_noise = detail::noise(
-         exact.x + in.seed*100,
-         exact.y + in.seed*10000,
-         exact.z + in.seed*1000000,
+         exact.x,/// + in.seed*100,
+         exact.y,/// + in.seed*10000,
+         exact.z,/// + in.seed*1000000,
+         // zzz probably have separate parameters for swirl code
          in.amp, in.ampfac,
-         in.per, in.perfac,
+         0.4*in.per, in.perfac,
          in.nfun,
          atotal
       );

@@ -56,7 +56,7 @@ inline marble<BASE,real> &randomize(marble<BASE,real> &obj)
    obj.perfac = 1;
    obj.nfun   = 1;
    obj.seed   = rand() % 1000000;
-   obj.swirl  = false;
+   obj.swirl  = true;///false;
 
    return obj;
 }
