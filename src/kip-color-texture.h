@@ -56,16 +56,6 @@ inline real ran(
       (j << 12) +
       (k << 14)
    )/real(0x7FFF);
-
-   /*
-   // seems a bit direction-biased, so could use some work
-   return fastrand(
-      (n <<  6) +
-      (i << 12) +
-      (j << 18) +
-      (k << 24)
-   )/real(0x7FFF);
-   */
 }
 
 
@@ -235,9 +225,10 @@ COLOR kipcolor(
    COLOR color;
    convert(in,color);
 
-   const int r = op::clip(0, int(color.r + (255-color.r)*fac), 255);
-   const int g = op::clip(0, int(color.g + (255-color.g)*fac), 255);
-   const int b = op::clip(0, int(color.b + (255-color.b)*fac), 255);
+   const rgb white(255,255,255);
+   const int r = op::clip(0, int(color.r + (white.r-color.r)*fac), 255);
+   const int g = op::clip(0, int(color.g + (white.g-color.g)*fac), 255);
+   const int b = op::clip(0, int(color.b + (white.b-color.b)*fac), 255);
 
    // black swirls
    if (in.swirl) {
@@ -247,8 +238,8 @@ COLOR kipcolor(
          exact.z,/// + in.seed*1000000,
          // zzz probably have separate parameters for swirl code
          in.amp, in.ampfac,
-         0.4*in.per, in.perfac,
-         in.nfun,
+         0.5*in.per, in.perfac,
+         1, // in.nfun,
          atotal
       );
       const real p = 5*op::min(real(0),0.5+std::cos(20*sw_noise));

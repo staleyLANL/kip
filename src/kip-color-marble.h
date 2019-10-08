@@ -50,13 +50,13 @@ inline marble<BASE,real> &randomize(marble<BASE,real> &obj)
 {
    randomize(obj.base);
 
-   obj.amp    = 1 + random_unit<real>();
-   obj.ampfac = 1;
-   obj.per    = 0.05*(1 + random_unit<real>());
-   obj.perfac = 1;
-   obj.nfun   = 1;
-   obj.seed   = rand() % 1000000;
-   obj.swirl  = true;///false;
+   obj.amp    = (1 + random_unit<real>());
+   obj.ampfac =  1;
+   obj.per    = (1 + random_unit<real>())*0.05;
+   obj.perfac =  0.1;
+   obj.nfun   =  1;
+   obj.seed   =  rand() % 1000000;
+   obj.swirl  =  false;
 
    return obj;
 }

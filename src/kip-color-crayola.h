@@ -13,20 +13,41 @@ namespace crayola {
 #define kip_make_standard(theclass,macro) \
    macro( theclass, PureBlack,   pureblack,     0,   0,   0 ) \
    macro( theclass, PureWhite,   purewhite,   255, 255, 255 ) \
+   \
    macro( theclass, PureRed,     purered,     255,   0,   0 ) \
    macro( theclass, PureGreen,   puregreen,     0, 255,   0 ) \
    macro( theclass, PureBlue,    pureblue,      0,   0, 255 ) \
+   \
    macro( theclass, PureCyan,    purecyan,      0, 255, 255 ) \
    macro( theclass, PureMagenta, puremagenta, 255,   0, 255 ) \
    macro( theclass, PureYellow,  pureyellow,  255, 255,   0 ) \
+   \
    macro( theclass, GrayDark,    graydark,     64,  64,  64 ) \
    macro( theclass, GrayMedium,  graymedium,  128, 128, 128 ) \
-   macro( theclass, GrayLight,   graylight,   192, 192, 192 )
+   macro( theclass, GrayLight,   graylight,   192, 192, 192 ) \
+   \
+   macro( theclass, AxisOrigin,  axisorigin,    0,   0,   0 ) \
+   macro( theclass, AxisXPos,    axisxpos,    203,  65,  84 ) \
+   macro( theclass, AxisXNeg,    axisxneg,    252, 108, 133 ) \
+   macro( theclass, AxisYPos,    axisypos,     59, 176, 143 ) \
+   macro( theclass, AxisYNeg,    axisyneg,    168, 228, 160 ) \
+   macro( theclass, AxisZPos,    axiszpos,     43, 108, 196 ) \
+   macro( theclass, AxisZNeg,    axiszneg,    154, 206, 235 )
+
+   // Note: the six x/y/z pos/neg axis colors are, respectively,
+   // the same as the following colors from crayola::complete:
+   //
+   // AxisXPos == BrickRed
+   // AxisXNeg == WildWatermelon
+   // AxisYPos == JungleGreen
+   // AxisYNeg == GrannySmithApple
+   // AxisZPos == Denim
+   // AxisZNeg == Cornflower
 
 // MAGIC NUMBER ALERT
 // Number of values given in the above list of colors
 namespace detail {
-   inline const ulong crayola_standard_count = 11;
+   inline const ulong crayola_standard_count = 18;
 }
 
 
