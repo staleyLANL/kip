@@ -28,7 +28,7 @@ namespace crayola {
    \
    macro( theclass, AxisOrigin,  axisorigin,    0,   0,   0 ) \
    macro( theclass, AxisXPos,    axisxpos,    203,  65,  84 ) \
-   macro( theclass, AxisXNeg,    axisxneg,    252, 108, 133 ) \
+   macro( theclass, AxisXNeg,    axisxneg,    255, 188, 217 ) \
    macro( theclass, AxisYPos,    axisypos,     59, 176, 143 ) \
    macro( theclass, AxisYNeg,    axisyneg,    168, 228, 160 ) \
    macro( theclass, AxisZPos,    axiszpos,     43, 108, 196 ) \
@@ -38,7 +38,7 @@ namespace crayola {
    // the same as the following colors from crayola::complete:
    //
    // AxisXPos == BrickRed
-   // AxisXNeg == WildWatermelon
+   // AxisXNeg == CottonCandy
    // AxisYPos == JungleGreen
    // AxisYNeg == GrannySmithApple
    // AxisZPos == Denim
