@@ -181,7 +181,7 @@ public:
 
 
 
-template<class real, class color, class base, class pix>
+template<class real, class base, class color, class pix>
 inline void to_abstract_then_fill(
    const view<real> &view,
    const engine<real> &engine, image<real,color> &image,
@@ -308,7 +308,7 @@ void grow_portion(
 // -----------------------------------------------------------------------------
 
 // rtrace_h
-template<class real, class color, class base, class pix>
+template<class real, class base, class color, class pix>
 inline void rtrace_h(
    const view<real> &view,
    const engine<real> &engine, image<real,color> &image,
@@ -346,7 +346,7 @@ inline void rtrace_h(
 
 
 // rtrace_v
-template<class real, class color, class base, class pix>
+template<class real, class base, class color, class pix>
 inline void rtrace_v(
    const view<real> &view,
    const engine<real> &engine, image<real,color> &image,
@@ -394,7 +394,7 @@ inline void rtrace_v(
 
 // Screen: [hmin,hmax] x [vmin,vmax]   (real)
 // Pixels: [imin,iend) x [jmin,jend)   (unsigned)
-template<class real, class color, class base, class pix>
+template<class real, class base, class color, class pix>
 void rtrace(
    const view<real> &view,
    const engine<real> &engine, image<real,color> &image,
@@ -435,7 +435,7 @@ void rtrace(
        jnum < 2 ||
        inum > op::round<unsigned>(real(jnum)*image.aspect)
    )) {
-      ///      std::cout << "kip: split horizontally" << std::endl;
+      std::cout << "kip: split horizontally" << std::endl;
 
       // +-----+-----+
       // |     |     |
@@ -459,7 +459,7 @@ void rtrace(
 
    // Split vertically
    } else {
-      ///      std::cout << "kip: split vertically" << std::endl;
+      std::cout << "kip: split vertically" << std::endl;
 
       // +------+
       // |      |

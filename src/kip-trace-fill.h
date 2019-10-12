@@ -2,36 +2,28 @@
 /*
     +------------+                                             +------------+
     | .infirst   |                                             | .inall     |
-    | (operator) |-----------------------------------------+   | (operator) |
-    +------------+                                         |   +------------+
-       ^     |  ^                                          |    ^  |
-       |     |  |                                          |    |  |
-       |     |  |                                          |    |  |
-       |     |  |                                          |    |  |
-       |     v  |                                          v    |  v
+    | (operator) |----------------------------------------+    | (operator) |
+    +------------+                                        |    +------------+
+       ^     |  ^                                         |     ^  |
+       |     |  |                                         |     |  |
+       |     v  |                                         v     |  v
        |  +------------+          +-----------+          +----------+
        |  |  op_first  |--insub-->|  inbound  |<--insub--|  op_all  |
        |  +------------+          +-----------+          +----------+
        |              \                 ^                 /
        |               \                |                /
-       |                \               |               /
-       |                 \             i,j             /
-       |                 \/             |             \/
+       |                v              i,j              v
        |            +-------------+     |     +-------------+
        |            | .infirst    |     |     | .inall      |
        |            | (primitive) |     |     | (primitive) |
        |            +-------------+     |     +-------------+
-       |                      /\        |
-       |                       \        |
-       |                        \       |
+       |                        ^       |
        |                         \      |
        |                          \     |
        |                         +-------------+
        +-------------------------|  get_first  |
                                  +-------------+
-                                   /\       /\
-                                   /         \
-                                  /           \
+                                  ^           ^ 
                                  /             \
                                 /               \
                    +-------------+             +------------+
@@ -43,22 +35,16 @@
                           ^                           ^
                           |                           |
                           |                           |
-                          |                           |
-                          |                           |
                +-------------------+         +------------------+
                |  fill_loop_plain  | per-bin |  fill_loop_anti  |
                +-------------------+         +------------------+
-                                /\             /\
-                                 \             /
+                                 ^             ^
                                   \           /
                                    \         /
-                                    \       /
                                  +-------------+
                                  |  trace_bin  |
                                  +-------------+
-                                      /\ /\
-                                      /   \
-                                     /     \
+                                     ^     ^ 
                                     /       \
                                    /         \
                           +----------+     +----------+
@@ -73,15 +59,15 @@
 // -----------------------------------------------------------------------------
 
 // eps
-// 0 = default; means get_eps() will compute something reasonable
+// 0 = default; means epsilon(), below, will compute something reasonable
 inline long double eps = 0;
 
 // for the rest of this file...
 namespace detail {
 
-// get_eps
+// epsilon
 template<class real>
-inline real get_eps()
+inline real epsilon()
 {
    // fixme 2019-07-07.
    // Look more closely, but this may be called in a loop;
@@ -188,7 +174,7 @@ inline bool get_first(
    if (!inbound(obj,i,j)) return false;
 
    #ifdef KIP_FUZZY
-      const real eps = get_eps<real>();
+      const real eps = epsilon<real>();
       static unsigned num = 0;
 
       if (qmin == std::numeric_limits<real>::max())
@@ -235,7 +221,7 @@ inline bool op_first(
    if (!inbound(obj,insub)) return false;
 
    #ifdef KIP_FUZZY
-      const real eps = get_eps<real>();
+      const real eps = epsilon<real>();
       if (!(s->infirst(kip_etd, qmin,q, insub)))
          return false;
       return real(q = real(q)*(1 + eps*random_full<real>())) < qmin;
@@ -273,7 +259,7 @@ inline bool op_all(
    if (!inbound(obj,insub)) return false;
 
    #ifdef KIP_FUZZY
-      const real eps = get_eps<real>();
+      const real eps = epsilon<real>();
       if (!(obj.inall(kip_etd, qmin,q, insub)))
          return false;
 
@@ -294,184 +280,217 @@ inline bool op_all(
 
 
 // -----------------------------------------------------------------------------
-// Macros
-// -----------------------------------------------------------------------------
-
-// kip_fill_plain
-#define kip_fill_plain(name)\
-   template<class real, class color, class base, class pix>\
-   class name {\
-   public:\
-   inline void operator()(\
-      const engine<real> &engine, const image<real,color> &image,\
-      std::vector<minimum_and_shape<real,base>> &bin,\
-      ulong &endsorted, const ulong binsize, const real maximum,\
-      inq<real,base> &qa, inq<real,base> *qa_ptr,\
-      inq<real,base> &qb, inq<real,base> *qb_ptr,\
-      color *const ptr,\
-      unsigned &prev,\
-      const vars<real,base> &vars, const point<real> &light,\
-      const point<real> &target, const point<real> &diff,\
-      pix &pixel, \
-      const ulong i, const ulong j, const ulong zone\
-   ) const {\
-      (void)engine;  (void)image; (void)bin;    (void)endsorted; (void)binsize;\
-      (void)maximum; (void)qa;    (void)qa_ptr; (void)qb;        (void)qb_ptr;\
-      (void)prev;    (void)vars;  (void)light;  (void)target;    (void)diff;\
-      (void)i;       (void)j;     (void)zone;
-
-
-
-// kip_fill_anti
-#define kip_fill_anti(name)\
-   template<class real, class color, class base, class pix>\
-   class name {\
-   public:\
-   inline bool operator()(\
-      const engine<real> &engine, const image<real,color> &image,\
-      std::vector<minimum_and_shape<real,base>> &bin,\
-      ulong &endsorted, const ulong binsize, const real maximum,\
-      inq<real,base> &qa, inq<real,base> *qa_ptr,\
-      inq<real,base> &qb, inq<real,base> *qb_ptr,\
-      const real h, const real v, RGBA<unsigned> &sum,\
-      const vars<real,base> &vars, const light<real> &light,\
-      pix &pixel, \
-      const ulong i, const ulong j, const ulong zone\
-   ) const {\
-      (void)engine;  (void)image; (void)bin;    (void)endsorted; (void)binsize;\
-      (void)maximum; (void)qa;    (void)qa_ptr; (void)qb;        (void)qb_ptr;\
-      (void)h;       (void)v;     (void)sum;    (void)vars;      (void)i;\
-      (void)j;       (void)zone;
-
-
-
-// kip_fill_end
-#define kip_fill_end } };
-
-// kip_param
-#define kip_param(s,qmin,q) bin, s, i, j, zone, etd, qmin, q
-
-
-
-// -----------------------------------------------------------------------------
 // Plain
 // Each of these is called with a particular pixel (i,j), and a particular bin;
 // and each loops over the bin's objects.
 // -----------------------------------------------------------------------------
 
 // one_plain
-kip_fill_plain(one_plain) {
-   const eyetardiff<real> etd(vars.eyeball, target, diff);
+template<class real, class base, class color, class pix>
+class one_plain {
+public:
+   inline void operator()(
+      const engine<real> &engine, const image<real,color> &image,
+      std::vector<minimum_and_shape<real,base>> &bin,
+      ulong &endsorted, const ulong binsize, const real maximum,
+      inq<real,base> &qa, inq<real,base> *qa_ptr,
+      inq<real,base> &qb, inq<real,base> *qb_ptr,
+      color *const ptr,
+      unsigned &prev,
+      const vars<real,base> &vars, const point<real> &light,
+      const point<real> &target, const point<real> &diff,
+      pix &pixel,
+      const ulong i, const ulong j, const ulong zone
+   ) const {
 
-   get_first(kip_param(0,maximum,qa))
-    ? (*ptr = get_color<color>(vars.eyeball, light, qa, pixel))
-    :  *ptr;
-} kip_fill_end
+      (void)engine;
+      (void)image;
+      (void)endsorted;
+      (void)binsize;
+      (void)qa_ptr;
+      (void)qb;
+      (void)qb_ptr;
+      (void)prev;
+
+      const eyetardiff<real> etd(vars.eyeball, target, diff);
+
+      get_first(bin, 0, i, j, zone, etd, maximum, qa)
+         ? (*ptr = get_color<color>(vars.eyeball, light, qa, pixel))
+         :  *ptr;
+   }
+};
 
 
 
 // two_plain
-kip_fill_plain(two_plain) {
-   const eyetardiff<real> etd(vars.eyeball, target, diff);
+template<class real, class base, class color, class pix>
+class two_plain {
+public:
+   inline void operator()(
+      const engine<real> &engine, const image<real,color> &image,
+      std::vector<minimum_and_shape<real,base>> &bin,
+      ulong &endsorted, const ulong binsize, const real maximum,
+      inq<real,base> &qa, inq<real,base> *qa_ptr,
+      inq<real,base> &qb, inq<real,base> *qb_ptr,
+      color *const ptr,
+      unsigned &prev,
+      const vars<real,base> &vars, const point<real> &light,
+      const point<real> &target, const point<real> &diff,
+      pix &pixel,
+      const ulong i, const ulong j, const ulong zone
+   ) const {
 
-   get_first(kip_param(0,maximum,qa))
- ? bin[1].minimum < qa.q &&
-   get_first(kip_param(1,qa.q,   qb))
-    ? (*ptr = get_color<color>(vars.eyeball, light, qb, pixel))
-    : (*ptr = get_color<color>(vars.eyeball, light, qa, pixel))
- : get_first(kip_param(1,maximum,qb))
-    ? (*ptr = get_color<color>(vars.eyeball, light, qb, pixel))
-    :  *ptr;
-} kip_fill_end
+      (void)engine;
+      (void)image;
+      (void)endsorted;
+      (void)binsize;
+      (void)qa_ptr;
+      (void)qb_ptr;
+      (void)prev;
+
+      const eyetardiff<real> etd(vars.eyeball, target, diff);
+
+      get_first(bin, 0, i, j, zone, etd, maximum, qa)
+         ? bin[1].minimum < qa.q &&
+      get_first(bin, 1, i, j, zone, etd, qa.q, qb)
+         ? (*ptr = get_color<color>(vars.eyeball, light, qb, pixel))
+         : (*ptr = get_color<color>(vars.eyeball, light, qa, pixel))
+         : get_first(bin, 1, i, j, zone, etd, maximum, qb)
+         ? (*ptr = get_color<color>(vars.eyeball, light, qb, pixel))
+         :  *ptr;
+   }
+};
 
 
 
 // max_plain
-kip_fill_plain(max_plain) {
-   const eyetardiff<real> etd(vars.eyeball, target, diff);
+template<class real, class base, class color, class pix>
+class max_plain {
+public:
+   inline void operator()(
+      const engine<real> &engine, const image<real,color> &image,
+      std::vector<minimum_and_shape<real,base>> &bin,
+      ulong &endsorted, const ulong binsize, const real maximum,
+      inq<real,base> &qa, inq<real,base> *qa_ptr,
+      inq<real,base> &qb, inq<real,base> *qb_ptr,
+      color *const ptr,
+      unsigned &prev,
+      const vars<real,base> &vars, const point<real> &light,
+      const point<real> &target, const point<real> &diff,
+      pix &pixel,
+      const ulong i, const ulong j, const ulong zone
+   ) const {
 
-   for (unsigned s = 0;  s < binsize;  ++s)
-      if (get_first(kip_param(s,maximum,qa))) {
-         for ( ; ++s < binsize && bin[s].minimum < *qa_ptr ; )
-            if (get_first(kip_param(s,real(*qa_ptr),*qb_ptr)))
-               std::swap(qa_ptr,qb_ptr);
-        *ptr = get_color<color>(vars.eyeball, light, *qa_ptr, pixel);
-         return;
-      }
-} kip_fill_end
+      (void)engine;
+      (void)image;
+      (void)endsorted;
+      (void)qb;
+      (void)prev;
+
+      const eyetardiff<real> etd(vars.eyeball, target, diff);
+
+      for (unsigned s = 0;  s < binsize;  ++s)
+         if (get_first(bin, s, i, j, zone, etd, maximum, qa)) {
+            for ( ; ++s < binsize && bin[s].minimum < *qa_ptr ; )
+               if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
+                  std::swap(qa_ptr,qb_ptr);
+           *ptr = get_color<color>(vars.eyeball, light, *qa_ptr, pixel);
+            return;
+         }
+   }
+};
 
 
 
 // any_plain
-kip_fill_plain(any_plain) {
-   const eyetardiff<real> etd(vars.eyeball, target, diff);
+template<class real, class base, class color, class pix>
+class any_plain {
+public:
+   inline void operator()(
+      const engine<real> &engine, const image<real,color> &image,
+      std::vector<minimum_and_shape<real,base>> &bin,
+      ulong &endsorted, const ulong binsize, const real maximum,
+      inq<real,base> &qa, inq<real,base> *qa_ptr,
+      inq<real,base> &qb, inq<real,base> *qb_ptr,
+      color *const ptr,
+      unsigned &prev,
+      const vars<real,base> &vars, const point<real> &light,
+      const point<real> &target, const point<real> &diff,
+      pix &pixel,
+      const ulong i, const ulong j, const ulong zone
+   ) const {
 
-   unsigned s = 0;  bool found;  qa = maximum;
-   if (prev > 3) {  // I tried several values, and this number works well
+      (void)image;
+      (void)qb;
 
-      // examine bin[prev]
-      found = get_first(kip_param(prev,real(*qa_ptr),*qb_ptr));
-      unsigned newprev = found ? std::swap(qa_ptr,qb_ptr), prev : 0;
+      const eyetardiff<real> etd(vars.eyeball, target, diff);
 
-      // examine bin[0] through bin[prev-1]; fall-through iff prev == 0
-      for ( ;  s < prev;  ++s)
-         if (get_first(kip_param(s,real(*qa_ptr),*qb_ptr)))
-            std::swap(qa_ptr,qb_ptr), newprev = s, found = true;
+      unsigned s = 0;  bool found;  qa = maximum;
+      if (prev > 3) {  // I tried several values, and this number works well
 
-      // examine bin[prev+1] forward
-      s = prev+1;
-      for (;;) {
-         for ( ;  s < endsorted && (!found || bin[s].minimum < *qa_ptr);  ++s)
-            if (get_first(kip_param(s,real(*qa_ptr),*qb_ptr)))
+         // examine bin[prev]
+         found = get_first(bin, prev, i, j, zone, etd, real(*qa_ptr), *qb_ptr);
+         unsigned newprev = found ? std::swap(qa_ptr,qb_ptr), prev : 0;
+
+         // examine bin[0] through bin[prev-1]; fall-through iff prev == 0
+         for ( ;  s < prev;  ++s)
+            if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
                std::swap(qa_ptr,qb_ptr), newprev = s, found = true;
 
-         // break if found something, or if there's no more to sort
-         if (s != endsorted || endsorted == binsize) break;
+         // examine bin[prev+1] forward
+         s = prev+1;
+         for (;;) {
+            for ( ;  s < endsorted && (!found || bin[s].minimum < *qa_ptr);  ++s)
+               if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
+                  std::swap(qa_ptr,qb_ptr), newprev = s, found = true;
 
-         // sort more
-         endsorted = get_endsorted(endsorted, engine, binsize);
-         std::partial_sort(
-            bin.begin()+s,
-            bin.begin()+endsorted,
-            bin.end(),
-            less<real,base>()
-         );
+            // break if found something, or if there's no more to sort
+            if (s != endsorted || endsorted == binsize) break;
+
+            // sort more
+            endsorted = get_endsorted(endsorted, engine, binsize);
+            std::partial_sort(
+               bin.begin()+s,
+               bin.begin()+endsorted,
+               bin.end(),
+               less<real,base>()
+            );
+         }
+         prev = newprev;
+
+      } else {
+
+         // for the present pixel (i,j), loop over objects in the present bin
+         found = false;
+         for ( ;  s < endsorted;  ++s)
+            if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
+               { std::swap(qa_ptr,qb_ptr);  prev = s++;  found = true;  break; }
+
+         for (;;) {
+            for ( ;  s < endsorted && bin[s].minimum < *qa_ptr;  ++s)
+               if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
+                  std::swap(qa_ptr,qb_ptr), prev = s, found = true;
+
+            // break if found something, or if there's no more to sort
+            if (s != endsorted || endsorted == binsize) break;
+
+            // sort more
+            endsorted = get_endsorted(endsorted, engine, binsize);
+            std::partial_sort(
+               bin.begin()+s,
+               bin.begin()+endsorted,
+               bin.end(),
+               less<real,base>()
+            );
+         }
       }
-      prev = newprev;
 
-   } else {
-
-      // for the present pixel (i,j), loop over objects in the present bin
-      found = false;
-      for ( ;  s < endsorted;  ++s)
-         if (get_first(kip_param(s,real(*qa_ptr),*qb_ptr)))
-            { std::swap(qa_ptr,qb_ptr);  prev = s++;  found = true;  break; }
-
-      for (;;) {
-         for ( ;  s < endsorted && bin[s].minimum < *qa_ptr;  ++s)
-            if (get_first(kip_param(s,real(*qa_ptr),*qb_ptr)))
-               std::swap(qa_ptr,qb_ptr), prev = s, found = true;
-
-         // break if found something, or if there's no more to sort
-         if (s != endsorted || endsorted == binsize) break;
-
-         // sort more
-         endsorted = get_endsorted(endsorted, engine, binsize);
-         std::partial_sort(
-            bin.begin()+s,
-            bin.begin()+endsorted,
-            bin.end(),
-            less<real,base>()
-         );
-      }
+      // color
+      found
+       ? (*ptr = get_color<color>(vars.eyeball, light, *qa_ptr, pixel))
+       :  *ptr;
    }
-
-   // color
-   found
-    ? (*ptr = get_color<color>(vars.eyeball, light, *qa_ptr, pixel))
-    :  *ptr;
-
-} kip_fill_end
+};
 
 
 
@@ -482,132 +501,189 @@ kip_fill_plain(any_plain) {
 // -----------------------------------------------------------------------------
 
 // one_anti
-kip_fill_anti(one_anti) {
+template<class real, class base, class color, class pix>
+class one_anti {
+public:
+   inline bool operator()(
+      const engine<real> &engine, const image<real,color> &image,
+      std::vector<minimum_and_shape<real,base>> &bin,
+      ulong &endsorted, const ulong binsize, const real maximum,
+      inq<real,base> &qa, inq<real,base> *qa_ptr,
+      inq<real,base> &qb, inq<real,base> *qb_ptr,
+      const real h, const real v, RGBA<unsigned> &sum,
+      const vars<real,base> &vars, const light<real> &light,
+      pix &pixel,
+      const ulong i, const ulong j, const ulong zone
+   ) const {
 
-   bool found = false;
-   for (unsigned k = 0;  k < image.anti;  ++k)
-   for (unsigned l = 0;  l < image.anti;  ++l) {
-      // initialization
-      const point<real> diff = normalize(
-         vars.eyeball - vars.t2e.back_0nn(
-            h-vars.hhalf+(vars.hhalf+real(k)*vars.hfull)*vars.rec_anti(real()),
-            v-vars.vhalf+(vars.vhalf+real(l)*vars.vfull)*vars.rec_anti(real()))
-      ),
-      target = vars.eyeball - diff;
-      const eyetardiff<real> etd(vars.eyeball, target, diff);
+      (void)engine;
+      (void)endsorted;
+      (void)binsize;
+      (void)qa_ptr;
+      (void)qb;
+      (void)qb_ptr;
 
-      // examine object
-      sum += get_first(kip_param(0,maximum,qa))
-          ? (found = true, get_color<color>(vars.eyeball, light[0], qa, pixel))
-          :  image.background;
+      bool found = false;
+      for (unsigned k = 0;  k < image.anti;  ++k)
+      for (unsigned l = 0;  l < image.anti;  ++l) {
+         // initialization
+         const point<real> diff = normalize(
+            vars.eyeball - vars.t2e.back_0nn(
+               h-vars.hhalf+(vars.hhalf+real(k)*vars.hfull)*vars.rec_anti(real()),
+               v-vars.vhalf+(vars.vhalf+real(l)*vars.vfull)*vars.rec_anti(real()))
+         ),
+         target = vars.eyeball - diff;
+         const eyetardiff<real> etd(vars.eyeball, target, diff);
+
+         // examine object
+         sum += get_first(bin, 0, i, j, zone, etd, maximum, qa)
+             ? (found = true, get_color<color>(vars.eyeball, light[0], qa, pixel))
+             :  image.background;
+      }
+
+      return found;
    }
-   return found;
-
-} kip_fill_end
+};
 
 
 
 // two_anti
-kip_fill_anti(two_anti) {
+template<class real, class base, class color, class pix>
+class two_anti {
+public:
+   inline bool operator()(
+      const engine<real> &engine, const image<real,color> &image,
+      std::vector<minimum_and_shape<real,base>> &bin,
+      ulong &endsorted, const ulong binsize, const real maximum,
+      inq<real,base> &qa, inq<real,base> *qa_ptr,
+      inq<real,base> &qb, inq<real,base> *qb_ptr,
+      const real h, const real v, RGBA<unsigned> &sum,
+      const vars<real,base> &vars, const light<real> &light,
+      pix &pixel,
+      const ulong i, const ulong j, const ulong zone
+   ) const {
 
-   bool found = false;
-   for (unsigned k = 0;  k < image.anti;  ++k)
-   for (unsigned l = 0;  l < image.anti;  ++l) {
-      // initialization
-      const point<real> diff = normalize(
-         vars.eyeball - vars.t2e.back_0nn(
-            h-vars.hhalf+(vars.hhalf+real(k)*vars.hfull)*vars.rec_anti(real()),
-            v-vars.vhalf+(vars.vhalf+real(l)*vars.vfull)*vars.rec_anti(real()))
-      ),
-      target = vars.eyeball - diff;
-      const eyetardiff<real> etd(vars.eyeball, target, diff);
+      (void)engine;
+      (void)endsorted;
+      (void)binsize;
+      (void)qa_ptr;
+      (void)qb_ptr;
 
-      // examine objects
-      sum += get_first(kip_param(0,maximum,qa))
-           ? get_first(kip_param(1,qa.q,   qb))
-                // [1] is better
-              ? (found=true, get_color<color>(vars.eyeball,light[0],qb,pixel))
-                // [0] is better (or only)...
-              : (found=true, get_color<color>(vars.eyeball,light[0],qa,pixel))
-           : get_first(kip_param(1,maximum,qa))
-                // [1] is only...
-              ? (found=true, get_color<color>(vars.eyeball,light[0],qa,pixel))
-                // neither...
-              :  image.background;
+      bool found = false;
+      for (unsigned k = 0;  k < image.anti;  ++k)
+      for (unsigned l = 0;  l < image.anti;  ++l) {
+         // initialization
+         const point<real> diff = normalize(
+            vars.eyeball - vars.t2e.back_0nn(
+               h-vars.hhalf+(vars.hhalf+real(k)*vars.hfull)*vars.rec_anti(real()),
+               v-vars.vhalf+(vars.vhalf+real(l)*vars.vfull)*vars.rec_anti(real()))
+         ),
+         target = vars.eyeball - diff;
+         const eyetardiff<real> etd(vars.eyeball, target, diff);
+
+         // examine objects
+         sum += get_first(bin, 0, i, j, zone, etd, maximum, qa)
+              ? get_first(bin, 1, i, j, zone, etd, qa.q, qb)
+                   // [1] is better
+                 ? (found=true, get_color<color>(vars.eyeball,light[0],qb,pixel))
+                   // [0] is better (or only)...
+                 : (found=true, get_color<color>(vars.eyeball,light[0],qa,pixel))
+              : get_first(bin, 1, i, j, zone, etd, maximum, qa)
+                   // [1] is only...
+                 ? (found=true, get_color<color>(vars.eyeball,light[0],qa,pixel))
+                   // neither...
+                 :  image.background;
+      }
+
+      return found;
    }
-   return found;
-
-} kip_fill_end
+};
 
 
 
 // any_anti
-kip_fill_anti(any_anti) {
+template<class real, class base, class color, class pix>
+class any_anti {
+public:
+   inline bool operator()(
+      const engine<real> &engine, const image<real,color> &image,
+      std::vector<minimum_and_shape<real,base>> &bin,
+      ulong &endsorted, const ulong binsize, const real maximum,
+      inq<real,base> &qa, inq<real,base> *qa_ptr,
+      inq<real,base> &qb, inq<real,base> *qb_ptr,
+      const real h, const real v, RGBA<unsigned> &sum,
+      const vars<real,base> &vars, const light<real> &light,
+      pix &pixel,
+      const ulong i, const ulong j, const ulong zone
+   ) const {
 
-   // zzz Should make this optimization in the earlier two functions.
-   // zzz For that matter, all of this could be simplified further,
-   // zzz with certain code put/changed elsewhere.
-   //    542.91 sec, 1140248 kb
-   //    539.93 sec, 1162492 kb
-   //    529.91 sec, 1142612 kb
-   // zzz IMPORTANT NOTE: still need to figure out what's wrong with
-   // this function, then stop using scene.sort_min = 10000000.
+      (void)qa;
+      (void)qb;
 
-   const real hh = h + vars.hhalf*(vars.rec_anti(real())-1);
-   const real vv = v + vars.vhalf*(vars.rec_anti(real())-1);
+      // zzz Should make this optimization in the earlier two functions.
+      // zzz For that matter, all of this could be simplified further,
+      // zzz with certain code put/changed elsewhere.
+      //    542.91 sec, 1140248 kb
+      //    539.93 sec, 1162492 kb
+      //    529.91 sec, 1142612 kb
+      // zzz IMPORTANT NOTE: still need to figure out what's wrong with
+      // this function, then stop using scene.sort_min = 10000000.
 
-   const real hmult = vars.hfull * vars.rec_anti(real());
-   const real vmult = vars.vfull * vars.rec_anti(real());
+      const real hh = h + vars.hhalf*(vars.rec_anti(real())-1);
+      const real vv = v + vars.vhalf*(vars.rec_anti(real())-1);
 
-   bool found = false;
+      const real hmult = vars.hfull * vars.rec_anti(real());
+      const real vmult = vars.vfull * vars.rec_anti(real());
 
-   for (unsigned k = 0;  k < image.anti;  ++k)   // horizontal
-   for (unsigned l = 0;  l < image.anti;  ++l) { // vertical
-      // initialization
-      const point<real>
-         diff = normalize(
-            vars.eyeball - vars.t2e.back_0nn(
-               hh + real(k)*hmult,
-               vv + real(l)*vmult
-         )),
-         target = vars.eyeball - diff;
-      const eyetardiff<real> etd(vars.eyeball, target, diff);
+      bool found = false;
 
-      // loop over objects in this bin
-      unsigned s = 0;  bool f = false;
-      for ( ;  s < endsorted;  ++s)
-         if (get_first(kip_param(s,maximum,*qb_ptr)))
-            { std::swap(qa_ptr,qb_ptr);  f = true;  s++;  break; }
+      for (unsigned k = 0;  k < image.anti;  ++k)   // horizontal
+      for (unsigned l = 0;  l < image.anti;  ++l) { // vertical
+         // initialization
+         const point<real>
+            diff = normalize(
+               vars.eyeball - vars.t2e.back_0nn(
+                  hh + real(k)*hmult,
+                  vv + real(l)*vmult
+            )),
+            target = vars.eyeball - diff;
+         const eyetardiff<real> etd(vars.eyeball, target, diff);
 
-      for (;;) {
-         for ( ;  s < endsorted && bin[s].minimum < *qa_ptr;  ++s)
-            if (get_first(kip_param(s,real(*qa_ptr),*qb_ptr)))
-               std::swap(qa_ptr,qb_ptr), f = true;
+         // loop over objects in this bin
+         unsigned s = 0;  bool f = false;
+         for ( ;  s < endsorted;  ++s)
+            if (get_first(bin, s, i, j, zone, etd, maximum, *qb_ptr))
+               { std::swap(qa_ptr,qb_ptr);  f = true;  s++;  break; }
 
-         // break if found something, or if there's no more to sort
-         if (s != endsorted || endsorted == binsize) break;
+         for (;;) {
+            for ( ;  s < endsorted && bin[s].minimum < *qa_ptr;  ++s)
+               if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
+                  std::swap(qa_ptr,qb_ptr), f = true;
 
-         // sort more
-         endsorted = get_endsorted(endsorted, engine, binsize);
-         std::partial_sort(
-            bin.begin()+s,
-            bin.begin()+endsorted,
-            bin.end(),
-            less<real,base>()
-         );
+            // break if found something, or if there's no more to sort
+            if (s != endsorted || endsorted == binsize) break;
+
+            // sort more
+            endsorted = get_endsorted(endsorted, engine, binsize);
+            std::partial_sort(
+               bin.begin()+s,
+               bin.begin()+endsorted,
+               bin.end(),
+               less<real,base>()
+            );
+         }
+
+         if (f) {
+            found = true;
+            sum += get_color<color>(vars.eyeball,light[0], *qa_ptr, pixel);
+         } else {
+            sum += image.background;
+         }
       }
 
-      if (f) {
-         found = true;
-         sum += get_color<color>(vars.eyeball,light[0], *qa_ptr, pixel);
-      } else {
-         sum += image.background;
-      }
+      return found;
    }
-
-   return found;
-
-} kip_fill_end
+};
 
 
 
@@ -628,7 +704,7 @@ kip_fill_anti(any_anti) {
 // Each loops over individual shapes, for a specific pixel.
 
 template<
-   class real, class color, class base, class pix,
+   class real, class base, class color, class pix,
    class ACTION
 >
 inline void fill_loop_plain(
@@ -671,7 +747,7 @@ inline void fill_loop_plain(
 
 // fill_loop_lean
 template<
-   class real, class color, class base, class pix,
+   class real, class base, class color, class pix,
    class ACTION
 >
 inline void fill_loop_lean(
@@ -731,7 +807,7 @@ inline void fill_loop_lean(
 
 // qqq Figure out good antialiasing treatment of per-pixel information
 template<
-  class real, class color, class base, class pix, class ulong, class ACTION
+  class real, class base, class color, class pix, class ulong, class ACTION
 >
 inline void fill_loop_anti(
    const engine<real      > &engine,
@@ -797,7 +873,7 @@ inline void bin_border(
 
 
 // trace_bin
-template<class real, class color, class base, class pix>
+template<class real, class base, class color, class pix>
 void trace_bin(
    const engine<real      > &engine,
    const view  <real      > &view,
@@ -817,28 +893,6 @@ void trace_bin(
    if (image.border.bin)
       bin_border(image, imin++,iend--, jmin++,jend--,
                  color::border(binsize, max_binsize));
-
-   // macros
-   #define kip_action_plain(functor)\
-   fill_loop_plain(\
-      engine,image,vars,light,\
-      imin,iend, jmin,jend, zone,maximum,\
-      bin, endsorted,binsize, qa,qb, pixel,\
-      functor<real,color,base,pix>())
-
-   #define kip_action_lean(functor)\
-   fill_loop_lean(\
-      view,engine,image,vars,light,\
-      imin,iend, jmin,jend, zone,maximum,\
-      bin, endsorted,binsize, qa,qb, pixel,\
-      functor<real,color,base,pix>())
-
-   #define kip_action_anti(functor)\
-   fill_loop_anti (\
-      engine,image,vars,light,\
-      hcent,imin,iend, vcent,jmin,jend, zone,maximum,\
-      bin, endsorted,binsize, qa,qb, pixel,\
-      functor<real,color,base,pix>())
 
    // binsize-dependent [partial-]sorting actions
    using diff_t =
@@ -867,23 +921,57 @@ void trace_bin(
 
       // action
       if (engine.lean) {
-         if (binsize == 1)
-            kip_action_lean(one_plain);
-         else if (binsize == 2)
-            kip_action_lean(two_plain);
-         else if (binsize == endsorted)
-            kip_action_lean(max_plain);
-         else
-            kip_action_lean(any_plain);
+         if (binsize == 1) {
+            fill_loop_lean(
+               view, engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               one_plain<real,base,color,pix>() // one
+            );
+         } else if (binsize == 2) {
+            fill_loop_lean(
+               view, engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               two_plain<real,base,color,pix>() // two
+            );
+         } else if (binsize == endsorted) {
+            fill_loop_lean(
+               view, engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               max_plain<real,base,color,pix>() // max
+            );
+         } else {
+            fill_loop_lean(
+               view, engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               any_plain<real,base,color,pix>() // any
+            );
+         }
       } else {
-         if (binsize == 1)
-            kip_action_plain(one_plain);
-         else if (binsize == 2)
-            kip_action_plain(two_plain);
-         else if (binsize == endsorted)
-            kip_action_plain(max_plain);
-         else
-            kip_action_plain(any_plain);
+         if (binsize == 1) {
+            fill_loop_plain(
+               engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               one_plain<real,base,color,pix>() // one
+            );
+         } else if (binsize == 2) {
+            fill_loop_plain(
+               engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               two_plain<real,base,color,pix>() // two
+            );
+         } else if (binsize == endsorted) {
+            fill_loop_plain(
+               engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               max_plain<real,base,color,pix>() // max
+            );
+         } else {
+            fill_loop_plain(
+               engine, image, vars, light, imin, iend, jmin, jend,
+               zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+               any_plain<real,base,color,pix>() // any
+            );
+         }
       }
 
    } else {
@@ -894,21 +982,26 @@ void trace_bin(
       const real vcent = real(jmin)*vars.vfull - vars.vmax + vars.vhalf;
 
       // action
-      if (binsize == 1)
-         kip_action_anti(one_anti);
-      else if (binsize == 2)
-         kip_action_anti(two_anti);
-      else
-         kip_action_anti(any_anti);
+      if (binsize == 1) {
+         fill_loop_anti(
+            engine, image, vars, light, hcent, imin, iend, vcent, jmin, jend,
+            zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+            one_anti<real,base,color,pix>() // one
+         );
+      } else if (binsize == 2) {
+         fill_loop_anti(
+            engine, image, vars, light, hcent, imin, iend, vcent, jmin, jend,
+            zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+            two_anti<real,base,color,pix>() // two
+         );
+      } else {
+         fill_loop_anti(
+            engine, image, vars, light, hcent, imin, iend, vcent, jmin, jend,
+            zone, maximum, bin, endsorted, binsize, qa, qb, pixel,
+            any_anti<real,base,color,pix>() // any
+         );
+      }
    }
 }
 
 } // namespace detail
-
-#undef kip_action_plain
-#undef kip_action_lean
-#undef kip_action_anti
-#undef kip_fill_plain
-#undef kip_fill_anti
-#undef kip_fill_end
-#undef kip_param

@@ -681,47 +681,44 @@ void usetup(
 
    // Prepare most shapes
    const int nbin = int(engine.hzone * engine.vzone);
-   #define kip_lev light, engine, vars, nbin, model.
 
-   uprepare<1>  ( kip_lev kipnot,     true );
+   uprepare<1>  ( light, engine, vars, nbin, model.kipnot,     true );
 
-   uprepare<2>  ( kip_lev kipand,     true );
-   uprepare<2>  ( kip_lev kipcut,     true );
-   uprepare<2>  ( kip_lev kipor,      true );
-   uprepare<2>  ( kip_lev kipxor,     true );
+   uprepare<2>  ( light, engine, vars, nbin, model.kipand,     true );
+   uprepare<2>  ( light, engine, vars, nbin, model.kipcut,     true );
+   uprepare<2>  ( light, engine, vars, nbin, model.kipor,      true );
+   uprepare<2>  ( light, engine, vars, nbin, model.kipxor,     true );
 
-   uprepare<3>  ( kip_lev ands,       true );
-   uprepare<3>  ( kip_lev even,       true );
-   uprepare<3>  ( kip_lev odd,        true );
-   uprepare<3>  ( kip_lev one,        true );
-   uprepare<3>  ( kip_lev ors,        true );
-   uprepare<3>  ( kip_lev some,       true );
+   uprepare<3>  ( light, engine, vars, nbin, model.ands,       true );
+   uprepare<3>  ( light, engine, vars, nbin, model.even,       true );
+   uprepare<3>  ( light, engine, vars, nbin, model.odd,        true );
+   uprepare<3>  ( light, engine, vars, nbin, model.one,        true );
+   uprepare<3>  ( light, engine, vars, nbin, model.ors,        true );
+   uprepare<3>  ( light, engine, vars, nbin, model.some,       true );
 
-   uprepare<0>  ( kip_lev bicylinder, true );
-   uprepare<0>  ( kip_lev biwasher,   true );
-   uprepare<0>  ( kip_lev box,        true );
-   uprepare<0>  ( kip_lev cube,       true );
-   uprepare<0>  ( kip_lev circle,     true );
-   uprepare<0>  ( kip_lev cone,       true );
-   uprepare<0>  ( kip_lev cylinder,   true );
-   uprepare<0>  ( kip_lev ellipsoid,  true );
-   uprepare<0>  ( kip_lev half,       true );
-   uprepare<0>  ( kip_lev paraboloid, true );
-   uprepare<0>  ( kip_lev nothing,    true );
-   uprepare<0>  ( kip_lev everything, true );
-   uprepare<0>  ( kip_lev pill,       true );
-   uprepare<0>  ( kip_lev polygon,    true );
-   uprepare<0>  ( kip_lev silo,       true );
-   uprepare<0>  ( kip_lev sphere,     true );
-   uprepare<0>  ( kip_lev spheroid,   true );
-   uprepare<0>  ( kip_lev tabular,    true );
-   uprepare<0>  ( kip_lev triangle,   true );
-   uprepare<0>  ( kip_lev washer,     true );
-   uprepare<0>  ( kip_lev xplane,     true );
-   uprepare<0>  ( kip_lev yplane,     true );
-   uprepare<0>  ( kip_lev zplane,     true );
-
-   #undef kip_lev
+   uprepare<0>  ( light, engine, vars, nbin, model.bicylinder, true );
+   uprepare<0>  ( light, engine, vars, nbin, model.biwasher,   true );
+   uprepare<0>  ( light, engine, vars, nbin, model.box,        true );
+   uprepare<0>  ( light, engine, vars, nbin, model.cube,       true );
+   uprepare<0>  ( light, engine, vars, nbin, model.circle,     true );
+   uprepare<0>  ( light, engine, vars, nbin, model.cone,       true );
+   uprepare<0>  ( light, engine, vars, nbin, model.cylinder,   true );
+   uprepare<0>  ( light, engine, vars, nbin, model.ellipsoid,  true );
+   uprepare<0>  ( light, engine, vars, nbin, model.half,       true );
+   uprepare<0>  ( light, engine, vars, nbin, model.paraboloid, true );
+   uprepare<0>  ( light, engine, vars, nbin, model.nothing,    true );
+   uprepare<0>  ( light, engine, vars, nbin, model.everything, true );
+   uprepare<0>  ( light, engine, vars, nbin, model.pill,       true );
+   uprepare<0>  ( light, engine, vars, nbin, model.polygon,    true );
+   uprepare<0>  ( light, engine, vars, nbin, model.silo,       true );
+   uprepare<0>  ( light, engine, vars, nbin, model.sphere,     true );
+   uprepare<0>  ( light, engine, vars, nbin, model.spheroid,   true );
+   uprepare<0>  ( light, engine, vars, nbin, model.tabular,    true );
+   uprepare<0>  ( light, engine, vars, nbin, model.triangle,   true );
+   uprepare<0>  ( light, engine, vars, nbin, model.washer,     true );
+   uprepare<0>  ( light, engine, vars, nbin, model.xplane,     true );
+   uprepare<0>  ( light, engine, vars, nbin, model.yplane,     true );
+   uprepare<0>  ( light, engine, vars, nbin, model.zplane,     true );
 
    // Prepare surfs; creates "tri" objects
    uprepare_surf(light, engine, vars, nbin, object_border, model.surf);

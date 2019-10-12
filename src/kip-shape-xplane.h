@@ -184,10 +184,14 @@ kip_randomize(xplane)
    obj.size.y = random_unit<real>();
    obj.size.z = random_unit<real>();
 
-   // color, base
+   // color
    randomize(obj.color);
+
+   // base
    randomize(obj.base());
    obj.baseset = true;
+
+   // done
    return obj;
 } kip_end
 
