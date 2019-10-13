@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class cube : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // rotation: clockwise around x, then y, then z; then +c translation
@@ -19,7 +19,7 @@ public:
    kip_functions(cube);
 
    // compute_corners
-   inline void compute_corners() const
+   void compute_corners() const
    {
       // rotation to move corners to their actual locations
       const rotate<3,real,op::full,op::unscaled> move(a.x, a.y, a.z, c);
@@ -41,13 +41,13 @@ public:
    real r;
 
    // back()
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { return rot.back(from); }
 
 
 
    // cube([c[,a[,r[,base]]]])
-   inline explicit cube(
+   explicit cube(
       const point<real> &_c = point<real>(real(0), real(0), real(0)),
       const point<real> &_a = point<real>(real(0), real(0), real(0)),
       const real _r = real(1)
@@ -56,7 +56,7 @@ public:
       c(_c), a(_a), r(_r)
    { }
 
-   inline explicit cube(
+   explicit cube(
       const point<real> &_c,
       const point<real> &_a,
       const real _r, const tag &thebase
@@ -68,7 +68,7 @@ public:
 
 
    // cube(c.x,c.y,c.z[,a.x,a.y,a.z[,r[,base]]])
-   inline explicit cube(
+   explicit cube(
       const real cx, const real cy, const real cz
    ) :
       shape<real,tag>(this),
@@ -77,7 +77,7 @@ public:
       r(real(1))
    { }
 
-   inline explicit cube(
+   explicit cube(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az
    ) :
@@ -87,7 +87,7 @@ public:
       r(real(1))
    { }
 
-   inline explicit cube(
+   explicit cube(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az,
       const real _r
@@ -98,7 +98,7 @@ public:
       r(_r)
    { }
 
-   inline explicit cube(
+   explicit cube(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az,
       const real _r, const tag &thebase
@@ -112,7 +112,7 @@ public:
 
 
    // cube(cube)
-   inline cube(const cube &from) :
+   cube(const cube &from) :
       shape<real,tag>(from),
       c(from.c),
       a(from.a),
@@ -120,7 +120,7 @@ public:
    { }
 
    // cube = cube
-   inline cube &operator=(const cube &from)
+   cube &operator=(const cube &from)
    {
       this->shape<real,tag>::operator=(from);
       c = from.c;

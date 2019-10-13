@@ -48,8 +48,8 @@ template<class real = default_real>
 class xypoint {
 public:
    real x, y;
-   inline explicit xypoint() { }
-   inline explicit xypoint(const real _x, const real _y) : x(_x), y(_y) { }
+   explicit xypoint() { }
+   explicit xypoint(const real _x, const real _y) : x(_x), y(_y) { }
 };
 
 // xrpoint
@@ -57,8 +57,8 @@ template<class real = default_real>
 class xrpoint {
 public:
    real x, r;
-   inline explicit xrpoint() { }
-   inline explicit xrpoint(const real _x, const real _r) : x(_x), r(_r) { }
+   explicit xrpoint() { }
+   explicit xrpoint(const real _x, const real _r) : x(_x), r(_r) { }
 };
 
 
@@ -92,19 +92,19 @@ public:
 
    // inq()
    // inq(real)
-   inline explicit inq() { }
-   inline explicit inq(const real _q) : q(_q) { }
+   explicit inq() { }
+   explicit inq(const real _q) : q(_q) { }
 
    // assignment from real
-   inline inq &operator=(const real from)
+   inq &operator=(const real from)
    {
       q = from;
       return *this;
    }
 
    // conversion to real
-   inline operator       real&()       { return q; }
-   inline operator const real&() const { return q; }
+   operator       real&()       { return q; }
+   operator const real&() const { return q; }
 
    // operator()(nx,ny,nz, shape,        isnormalized [, fac = default])
    // operator()(n,        shape,        isnormalized [, fac = default])
@@ -113,7 +113,7 @@ public:
 
 
 
-   inline inq &operator()(
+   inq &operator()(
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
       const normalized _isnormalized,
@@ -126,7 +126,7 @@ public:
       return *this;
    }
 
-   inline inq &operator()(
+   inq &operator()(
       const point<real> &_n,
       const kip::shape<real,base> *const _shape,
       const normalized _isnormalized,
@@ -140,7 +140,7 @@ public:
 
    // qqq I think we need the following only because xplane,
    // yplane, and zplane actually involve two colors...
-   inline inq &operator()(
+   inq &operator()(
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
       const base *const _color,
@@ -155,7 +155,7 @@ public:
    }
 
    // reverse
-   inline inq &reverse(const bool doit)  // conditional
+   inq &reverse(const bool doit)  // conditional
    {
       if (doit) {
          n.x = -n.x;
@@ -164,7 +164,7 @@ public:
       }
       return *this;
    }
-   inline inq &reverse() { return reverse(true); }  // unconditional
+   inq &reverse() { return reverse(true); }  // unconditional
 };
 
 
@@ -186,17 +186,17 @@ class afew {
 public:
 
    // constructor
-   inline explicit afew() : ptr(buffer), bufsize(length), num(0) { }
+   explicit afew() : ptr(buffer), bufsize(length), num(0) { }
 
    // destructor
-   inline ~afew()
+   ~afew()
    {
       if (ptr != buffer)
          delete[] ptr;
    }
 
    // copy constructor
-   inline afew(const afew &from) :
+   afew(const afew &from) :
       num(from.num)
    {
       if (from.ptr == from.buffer) {
@@ -210,7 +210,7 @@ public:
    }
 
    // copy assignment
-   inline afew &operator=(const afew &from)
+   afew &operator=(const afew &from)
    {
       return assign(from);
    }
@@ -218,7 +218,7 @@ public:
    // assign
    // zzz depending on usage, we might be able to get away with a shallow
    // copy; for now, do a deep copy
-   inline afew &assign(const afew &from)
+   afew &assign(const afew &from)
    {
       if (from.ptr == from.buffer) {
          // "from" uses buffer memory; do the same here
@@ -249,19 +249,19 @@ public:
    }
 
    // size()
-   inline ulong size() const { return num; }
+   ulong size() const { return num; }
 
    // setsize(n) - use only if you know what you're doing
-   inline void setsize(const ulong n) { num = n; }
+   void setsize(const ulong n) { num = n; }
 
    // operator[]
-   inline       INQ &operator[](const ulong i)
+   INQ &operator[](const ulong i)
       { kip_assert_index(i < num);  return ptr[i]; }
-   inline const INQ &operator[](const ulong i) const
+   const INQ &operator[](const ulong i) const
       { kip_assert_index(i < num);  return ptr[i]; }
 
    // push
-   inline INQ &push(const INQ &value)
+   INQ &push(const INQ &value)
    {
       kip_assert_index(num <= bufsize);
       if (num == bufsize) {
@@ -277,25 +277,25 @@ public:
    }
 
    // one()
-   inline INQ &one()
+   INQ &one()
    {
       num = 1;
       return ptr[0];
    }
 
    // reset()
-   inline void reset()
+   void reset()
    {
       num = 0;
    }
 
    // convex()
-   inline void convex()
+   void convex()
    {
       num = 0;
    }
 
-   inline bool convex(const INQ &inq)  // for INQ of inq<> type
+   bool convex(const INQ &inq)  // for INQ of inq<> type
    {
       if (num) {
          kip_assert(num == 1);
@@ -315,19 +315,19 @@ public:
    }
 
    // four()
-   inline void four()
+   void four()
    {
       num = 0;
    }
 
-   inline bool four(const INQ &inq)  // for INQ of inq<> type
+   bool four(const INQ &inq)  // for INQ of inq<> type
    {
       if (num < 4)
          ptr[num++] = inq;
       return num == 4;  // done (true) if 4
    }
 
-   inline bool sort()
+   bool sort()
    {
       // this is kind of mindless; think up something better
       if (num > 1) {
@@ -355,7 +355,7 @@ public:
    }
 
    // reverse (reverses normals, not container of inqs)
-   inline afew &reverse(const bool doit)
+   afew &reverse(const bool doit)
    {
       if (doit)
          for (ulong i = 0;  i < num;  ++i)
@@ -363,11 +363,11 @@ public:
       return *this;
    }
 
-   inline afew &reverse()
+   afew &reverse()
    {
       return reverse(true);
    }
 
    // conversion to bool (always returns true)
-   inline operator bool() const { return true; }
+   operator bool() const { return true; }
 };

@@ -15,19 +15,19 @@ public:
    bool isnormalized;                   // is |normal| == 1?
 
    // conversion to bool (meaning: ray hits shape)
-   inline operator bool() const
+   operator bool() const
    {
       return shape != nullptr;
    }
 
    // initialize
-   inline void initialize()
+   void initialize()
    {
       shape = nullptr;
    }
 
    // indsn: set
-   inline void set(const inq<real,base> &q)
+   void set(const inq<real,base> &q)
    {
       // true ray/shape intersection
       intersection = q.shape->back(q.fac > 0 ? q.fac*q : point<real>(q));

@@ -29,7 +29,7 @@ public:
    } prior;
 
    // fix
-   inline const view &fix() const;
+   const view &fix() const;
 };
 
 

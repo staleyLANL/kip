@@ -20,7 +20,7 @@ public:
    point<real> n;
    real r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(from);
    }

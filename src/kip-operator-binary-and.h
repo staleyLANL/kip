@@ -11,15 +11,15 @@ public:
    using shape<real,tag>::binary;
    kip_functions(kipand);
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { assert(false);  return from; }
 
-   inline void propagate_base(const bool force = false) const
+   void propagate_base(const bool force = false) const
       { detail::propagate_binary(*this,force); }
 
 
    // kipand()
-   inline explicit kipand() :
+   explicit kipand() :
       shape<real,tag>(this)
    {
       binary.a = nullptr;
@@ -28,7 +28,7 @@ public:
 
 
    // kipand(a,b[,tag]), a and b = pointers
-   inline explicit kipand(
+   explicit kipand(
       const shape<real,tag> *const a,
       const shape<real,tag> *const b
    ) :
@@ -38,7 +38,7 @@ public:
       binary.b = b;
    }
 
-   inline explicit kipand(
+   explicit kipand(
       const shape<real,tag> *const a,
       const shape<real,tag> *const b, const tag &_tag
    ) :
@@ -50,7 +50,7 @@ public:
 
 
    // kipand(a,b[,tag]), a and b = references
-   inline explicit kipand(
+   explicit kipand(
       const shape<real,tag> &a,
       const shape<real,tag> &b
    ) :
@@ -60,7 +60,7 @@ public:
       binary.b = b.duplicate();
    }
 
-   inline explicit kipand(
+   explicit kipand(
       const shape<real,tag> &a,
       const shape<real,tag> &b, const tag &_tag
    ) :
@@ -72,7 +72,7 @@ public:
 
 
    // kipand(kipand)
-   inline kipand(const kipand &from) :
+   kipand(const kipand &from) :
       shape<real,tag>(from)
    {
       binary.a = from.binary.a ? from.binary.a->duplicate() : nullptr;
@@ -80,7 +80,7 @@ public:
    }
 
    // kipand = kipand
-   inline kipand &operator=(const kipand &from)
+   kipand &operator=(const kipand &from)
    {
       this->shape<real,tag>::operator=(from);
       delete binary.a;
@@ -92,7 +92,7 @@ public:
 
 
    // destructor
-   inline ~kipand()
+  ~kipand()
    {
       delete binary.a;
       delete binary.b;

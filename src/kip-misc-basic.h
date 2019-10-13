@@ -74,7 +74,7 @@ inline void print(const T &value)
 }
 
 // ray tracing method
-enum class method_t {
+enum class method {
    uniform,
    recursive,
    block

@@ -11,15 +11,15 @@ public:
    using shape<real,tag>::binary;
    kip_functions(kipcut);
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { assert(false);  return from; }
 
-   inline void propagate_base(const bool force = false) const
+   void propagate_base(const bool force = false) const
       { detail::propagate_binary(*this,force); }
 
 
    // kipcut()
-   inline explicit kipcut() :
+   explicit kipcut() :
       shape<real,tag>(this)
    {
       binary.a = nullptr;
@@ -28,7 +28,7 @@ public:
 
 
    // kipcut(a,b[,base]), a and b = pointers
-   inline explicit kipcut(
+   explicit kipcut(
       const shape<real,tag> *const _a,
       const shape<real,tag> *const _b
    ) :
@@ -38,7 +38,7 @@ public:
       binary.b = _b;
    }
 
-   inline explicit kipcut(
+   explicit kipcut(
       const shape<real,tag> *const _a,
       const shape<real,tag> *const _b, const tag &thebase
    ) :
@@ -50,7 +50,7 @@ public:
 
 
    // kipcut(a,b[,base]), a and b = references
-   inline explicit kipcut(
+   explicit kipcut(
       const shape<real,tag> &a,
       const shape<real,tag> &b
    ) :
@@ -60,7 +60,7 @@ public:
       binary.b = b.duplicate();
    }
 
-   inline explicit kipcut(
+   explicit kipcut(
       const shape<real,tag> &a,
       const shape<real,tag> &b, const tag &thebase
    ) :
@@ -72,7 +72,7 @@ public:
 
 
    // kipcut(kipcut)
-   inline kipcut(const kipcut &from) :
+   kipcut(const kipcut &from) :
       shape<real,tag>(from)
    {
       binary.a = from.binary.a ? from.binary.a->duplicate() : nullptr;
@@ -80,7 +80,7 @@ public:
    }
 
    // kipcut = kipcut
-   inline kipcut &operator=(const kipcut &from)
+   kipcut &operator=(const kipcut &from)
    {
       this->shape<real,tag>::operator=(from);
       delete binary.a;
@@ -92,7 +92,7 @@ public:
 
 
    // destructor
-   inline ~kipcut()
+  ~kipcut()
    {
       delete binary.a;
       delete binary.b;

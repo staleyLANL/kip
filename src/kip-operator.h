@@ -79,8 +79,8 @@ public:
    ulong next;  // running next-position
    bool in_now;  // status as we move along the ray
 
-   inline       INQ &q()       { return points[next]; }
-   inline const INQ &q() const { return points[next]; }
+   INQ &q() { return points[next]; }
+   const INQ &q() const { return points[next]; }
 };
 
 
@@ -93,10 +93,10 @@ class grower {
 
 public:
    // grower()
-   inline grower() : position(0) { }
+   grower() : position(0) { }
 
    // more(count)
-   inline T *more(const ulong count)
+   T *more(const ulong count)
    {
       const ulong available = vec.size() - position;
       if (available < count)
@@ -112,7 +112,7 @@ public:
    }
 
    // less(count)
-   inline void less(const ulong count)
+   void less(const ulong count)
    {
       position -= count;
    }

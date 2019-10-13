@@ -11,15 +11,15 @@ public:
    using shape<real,tag>::binary;
    kip_functions(kipor);
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { assert(false);  return from; }
 
-   inline void propagate_base(const bool force = false) const
+   void propagate_base(const bool force = false) const
       { detail::propagate_binary(*this,force); }
 
 
    // kipor()
-   inline explicit kipor() :
+   explicit kipor() :
       shape<real,tag>(this)
    {
       binary.a = nullptr;
@@ -28,7 +28,7 @@ public:
 
 
    // kipor(a,b[,base]), a and b = pointers
-   inline explicit kipor(
+   explicit kipor(
       const shape<real,tag> *const _a,
       const shape<real,tag> *const _b
    ) :
@@ -38,7 +38,7 @@ public:
       binary.b = _b;
    }
 
-   inline explicit kipor(
+   explicit kipor(
       const shape<real,tag> *const _a,
       const shape<real,tag> *const _b, const tag &thebase
    ) :
@@ -50,7 +50,7 @@ public:
 
 
    // kipor(a,b[,base]), a and b = references
-   inline explicit kipor(
+   explicit kipor(
       const shape<real,tag> &a,
       const shape<real,tag> &b
    ) :
@@ -60,7 +60,7 @@ public:
       binary.b = b.duplicate();
    }
 
-   inline explicit kipor(
+   explicit kipor(
       const shape<real,tag> &a,
       const shape<real,tag> &b, const tag &thebase
    ) :
@@ -72,7 +72,7 @@ public:
 
 
    // kipor(kipor)
-   inline kipor(const kipor &from) :
+   kipor(const kipor &from) :
       shape<real,tag>(from)
    {
       binary.a = from.binary.a ? from.binary.a->duplicate() : nullptr;
@@ -80,7 +80,7 @@ public:
    }
 
    // kipor = kipor
-   inline kipor &operator=(const kipor &from)
+   kipor &operator=(const kipor &from)
    {
       this->shape<real,tag>::operator=(from);
       delete binary.a;
@@ -92,7 +92,7 @@ public:
 
 
    // destructor
-   inline ~kipor()
+   ~kipor()
    {
       delete binary.a;
       delete binary.b;

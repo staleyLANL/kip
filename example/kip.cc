@@ -92,7 +92,7 @@ void initialize()
 
    // engine
    // Know what you're doing if you change any of these
-   engine.method    = kip::method_t::uniform;
+   engine.method    = kip::method::uniform;
    engine.hzone     = 50;
    engine.vzone     = 50;
    engine.hsub      = 4;
@@ -272,6 +272,20 @@ bool move(const int key)
 
    // key
    switch (key) {
+
+      // method
+      case XK_u :
+         return
+            engine.method != kip::method::uniform
+          ? engine.method  = kip::method::uniform, true
+          : false;
+
+      case XK_r :
+         return
+            engine.method != kip::method::recursive
+          ? engine.method  = kip::method::recursive, true
+          : false;
+
       // bin/object border toggle
       case XK_bracketleft  : image.border.bin    = !image.border.bin   ;  break;
       case XK_bracketright : image.border.object = !image.border.object;  break;

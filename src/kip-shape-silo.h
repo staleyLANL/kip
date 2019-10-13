@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class silo : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // modified silo: (0,0,0), (h,0,0), r
@@ -13,7 +13,7 @@ class silo : public shape<real,tag> {
    mutable real rsq, hsq, h1, h2, m;
 
    // get_*
-   inline bool
+   bool
    get_hemi0(const point<real> &,
              const real, const real, const real, inq<real,tag> &) const,
    get_baseh(const point<real> &,
@@ -29,7 +29,7 @@ public:
    point<real> a, b;
    real r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(from);
    }

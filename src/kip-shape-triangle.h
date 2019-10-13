@@ -19,16 +19,16 @@ public:
    point<real> u, v, w;
 
    // ghi()
-   inline point<real> &ghi() const
+   point<real> &ghi() const
       { return *(point<real> *)(void *)&this->shape<real,tag>::tridata.ghi[0]; }
 
    // back
-   inline point<real> back(const point<real> &from) const { return from; }
+   point<real> back(const point<real> &from) const { return from; }
 
 
 
    // triangle([u[,v[,w[,tag]]]])
-   inline explicit triangle(
+   explicit triangle(
       const point<real> &_u = point<real>(real(1), real(0), real(0)),
       const point<real> &_v = point<real>(real(0), real(1), real(0)),
       const point<real> &_w = point<real>(real(0), real(0), real(1))
@@ -37,7 +37,7 @@ public:
       u(_u), v(_v), w(_w)
    { this->eyelie = false; }
 
-   inline explicit triangle(
+   explicit triangle(
       const point<real> &_u,
       const point<real> &_v,
       const point<real> &_w, const tag &_tag
@@ -48,7 +48,7 @@ public:
 
 
    // triangle(ux,uy,uz[,vx,vy,vz[,wx,wy,wz[,tag]]])
-   inline explicit triangle(
+   explicit triangle(
       const real ux, const real uy, const real uz
    ) :
       shape<real,tag>(this),
@@ -57,7 +57,7 @@ public:
       w(real(0), real(0), real(1))
    { this->eyelie = false; }
 
-   inline explicit triangle(
+   explicit triangle(
       const real ux, const real uy, const real uz,
       const real vx, const real vy, const real vz
    ) :
@@ -67,7 +67,7 @@ public:
       w(real(0), real(0), real(1))
    { this->eyelie = false; }
 
-   inline explicit triangle(
+   explicit triangle(
       const real ux, const real uy, const real uz,
       const real vx, const real vy, const real vz,
       const real wx, const real wy, const real wz
@@ -78,7 +78,7 @@ public:
       w(wx, wy, wz)
    { this->eyelie = false; }
 
-   inline explicit triangle(
+   explicit triangle(
       const real ux, const real uy, const real uz,
       const real vx, const real vy, const real vz,
       const real wx, const real wy, const real wz, const tag &_tag
@@ -91,7 +91,7 @@ public:
 
 
    // triangle(triangle)
-   inline triangle(const triangle &from) :
+   triangle(const triangle &from) :
       shape<real,tag>(from),
       u(from.u),
       v(from.v),
@@ -100,7 +100,7 @@ public:
 
 
    // triangle=triangle
-   inline triangle &operator=(const triangle &from)
+   triangle &operator=(const triangle &from)
    {
       this->shape<real,tag>::operator=(from);
       u = from.u;

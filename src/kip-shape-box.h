@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class box : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // rotation: clockwise around x, then y, then z; then +c translation
@@ -19,7 +19,7 @@ public:
    kip_functions(box);
 
    // compute_corners
-   inline void compute_corners() const
+   void compute_corners() const
    {
       // rotation to move corners to their actual locations
       const rotate<3,real,op::full,op::unscaled> move(a.x, a.y, a.z, c);
@@ -40,13 +40,13 @@ public:
    point<real> a;
    point<real> r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { return rot.back(from); }
 
 
 
    // box([c[,a[,r[,base]]]])
-   inline explicit box(
+   explicit box(
       const point<real> &_c = point<real>(real(0),real(0),real(0)),
       const point<real> &_a = point<real>(real(0),real(0),real(0)),
       const point<real> &_r = point<real>(real(1),real(1),real(1))
@@ -55,7 +55,7 @@ public:
       c(_c), a(_a), r(_r)
    { }
 
-   inline explicit box(
+   explicit box(
       const point<real> &_c,
       const point<real> &_a,
       const point<real> &_r, const tag &thebase
@@ -67,7 +67,7 @@ public:
 
 
    // box(c.x,c.y,c.z[,a.x,a.y,a.z[,r.x,r.y,r.z[,base]]])
-   inline explicit box(
+   explicit box(
       const real cx, const real cy, const real cz
    ) :
       shape<real,tag>(this),
@@ -76,7 +76,7 @@ public:
       r(real(1),real(1),real(1))
    { }
 
-   inline explicit box(
+   explicit box(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az
    ) :
@@ -86,7 +86,7 @@ public:
       r(real(1),real(1),real(1))
    { }
 
-   inline explicit box(
+   explicit box(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az,
       const real rx, const real ry, const real rz
@@ -97,7 +97,7 @@ public:
       r(rx,ry,rz)
    { }
 
-   inline explicit box(
+   explicit box(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az,
       const real rx, const real ry, const real rz, const tag &thebase
@@ -111,7 +111,7 @@ public:
 
 
    // box(box)
-   inline box(const box &from) :
+   box(const box &from) :
       shape<real,tag>(from),
       c(from.c),
       a(from.a),
@@ -119,7 +119,7 @@ public:
    { }
 
    // box = box
-   inline box &operator=(const box &from)
+   box &operator=(const box &from)
    {
       this->shape<real,tag>::operator=(from);
       c = from.c;

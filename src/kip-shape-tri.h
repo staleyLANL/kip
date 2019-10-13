@@ -11,7 +11,7 @@ public:
 
    // operator()(u,v,w, e,ghi)
    // Returns true iff non-degenerate and e not in uvw plane
-   inline bool operator()(
+   bool operator()(
       const point<real> &u, const point<real> &v, const point<real> &w,
       const point<real> &e, point<real> &ghi
    ) {
@@ -40,9 +40,9 @@ public:
    }
 
    // forex, forey, forez
-   inline real forex(const point<real> &p) const { return dot(abc,p); }
-   inline real forey(const point<real> &p) const { return dot(def,p); }
-   inline real forez(const point<real> &p, const point<real> &ghi) const
+   real forex(const point<real> &p) const { return dot(abc,p); }
+   real forey(const point<real> &p) const { return dot(def,p); }
+   real forez(const point<real> &p, const point<real> &ghi) const
       { return dot(ghi,p); }
 };
 
@@ -64,12 +64,12 @@ public:
 
    // u(), v(), w(): retrieve vertices
    using shape<real,tag>::vertex;
-   inline ulong &u() const { return vertex.u; }
-   inline ulong &v() const { return vertex.v; }
-   inline ulong &w() const { return vertex.w; }
+   ulong &u() const { return vertex.u; }
+   ulong &v() const { return vertex.v; }
+   ulong &w() const { return vertex.w; }
 
    // ghi()
-   inline point<real> &ghi() const
+   point<real> &ghi() const
       { return *(point<real> *)(void *)&vertex.ghi[0]; }
 
 
@@ -78,12 +78,12 @@ public:
    // ------------------------
 
    // tri()
-   inline explicit tri() :
+   explicit tri() :
       shape<real,tag>(this)
    {  this->eyelie = false; }
 
    // tri(u,v,w)
-   inline explicit tri(
+   explicit tri(
       const ulong &a, const ulong &b, const ulong &c
    ) :
       shape<real,tag>(this)
@@ -95,7 +95,7 @@ public:
    }
 
    // tri(tri)
-   inline tri(const tri &from) :
+   tri(const tri &from) :
       shape<real,tag>(from)
    {
       u() = from.u();
@@ -105,7 +105,7 @@ public:
    }
 
    // tri=tri
-   inline tri &operator=(const tri &from)
+   tri &operator=(const tri &from)
    {
       this->shape<real,tag>::operator=(from);
       u() = from.u();
@@ -120,10 +120,10 @@ public:
    // ------------------------
 
    // back
-   inline point<real> back(const point<real> &from) const { return from; }
+   point<real> back(const point<real> &from) const { return from; }
 
    // operator()(u,v,w)
-   inline tri &operator()(
+   tri &operator()(
       const ulong &a, const ulong &b, const ulong &c
    ) {
       u() = a;
@@ -133,7 +133,7 @@ public:
    }
 
    // process - custom version
-   inline real process(
+   real process(
       const std::vector<point<real>> &, const point<real> &,
       const engine<real> &, const detail::vars<real,tag> &
    ) const;

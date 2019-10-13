@@ -9,8 +9,8 @@ template<
 >
 class model {
    // copy constructor/assignment; deliberately private
-   inline model(const model &) : append(false) { }
-   inline model &operator=(const model &) { return *this; }
+   model(const model &) : append(false) { }
+   model &operator=(const model &) { return *this; }
 
 public:
 
@@ -21,7 +21,7 @@ public:
    bool append;
 
    // Constructor
-   inline explicit model() : append(false) { }
+   explicit model() : append(false) { }
 
 
 
@@ -73,14 +73,14 @@ public:
    #define kip_make_primitive(type,prop)\
       std::vector<kip::type<real,base>> type;\
       \
-      inline kip::type<real,base> &push(const kip::type<real,base> &obj)\
+      kip::type<real,base> &push(const kip::type<real,base> &obj)\
       {\
          type.push_back(obj);\
          if (prop) type.back().propagate_base();\
          return type.back();\
       }\
       \
-      inline kip::type<real,base> &push(const kip::type<real,base> *const ptr)\
+      kip::type<real,base> &push(const kip::type<real,base> *const ptr)\
       {\
          detail::tclass<kip::type<real,base>> t;\
          return ptr ? push(*ptr) : default_parameter(t);\
@@ -137,7 +137,7 @@ public:
 
    // (5) shape *push(const std::pair<const type *, const shape *> &)
    template<template<class,class> class type>
-   inline shape<real,base> *push(
+   shape<real,base> *push(
       const std::pair<
          const type <real,base> *,
          const shape<real,base> *
@@ -156,7 +156,7 @@ public:
 
 
    // (6) shape *push(const std::pair<const shape *, const shape *> &)
-   inline shape<real,base> *push(
+   shape<real,base> *push(
       const std::pair<
          const shape<real,base> *,
          const shape<real,base> *
@@ -270,12 +270,12 @@ class loop {
    // conversion to bool
    // Private; prevents users from writing "while (i)" instead of "while (i())"
    // for a loop i
-   inline operator bool() const { return true; }
+   operator bool() const { return true; }
 
 public:
 
    // reset
-   inline void reset() const
+   void reset() const
    {
       row = ROW;
       col = 0;
@@ -288,7 +288,7 @@ public:
    bool operator()() const;
 
    // dereference (gives shape *)
-   inline pshape operator*() const { return ptr; }
+   pshape operator*() const { return ptr; }
 };
 
 
@@ -507,7 +507,7 @@ namespace detail {
    class functor_clear {
    public:
       template<class CONTAINER>
-      inline void operator()(CONTAINER &c) const { c.clear(); }
+      void operator()(CONTAINER &c) const { c.clear(); }
    };
 }
 
@@ -538,10 +538,10 @@ namespace detail {
    class functor_size {
    public:
       mutable ulong size;
-      inline functor_size() : size(0) { }
+      functor_size() : size(0) { }
 
       template<class CONTAINER>
-      inline void operator()(CONTAINER &c) const { size += ulong(c.size()); }
+      void operator()(CONTAINER &c) const { size += ulong(c.size()); }
    };
 }
 
@@ -565,7 +565,7 @@ namespace detail {
    class isbound {
    public:
       // operator()(SHAPE)
-      inline bool operator()(const SHAPE &s) const { return s.isbound; }
+      bool operator()(const SHAPE &s) const { return s.isbound; }
    };
 }
 
@@ -574,7 +574,7 @@ namespace detail {
    class functor_unbound {
    public:
       template<class CONTAINER>
-      inline void operator()(CONTAINER &c) const
+      void operator()(CONTAINER &c) const
       {
          c.erase(
             std::remove_if(
@@ -607,7 +607,7 @@ namespace detail {
 
    public:
 
-      inline functor_bound(
+      functor_bound(
          kip::model<real,base> &_model, bbox<real> &_rv,
          const bool &_each, const real _scale,
          const base &_tight, const base &_partial, const base &_loose
@@ -617,7 +617,7 @@ namespace detail {
       { }
 
       template<class CONTAINER>
-      inline void operator()(CONTAINER &obj) const
+      void operator()(CONTAINER &obj) const
       {
          const ulong size = obj.size();
          for (ulong i = 0;  i < size;  ++i)
@@ -723,14 +723,14 @@ namespace detail {
 
    public:
 
-      inline explicit allocate_and_read(
+      explicit allocate_and_read(
          kip::istream &_k, shape<real,base> * &_ptr
       )
     : k(_k), ptr(_ptr)
       { }
 
       template<class SHAPE>
-      inline void fun(const tclass<SHAPE> &)
+      void fun(const tclass<SHAPE> &)
       {
          SHAPE *const p = new SHAPE;
          if (p && k >> *p)
@@ -828,14 +828,14 @@ namespace detail {
 
    public:
 
-      inline explicit read_and_submit(
+      explicit read_and_submit(
          kip::istream &_k, kip::model<real,base> &_model
       )
     : k(_k), model(_model)
       { }
 
       template<class SHAPE>
-      inline void fun(const tclass<SHAPE> &)
+      void fun(const tclass<SHAPE> &)
       {
          static SHAPE shape;
          if (k >> shape)

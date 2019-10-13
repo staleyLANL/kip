@@ -11,27 +11,27 @@ public:
    using shape<real,tag>::unary;
    kip_functions(kipnot);
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { assert(false);  return from; }
 
-   inline void propagate_base(const bool force = false) const
+   void propagate_base(const bool force = false) const
       { detail::propagate_unary(*this,force); }
 
 
    // kipnot()
-   inline explicit kipnot() :
+   explicit kipnot() :
       shape<real,tag>(this)
    { unary.a = nullptr; }
 
 
    // kipnot(a[,base]), a = pointer
-   inline explicit kipnot(
+   explicit kipnot(
       const shape<real,tag> *const _a
    ) :
       shape<real,tag>(this)
    { unary.a = _a; }
 
-   inline explicit kipnot(
+   explicit kipnot(
       const shape<real,tag> *const _a, const tag &thebase
    ) :
       shape<real,tag>(this,thebase)
@@ -39,13 +39,13 @@ public:
 
 
    // kipnot(a[,base]), a = reference
-   inline explicit kipnot(
+   explicit kipnot(
       const shape<real,tag> &a
    ) :
       shape<real,tag>(this)
    { unary.a = a.duplicate(); }
 
-   inline explicit kipnot(
+   explicit kipnot(
       const shape<real,tag> &a, const tag &thebase
    ) :
       shape<real,tag>(this,thebase)
@@ -53,14 +53,14 @@ public:
 
 
    // kipnot(kipnot)
-   inline kipnot(const kipnot &from) :
+   kipnot(const kipnot &from) :
       shape<real,tag>(from)
    {
       unary.a = from.unary.a ? from.unary.a->duplicate() : nullptr;
    }
 
    // kipnot = kipnot
-   inline kipnot &operator=(const kipnot &from)
+   kipnot &operator=(const kipnot &from)
    {
       this->shape<real,tag>::operator=(from);
       delete unary.a;
@@ -70,7 +70,7 @@ public:
 
 
    // destructor
-   inline ~kipnot()
+   ~kipnot()
    {
       delete unary.a;
    }

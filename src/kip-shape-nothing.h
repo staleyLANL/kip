@@ -9,11 +9,11 @@ class nothing : public shape<real,tag> {
 
 public:
    kip_functions(nothing);
-   inline point<real> back(const point<real> &from) const { return from; }
+   point<real> back(const point<real> &from) const { return from; }
 
    // nothing([base])
-   inline explicit nothing() : shape<real,tag>(this) { }
-   inline explicit nothing(const tag &thebase) :
+   explicit nothing() : shape<real,tag>(this) { }
+   explicit nothing(const tag &thebase) :
       shape<real,tag>(this,thebase)
    { }
 };

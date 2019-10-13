@@ -5,10 +5,17 @@ namespace crayola {
 // macros
 // -----------------------------------------------------------------------------
 
-#define kip_make_table(type,str,alt,r,g,b) { #str, rgb(r,g,b) },
-#define kip_make_decl( type,str,alt,r,g,b) static const type str;
-#define kip_make_alias(type,str,alt,r,g,b) static constexpr const type &alt=str;
-#define kip_make_defn( type,str,alt,r,g,b) const type type::str(#str);
+#define kip_make_table(type,str,alt,r,g,b) \
+   { #str, rgb(r,g,b) },
+
+#define kip_make_decl( type,str,alt,r,g,b) \
+   static const type str;
+
+#define kip_make_alias(type,str,alt,r,g,b) \
+   static constexpr const type &alt=str;
+
+#define kip_make_defn( type,str,alt,r,g,b) \
+   const type type::str(#str);
 
 #define kip_make_standard(theclass,macro) \
    macro( theclass, PureBlack,   pureblack,     0,   0,   0 ) \

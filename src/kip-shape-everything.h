@@ -9,11 +9,11 @@ class everything : public shape<real,tag> {
 
 public:
    kip_functions(everything);
-   inline point<real> back(const point<real> &from) const { return from; }
+   point<real> back(const point<real> &from) const { return from; }
 
    // everything([base])
-   inline explicit everything() : shape<real,tag>(this) { }
-   inline explicit everything(const tag &thebase) :
+   explicit everything() : shape<real,tag>(this) { }
+   explicit everything(const tag &thebase) :
       shape<real,tag>(this,thebase)
    { }
 };

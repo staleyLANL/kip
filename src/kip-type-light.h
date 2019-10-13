@@ -12,11 +12,11 @@ class light {
 public:
 
    // operator[]
-   inline       point<real> &operator[](const ulong)       { return primary; }
-   inline const point<real> &operator[](const ulong) const { return primary; }
+   point<real> &operator[](const ulong) { return primary; }
+   const point<real> &operator[](const ulong) const { return primary; }
 
    // fix
-   inline const light &fix() const
+   const light &fix() const
    {
       // currently, nothing needs fixing
       return *this;

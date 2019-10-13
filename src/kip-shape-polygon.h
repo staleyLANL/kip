@@ -23,34 +23,34 @@ public:
 
    // vertices
    table_t table;
-   inline ulong size() const { return table.size(); }
+   ulong size() const { return table.size(); }
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(from);
    }
 
 
    // polygon([base])
-   inline explicit polygon() :
+   explicit polygon() :
       shape<real,tag>(this) { }
 
-   inline explicit polygon(const tag &thebase) :
+   explicit polygon(const tag &thebase) :
       shape<real,tag>(this,thebase) { }
 
    // polygon((x,y,z)[,base])
-   inline explicit polygon(const table_t &_table) :
+   explicit polygon(const table_t &_table) :
       shape<real,tag>(this), table(_table) { }
 
-   inline explicit polygon(const table_t &_table, const tag &thebase) :
+   explicit polygon(const table_t &_table, const tag &thebase) :
       shape<real,tag>(this,thebase), table(_table) { }
 
    // polygon(polygon)
-   inline polygon(const polygon &from) :
+   polygon(const polygon &from) :
       shape<real,tag>(from), table(from.table) { }
 
    // polygon = polygon
-   inline polygon &operator=(const polygon &from)
+   polygon &operator=(const polygon &from)
    {
       this->shape<real,tag>::operator=(from);
       table = from.table;
@@ -59,14 +59,14 @@ public:
 
 
    // push
-   inline point<real> &push(const point<real> &xyz)
+   point<real> &push(const point<real> &xyz)
       { return table.push_back(xyz), table.back(); }
 
-   inline point<real> &push(const real x, const real y, const real z)
+   point<real> &push(const real x, const real y, const real z)
       { return push(point<real>(x,y,z)); }
 
    // point_in_poly
-   inline bool point_in_poly(const real x, const real y) const
+   bool point_in_poly(const real x, const real y) const
    {
       if (x < xlo || x > xhi || y < ylo || y > yhi)
          return false;

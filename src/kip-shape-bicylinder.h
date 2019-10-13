@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class bicylinder : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // modified bicylinder: (0,0,0), (h,0,0), r.a,r.b
@@ -13,7 +13,7 @@ class bicylinder : public shape<real,tag> {
    mutable real rasq, rbsq, hsq, rao, rbo, slope, h1, h2, h3;
 
    // get_*
-   inline bool
+   bool
    get_base0(const point<real> &,
              const real, const real, const real, inq<real,tag> &) const,
    get_baseh(const point<real> &,
@@ -29,13 +29,13 @@ public:
    point<real> a, b;
    class { public: real a, b; } r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { return rot.back(from); }
 
 
 
    // bicylinder([a[,b[,r.a,r.b[,base]]]])
-   inline explicit bicylinder(
+   explicit bicylinder(
       const point<real> &_a = point<real>(real(0),real(0),real(0)),
       const point<real> &_b = point<real>(real(1),real(0),real(0))
    ) :
@@ -47,7 +47,7 @@ public:
       r.b = real(2);
    }
 
-   inline explicit bicylinder(
+   explicit bicylinder(
       const point<real> &_a,
       const point<real> &_b,
       const real _ra,
@@ -61,7 +61,7 @@ public:
       r.b = _rb;
    }
 
-   inline explicit bicylinder(
+   explicit bicylinder(
       const point<real> &_a,
       const point<real> &_b,
       const real _ra,
@@ -78,7 +78,7 @@ public:
 
 
    // bicylinder(a.x,a.y,a.z[,b.x,b.y,b.z[,r.a,r.b[,base]]])
-   inline explicit bicylinder(
+   explicit bicylinder(
       const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
@@ -89,7 +89,7 @@ public:
       r.b = real(2);
    }
 
-   inline explicit bicylinder(
+   explicit bicylinder(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz
    ) :
@@ -101,7 +101,7 @@ public:
       r.b = real(2);
    }
 
-   inline explicit bicylinder(
+   explicit bicylinder(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const real _ra, const real _rb
@@ -114,7 +114,7 @@ public:
       r.b = _rb;
    }
 
-   inline explicit bicylinder(
+   explicit bicylinder(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const real _ra, const real _rb, const tag &thebase
@@ -130,7 +130,7 @@ public:
 
 
    // bicylinder(bicylinder)
-   inline bicylinder(const bicylinder &from) :
+   bicylinder(const bicylinder &from) :
       shape<real,tag>(from),
       a(from.a),
       b(from.b),
@@ -138,7 +138,7 @@ public:
    { }
 
    // bicylinder = bicylinder
-   inline bicylinder &operator=(const bicylinder &from)
+   bicylinder &operator=(const bicylinder &from)
    {
       this->shape<real,tag>::operator=(from);
       a = from.a;

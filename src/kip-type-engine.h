@@ -13,9 +13,9 @@ public:
    // ------------------------
 
    // method
-   method_t method = method_t::uniform;
+   kip::method method = kip::method::uniform;
 
-   // For method = uniform
+   // For uniform
    // hzone and vzone are the number of bins, not their size in pixels.
    // They affect the object binning/hashing.
    // hsub and vsub are the number of sub-zones per zone. They determine how
@@ -29,17 +29,17 @@ public:
    unsigned hsub  = 0;
    unsigned vsub  = 0;
 
-   // For method = recursive
+   // For recursive
    unsigned hdivision = 2;
    unsigned vdivision = 2;
    unsigned min_area  = 800;
 
-   // For method = block
+   // For block
    unsigned xzone = 26;
    unsigned yzone = 26;
    unsigned zzone = 26;
 
-   // For method = uniform and method = recursive
+   // For uniform and recursive
    real     sort_frac = real(0.02);
    unsigned sort_min  = 64;
 
@@ -54,7 +54,7 @@ public:
    // fix
    // Receives hpixel and vpixel from an "image" object.
    // Intentionally returns a value (not a reference).
-   inline engine fix(const ulong, const ulong) const;
+   engine fix(const ulong, const ulong) const;
 };
 
 
@@ -121,7 +121,7 @@ inline void fix_engine(
    engine<real> &obj, const ulong hpixel, const ulong vpixel
 ) {
    // uniform fix
-   if (obj.method == method_t::uniform) {
+   if (obj.method == kip::method::uniform) {
       // hzone, vzone
       fix_zone_hv(obj.hzone, hpixel);
       fix_zone_hv(obj.vzone, vpixel);
@@ -132,7 +132,7 @@ inline void fix_engine(
    }
 
    // recursive fix
-   else if (obj.method == method_t::recursive) {
+   else if (obj.method == kip::method::recursive) {
       // hdivision
       if (obj.hdivision < 2)
          obj.hdivision = 2;

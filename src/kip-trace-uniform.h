@@ -739,7 +739,7 @@ public:
    // operator()
    // ------------------------
 
-   inline void operator()(
+   void operator()(
       const int nzone,
       const view <real> &view,
       const light<real> &light, const engine<real> &engine,

@@ -20,7 +20,7 @@ public:
 
    // min_and_part(min,ptr)
    template<class real>
-   inline explicit min_and_part(const real _min, const SHAPE &obj) :
+   explicit min_and_part(const real _min, const SHAPE &obj) :
       min(minimum_t(_min)), ptr(&obj)
    { }
 };
@@ -32,7 +32,7 @@ template<class SHAPE>
 class part_less {
 public:
    // for min_and_part
-   inline bool operator()(
+   bool operator()(
       const min_and_part<SHAPE> &a,
       const min_and_part<SHAPE> &b
    ) const {
@@ -62,7 +62,7 @@ public:
 
    // reset
    template<class E>
-   inline void reset(const E &engine)
+   void reset(const E &engine)
    {
       // clear
       for (ulong bin = linear.size();  bin--; )  // for each bin
@@ -81,7 +81,7 @@ public:
    }
 
    // operator[]
-   inline std::vector<T> &operator[](const ulong i) { return linear(i); }
+   std::vector<T> &operator[](const ulong i) { return linear(i); }
 };
 
 
@@ -96,7 +96,7 @@ class surf : public shape<real,tag> {
 
    // interior / inside()
    using shape<real,tag>::interior;
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
 
    // bounding box
    mutable real xmin, ymin, zmin;
@@ -106,14 +106,14 @@ class surf : public shape<real,tag> {
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
    using shape<real,tag>::surfdata;
    using binner_t = binner<detail::min_and_part<kip::tri<real,tag>>>;
-   inline binner_t &mint() const
+   binner_t &mint() const
       { return *(binner_t *)(void *)&surfdata.mint[0]; }
 
 public:
 
    // degenerate, back(), some functions
    using shape<real,tag>::degenerate;
-   inline point<real> back(const point<real> &from) const { return from; }
+   point<real> back(const point<real> &from) const { return from; }
    kip_functions(surf);
 
    // tri_t
@@ -130,10 +130,10 @@ public:
    // ------------------------
 
    // node
-   inline pnt_t &push(const pnt_t &n) { return node.push_back(n), node.back(); }
+   pnt_t &push(const pnt_t &n) { return node.push_back(n), node.back(); }
 
    // tri
-   inline tri_t &push(const tri_t &t) { return tri .push_back(t), tri .back(); }
+   tri_t &push(const tri_t &t) { return tri .push_back(t), tri .back(); }
 
 
    // ------------------------
@@ -141,7 +141,7 @@ public:
    // ------------------------
 
    // surf()
-   inline explicit surf() :
+   explicit surf() :
       shape<real,tag>(this)
    {
       new (&mint()) binner_t;
@@ -149,7 +149,7 @@ public:
    }
 
    // surf(tag)
-   inline explicit surf(const tag &thetag) :
+   explicit surf(const tag &thetag) :
       shape<real,tag>(this,thetag)
    {
       new (&mint()) binner_t;
@@ -157,7 +157,7 @@ public:
    }
 
    // surf(node, tri)
-   inline explicit surf(
+   explicit surf(
       const std::vector<point<real>> &_node, const std::vector<tri_t> &_tri
    ) :
       shape<real,tag>(this),
@@ -168,7 +168,7 @@ public:
    }
 
    // surf(node, tri, tag)
-   inline explicit surf(
+   explicit surf(
       const std::vector<point<real>> &_node, const std::vector<tri_t> &_tri,
       const tag &thetag
    ) :
@@ -180,7 +180,7 @@ public:
    }
 
    // surf(surf)
-   inline surf(const surf &from) :
+   surf(const surf &from) :
       shape<real,tag>(from), node(from.node), tri(from.tri)
    {
       new (&mint()) binner_t;
@@ -192,7 +192,7 @@ public:
    // ------------------------
 
    // surf=surf
-   inline surf &operator=(const surf &from)
+   surf &operator=(const surf &from)
    {
       this->shape<real,tag>::operator=(from);
       node = from.node;
@@ -205,7 +205,7 @@ public:
    // Destructor
    // ------------------------
 
-   inline ~surf()
+   ~surf()
    {
       mint().~binner_t();
    }

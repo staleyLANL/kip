@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class spheroid : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // modified spheroid: (-h,0,0), (h,0,0), r
@@ -14,7 +14,7 @@ class spheroid : public shape<real,tag> {
    mutable real r2h2, rsq;
 
    // get_curve
-   inline bool
+   bool
    get_curve(const point<real> &,
              const real, const real, const real, inq<real,tag> &) const;
 
@@ -27,7 +27,7 @@ public:
    point<real> b;
    real r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(from);
    }

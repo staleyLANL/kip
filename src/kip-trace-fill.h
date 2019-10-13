@@ -289,7 +289,7 @@ inline bool op_all(
 template<class real, class base, class color, class pix>
 class one_plain {
 public:
-   inline void operator()(
+   void operator()(
       const engine<real> &engine, const image<real,color> &image,
       std::vector<minimum_and_shape<real,base>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
@@ -326,7 +326,7 @@ public:
 template<class real, class base, class color, class pix>
 class two_plain {
 public:
-   inline void operator()(
+   void operator()(
       const engine<real> &engine, const image<real,color> &image,
       std::vector<minimum_and_shape<real,base>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
@@ -367,7 +367,7 @@ public:
 template<class real, class base, class color, class pix>
 class max_plain {
 public:
-   inline void operator()(
+   void operator()(
       const engine<real> &engine, const image<real,color> &image,
       std::vector<minimum_and_shape<real,base>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
@@ -406,7 +406,7 @@ public:
 template<class real, class base, class color, class pix>
 class any_plain {
 public:
-   inline void operator()(
+   void operator()(
       const engine<real> &engine, const image<real,color> &image,
       std::vector<minimum_and_shape<real,base>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
@@ -504,7 +504,7 @@ public:
 template<class real, class base, class color, class pix>
 class one_anti {
 public:
-   inline bool operator()(
+   bool operator()(
       const engine<real> &engine, const image<real,color> &image,
       std::vector<minimum_and_shape<real,base>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
@@ -551,7 +551,7 @@ public:
 template<class real, class base, class color, class pix>
 class two_anti {
 public:
-   inline bool operator()(
+   bool operator()(
       const engine<real> &engine, const image<real,color> &image,
       std::vector<minimum_and_shape<real,base>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
@@ -605,7 +605,7 @@ public:
 template<class real, class base, class color, class pix>
 class any_anti {
 public:
-   inline bool operator()(
+   bool operator()(
       const engine<real> &engine, const image<real,color> &image,
       std::vector<minimum_and_shape<real,base>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,

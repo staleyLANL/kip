@@ -41,7 +41,7 @@ private:
 public:
 
    // istream(char *)
-   inline explicit istream(const char *const name)
+   explicit istream(const char *const name)
  :_stream(name), stream(_stream),
    file(name), line(1),
    begin(tell()), themark(begin),
@@ -49,7 +49,7 @@ public:
    { }
 
    // istream(std::string)
-   inline explicit istream(const std::string &name)
+   explicit istream(const std::string &name)
  :_stream(name.c_str()), stream(_stream),
    file(name), line(1),
    begin(tell()), themark(begin),
@@ -57,7 +57,7 @@ public:
    { }
 
    // istream(std::istream)
-   inline explicit istream(std::istream &s)
+   explicit istream(std::istream &s)
  : stream(s),
    begin(tell()), themark(begin),
    level(0), maxerr(default_maxerr), nerr(0), bail(false), nice(false)
@@ -70,49 +70,49 @@ public:
    // ------------------------
 
 private:
-   inline void newline() { line++;  begin = tell(); }
-   inline void mark() { themark = tell(); }
+   void newline() { line++;  begin = tell(); }
+   void mark() { themark = tell(); }
 
 public:
    // stream-state stuff
-   inline bool bad () const { return stream.bad (); }
-   inline bool fail() const { return stream.fail(); }
-   inline bool eof () const { return stream.eof (); }
-   inline bool good() const { return stream.good(); }
+   bool bad () const { return stream.bad (); }
+   bool fail() const { return stream.fail(); }
+   bool eof () const { return stream.eof (); }
+   bool good() const { return stream.good(); }
 
    // clear: clear all flags (equivalently, set state to good)
-   inline void clear() const
+   void clear() const
    {
       stream.clear();
    }
 
    // set: make state equal to the given value
-   inline void set(const iostate newstate = std::ios::goodbit) const
+   void set(const iostate newstate = std::ios::goodbit) const
    {
       stream.clear(newstate);
    }
 
    // add: logical-or the given value to the existing state
-   inline void add(const iostate newstate) const
+   void add(const iostate newstate) const
    {
       stream.setstate(newstate);
    }
 
    // state: return the state
-   inline iostate state() const
+   iostate state() const
    {
       return stream.rdstate();
    }
 
    // seek: go to the given position
-   inline const istream &seek(const streampos pos) const
+   const istream &seek(const streampos pos) const
    {
       stream.seekg(pos);
       return *this;
    }
 
    // tell: return the present position
-   inline streampos tell() const
+   streampos tell() const
    {
       return stream.tellg();
    }
@@ -120,7 +120,7 @@ public:
 
 
    // input for char
-   inline istream &input(char &value)
+   istream &input(char &value)
    {
       stream >> value;
       if (value == '(') level++; else
@@ -130,7 +130,7 @@ public:
 
    // input for T
    template<class T>
-   inline istream &input(T &value)
+   istream &input(T &value)
    {
       stream >> value;
       return *this;
@@ -139,11 +139,11 @@ public:
 
 
    // get, unget, peek, bool, !
-   inline int get() const { return stream.get(); }
-   inline const istream &unget() const { stream.unget();  return *this; }
-   inline int peek() { return stream.peek(); }
-   inline operator bool() const { return bool(stream); }
-   inline bool operator !() const { return !stream; }
+   int get() const { return stream.get(); }
+   const istream &unget() const { stream.unget();  return *this; }
+   int peek() { return stream.peek(); }
+   operator bool() const { return bool(stream); }
+   bool operator !() const { return !stream; }
 
 
 
@@ -157,7 +157,7 @@ private:
 
 public:
    template<class MESSAGE>
-   inline void error(const MESSAGE &message) const
+   void error(const MESSAGE &message) const
    {
       if (!maxerr || nerr < maxerr)
          kip::error(context('\0'), message);
@@ -165,11 +165,11 @@ public:
    }
 
    template<class MESSAGE>
-   inline void warning(const MESSAGE &message) const
+   void warning(const MESSAGE &message) const
     { kip::warning(context('\0'), message); }
 
    template<class MESSAGE>
-   inline void note(const MESSAGE &message) const
+   void note(const MESSAGE &message) const
     { kip::note(context('\0'), message); }
 
 
@@ -215,19 +215,19 @@ public:
    // ------------------------
 
    // ostream(char *)
-   inline explicit ostream(const char *const name)
+   explicit ostream(const char *const name)
  :_stream(name), stream(_stream),
    level(0)
    { }
 
    // ostream(std::string)
-   inline explicit ostream(const std::string &name)
+   explicit ostream(const std::string &name)
  :_stream(name.c_str()), stream(_stream),
    level(0)
    { }
 
    // ostream(std::ostream)
-   inline explicit ostream(std::ostream &s)
+   explicit ostream(std::ostream &s)
  : stream(s),
    level(0)
    { }
@@ -238,19 +238,19 @@ public:
    // ------------------------
 
    // indent
-   inline ostream &indent()
+   ostream &indent()
    {
       for (int i = 0;  i < level;  ++i)
          stream << "   ";
       return *this;
    }
 
-   inline operator bool() const { return bool(stream); }
-   inline bool operator !() const { return !stream; }
+   operator bool() const { return bool(stream); }
+   bool operator !() const { return !stream; }
 
    // endl, flush
-   inline void endl () const { stream << std::endl ; }
-   inline void flush() const { stream << std::flush; }
+   void endl () const { stream << std::endl ; }
+   void flush() const { stream << std::flush; }
 };
 
 

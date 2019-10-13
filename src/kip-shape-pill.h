@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class pill : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // modified pill: (0,0,0), (h,0,0), r
@@ -13,7 +13,7 @@ class pill : public shape<real,tag> {
    mutable real rsq, h1, h2, h3;
 
    // get_*
-   inline bool
+   bool
    get_hemi0(
       const point<real> &,
       const real, const real, const real,
@@ -39,7 +39,7 @@ public:
    point<real> b;
    real r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(from);
    }

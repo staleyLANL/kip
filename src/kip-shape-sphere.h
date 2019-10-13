@@ -6,7 +6,7 @@
 template<class real = default_real, class tag = default_base>
 class sphere : public shape<real,tag> {
 
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
 public:
@@ -18,13 +18,13 @@ public:
 
    kip_functions(sphere);
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { return from; }
 
 
 
    // sphere([c[,r[,base]]])
-   inline explicit sphere(
+   explicit sphere(
       const point<real> &_c = point<real>(real(0),real(0),real(0)),
       const real _r = real(1)
    ) :
@@ -32,7 +32,7 @@ public:
       c(_c), r(_r)
    { this->eyelie = false; }
 
-   inline explicit sphere(
+   explicit sphere(
       const point<real> &_c,
       const real _r, const tag &thebase
    ) :
@@ -41,7 +41,7 @@ public:
    { this->eyelie = false; }
 
    // sphere(c.x,c.y,c.z[,r[,base]])
-   inline explicit sphere(
+   explicit sphere(
       const real cx, const real cy, const real cz,
       const real _r = real(1)
    ) :
@@ -49,7 +49,7 @@ public:
       c(cx,cy,cz), r(_r)
    { this->eyelie = false; }
 
-   inline explicit sphere(
+   explicit sphere(
       const real cx, const real cy, const real cz,
       const real _r, const tag &thebase
    ) :
@@ -60,14 +60,14 @@ public:
 
 
    // sphere(sphere)
-   inline sphere(const sphere &from) :
+   sphere(const sphere &from) :
       shape<real,tag>(from),
       c(from.c),
       r(from.r)
    { }
 
    // sphere=sphere
-   inline sphere &operator=(const sphere &from)
+   sphere &operator=(const sphere &from)
    {
       this->shape<real,tag>::operator=(from);
       c = from.c;

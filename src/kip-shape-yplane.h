@@ -16,12 +16,12 @@ public:
    class { public: real x, z; } size;
    tag color;
 
-   inline point<real> back(const point<real> &from) const { return from; }
+   point<real> back(const point<real> &from) const { return from; }
 
 
 
    // yplane([y[,size.x,size.z[,color[,base]]]])
-   inline explicit yplane(
+   explicit yplane(
       const real _y = real(0)
    ) :
       shape<real,tag>(this),
@@ -33,7 +33,7 @@ public:
       size.z = real(1);
    }
 
-   inline explicit yplane(
+   explicit yplane(
       const real _y,
       const real _xsize, const real _zsize,
       const tag &_color = tag()
@@ -47,7 +47,7 @@ public:
       size.z = _zsize;
    }
 
-   inline explicit yplane(
+   explicit yplane(
       const real _y,
       const real _xsize, const real _zsize,
       const tag &_color, const tag &thebase
@@ -64,7 +64,7 @@ public:
 
 
    // yplane(yplane)
-   inline yplane(const yplane &from) :
+   yplane(const yplane &from) :
       shape<real,tag>(from),
       y(from.y),
       color(from.color)
@@ -74,7 +74,7 @@ public:
    }
 
    // yplane = yplane
-   inline yplane &operator=(const yplane &from)
+   yplane &operator=(const yplane &from)
    {
       this->shape<real,tag>::operator=(from);
       size.x = from.size.x;  y = from.y;

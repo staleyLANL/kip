@@ -28,38 +28,38 @@ private:
    mutable ulong npts;
 
    // endcaps
-   inline bool cap_lo(
+   bool cap_lo(
       const real, const real, inq<real,tag> &, const real, const real
    ) const;
 
-   inline bool cap_hi(
+   bool cap_hi(
       const real, const real, inq<real,tag> &, const real, const real,
       const ulong
    ) const;
 
    // hit_bounding_cylinder, get_bounds
-   inline bool hit_bounding_cylinder(
+   bool hit_bounding_cylinder(
       const real, const real, real &, real &
    ) const;
 
-   inline bool get_bounds(
+   bool get_bounds(
       const real, const real, const real, const real, const real,
       const ulong, const ulong,
       ulong &, ulong &
    ) const;
 
    // segment, registerq, segment2
-   inline bool segment(
+   bool segment(
       const point<real> &, const real, inq<real,tag> &,
       const real, const real, const real, const real, const ulong
    ) const;
 
-   inline void registerq(
+   void registerq(
       const real, const real, const real, const real, const real, const ulong,
       afew<inq<real,tag>> &
    ) const;
 
-   inline void segment2(
+   void segment2(
       const real, const real, afew<inq<real,tag>> &,
       const real, const real, const real, const real, const ulong
    ) const;
@@ -73,17 +73,17 @@ public:
 
    // (x,r) coordinates
    table_t table;
-   inline ulong size() const { return table.size(); }
+   ulong size() const { return table.size(); }
 
    kip_functions(tabular);
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { return rot.back(from); }
 
 
 
    // tabular([a[,b[,(x,r)[,base]]]])
-   inline explicit tabular(
+   explicit tabular(
       const point<real> &_a = point<real>(real(0),real(0),real(0)),
       const point<real> &_b = point<real>(real(1),real(0),real(0)),
       const table_t &_table = table_t()
@@ -92,7 +92,7 @@ public:
       a(_a), b(_b), table(_table)
    { }
 
-   inline explicit tabular(
+   explicit tabular(
       const point<real> &_a,
       const point<real> &_b,
       const table_t &_table,
@@ -105,27 +105,27 @@ public:
 
 
    // tabular([a.x,a.y,a.z[,b.x,b.y,b.z[,(x,r)[,base]]]])
-   inline explicit tabular(
+   explicit tabular(
       const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this), a(ax,ay,az), b(1,0,0) { }
 
    /*
-   inline explicit tabular(
+   explicit tabular(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz
    ) :
       shape<real,tag>(this), a(ax,ay,az), b(bx,by,bz) { }
    */
 
-   inline explicit tabular(
+   explicit tabular(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const table_t &_table = table_t()
    ) :
       shape<real,tag>(this), a(ax,ay,az), b(bx,by,bz), table(_table) { }
 
-   inline explicit tabular(
+   explicit tabular(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const table_t &_table, const tag &thebase
@@ -135,7 +135,7 @@ public:
 
 
    // tabular(a.x,a.y,a.z,b.x,b.y,b.z,base)
-   inline explicit tabular(
+   explicit tabular(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz, const tag &thebase
    ) :
@@ -146,14 +146,14 @@ public:
 
 
    // tabular(tabular)
-   inline tabular(const tabular &from) :
+   tabular(const tabular &from) :
       shape<real,tag>(from),
       a(from.a),
       b(from.b), table(from.table)
    { }
 
    // tabular = tabular
-   inline tabular &operator=(const tabular &from)
+   tabular &operator=(const tabular &from)
    {
       this->shape<real,tag>::operator=(from);
       a = from.a;
@@ -164,7 +164,7 @@ public:
 
 
    // push
-   inline xrpoint<real> &push(const real x, const real r)
+   xrpoint<real> &push(const real x, const real r)
    {
       return table.push_back(xrpoint<real>(x,r)), table.back();
    }

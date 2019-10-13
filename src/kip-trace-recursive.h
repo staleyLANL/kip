@@ -16,7 +16,7 @@ public:
    #undef  kip_make_shape_vector
 
    // size
-   inline ulong size() const
+   ulong size() const
    {
       const functor_size f;
       allshape(*this, f);
@@ -24,14 +24,14 @@ public:
    }
 
    // clear
-   inline void clear()
+   void clear()
    {
       const functor_clear f;
       allshape(*this, f);
    }
 
    // reserve
-   inline void reserve(const kip::model<real,tag> &model)
+   void reserve(const kip::model<real,tag> &model)
    {
    #define kip_make_reserve(type)\
       type.reserve(model.type.size());
@@ -167,11 +167,11 @@ class functor_sv2bin {
    std::vector<minimum_and_shape<real,base>> &bin;
 
 public:
-   inline functor_sv2bin(std::vector<minimum_and_shape<real,base>> &_bin) :
+   functor_sv2bin(std::vector<minimum_and_shape<real,base>> &_bin) :
       bin(_bin) { }
 
    template<class CONTAINER>
-   inline void operator()(CONTAINER &c) const
+   void operator()(CONTAINER &c) const
    {
       const ulong size = c.size();
       for (ulong s = 0;  s < size;  ++s)
@@ -407,6 +407,7 @@ void rtrace(
    const shape_vectors<real,base> &bin,
    const bool rootlevel
 ) {
+   assert(false);
    (void)rootlevel;  // used iff OpenMP
 
    const ulong binsize = bin.size();
@@ -437,25 +438,30 @@ void rtrace(
    )) {
       std::cout << "kip: split horizontally" << std::endl;
 
-      // +-----+-----+
-      // |     |     |
-      // |     |     |
-      // |     |     |
-      // +-----+-----+
-
-      #define kip_loop\
-      for (int ipart = 0;  ipart < int(engine.hdivision);  ++ipart)\
-         rtrace_h(view,engine,image, vars,light, pixel,            \
-                  imin,iend,ipart, jmin,jend,vmin,vmax, bin)
+      // +----+----+
+      // |    |    |
+      // |    |    |
+      // +----+----+
 
       #ifdef _OPENMP
-         if (rootlevel)
-            #pragma omp parallel for
-            kip_loop;
-         else
+      if (rootlevel) {
+         #pragma omp parallel for
+         for (int ipart = 0;  ipart < int(engine.hdivision);  ++ipart) {
+            rtrace_h(
+               view, engine, image, vars, light, pixel,
+               imin, iend, ipart, jmin, jend, vmin, vmax, bin
+            );
+         }
+      } else // <== note the else
       #endif
-            kip_loop;
-      #undef kip_loop
+      {
+         for (int ipart = 0;  ipart < int(engine.hdivision);  ++ipart) {
+            rtrace_h(
+               view, engine, image, vars, light, pixel,
+               imin, iend, ipart, jmin, jend, vmin, vmax, bin
+            );
+         }
+      }
 
    // Split vertically
    } else {
@@ -469,19 +475,25 @@ void rtrace(
       // |      |
       // +------+
 
-      #define kip_loop\
-      for (int jpart = 0;  jpart < int(engine.vdivision);  ++jpart)\
-         rtrace_v(view,engine,image, vars,light, pixel,            \
-                  imin,iend,hmin,hmax, jmin,jend,jpart, bin)
-
       #ifdef _OPENMP
-         if (rootlevel)
-            #pragma omp parallel for
-            kip_loop;
-         else
+      if (rootlevel) {
+         #pragma omp parallel for
+         for (int jpart = 0;  jpart < int(engine.vdivision);  ++jpart) {
+            rtrace_v(
+               view, engine, image, vars, light, pixel,
+               imin, iend, hmin, hmax, jmin, jend, jpart, bin
+            );
+         }
+      } else // <== note the else
       #endif
-            kip_loop;
-      #undef kip_loop
+      {
+         for (int jpart = 0;  jpart < int(engine.vdivision);  ++jpart) {
+            rtrace_v(
+               view, engine, image, vars, light, pixel,
+               imin, iend, hmin, hmax, jmin, jend, jpart, bin
+            );
+         }
+      }
    }
 }
 

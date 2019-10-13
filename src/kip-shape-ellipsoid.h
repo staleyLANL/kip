@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class ellipsoid : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // rotation: clockwise around x, then y, then z; then +c translation
@@ -14,7 +14,7 @@ class ellipsoid : public shape<real,tag> {
    mutable real bs, is, i;
 
    // get_curve
-   inline bool get_curve(
+   bool get_curve(
       const real,
       const real,
       const real,
@@ -31,7 +31,7 @@ public:
    point<real> a;
    point<real> r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(from);
    }
@@ -39,7 +39,7 @@ public:
 
 
    // ellipsoid([c[,a[,r[,base]]]])
-   inline explicit ellipsoid(
+   explicit ellipsoid(
       const point<real> &_c = point<real>(real(0),real(0),real(0)),
       const point<real> &_a = point<real>(real(0),real(0),real(0)),
       const point<real> &_r = point<real>(real(1),real(1),real(1))
@@ -48,7 +48,7 @@ public:
       c(_c), a(_a), r(_r)
    { }
 
-   inline explicit ellipsoid(
+   explicit ellipsoid(
       const point<real> &_c,
       const point<real> &_a,
       const point<real> &_r, const tag &thebase
@@ -60,7 +60,7 @@ public:
 
 
    // ellipsoid(c.x,c.y,c.z[,a.x,a.y,a.z[,r.x,r.y,r.z[,base]]])
-   inline explicit ellipsoid(
+   explicit ellipsoid(
       const real cx, const real cy, const real cz
    ) :
       shape<real,tag>(this),
@@ -69,7 +69,7 @@ public:
       r(real(1),real(1),real(1))
    { }
 
-   inline explicit ellipsoid(
+   explicit ellipsoid(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az
    ) :
@@ -79,7 +79,7 @@ public:
       r(real(1),real(1),real(1))
    { }
 
-   inline explicit ellipsoid(
+   explicit ellipsoid(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az,
       const real rx, const real ry, const real rz
@@ -90,7 +90,7 @@ public:
       r(rx,ry,rz)
    { }
 
-   inline explicit ellipsoid(
+   explicit ellipsoid(
       const real cx, const real cy, const real cz,
       const real ax, const real ay, const real az,
       const real rx, const real ry, const real rz, const tag &thebase
@@ -104,7 +104,7 @@ public:
 
 
    // ellipsoid(ellipsoid)
-   inline ellipsoid(const ellipsoid &from) :
+   ellipsoid(const ellipsoid &from) :
       shape<real,tag>(from),
       c(from.c),
       a(from.a),
@@ -112,7 +112,7 @@ public:
    { }
 
    // ellipsoid = ellipsoid
-   inline ellipsoid &operator=(const ellipsoid &from)
+   ellipsoid &operator=(const ellipsoid &from)
    {
       this->shape<real,tag>::operator=(from);
       c = from.c;

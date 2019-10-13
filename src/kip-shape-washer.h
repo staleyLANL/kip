@@ -5,25 +5,25 @@
 
 template<class real = default_real, class tag = default_base>
 class washer : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // modified washer: (0,0,0), (h,0,0), i, o
    mutable rotate<3,real,op::full,op::unscaled> rot;
    mutable real isq, osq, hsq, hin, hout, p;
 
-   inline bool first_in(
+   bool first_in(
       const point<real> &tar,
       const real dx, const real dy, const real qmin, inq<real,tag> &q
    ) const;
 
-   inline bool first_out(
+   bool first_out(
       const point<real> &tar,
       const real dx, const real dy, const real qmin, inq<real,tag> &q
    ) const;
 
    // get_*
-   inline bool
+   bool
    get_base0(const point<real> &,
              const real, const real, const real, inq<real,tag> &) const,
    get_baseh(const point<real> &,
@@ -41,7 +41,7 @@ public:
    point<real> a, b;
    real i, o;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(from);
    }
@@ -49,7 +49,7 @@ public:
 
 
    // washer([a[,b[,i,o[,base]]]])
-   inline explicit washer(
+   explicit washer(
       const point<real> &_a = point<real>(real(0),real(0),real(0)),
       const point<real> &_b = point<real>(real(1),real(0),real(0))
    ) :
@@ -59,7 +59,7 @@ public:
       i(real(1)), o(real(2))
    { }
 
-   inline explicit washer(
+   explicit washer(
       const point<real> &_a,
       const point<real> &_b,
       const real _i,
@@ -71,7 +71,7 @@ public:
       i(_i), o(_o)
    { }
 
-   inline explicit washer(
+   explicit washer(
       const point<real> &_a,
       const point<real> &_b,
       const real _i,
@@ -86,7 +86,7 @@ public:
 
 
    // washer(a.x,a.y,a.z[,b.x,b.y,b.z[,i,o[,base]]])
-   inline explicit washer(
+   explicit washer(
       const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
@@ -95,7 +95,7 @@ public:
       i(real(1)), o(real(2))
    { }
 
-   inline explicit washer(
+   explicit washer(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz
    ) :
@@ -105,7 +105,7 @@ public:
       i(real(1)), o(real(2))
    { }
 
-   inline explicit washer(
+   explicit washer(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const real _i, const real _o
@@ -116,7 +116,7 @@ public:
       i(_i), o(_o)
    { }
 
-   inline explicit washer(
+   explicit washer(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const real _i, const real _o, const tag &thebase
@@ -130,7 +130,7 @@ public:
 
 
    // washer(washer)
-   inline washer(const washer &from) :
+   washer(const washer &from) :
       shape<real,tag>(from),
       a(from.a),
       b(from.b),
@@ -139,7 +139,7 @@ public:
    { }
 
    // washer = washer
-   inline washer &operator=(const washer &from)
+   washer &operator=(const washer &from)
    {
       this->shape<real,tag>::operator=(from);
       a = from.a;  i = from.i;

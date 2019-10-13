@@ -20,14 +20,14 @@ public:
    unsigned large;
 
    // border_t()
-   inline explicit border_t() :
+   explicit border_t() :
       object(default_object),
       small (default_small),
       large (default_large)
    { }
 
    // operator()
-   inline border_t operator()(
+   border_t operator()(
       const bool     _bin,
       const bool     _object = default_object,
       const unsigned _small  = default_small,
@@ -59,11 +59,11 @@ template<
 class image {
 
    // copy constructor/assignment; deliberately private
-   inline image(const image &) :
+   image(const image &) :
       hpixel(bitmap.isize()),
       vpixel(bitmap.jsize())
    { }
-   inline image &operator=(const image &) { return *this; }
+   image &operator=(const image &) { return *this; }
 
 public:
    static constexpr unsigned default_anti = 1;
@@ -98,14 +98,14 @@ public:
       bool first;
 
       // c'tor
-      inline explicit _prior() :
+      explicit _prior() :
          hpixel(targets.isize()),
          vpixel(targets.jsize()), first(true)
       { }
    } prior;
 
    // image()
-   inline explicit image() :
+   explicit image() :
       bitmap(800,800),
       hpixel(bitmap.isize()),
       vpixel(bitmap.jsize()),
@@ -117,25 +117,25 @@ public:
    // --------------------------------
 
    // fix
-   inline image &fix();
+   image &fix();
 
    // resize
-   inline image &resize(const ulong h, const ulong v = 0)
+   image &resize(const ulong h, const ulong v = 0)
       { bitmap.resize(h, v ? v : h);  return *this; }
 
    // upsize
-   inline image &upsize(const ulong h, const ulong v = 0)
+   image &upsize(const ulong h, const ulong v = 0)
       { bitmap.upsize(h, v ? v : h);  return *this; }
 
    // indexing
-   inline const color &operator()(const ulong i, const ulong j) const
+   const color &operator()(const ulong i, const ulong j) const
       { return bitmap(i,j); }
-   inline       color &operator()(const ulong i, const ulong j)
+   color &operator()(const ulong i, const ulong j)
       { return bitmap(i,j); }
 
    // data access
-   inline       color *operator()()       { return bitmap.data(); }
-   inline const color *operator()() const { return bitmap.data(); }
+   color *operator()()       { return bitmap.data(); }
+   const color *operator()() const { return bitmap.data(); }
 };
 
 

@@ -14,25 +14,25 @@ class and_tight {
 public:
 
    // and_tight(value,tight)
-   inline explicit and_tight(const real _value, const bool tight_) :
+   explicit and_tight(const real _value, const bool tight_) :
       value(_value),
      _tight(tight_)
    { }
 
    // assignment = real
-   inline and_tight &operator=(const real _value)
+   and_tight &operator=(const real _value)
       { return value = _value, *this; }
 
    // conversion to real
-   inline operator       real&()       { return value; }
-   inline operator const real&() const { return value; }
+   operator       real&()       { return value; }
+   operator const real&() const { return value; }
 
    // tight()
-   inline       bool &tight()       { return _tight; }
-   inline const bool &tight() const { return _tight; }
+         bool &tight()       { return _tight; }
+   const bool &tight() const { return _tight; }
 
    // finite()
-   inline bool finite() const
+   bool finite() const
    {
       return
          value != -std::numeric_limits<real>::max() &&
@@ -55,7 +55,7 @@ public:
    detail::and_tight<real> min, max;
 
    // bbox_component(min_tight,min, max,max_tight)
-   inline explicit bbox_component(
+   explicit bbox_component(
       const bool _min_tight, const real _min,
       const real _max, const bool _max_tight
    ) :
@@ -64,9 +64,9 @@ public:
    { }
 
    // tight, finite, valid
-   inline bool tight () const { return min.tight () && max.tight (); }
-   inline bool finite() const { return min.finite() && max.finite(); }
-   inline bool valid () const { return min <= max; }
+   bool tight () const { return min.tight () && max.tight (); }
+   bool finite() const { return min.finite() && max.finite(); }
+   bool valid () const { return min <= max; }
 };
 
 
@@ -124,7 +124,7 @@ public:
    //    ymin_tight,ymin, ymax,ymax_tight,
    //    zmin_tight,zmin, zmax,zmax_tight
    // )
-   inline explicit bbox(
+   explicit bbox(
       const bool _xmin_tight, const real _xmin,
       const real _xmax, const bool _xmax_tight,
       const bool _ymin_tight, const real _ymin,
@@ -138,7 +138,7 @@ public:
    { }
 
    // bbox(bbox_component<real>, bbox_component<real>, bbox_component<real>)
-   inline explicit bbox(
+   explicit bbox(
       const bbox_component<real> &_x,
       const bbox_component<real> &_y,
       const bbox_component<real> &_z
@@ -146,17 +146,17 @@ public:
    { }
 
    // tight, finite, valid
-   inline bool tight () const
+   bool tight () const
       { return x.tight () && y.tight () && z.tight (); }
-   inline bool finite() const
+   bool finite() const
       { return x.finite() && y.finite() && z.finite(); }
-   inline bool valid () const
+   bool valid () const
       { return x.valid () && y.valid () && z.valid (); }
 
    // min, max
-   inline point<real> min() const
+   point<real> min() const
       { return point<real>(x.min, y.min, z.min); }
-   inline point<real> max() const
+   point<real> max() const
       { return point<real>(x.max, y.max, z.max); }
 };
 
@@ -186,7 +186,7 @@ namespace detail {
 class op_leq {
 public:
    template<class real>
-   inline bool operator()(
+   bool operator()(
       const bbox<real> &a,
       const bbox<real> &b
    ) const {
@@ -194,7 +194,7 @@ public:
    }
 
    template<class real>
-   inline bool operator()(
+   bool operator()(
       const and_tight<real> &a,
       const and_tight<real> &b
    ) const {
@@ -206,7 +206,7 @@ public:
 class op_less {
 public:
    template<class real>
-   inline bool operator()(
+   bool operator()(
       const bbox<real> &a,
       const bbox<real> &b
    ) const {
@@ -214,7 +214,7 @@ public:
    }
 
    template<class real>
-   inline bool operator()(
+   bool operator()(
       const and_tight<real> &a,
       const and_tight<real> &b
    ) const {

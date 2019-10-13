@@ -31,7 +31,7 @@ public:
 private:
 
    // propagate_base_last
-   inline shape<real,tag> &propagate_base_last() const
+   shape<real,tag> &propagate_base_last() const
    {
       shape<real,tag> &ref = *kip_data.vec().back().op;
       if (!ref.baseset) {
@@ -42,7 +42,7 @@ private:
    }
 
    // copy
-   inline void copy(const kip_class &from)
+   void copy(const kip_class &from)
    {
       kip_data.vec().reserve(kip_data.nop = from.size());
 
@@ -64,19 +64,19 @@ private:
 public:
 
    // size
-   inline ulong size() const
+   ulong size() const
       { return kip_data.vec().size(); }
 
    // back
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { assert(false);  return from; }
 
    // propagate_base
-   inline void propagate_base(const bool force = false) const
+   void propagate_base(const bool force = false) const
       { detail::propagate_nary(kip_data.vec(), base(), force); }
 
    // clear
-   inline void clear()
+   void clear()
    {
       for (ulong n = size();  n ; )
          delete kip_data.vec()[--n].op;
@@ -92,19 +92,19 @@ public:
    // ------------------------
 
    // kip_class()
-   inline explicit kip_class() : shape<real,tag>(this)
+   explicit kip_class() : shape<real,tag>(this)
    {
       new (&kip_data.vec()) vec_t;
    }
 
    // kip_class(base)
-   inline explicit kip_class(const tag &thebase) : shape<real,tag>(this,thebase)
+   explicit kip_class(const tag &thebase) : shape<real,tag>(this,thebase)
    {
       new (&kip_data.vec()) vec_t;
    }
 
    // kip_class(kip_class)
-   inline kip_class(const kip_class &from) : shape<real,tag>(from)
+   kip_class(const kip_class &from) : shape<real,tag>(from)
    {
       new (&kip_data.vec()) vec_t;
       copy(from);
@@ -112,7 +112,7 @@ public:
 
 
    // kip_class = kip_class
-   inline kip_class &operator=(const kip_class &from)
+   kip_class &operator=(const kip_class &from)
    {
       this->shape<real,tag>::operator=(from);
       clear();
@@ -122,7 +122,7 @@ public:
 
 
    // destructor
-   inline ~kip_class()
+   ~kip_class()
    {
       clear();
       kip_data.vec().~vec_t();
@@ -135,14 +135,14 @@ public:
    // ------------------------
 
    // from pointer
-   inline shape<real,tag> &push(const shape<real,tag> *const ptr)
+   shape<real,tag> &push(const shape<real,tag> *const ptr)
    {
       kip_data.push().op = ptr ? ptr->duplicate() : nullptr;
       return propagate_base_last();
    }
 
    // from reference
-   inline shape<real,tag> &push(const shape<real,tag> &ref)
+   shape<real,tag> &push(const shape<real,tag> &ref)
    {
       //kip_data.push().op = &ref ? ref.duplicate() : nullptr;
       kip_data.push().op = ref.duplicate();

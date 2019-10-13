@@ -29,23 +29,23 @@ class scene :
    public image <real,color>
 {
    // For now, disallow copy construction/assignment by making them private
-   inline scene(const scene &) { }
-   inline scene &operator=(const scene &) { return *this; }
+   scene(const scene &) { }
+   scene &operator=(const scene &) { return *this; }
 
 public:
-   inline explicit scene() { }
+   explicit scene() { }
 
    // direct access to constituents
-   inline kip::model <real,base>  &model () { return *this; }
-   inline kip::view  <real>       &view  () { return *this; }
-   inline kip::light <real>       &light () { return *this; }
-   inline kip::engine<real>       &engine() { return *this; }
-   inline kip::image <real,color> &image () { return *this; }
+   kip::model <real,base>  &model () { return *this; }
+   kip::view  <real>       &view  () { return *this; }
+   kip::light <real>       &light () { return *this; }
+   kip::engine<real>       &engine() { return *this; }
+   kip::image <real,color> &image () { return *this; }
 
    // trace()
-   inline bool trace() { return kip::trace(*this); }
+   bool trace() { return kip::trace(*this); }
 
    // trace(array<2,pix>)
    template<class pix>
-   inline bool trace(array<2,pix> &pixel) { return kip::trace(*this,pixel); }
+   bool trace(array<2,pix> &pixel) { return kip::trace(*this,pixel); }
 };

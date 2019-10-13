@@ -11,7 +11,7 @@
 #endif
 
    // kip_class([a[,b[,r[,base]]]])
-   inline explicit kip_class(
+   explicit kip_class(
       const point<real> &_a = point<real>(real(0), real(0), real(0)),
       const point<real> &_b = point<real>(real(1), real(0), real(0)),
       const real _r = real(1)
@@ -20,7 +20,7 @@
       kip_aye(_a), kip_bee(_b), r(_r)
    { }
 
-   inline explicit kip_class(
+   explicit kip_class(
       const point<real> &_a,
       const point<real> &_b, const real _r, const tag &thebase
    ) :
@@ -31,7 +31,7 @@
 
 
    // kip_class(a.x,a.y,a.z[,b.x,b.y,b.z[,r[,base]]])
-   inline explicit kip_class(
+   explicit kip_class(
       const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
@@ -40,7 +40,7 @@
       r(real(1))
    { }
 
-   inline explicit kip_class(
+   explicit kip_class(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz
    ) :
@@ -50,7 +50,7 @@
       r(real(1))
    { }
 
-   inline explicit kip_class(
+   explicit kip_class(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz, const real _r
    ) :
@@ -60,7 +60,7 @@
       r(_r)
    { }
 
-   inline explicit kip_class(
+   explicit kip_class(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const real _r, const tag &thebase
@@ -74,7 +74,7 @@
 
 
    // kip_class(kip_class)
-   inline kip_class(const kip_class &from) :
+   kip_class(const kip_class &from) :
       shape<real,tag>(from),
       kip_aye(from.kip_aye),
       kip_bee(from.kip_bee),
@@ -82,7 +82,7 @@
    { }
 
    // kip_class = kip_class
-   inline kip_class &operator=(const kip_class &from)
+   kip_class &operator=(const kip_class &from)
    {
       this->shape<real,tag>::operator=(from);
       kip_aye = from.kip_aye;

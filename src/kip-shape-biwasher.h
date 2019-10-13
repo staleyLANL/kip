@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class biwasher : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // modified biwasher: (0,0,0), (h,0,0), i.a,i.b, o.a,o.b
@@ -14,7 +14,7 @@ class biwasher : public shape<real,tag> {
    mutable real ibsq, obsq, oslope, otmp1, otmp2, otmp3;
 
    // first_in/first_out: called by infirst() when inside/outside
-   inline bool
+   bool
       first_in(
          const point<real> &,
          const real, const real, const real,
@@ -27,7 +27,7 @@ class biwasher : public shape<real,tag> {
       ) const;
 
    // get_*
-   inline bool
+   bool
    get_base0(const point<real> &,
              const real, const real, const real, inq<real,tag> &) const,
    get_baseh(const point<real> &,
@@ -46,13 +46,13 @@ public:
    class { public: real a, b; } i;
    class { public: real a, b; } o;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
       { return rot.back(from); }
 
 
 
    // biwasher([a[,b[,i.a,i.b,o.a,o.b[,base]]]])
-   inline explicit biwasher(
+   explicit biwasher(
       const point<real> &_a = point<real>(real(0),real(0),real(0)),
       const point<real> &_b = point<real>(real(1),real(0),real(0))
    ) :
@@ -63,7 +63,7 @@ public:
       o.a = real(2);  o.b = real(3);
    }
 
-   inline explicit biwasher(
+   explicit biwasher(
       const point<real> &_a,
       const point<real> &_b,
       const real _ia, const real _ib,
@@ -76,7 +76,7 @@ public:
       o.a = _oa;  o.b = _ob;
    }
 
-   inline explicit biwasher(
+   explicit biwasher(
       const point<real> &_a,
       const point<real> &_b,
       const real _ia, const real _ib,
@@ -92,7 +92,7 @@ public:
 
 
    // biwasher(a.x,a.y,a.z[,b.x,b.y,b.z[,i.a,i.b,o.a,o.b[,base]]])
-   inline explicit biwasher(
+   explicit biwasher(
       const real ax, const real ay, const real az
    ) :
       shape<real,tag>(this),
@@ -103,7 +103,7 @@ public:
       o.a = real(2);  o.b = real(3);
    }
 
-   inline explicit biwasher(
+   explicit biwasher(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz
    ) :
@@ -115,7 +115,7 @@ public:
       o.a = real(2);  o.b = real(3);
    }
 
-   inline explicit biwasher(
+   explicit biwasher(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const real _ia, const real _ib,
@@ -129,7 +129,7 @@ public:
       o.a = _oa;  o.b = _ob;
    }
 
-   inline explicit biwasher(
+   explicit biwasher(
       const real ax, const real ay, const real az,
       const real bx, const real by, const real bz,
       const real _ia, const real _ib,
@@ -146,7 +146,7 @@ public:
 
 
    // biwasher(biwasher)
-   inline biwasher(const biwasher &from) :
+   biwasher(const biwasher &from) :
       shape<real,tag>(from),
       a(from.a),
       b(from.b)
@@ -156,7 +156,7 @@ public:
    }
 
    // biwasher = biwasher
-   inline biwasher &operator=(const biwasher &from)
+   biwasher &operator=(const biwasher &from)
    {
       this->shape<real,tag>::operator=(from);
       a = from.a;  i.a = from.i.a;  i.b = from.i.b;

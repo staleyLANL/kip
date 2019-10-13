@@ -14,12 +14,12 @@ public:
    kip::point<real> normal;  // OUT from the material
 
    kip_functions(half);
-   inline kip::point<real> back(const kip::point<real> &from) const
+   kip::point<real> back(const kip::point<real> &from) const
       { return from; }
 
 
    // half([point[,normal[,base]]])
-   inline explicit half(
+   explicit half(
       const kip::point<real> &_p = kip::point<real>(real(0), real(0), real(0)),
       const kip::point<real> &_n = kip::point<real>(real(1), real(0), real(0))
    ) :
@@ -27,7 +27,7 @@ public:
       point(_p), normal(_n)
    { this->eyelie = false; }
 
-   inline explicit half(
+   explicit half(
       const kip::point<real> &_p,
       const kip::point<real> &_n, const tag &thebase
    ) :
@@ -37,14 +37,14 @@ public:
 
 
    // half(px,py,pz[,nx,ny,nz[,base]])
-   inline explicit half(
+   explicit half(
       const real px, const real py, const real pz
    ) :
       shape<real,tag>(this),
       point(px,py,pz), normal(kip::point<real>(real(1), real(0), real(0)))
    { this->eyelie = false; }
 
-   inline explicit half(
+   explicit half(
       const real px, const real py, const real pz,
       const real nx, const real ny, const real nz
    ) :
@@ -52,7 +52,7 @@ public:
       point(px,py,pz), normal(nx,ny,nz)
    { this->eyelie = false; }
 
-   inline explicit half(
+   explicit half(
       const real px, const real py, const real pz,
       const real nx, const real ny, const real nz, const tag &thebase
    ) :
@@ -62,14 +62,14 @@ public:
 
 
    // half(half)
-   inline half(const half &from) :
+   half(const half &from) :
       shape<real,tag>(from),
       point (from.point),
       normal(from.normal)
    { }
 
    // half = half
-   inline half &operator=(const half &from)
+   half &operator=(const half &from)
    {
       this->shape<real,tag>::operator=(from);
       point  = from.point;

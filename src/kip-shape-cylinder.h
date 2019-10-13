@@ -5,7 +5,7 @@
 
 template<class real = default_real, class tag = default_base>
 class cylinder : public shape<real,tag> {
-   inline bool inside(const point<real> &) const;
+   bool inside(const point<real> &) const;
    using shape<real,tag>::interior;
 
    // modified cylinder: (0,0,0), (h,0,0), r
@@ -13,7 +13,7 @@ class cylinder : public shape<real,tag> {
    mutable real h2;
 
    // get_*
-   inline bool
+   bool
    get_base0(const point<real> &,
              const real, const real, const real, inq<real,tag> &) const,
    get_baseh(const point<real> &,
@@ -30,7 +30,7 @@ public:
    point<real> b;
    real r;
 
-   inline point<real> back(const point<real> &from) const
+   point<real> back(const point<real> &from) const
    {
       return rot.back(r*from);
    }
@@ -233,7 +233,7 @@ kip_infirst(cylinder)
 
 // get_base0
 template<class real, class tag>
-inline bool cylinder<real,tag>::get_base0(
+bool cylinder<real,tag>::get_base0(
    const point<real> &tar,
    const real dx,
    const real dy,
@@ -258,7 +258,7 @@ inline bool cylinder<real,tag>::get_base0(
 
 // get_baseh
 template<class real, class tag>
-inline bool cylinder<real,tag>::get_baseh(
+bool cylinder<real,tag>::get_baseh(
    const point<real> &tar,
    const real dx,
    const real dy,
@@ -283,7 +283,7 @@ inline bool cylinder<real,tag>::get_baseh(
 
 // get_curve
 template<class real, class tag>
-inline bool cylinder<real,tag>::get_curve(
+bool cylinder<real,tag>::get_curve(
    const point<real> &tar,
    const real dx,
    const real dy,
