@@ -15,7 +15,8 @@ namespace crayola {
    static constexpr const type &alt=str;
 
 #define kip_make_defn( type,str,alt,r,g,b) \
-   const type type::str(#str);
+   template<class unused> \
+   const type<unused> type<unused>::str(#str);
 
 #define kip_make_standard(theclass,macro) \
    macro( theclass, PureBlack,   pureblack,     0,   0,   0 ) \
@@ -149,34 +150,41 @@ inline void randomize(base<derived> &obj)
 
 
 // -----------------------------------------------------------------------------
+// crayola::Pure<>
 // crayola::pure
+//
+// With these and our other color sets, below, we have both of the above,
+// instead of just the second, so that our member definitions, done with
+// kip_make_defn, work correctly with a header-only library. Essentially,
+// we need to make those be templated.
 // -----------------------------------------------------------------------------
 
 #define kip_make_pure(macro) \
-   macro( pure, Black,   black,     0,   0,   0 ) \
-   macro( pure, White,   white,   255, 255, 255 ) \
-   macro( pure, Red,     red,     255,   0,   0 ) \
-   macro( pure, Green,   green,     0, 255,   0 ) \
-   macro( pure, Blue,    blue,      0,   0, 255 ) \
-   macro( pure, Cyan,    cyan,      0, 255, 255 ) \
-   macro( pure, Magenta, magenta, 255,   0, 255 ) \
-   macro( pure, Yellow,  yellow,  255, 255,   0 ) \
-   macro( pure, Dark,    dark,     64,  64,  64 ) \
-   macro( pure, Medium,  medium,  128, 128, 128 ) \
-   macro( pure, Light,   light,   192, 192, 192 ) \
-   kip_make_standard(pure,macro) // give last
+   macro( Pure, Black,   black,     0,   0,   0 ) \
+   macro( Pure, White,   white,   255, 255, 255 ) \
+   macro( Pure, Red,     red,     255,   0,   0 ) \
+   macro( Pure, Green,   green,     0, 255,   0 ) \
+   macro( Pure, Blue,    blue,      0,   0, 255 ) \
+   macro( Pure, Cyan,    cyan,      0, 255, 255 ) \
+   macro( Pure, Magenta, magenta, 255,   0, 255 ) \
+   macro( Pure, Yellow,  yellow,  255, 255,   0 ) \
+   macro( Pure, Dark,    dark,     64,  64,  64 ) \
+   macro( Pure, Medium,  medium,  128, 128, 128 ) \
+   macro( Pure, Light,   light,   192, 192, 192 ) \
+   kip_make_standard(Pure,macro) // give last
 
-class pure : public base<pure> {
+template<class unused = char>
+class Pure : public base<Pure<unused>> {
 public:
    static constexpr const char *const description = "crayola::pure";
 
-   explicit pure() : base<pure>() { }
-   explicit pure(const std::string &str) : base<pure>(str) { }
+   explicit Pure() : base<Pure>() { }
+   explicit Pure(const std::string &str) : base<Pure>(str) { }
 
    static void initialize()
    {
-      assert(vec.size() == 0);
-      vec = { kip_make_pure(kip_make_table) };
+      assert(base<Pure>::vec.size() == 0);
+      base<Pure>::vec = { kip_make_pure(kip_make_table) };
    }
 
    kip_make_pure(kip_make_decl)
@@ -184,6 +192,7 @@ public:
 };
 
 kip_make_pure(kip_make_defn)
+using pure = Pure<>;
 
 
 
@@ -192,43 +201,44 @@ kip_make_pure(kip_make_defn)
 // -----------------------------------------------------------------------------
 
 #define kip_make_silver(macro) \
-   macro( silver, AztecGold,        aztec,       195, 153,  83 ) \
-   macro( silver, BurnishedBrown,   burnished,   161, 122, 116 ) \
-   macro( silver, CeruleanFrost,    cerulean,    109, 155, 195 ) \
-   macro( silver, CinnamonSatin,    cinnamon,    205,  96, 126 ) \
-   macro( silver, CopperPenny,      copper,      173, 111, 105 ) \
-   macro( silver, CosmicCobalt,     cosmic,       46,  45, 136 ) \
-   macro( silver, GlossyGrape,      glossy,      171, 146, 179 ) \
-   macro( silver, GraniteGray,      granite,     103, 103, 103 ) \
-   macro( silver, GreenSheen,       green,       110, 174, 161 ) \
-   macro( silver, LilacLuster,      lilac,       174, 152, 170 ) \
-   macro( silver, MistyMoss,        misty,       187, 180, 119 ) \
-   macro( silver, MysticMaroon,     mystic,      173,  67, 121 ) \
-   macro( silver, PearlyPurple,     pearly,      183, 104, 162 ) \
-   macro( silver, PewterBlue,       pewter,      139, 168, 183 ) \
-   macro( silver, PolishedPine,     polished,     93, 164, 147 ) \
-   macro( silver, QuickSilver,      quick,       166, 166, 166 ) \
-   macro( silver, RoseDust,         rose,        158,  94, 111 ) \
-   macro( silver, RustyRed,         rusty,       218,  44,  67 ) \
-   macro( silver, ShadowBlue,       shadow,      119, 139, 165 ) \
-   macro( silver, ShinyShamrock,    shiny,        95, 167, 120 ) \
-   macro( silver, SteelTeal,        steel,        95, 138, 139 ) \
-   macro( silver, SugarPlum,        sugar,       145,  78, 117 ) \
-   macro( silver, TwilightLavender, twilight,    138,  73, 107 ) \
-   macro( silver, WintergreenDream, wintergreen,  86, 136, 125 ) \
-   kip_make_standard(silver,macro) // give last
+   macro( Silver, AztecGold,        aztec,       195, 153,  83 ) \
+   macro( Silver, BurnishedBrown,   burnished,   161, 122, 116 ) \
+   macro( Silver, CeruleanFrost,    cerulean,    109, 155, 195 ) \
+   macro( Silver, CinnamonSatin,    cinnamon,    205,  96, 126 ) \
+   macro( Silver, CopperPenny,      copper,      173, 111, 105 ) \
+   macro( Silver, CosmicCobalt,     cosmic,       46,  45, 136 ) \
+   macro( Silver, GlossyGrape,      glossy,      171, 146, 179 ) \
+   macro( Silver, GraniteGray,      granite,     103, 103, 103 ) \
+   macro( Silver, GreenSheen,       green,       110, 174, 161 ) \
+   macro( Silver, LilacLuster,      lilac,       174, 152, 170 ) \
+   macro( Silver, MistyMoss,        misty,       187, 180, 119 ) \
+   macro( Silver, MysticMaroon,     mystic,      173,  67, 121 ) \
+   macro( Silver, PearlyPurple,     pearly,      183, 104, 162 ) \
+   macro( Silver, PewterBlue,       pewter,      139, 168, 183 ) \
+   macro( Silver, PolishedPine,     polished,     93, 164, 147 ) \
+   macro( Silver, QuickSilver,      quick,       166, 166, 166 ) \
+   macro( Silver, RoseDust,         rose,        158,  94, 111 ) \
+   macro( Silver, RustyRed,         rusty,       218,  44,  67 ) \
+   macro( Silver, ShadowBlue,       shadow,      119, 139, 165 ) \
+   macro( Silver, ShinyShamrock,    shiny,        95, 167, 120 ) \
+   macro( Silver, SteelTeal,        steel,        95, 138, 139 ) \
+   macro( Silver, SugarPlum,        sugar,       145,  78, 117 ) \
+   macro( Silver, TwilightLavender, twilight,    138,  73, 107 ) \
+   macro( Silver, WintergreenDream, wintergreen,  86, 136, 125 ) \
+   kip_make_standard(Silver,macro) // give last
 
-class silver : public base<silver> {
+template<class unused = char>
+class Silver : public base<Silver<unused>> {
 public:
    static constexpr const char *const description = "crayola::silver";
 
-   explicit silver() : base<silver>() { }
-   explicit silver(const std::string &str) : base<silver>(str) { }
+   explicit Silver() : base<Silver>() { }
+   explicit Silver(const std::string &str) : base<Silver>(str) { }
 
    static void initialize()
    {
-      assert(vec.size() == 0);
-      vec = { kip_make_silver(kip_make_table) };
+      assert(base<Silver>::vec.size() == 0);
+      base<Silver>::vec = { kip_make_silver(kip_make_table) };
    }
 
    kip_make_silver(kip_make_decl)
@@ -236,6 +246,7 @@ public:
 };
 
 kip_make_silver(kip_make_defn)
+using silver = Silver<>;
 
 // alternative name
 using SilverSwirls = silver;
@@ -247,35 +258,36 @@ using SilverSwirls = silver;
 // -----------------------------------------------------------------------------
 
 #define kip_make_gem(macro) \
-   macro( gem, Amethyst,    amethyst,  100,  96, 154 ) \
-   macro( gem, Citrine,     citrine,   147,  55,   9 ) \
-   macro( gem, Emerald,     emerald,    20, 169, 137 ) \
-   macro( gem, Jade,        jade,       70, 154, 132 ) \
-   macro( gem, Jasper,      jasper,    208,  83,  64 ) \
-   macro( gem, LapisLazuli, lapis,      67, 108, 185 ) \
-   macro( gem, Malachite,   malachite,  70, 148, 150 ) \
-   macro( gem, Moonstone,   moonstone,  58, 168, 193 ) \
-   macro( gem, Onyx,        onyx,       53,  56,  57 ) \
-   macro( gem, Peridot,     peridot,   171, 173,  72 ) \
-   macro( gem, PinkPearl,   pink,      176, 112, 128 ) \
-   macro( gem, RoseQuartz,  rose,      189,  85, 156 ) \
-   macro( gem, Ruby,        ruby,      170,  64, 105 ) \
-   macro( gem, Sapphire,    sapphire,   45,  93, 161 ) \
-   macro( gem, SmokeyTopaz, smokey,    131,  42,  13 ) \
-   macro( gem, TigersEye,   tigers,    181, 105,  23 ) \
-   kip_make_standard(gem,macro) // give last
+   macro( Gem, Amethyst,    amethyst,  100,  96, 154 ) \
+   macro( Gem, Citrine,     citrine,   147,  55,   9 ) \
+   macro( Gem, Emerald,     emerald,    20, 169, 137 ) \
+   macro( Gem, Jade,        jade,       70, 154, 132 ) \
+   macro( Gem, Jasper,      jasper,    208,  83,  64 ) \
+   macro( Gem, LapisLazuli, lapis,      67, 108, 185 ) \
+   macro( Gem, Malachite,   malachite,  70, 148, 150 ) \
+   macro( Gem, Moonstone,   moonstone,  58, 168, 193 ) \
+   macro( Gem, Onyx,        onyx,       53,  56,  57 ) \
+   macro( Gem, Peridot,     peridot,   171, 173,  72 ) \
+   macro( Gem, PinkPearl,   pink,      176, 112, 128 ) \
+   macro( Gem, RoseQuartz,  rose,      189,  85, 156 ) \
+   macro( Gem, Ruby,        ruby,      170,  64, 105 ) \
+   macro( Gem, Sapphire,    sapphire,   45,  93, 161 ) \
+   macro( Gem, SmokeyTopaz, smokey,    131,  42,  13 ) \
+   macro( Gem, TigersEye,   tigers,    181, 105,  23 ) \
+   kip_make_standard(Gem,macro) // give last
 
-class gem : public base<gem> {
+template<class unused = char>
+class Gem : public base<Gem<unused>> {
 public:
    static constexpr const char *const description = "crayola::gem";
 
-   explicit gem() : base<gem>() { }
-   explicit gem(const std::string &str) : base<gem>(str) { }
+   explicit Gem() : base<Gem>() { }
+   explicit Gem(const std::string &str) : base<Gem>(str) { }
 
    static void initialize()
    {
-      assert(vec.size() == 0);
-      vec = { kip_make_gem(kip_make_table) };
+      assert(base<Gem>::vec.size() == 0);
+      base<Gem>::vec = { kip_make_gem(kip_make_table) };
    }
 
    kip_make_gem(kip_make_decl)
@@ -283,6 +295,7 @@ public:
 };
 
 kip_make_gem(kip_make_defn)
+using gem = Gem<>;
 
 // alternative name
 using GemTones = gem;
@@ -294,23 +307,23 @@ using GemTones = gem;
 // -----------------------------------------------------------------------------
 
 #define kip_make_metallic(macro) \
-   macro( metallic, AlloyOrange,         alloy,        196,  98,  16 ) \
-   macro( metallic, BdazzledBlue,        bdazzled,      46,  88, 148 ) \
-   macro( metallic, BigDipORuby,         big,          156,  37,  66 ) \
-   macro( metallic, BittersweetShimmer,  bittersweet,  191,  79,  81 ) \
-   macro( metallic, BlastOffBronze,      blast,        165, 113, 100 ) \
-   macro( metallic, CyberGrape,          cyber,         88,  66, 124 ) \
-   macro( metallic, DeepSpaceSparkle,    deep,          74, 100, 108 ) \
-   macro( metallic, GoldFusion,          gold,         133, 117,  78 ) \
-   macro( metallic, IlluminatingEmerald, illuminating,  49, 145, 119 ) \
-   macro( metallic, MetallicSeaweed,     seaweed,       10, 126, 140 ) \
-   macro( metallic, MetallicSunburst,    sunburst,     156, 124,  56 ) \
-   macro( metallic, RazzmicBerry,        razzmic,      141,  78, 133 ) \
-   macro( metallic, SheenGreen,          sheen,        143, 212,   0 ) \
-   macro( metallic, ShimmeringBlush,     shimmering,   217, 134, 149 ) \
-   macro( metallic, SonicSilver,         sonic,        117, 117, 117 ) \
-   macro( metallic, SteelBlue,           steel,          0, 129, 171 ) \
-   kip_make_standard(metallic,macro) // give last
+   macro( Metallic, AlloyOrange,         alloy,        196,  98,  16 ) \
+   macro( Metallic, BdazzledBlue,        bdazzled,      46,  88, 148 ) \
+   macro( Metallic, BigDipORuby,         big,          156,  37,  66 ) \
+   macro( Metallic, BittersweetShimmer,  bittersweet,  191,  79,  81 ) \
+   macro( Metallic, BlastOffBronze,      blast,        165, 113, 100 ) \
+   macro( Metallic, CyberGrape,          cyber,         88,  66, 124 ) \
+   macro( Metallic, DeepSpaceSparkle,    deep,          74, 100, 108 ) \
+   macro( Metallic, GoldFusion,          gold,         133, 117,  78 ) \
+   macro( Metallic, IlluminatingEmerald, illuminating,  49, 145, 119 ) \
+   macro( Metallic, MetallicSeaweed,     seaweed,       10, 126, 140 ) \
+   macro( Metallic, MetallicSunburst,    sunburst,     156, 124,  56 ) \
+   macro( Metallic, RazzmicBerry,        razzmic,      141,  78, 133 ) \
+   macro( Metallic, SheenGreen,          sheen,        143, 212,   0 ) \
+   macro( Metallic, ShimmeringBlush,     shimmering,   217, 134, 149 ) \
+   macro( Metallic, SonicSilver,         sonic,        117, 117, 117 ) \
+   macro( Metallic, SteelBlue,           steel,          0, 129, 171 ) \
+   kip_make_standard(Metallic,macro) // give last
 
 // Above, for the original names:
 //    Metallic Seaweed
@@ -318,17 +331,18 @@ using GemTones = gem;
 // we used the second word instead of the first as the short names, for the
 // obvious reason. Elsewhere, our convention has been to use the first word.
 
-class metallic : public base<metallic> {
+template<class unused = char>
+class Metallic : public base<Metallic<unused>> {
 public:
    static constexpr const char *const description = "crayola::metallic";
 
-   explicit metallic() : base<metallic>() { }
-   explicit metallic(const std::string &str) : base<metallic>(str) { }
+   explicit Metallic() : base<Metallic>() { }
+   explicit Metallic(const std::string &str) : base<Metallic>(str) { }
 
    static void initialize()
    {
-      assert(vec.size() == 0);
-      vec = { kip_make_metallic(kip_make_table) };
+      assert(base<Metallic>::vec.size() == 0);
+      base<Metallic>::vec = { kip_make_metallic(kip_make_table) };
    }
 
    kip_make_metallic(kip_make_decl)
@@ -336,6 +350,7 @@ public:
 };
 
 kip_make_metallic(kip_make_defn)
+using metallic = Metallic<>;
 
 // alternative name
 using MetallicFX = metallic;
@@ -343,149 +358,150 @@ using MetallicFX = metallic;
 
 
 // -----------------------------------------------------------------------------
-// crayola::complete
+// crayola::Complete
 // -----------------------------------------------------------------------------
 
 #define kip_make_complete(macro) \
-   macro( complete, Almond,                 almond,          239, 219, 197 ) \
-   macro( complete, AntiqueBrass,           antique,         205, 149, 117 ) \
-   macro( complete, Apricot,                apricot,         253, 217, 181 ) \
-   macro( complete, Aquamarine,             aquamarine,      120, 219, 226 ) \
-   macro( complete, Asparagus,              asparagus,       135, 169, 107 ) \
-   macro( complete, AtomicTangerine,        atomic,          255, 164, 116 ) \
-   macro( complete, BananaMania,            banana,          250, 231, 181 ) \
-   macro( complete, Beaver,                 beaver,          159, 129, 112 ) \
-   macro( complete, Bittersweet,            bittersweet,     253, 124, 110 ) \
-   macro( complete, Black,                  black,            35,  35,  35 ) \
-   macro( complete, Blue,                   blue,             31, 117, 254 ) \
-   macro( complete, BlueBell,               bluebell,        173, 173, 214 ) \
-   macro( complete, BlueGreen,              bluegreen,        25, 158, 189 ) \
-   macro( complete, BlueViolet,             blueviolet,      115, 102, 189 ) \
-   macro( complete, Bluetiful,              bluetiful,        46,  80, 144 ) \
-   macro( complete, Blush,                  blush,           222,  93, 131 ) \
-   macro( complete, BrickRed,               brick,           203,  65,  84 ) \
-   macro( complete, Brown,                  brown,           180, 103,  77 ) \
-   macro( complete, BurntOrange,            burntorange,     255, 127,  73 ) \
-   macro( complete, BurntSienna,            burntsienna,     234, 126,  93 ) \
-   macro( complete, CadetBlue,              cadet,           176, 183, 198 ) \
-   macro( complete, Canary,                 canary,          255, 255, 159 ) \
-   macro( complete, CaribbeanGreen,         caribbean,        28, 211, 162 ) \
-   macro( complete, CarnationPink,          carnation,       255, 170, 204 ) \
-   macro( complete, Cerise,                 cerise,          221,  68, 146 ) \
-   macro( complete, Cerulean,               cerulean,         29, 172, 214 ) \
-   macro( complete, Chestnut,               chestnut,        188,  93,  88 ) \
-   macro( complete, Copper,                 copper,          221, 148, 117 ) \
-   macro( complete, Cornflower,             cornflower,      154, 206, 235 ) \
-   macro( complete, CottonCandy,            cotton,          255, 188, 217 ) \
-   macro( complete, Denim,                  denim,            43, 108, 196 ) \
-   macro( complete, DesertSand,             desert,          239, 205, 184 ) \
-   macro( complete, Eggplant,               eggplant,        110,  81,  96 ) \
-   macro( complete, ElectricLime,           electric,         29, 249,  20 ) \
-   macro( complete, Fern,                   fern,            113, 188, 120 ) \
-   macro( complete, ForestGreen,            forest,          109, 174, 129 ) \
-   macro( complete, Fuchsia,                fuchsia,         195, 100, 197 ) \
-   macro( complete, FuzzyWuzzyBrown,        fuzzy,           204, 102, 102 ) \
-   macro( complete, Gold,                   gold,            231, 198, 151 ) \
-   macro( complete, Goldenrod,              goldenrod,       255, 217, 117 ) \
-   macro( complete, GrannySmithApple,       granny,          168, 228, 160 ) \
-   macro( complete, Gray,                   gray,            149, 145, 140 ) \
-   macro( complete, Green,                  green,            28, 172, 120 ) \
-   macro( complete, GreenYellow,            greenyellow,     240, 232, 145 ) \
-   macro( complete, HotMagenta,             hot,             255,  29, 206 ) \
-   macro( complete, InchWorm,               inch,            178, 236,  93 ) \
-   macro( complete, Indigo,                 indigo,           93, 118, 203 ) \
-   macro( complete, JazzberryJam,           jazzberry,       202,  55, 103 ) \
-   macro( complete, JungleGreen,            jungle,           59, 176, 143 ) \
-   macro( complete, LaserLemon,             laser,           253, 252, 116 ) \
-   macro( complete, Lavender,               lavender,        252, 180, 213 ) \
-   macro( complete, MacaroniandCheese,      macaroni,        255, 189, 136 ) \
-   macro( complete, Magenta,                magenta,         246, 100, 175 ) \
-   macro( complete, Mahogany,               mahogany,        205,  74,  74 ) \
-   macro( complete, Manatee,                manatee,         151, 154, 170 ) \
-   macro( complete, MangoTango,             mango,           255, 130,  67 ) \
-   macro( complete, Maroon,                 maroon,          200,  56,  90 ) \
-   macro( complete, Mauvelous,              mauvelous,       239, 152, 170 ) \
-   macro( complete, Melon,                  melon,           253, 188, 180 ) \
-   macro( complete, MidnightBlue,           midnight,         26,  72, 118 ) \
-   macro( complete, MountainMeadow,         mountain,         48, 186, 143 ) \
-   macro( complete, NavyBlue,               navy,             25, 116, 210 ) \
-   macro( complete, NeonCarrot,             neon,            255, 163,  67 ) \
-   macro( complete, OliveGreen,             olive,           186, 184, 108 ) \
-   macro( complete, Orange,                 orange,          255, 117,  56 ) \
-   macro( complete, Orchid,                 orchid,          230, 168, 215 ) \
-   macro( complete, OuterSpace,             outer,            65,  74,  76 ) \
-   macro( complete, OutrageousOrange,       outrageous,      255, 110,  74 ) \
-   macro( complete, PacificBlue,            pacific,          28, 169, 201 ) \
-   macro( complete, Peach,                  peach,           255, 207, 171 ) \
-   macro( complete, Periwinkle,             periwinkle,      197, 208, 230 ) \
-   macro( complete, PiggyPink,              piggy,           253, 215, 228 ) \
-   macro( complete, PineGreen,              pine,             21, 128, 120 ) \
-   macro( complete, PinkFlamingo,           pinkflamingo,    252, 116, 253 ) \
-   macro( complete, PinkSherbet,            pinksherbet,     247, 128, 161 ) \
-   macro( complete, Plum,                   plum,            142,  69, 133 ) \
-   macro( complete, PurpleHeart,            purpleheart,     116,  66, 200 ) \
-   macro( complete, PurpleMountainsMajesty, purplemountains, 157, 129, 186 ) \
-   macro( complete, PurplePizza,            purplepizza,     255,  29, 206 ) \
-   macro( complete, RadicalRed,             radical,         255,  73, 107 ) \
-   macro( complete, RawSienna,              raw,             214, 138,  89 ) \
-   macro( complete, RazzleDazzleRose,       razzle,          255,  72, 208 ) \
-   macro( complete, Razzmatazz,             razzmatazz,      227,  37, 107 ) \
-   macro( complete, Red,                    red,             238,  32,  77 ) \
-   macro( complete, RedOrange,              redorange,       255,  83,  73 ) \
-   macro( complete, RedViolet,              redviolet,       192,  68, 143 ) \
-   macro( complete, RobinEggBlue,           robin,            31, 206, 203 ) \
-   macro( complete, RoyalPurple,            royal,           120,  81, 169 ) \
-   macro( complete, Salmon,                 salmon,          255, 155, 170 ) \
-   macro( complete, Scarlet,                scarlet,         242,  40,  71 ) \
-   macro( complete, ScreaminGreen,          screamin,        118, 255, 122 ) \
-   macro( complete, SeaGreen,               sea,             159, 226, 191 ) \
-   macro( complete, Sepia,                  sepia,           165, 105,  79 ) \
-   macro( complete, Shadow,                 shadow,          138, 121,  93 ) \
-   macro( complete, Shamrock,               shamrock,         69, 206, 162 ) \
-   macro( complete, ShockingPink,           shocking,        251, 126, 253 ) \
-   macro( complete, Silver,                 silver,          205, 197, 194 ) \
-   macro( complete, SkyBlue,                sky,             128, 218, 235 ) \
-   macro( complete, SpringGreen,            spring,          236, 234, 190 ) \
-   macro( complete, Sunglow,                sunglow,         255, 207,  72 ) \
-   macro( complete, SunsetOrange,           sunset,          253,  94,  83 ) \
-   macro( complete, Tan,                    tan,             250, 167, 108 ) \
-   macro( complete, TickleMePink,           tickle,          252, 137, 172 ) \
-   macro( complete, Timberwolf,             timberwolf,      219, 215, 210 ) \
-   macro( complete, TropicalRainForest,     tropical,         23, 128, 109 ) \
-   macro( complete, Tumbleweed,             tumbleweed,      222, 170, 136 ) \
-   macro( complete, TurquoiseBlue,          turquoise,       119, 221, 231 ) \
-   macro( complete, UnmellowYellow,         unmellow,        253, 252, 116 ) \
-   macro( complete, Violet, /* see below */ violet,          146, 110, 174 ) \
-   macro( complete, Purple, /* see below */ purple,          146, 110, 174 ) \
-   macro( complete, VioletRed,              violetred,       247,  83, 148 ) \
-   macro( complete, VividTangerine,         vividtangerine,  255, 160, 137 ) \
-   macro( complete, VividViolet,            vividviolet,     143,  80, 157 ) \
-   macro( complete, White,                  white,           237, 237, 237 ) \
-   macro( complete, WildBlueWonder,         wildblue,        162, 173, 208 ) \
-   macro( complete, WildStrawberry,         wildstrawberry,  255,  67, 164 ) \
-   macro( complete, WildWatermelon,         wildwatermelon,  252, 108, 133 ) \
-   macro( complete, Wisteria,               wisteria,        205, 164, 222 ) \
-   macro( complete, Yellow,                 yellow,          252, 232, 131 ) \
-   macro( complete, YellowGreen,            yellowgreen,     197, 227, 132 ) \
-   macro( complete, YellowOrange,           yelloworange,    255, 182,  83 ) \
-   kip_make_standard(complete,macro) // give last
+   macro( Complete, Almond,                 almond,          239, 219, 197 ) \
+   macro( Complete, AntiqueBrass,           antique,         205, 149, 117 ) \
+   macro( Complete, Apricot,                apricot,         253, 217, 181 ) \
+   macro( Complete, Aquamarine,             aquamarine,      120, 219, 226 ) \
+   macro( Complete, Asparagus,              asparagus,       135, 169, 107 ) \
+   macro( Complete, AtomicTangerine,        atomic,          255, 164, 116 ) \
+   macro( Complete, BananaMania,            banana,          250, 231, 181 ) \
+   macro( Complete, Beaver,                 beaver,          159, 129, 112 ) \
+   macro( Complete, Bittersweet,            bittersweet,     253, 124, 110 ) \
+   macro( Complete, Black,                  black,            35,  35,  35 ) \
+   macro( Complete, Blue,                   blue,             31, 117, 254 ) \
+   macro( Complete, BlueBell,               bluebell,        173, 173, 214 ) \
+   macro( Complete, BlueGreen,              bluegreen,        25, 158, 189 ) \
+   macro( Complete, BlueViolet,             blueviolet,      115, 102, 189 ) \
+   macro( Complete, Bluetiful,              bluetiful,        46,  80, 144 ) \
+   macro( Complete, Blush,                  blush,           222,  93, 131 ) \
+   macro( Complete, BrickRed,               brick,           203,  65,  84 ) \
+   macro( Complete, Brown,                  brown,           180, 103,  77 ) \
+   macro( Complete, BurntOrange,            burntorange,     255, 127,  73 ) \
+   macro( Complete, BurntSienna,            burntsienna,     234, 126,  93 ) \
+   macro( Complete, CadetBlue,              cadet,           176, 183, 198 ) \
+   macro( Complete, Canary,                 canary,          255, 255, 159 ) \
+   macro( Complete, CaribbeanGreen,         caribbean,        28, 211, 162 ) \
+   macro( Complete, CarnationPink,          carnation,       255, 170, 204 ) \
+   macro( Complete, Cerise,                 cerise,          221,  68, 146 ) \
+   macro( Complete, Cerulean,               cerulean,         29, 172, 214 ) \
+   macro( Complete, Chestnut,               chestnut,        188,  93,  88 ) \
+   macro( Complete, Copper,                 copper,          221, 148, 117 ) \
+   macro( Complete, Cornflower,             cornflower,      154, 206, 235 ) \
+   macro( Complete, CottonCandy,            cotton,          255, 188, 217 ) \
+   macro( Complete, Denim,                  denim,            43, 108, 196 ) \
+   macro( Complete, DesertSand,             desert,          239, 205, 184 ) \
+   macro( Complete, Eggplant,               eggplant,        110,  81,  96 ) \
+   macro( Complete, ElectricLime,           electric,         29, 249,  20 ) \
+   macro( Complete, Fern,                   fern,            113, 188, 120 ) \
+   macro( Complete, ForestGreen,            forest,          109, 174, 129 ) \
+   macro( Complete, Fuchsia,                fuchsia,         195, 100, 197 ) \
+   macro( Complete, FuzzyWuzzyBrown,        fuzzy,           204, 102, 102 ) \
+   macro( Complete, Gold,                   gold,            231, 198, 151 ) \
+   macro( Complete, Goldenrod,              goldenrod,       255, 217, 117 ) \
+   macro( Complete, GrannySmithApple,       granny,          168, 228, 160 ) \
+   macro( Complete, Gray,                   gray,            149, 145, 140 ) \
+   macro( Complete, Green,                  green,            28, 172, 120 ) \
+   macro( Complete, GreenYellow,            greenyellow,     240, 232, 145 ) \
+   macro( Complete, HotMagenta,             hot,             255,  29, 206 ) \
+   macro( Complete, InchWorm,               inch,            178, 236,  93 ) \
+   macro( Complete, Indigo,                 indigo,           93, 118, 203 ) \
+   macro( Complete, JazzberryJam,           jazzberry,       202,  55, 103 ) \
+   macro( Complete, JungleGreen,            jungle,           59, 176, 143 ) \
+   macro( Complete, LaserLemon,             laser,           253, 252, 116 ) \
+   macro( Complete, Lavender,               lavender,        252, 180, 213 ) \
+   macro( Complete, MacaroniandCheese,      macaroni,        255, 189, 136 ) \
+   macro( Complete, Magenta,                magenta,         246, 100, 175 ) \
+   macro( Complete, Mahogany,               mahogany,        205,  74,  74 ) \
+   macro( Complete, Manatee,                manatee,         151, 154, 170 ) \
+   macro( Complete, MangoTango,             mango,           255, 130,  67 ) \
+   macro( Complete, Maroon,                 maroon,          200,  56,  90 ) \
+   macro( Complete, Mauvelous,              mauvelous,       239, 152, 170 ) \
+   macro( Complete, Melon,                  melon,           253, 188, 180 ) \
+   macro( Complete, MidnightBlue,           midnight,         26,  72, 118 ) \
+   macro( Complete, MountainMeadow,         mountain,         48, 186, 143 ) \
+   macro( Complete, NavyBlue,               navy,             25, 116, 210 ) \
+   macro( Complete, NeonCarrot,             neon,            255, 163,  67 ) \
+   macro( Complete, OliveGreen,             olive,           186, 184, 108 ) \
+   macro( Complete, Orange,                 orange,          255, 117,  56 ) \
+   macro( Complete, Orchid,                 orchid,          230, 168, 215 ) \
+   macro( Complete, OuterSpace,             outer,            65,  74,  76 ) \
+   macro( Complete, OutrageousOrange,       outrageous,      255, 110,  74 ) \
+   macro( Complete, PacificBlue,            pacific,          28, 169, 201 ) \
+   macro( Complete, Peach,                  peach,           255, 207, 171 ) \
+   macro( Complete, Periwinkle,             periwinkle,      197, 208, 230 ) \
+   macro( Complete, PiggyPink,              piggy,           253, 215, 228 ) \
+   macro( Complete, PineGreen,              pine,             21, 128, 120 ) \
+   macro( Complete, PinkFlamingo,           pinkflamingo,    252, 116, 253 ) \
+   macro( Complete, PinkSherbet,            pinksherbet,     247, 128, 161 ) \
+   macro( Complete, Plum,                   plum,            142,  69, 133 ) \
+   macro( Complete, PurpleHeart,            purpleheart,     116,  66, 200 ) \
+   macro( Complete, PurpleMountainsMajesty, purplemountains, 157, 129, 186 ) \
+   macro( Complete, PurplePizza,            purplepizza,     255,  29, 206 ) \
+   macro( Complete, RadicalRed,             radical,         255,  73, 107 ) \
+   macro( Complete, RawSienna,              raw,             214, 138,  89 ) \
+   macro( Complete, RazzleDazzleRose,       razzle,          255,  72, 208 ) \
+   macro( Complete, Razzmatazz,             razzmatazz,      227,  37, 107 ) \
+   macro( Complete, Red,                    red,             238,  32,  77 ) \
+   macro( Complete, RedOrange,              redorange,       255,  83,  73 ) \
+   macro( Complete, RedViolet,              redviolet,       192,  68, 143 ) \
+   macro( Complete, RobinEggBlue,           robin,            31, 206, 203 ) \
+   macro( Complete, RoyalPurple,            royal,           120,  81, 169 ) \
+   macro( Complete, Salmon,                 salmon,          255, 155, 170 ) \
+   macro( Complete, Scarlet,                scarlet,         242,  40,  71 ) \
+   macro( Complete, ScreaminGreen,          screamin,        118, 255, 122 ) \
+   macro( Complete, SeaGreen,               sea,             159, 226, 191 ) \
+   macro( Complete, Sepia,                  sepia,           165, 105,  79 ) \
+   macro( Complete, Shadow,                 shadow,          138, 121,  93 ) \
+   macro( Complete, Shamrock,               shamrock,         69, 206, 162 ) \
+   macro( Complete, ShockingPink,           shocking,        251, 126, 253 ) \
+   macro( Complete, Silver,                 silver,          205, 197, 194 ) \
+   macro( Complete, SkyBlue,                sky,             128, 218, 235 ) \
+   macro( Complete, SpringGreen,            spring,          236, 234, 190 ) \
+   macro( Complete, Sunglow,                sunglow,         255, 207,  72 ) \
+   macro( Complete, SunsetOrange,           sunset,          253,  94,  83 ) \
+   macro( Complete, Tan,                    tan,             250, 167, 108 ) \
+   macro( Complete, TickleMePink,           tickle,          252, 137, 172 ) \
+   macro( Complete, Timberwolf,             timberwolf,      219, 215, 210 ) \
+   macro( Complete, TropicalRainForest,     tropical,         23, 128, 109 ) \
+   macro( Complete, Tumbleweed,             tumbleweed,      222, 170, 136 ) \
+   macro( Complete, TurquoiseBlue,          turquoise,       119, 221, 231 ) \
+   macro( Complete, UnmellowYellow,         unmellow,        253, 252, 116 ) \
+   macro( Complete, Violet, /* see below */ violet,          146, 110, 174 ) \
+   macro( Complete, Purple, /* see below */ purple,          146, 110, 174 ) \
+   macro( Complete, VioletRed,              violetred,       247,  83, 148 ) \
+   macro( Complete, VividTangerine,         vividtangerine,  255, 160, 137 ) \
+   macro( Complete, VividViolet,            vividviolet,     143,  80, 157 ) \
+   macro( Complete, White,                  white,           237, 237, 237 ) \
+   macro( Complete, WildBlueWonder,         wildblue,        162, 173, 208 ) \
+   macro( Complete, WildStrawberry,         wildstrawberry,  255,  67, 164 ) \
+   macro( Complete, WildWatermelon,         wildwatermelon,  252, 108, 133 ) \
+   macro( Complete, Wisteria,               wisteria,        205, 164, 222 ) \
+   macro( Complete, Yellow,                 yellow,          252, 232, 131 ) \
+   macro( Complete, YellowGreen,            yellowgreen,     197, 227, 132 ) \
+   macro( Complete, YellowOrange,           yelloworange,    255, 182,  83 ) \
+   kip_make_standard(Complete,macro) // give last
 
 // Above, Violet and Purple are the same color. We have both simply because
 // we found both terms being used. They're given as two different entries,
 // as opposed to one being a reference to the other, so that the associated
 // string name (for example, with I/O) will reflect the one that's used.
 
-class complete : public base<complete> {
+template<class unused = char>
+class Complete : public base<Complete<unused>> {
 public:
    static constexpr const char *const description = "crayola::complete";
 
-   explicit complete() : base<complete>() { }
-   explicit complete(const std::string &str) : base<complete>(str) { }
+   explicit Complete() : base<Complete>() { }
+   explicit Complete(const std::string &str) : base<Complete>(str) { }
 
    static void initialize()
    {
-      assert(vec.size() == 0);
-      vec = { kip_make_complete(kip_make_table) };
+      assert(base<Complete>::vec.size() == 0);
+      base<Complete>::vec = { kip_make_complete(kip_make_table) };
    }
 
    kip_make_complete(kip_make_decl)
@@ -493,6 +509,7 @@ public:
 };
 
 kip_make_complete(kip_make_defn)
+using complete = Complete<>;
 
 // alternative name
 // The above are from the 120 count box, so I'll give them the following name.
@@ -533,68 +550,6 @@ bool read_value(ISTREAM &s, crayola::base<derived> &obj)
    s.add(std::ios::failbit);
    addendum("Detected while reading " + label, diagnostic::error);
    return !s.fail();
-}
-
-
-
-// -----------------------------------------------------------------------------
-// istream >> crayola::base
-// ostream << crayola::base
-// -----------------------------------------------------------------------------
-
-// kip::istream >> crayola::base
-template<class derived>
-inline kip::istream &operator>>(
-   kip::istream &k,
-   base<derived> &obj
-) {
-   read_value(k,obj);
-   return k;
-}
-
-// std::istream >> crayola::base
-template<class derived>
-inline std::istream &operator>>(
-   std::istream &s,
-   base<derived> &obj
-) {
-   kip::istream k(s);
-   k >> obj;
-   return s;
-}
-
-// kip::ostream << crayola::base
-template<class derived>
-kip::ostream &operator<<(
-   kip::ostream &k,
-   const base<derived> &obj
-) {
-   const ulong size = obj.table().size();
-
-   if (ulong(obj.id()) >= size) {
-      const std::string label = obj.description();
-
-      const derived Default = derived::PureBlack;
-      std::ostringstream oss;
-      oss << "Index " << ulong(obj.id()) << " for " << label << " color "
-          << "is outside valid range [0," <<  size-1 << "]\n"
-          << "Writing as " << label << "::" << obj.table()[Default.id()].first;
-      warning(oss);
-      return k << obj.table()[Default.id()].first;
-   }
-
-   return k << obj.table()[obj.id()].first;
-}
-
-// std::ostream << crayola::base
-template<class derived>
-inline std::ostream &operator<<(
-   std::ostream &s,
-   const base<derived> &obj
-) {
-   kip::ostream k(s);
-   k << obj;
-   return s;
 }
 
 

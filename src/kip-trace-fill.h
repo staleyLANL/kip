@@ -451,7 +451,7 @@ public:
             endsorted = get_endsorted(endsorted, engine, binsize);
             std::partial_sort(
                bin.begin()+s,
-               bin.begin()+endsorted,
+               bin.begin()+long(endsorted), // long() silences clang warning
                bin.end(),
                less<real,base>()
             );
@@ -478,7 +478,7 @@ public:
             endsorted = get_endsorted(endsorted, engine, binsize);
             std::partial_sort(
                bin.begin()+s,
-               bin.begin()+endsorted,
+               bin.begin()+long(endsorted), // long() silences clang warning
                bin.end(),
                less<real,base>()
             );
@@ -667,7 +667,7 @@ public:
             endsorted = get_endsorted(endsorted, engine, binsize);
             std::partial_sort(
                bin.begin()+s,
-               bin.begin()+endsorted,
+               bin.begin()+long(endsorted), // long() silences clang warning
                bin.end(),
                less<real,base>()
             );

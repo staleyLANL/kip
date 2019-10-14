@@ -23,8 +23,8 @@ template<class real, class base>
 inline void segment_h(const engine<real> &engine, vars<real,base> &vars)
 {
    const int htotal = int(engine.hzone * engine.hsub);
-   vars.seg_hneg.resize(htotal);
-   vars.seg_hpos.resize(htotal);
+   vars.seg_hneg.resize(ulong(htotal));
+   vars.seg_hpos.resize(ulong(htotal));
 
    #ifdef _OPENMP
       #pragma omp parallel for
@@ -37,8 +37,8 @@ inline void segment_h(const engine<real> &engine, vars<real,base> &vars)
          hmax =
             real(op::round<unsigned>(vars.hratsub*real(hseg+1)))*vars.hfull -
             vars.hmax;
-      vars.seg_hneg[hseg] = dry_w(vars, hmin);
-      vars.seg_hpos[hseg] = dry_e(vars, hmax);
+      vars.seg_hneg[ulong(hseg)] = dry_w(vars, hmin);
+      vars.seg_hpos[ulong(hseg)] = dry_e(vars, hmax);
    }
 }
 
@@ -49,8 +49,8 @@ template<class real, class base>
 inline void segment_v(const engine<real> &engine, vars<real,base> &vars)
 {
    const int vtotal = int(engine.vzone * engine.vsub);
-   vars.seg_vneg.resize(vtotal);
-   vars.seg_vpos.resize(vtotal);
+   vars.seg_vneg.resize(ulong(vtotal));
+   vars.seg_vpos.resize(ulong(vtotal));
 
    #ifdef _OPENMP
       #pragma omp parallel for
@@ -63,8 +63,8 @@ inline void segment_v(const engine<real> &engine, vars<real,base> &vars)
          vmax =
             real(op::round<unsigned>(vars.vratsub*real(vseg+1)))*vars.vfull -
             vars.vmax;
-      vars.seg_vneg[vseg] = dry_s(vars, vmin);
-      vars.seg_vpos[vseg] = dry_n(vars, vmax);
+      vars.seg_vneg[ulong(vseg)] = dry_s(vars, vmin);
+      vars.seg_vpos[ulong(vseg)] = dry_n(vars, vmax);
    }
 }
 
@@ -198,7 +198,7 @@ inline bool seg_minmax(
 
       // horizontal
       hi = int(htotal);  lo = -1;
-      do if (i.SHAPE::dry(vars.seg_hpos[m = (lo+hi)/2])) lo = m; else hi = m;
+      do if (i.SHAPE::dry(vars.seg_hpos[ulong(m=(lo+hi)/2)])) lo=m; else hi=m;
       while (hi > lo+1);
       if ((imin = ij(lo+1)) == htotal) return false;
       #ifdef KIP_SEGMENTING_LINEAR
@@ -207,14 +207,14 @@ inline bool seg_minmax(
          if (imin == iend) return false;
       #else
          hi = htotal;  lo = imin-1;
-         do if (i.SHAPE::dry(vars.seg_hneg[m = (lo+hi)/2])) hi = m; else lo = m;
+         do if (i.SHAPE::dry(vars.seg_hneg[ulong(m=(lo+hi)/2)])) hi=m; else lo=m;
          while (hi > lo+1);
          if ((iend = lo+1) == imin) return false;
       #endif
 
       // vertical
       hi = int(vtotal);  lo = -1;
-      do if (i.SHAPE::dry(vars.seg_vpos[m = (lo+hi)/2])) lo = m; else hi = m;
+      do if (i.SHAPE::dry(vars.seg_vpos[ulong(m=(lo+hi)/2)])) lo=m; else hi=m;
       while (hi > lo+1);
       if ((jmin = ij(lo+1)) == vtotal) return false;
       #ifdef KIP_SEGMENTING_LINEAR
@@ -276,14 +276,14 @@ inline void seg_minmax(
 
    // i (horizontal)
    hi = int(htotal);  lo = -1;
-   do if (dry(p, vars.seg_hpos[m = (lo+hi)/2])) lo = m; else hi = m;
+   do if (dry(p, vars.seg_hpos[ulong(m = (lo+hi)/2)])) lo = m; else hi = m;
    while (hi > lo+1);
    iend = imin = ij(lo+1);
    while (iend < htotal && !(dry(p, vars.seg_hneg[iend]))) iend++;
 
    // j (vertical)
    hi = int(vtotal);  lo = -1;
-   do if (dry(p, vars.seg_vpos[m = (lo+hi)/2])) lo = m; else hi = m;
+   do if (dry(p, vars.seg_vpos[ulong(m = (lo+hi)/2)])) lo = m; else hi = m;
    while (hi > lo+1);
    jend = jmin = ij(lo+1);
    while (jend < vtotal && !(dry(p, vars.seg_vneg[jend]))) jend++;
@@ -494,7 +494,7 @@ inline void uprepare(
 
       const int thread = this_thread();
       std::vector<minimum_and_shape<real,base>> *const ptr = thread
-       ? &per_zone[nbin*(thread-1)]
+         ? &per_zone[ulong(nbin*(thread-1))]
        : &vars.uniform[0];
 
       // drop into bins
@@ -652,7 +652,7 @@ inline void uprepare_surf(
 
       const int thread = this_thread();
       std::vector<minimum_and_shape<real,base>> *const ptr = thread
-       ? &per_zone[nbin*(thread-1)]
+       ? &per_zone[ulong(nbin*(thread-1))]
        : &vars.uniform[0];
       uprepare_tri<minimum_and_shape<real,base>>
          (engine,vars, ptr,p, object_border);
@@ -751,7 +751,7 @@ public:
       ulong max_binsize = 0;
       if (image.border.bin) {
          for (int zone = 0;  zone < nzone;  ++zone)
-            max_binsize = std::max(max_binsize, vars.uniform[zone].size());
+            max_binsize = std::max(max_binsize, vars.uniform[ulong(zone)].size());
       }
 
       // Loop over the bins

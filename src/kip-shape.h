@@ -506,13 +506,6 @@ public:
 // Macros - general
 // -----------------------------------------------------------------------------
 
-// kip_virtual_id
-#define kip_virtual_id(kip_class)\
-   inline shape_id_t id() const\
-      { return detail::get_shape_id<kip_class>::result; }
-
-
-
 // Regarding virtuals:
 //    Defines:  [id,] [destructor,] duplicate, size_of, read/write kip/std
 //    Declares: process, aabb, dry, first, all, check
@@ -520,41 +513,42 @@ public:
 
 #define kip_functions(kip_class)\
    \
-   kip_virtual_id(kip_class)\
+   shape_id_t id() const\
+      { return detail::get_shape_id<kip_class>::result; }\
    \
-   inline kip_class *duplicate() const { return new kip_class(*this); }\
-   inline ulong size_of() const { return sizeof(kip_class); }\
+   kip_class *duplicate() const { return new kip_class(*this); }\
+   ulong size_of() const { return sizeof(kip_class); }\
    \
-   inline kip::istream &read (kip::istream &k)       { return k >> *this; }\
-   inline std::istream &read (std::istream &s)       { return s >> *this; }\
-   inline kip::ostream &write(kip::ostream &k) const { return k << *this; }\
-   inline std::ostream &write(std::ostream &s) const { return s << *this; }\
+   kip::istream &read (kip::istream &k)       { return k >> *this; }\
+   std::istream &read (std::istream &s)       { return s >> *this; }\
+   kip::ostream &write(kip::ostream &k) const { return k << *this; }\
+   std::ostream &write(std::ostream &s) const { return s << *this; }\
    \
-   inline real process(\
+   real process(\
       const kip::point<real> &,\
       const kip::point<real> &,\
       const engine<real> &,\
       const detail::vars<real,tag> &\
    ) const;\
    \
-   inline bbox<real> aabb() const;\
-   inline bool dry(const rotate<3,real,op::part,op::unscaled> &) const;\
+   bbox<real> aabb() const;\
+   bool dry(const rotate<3,real,op::part,op::unscaled> &) const;\
    \
-   inline bool infirst(\
+   bool infirst(\
       const eyetardiff<real> &,\
       const real,\
       inq<real,tag> &,\
       const detail::subinfo &\
    ) const;\
    \
-   inline bool inall(\
+   bool inall(\
       const eyetardiff<real> &,\
       const real,\
       afew<inq<real,tag>> &,\
       const detail::subinfo &\
    ) const;\
    \
-   inline diagnostic check() const
+   diagnostic check() const
    // no ';' at end - semicolons at *invocation* points help emacs indent
 
 
@@ -566,7 +560,7 @@ public:
 // kip_process
 #define kip_process(type)\
    template<class real, class tag>\
-   inline real type<real,tag>::process(\
+   real type<real,tag>::process(\
       const kip::point<real> &eyeball,\
       const kip::point<real> &light,\
       const engine<real> &engine,\
@@ -578,13 +572,13 @@ public:
 // kip_aabb
 #define kip_aabb(type)\
    template<class real, class tag>\
-   inline bbox<real> type<real,tag>::aabb() const\
+   bbox<real> type<real,tag>::aabb() const\
    {
 
 // kip_inside
 #define kip_inside(type)\
    template<class real, class tag>\
-   inline bool type<real,tag>::inside(\
+   bool type<real,tag>::inside(\
       const kip::point<real> &eyeball\
    ) const\
    {\
@@ -593,7 +587,7 @@ public:
 // kip_dry
 #define kip_dry(type)\
    template<class real, class tag>\
-   inline bool type<real,tag>::dry(\
+   bool type<real,tag>::dry(\
       const rotate<3,real,op::part,op::unscaled> &seg\
    ) const {\
       (void)seg;
@@ -606,7 +600,7 @@ public:
 // kip_infirst
 #define kip_infirst(type)\
    template<class real, class tag>\
-   inline bool type<real,tag>::infirst(\
+   bool type<real,tag>::infirst(\
       const eyetardiff<real> &etd,\
       const real qmin,\
       inq<real,tag> &q,\
@@ -622,7 +616,7 @@ public:
 // kip_inall
 #define kip_inall(type)\
    template<class real, class tag>\
-   inline bool type<real,tag>::inall(\
+   bool type<real,tag>::inall(\
       const eyetardiff<real> &etd,\
       const real qmin,\
       afew<inq<real,tag>> &ints,\
@@ -638,7 +632,7 @@ public:
 // kip_check
 #define kip_check(type)\
    template<class real, class tag>\
-   inline diagnostic type<real,tag>::check() const\
+   diagnostic type<real,tag>::check() const\
    {
 
 // kip_randomize
@@ -684,6 +678,7 @@ public:
 
 namespace detail {
 
+// onetwor_check
 template<class real, class OBJ>
 inline diagnostic onetwor_check(const char *const name, const OBJ &obj)
 {
@@ -885,8 +880,6 @@ inline diagnostic check_operand(
    return diagnostic::good;
 }
 
-
-
 // op_first
 template<class real, class tag>
 inline bool op_first(
@@ -896,8 +889,6 @@ inline bool op_first(
    inq<real,tag> &,
    const subinfo &
 );
-
-
 
 // op_all
 template<class real, class tag>

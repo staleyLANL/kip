@@ -409,6 +409,68 @@ inline std::ostream &operator<<(std::ostream &s, const RGBA<T> &obj)
 
 
 // -----------------------------------------------------------------------------
+// istream >> crayola::base
+// ostream << crayola::base
+// -----------------------------------------------------------------------------
+
+// kip::istream >> crayola::base
+template<class derived>
+inline kip::istream &operator>>(
+   kip::istream &k,
+   crayola::base<derived> &obj
+) {
+   read_value(k,obj);
+   return k;
+}
+
+// std::istream >> crayola::base
+template<class derived>
+inline std::istream &operator>>(
+   std::istream &s,
+   crayola::base<derived> &obj
+) {
+   kip::istream k(s);
+   k >> obj;
+   return s;
+}
+
+// kip::ostream << crayola::base
+template<class derived>
+kip::ostream &operator<<(
+   kip::ostream &k,
+   const crayola::base<derived> &obj
+) {
+   const ulong size = obj.table().size();
+
+   if (ulong(obj.id()) >= size) {
+      const std::string label = obj.description();
+
+      const derived Default = derived::PureBlack;
+      std::ostringstream oss;
+      oss << "Index " << ulong(obj.id()) << " for " << label << " color "
+          << "is outside valid range [0," <<  size-1 << "]\n"
+          << "Writing as " << label << "::" << obj.table()[Default.id()].first;
+      warning(oss);
+      return k << obj.table()[Default.id()].first;
+   }
+
+   return k << obj.table()[obj.id()].first;
+}
+
+// std::ostream << crayola::base
+template<class derived>
+inline std::ostream &operator<<(
+   std::ostream &s,
+   const crayola::base<derived> &obj
+) {
+   kip::ostream k(s);
+   k << obj;
+   return s;
+}
+
+
+
+// -----------------------------------------------------------------------------
 // istream >> marble
 // ostream << marble
 // -----------------------------------------------------------------------------

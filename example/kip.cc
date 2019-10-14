@@ -201,7 +201,7 @@ void putimage()
    #pragma omp parallel for
    #endif
    for (int n = 0;  n < vars::hwindow * vars::vwindow;  ++n)
-      bitmap[n] = image(
+      bitmap[ulong(n)] = image(
          ulong(hfac*(real(n % vars::hwindow) + 0.5)),
          ulong(vfac*(real(n / vars::hwindow) + 0.5))
       );
