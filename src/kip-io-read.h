@@ -440,7 +440,7 @@ kip::ostream &operator<<(
    kip::ostream &k,
    const crayola::base<derived> &obj
 ) {
-   const ulong size = obj.table().size();
+   const ulong size = obj.size();
 
    if (ulong(obj.id()) >= size) {
       const std::string label = obj.description();
@@ -449,12 +449,12 @@ kip::ostream &operator<<(
       std::ostringstream oss;
       oss << "Index " << ulong(obj.id()) << " for " << label << " color "
           << "is outside valid range [0," <<  size-1 << "]\n"
-          << "Writing as " << label << "::" << obj.table()[Default.id()].first;
+          << "Writing as " << label << "::" << obj[Default.id()].first;
       warning(oss);
-      return k << obj.table()[Default.id()].first;
+      return k << obj[Default.id()].first;
    }
 
-   return k << obj.table()[obj.id()].first;
+   return k << obj[obj.id()].first;
 }
 
 // std::ostream << crayola::base

@@ -5,18 +5,18 @@ namespace crayola {
 // macros
 // -----------------------------------------------------------------------------
 
-#define kip_make_table(type,str,alt,r,g,b) \
-   { #str, rgb(r,g,b) },
+#define kip_make_table(type,name,alt,r,g,b) \
+   { #name, rgb(r,g,b) },
 
-#define kip_make_decl( type,str,alt,r,g,b) \
-   static const type str;
+#define kip_make_decl( type,name,alt,r,g,b) \
+   static const type name;
 
-#define kip_make_alias(type,str,alt,r,g,b) \
-   static constexpr const type &alt=str;
+#define kip_make_alias(type,name,alt,r,g,b) \
+   static constexpr const type &alt = name;
 
-#define kip_make_defn( type,str,alt,r,g,b) \
+#define kip_make_defn( type,name,alt,r,g,b) \
    template<class unused> \
-   const type<unused> type<unused>::str(#str);
+   const type<unused> type<unused>::name(#name);
 
 #define kip_make_standard(theclass,macro) \
    macro( theclass, PureBlack,   pureblack,     0,   0,   0 ) \
@@ -66,36 +66,34 @@ namespace detail {
 
 template<class derived>
 class base {
-   using pair = std::pair<std::string,rgb>;
 
-protected:
-   static std::vector<pair> vec;
+   // data
    uchar index;
-
-public:
 
    // ------------------------
    // constructors
    // ------------------------
 
-   // base(n)
-   explicit base(const uchar n = 0) : index(n)
-   {
-      kip_assert(n < vec.size());
-   }
+protected:
 
    // base(string)
-   explicit base(const std::string &str)
+   explicit base(const std::string &name)
    {
-      static bool first = true;
-      first = first && (derived::initialize(), false);
-
-      for (ulong n = vec.size();  n-- ; )
-         if (str == vec[n].first) {
+      for (ulong n = size();  n-- ; )
+         if (name == derived::table()[n].first) {
             index = uchar(n);
             return;
          }
       assert(false);
+   }
+
+public:
+
+   // base()
+   // base(n)
+   explicit base(const uchar n = 0) : index(n)
+   {
+      kip_assert(n < size());
    }
 
    // ------------------------
@@ -109,25 +107,31 @@ public:
    }
 
    // r(), g(), b()
-   uchar r() const { return vec[index].second.r; }
-   uchar g() const { return vec[index].second.g; }
-   uchar b() const { return vec[index].second.b; }
+   uchar r() const { return derived::table()[index].second.r; }
+   uchar g() const { return derived::table()[index].second.g; }
+   uchar b() const { return derived::table()[index].second.b; }
+
+   // operator[]
+   const std::pair<std::string,rgb> &operator[](const ulong n) const
+   {
+      return derived::table()[n];
+   }
 
    // randomize()
    void randomize()
    {
-      kip_assert(vec.size() > detail::crayola_standard_count);
-      index = uchar(rand() % (vec.size() - detail::crayola_standard_count));
+      kip_assert(size() > detail::crayola_standard_count);
+      index = uchar(rand() % (size() - detail::crayola_standard_count));
    }
 
    // ------------------------
    // functions: static
    // ------------------------
 
-   // table()
-   static const std::vector<pair> &table()
+   // size()
+   static ulong size()
    {
-      return vec;
+      return derived::table().size();
    }
 
    // description()
@@ -135,12 +139,8 @@ public:
 };
 
 
-// vec
-template<class derived>
-std::vector<std::pair<std::string,rgb>> base<derived>::vec;
-
-
 // randomize
+// External; not the one in the class (but forwards to it)
 template<class derived>
 inline void randomize(base<derived> &obj)
 {
@@ -153,10 +153,11 @@ inline void randomize(base<derived> &obj)
 // crayola::Pure<>
 // crayola::pure
 //
-// With these and our other color sets, below, we have both of the above,
-// instead of just the second, so that our member definitions, done with
-// kip_make_defn, work correctly with a header-only library. Essentially,
-// we need to make those be templated.
+// With these and our other color sets, below, we have both a templated and
+// a non-templated class, instead of just the latter, so that our member
+// color definitions, done with kip_make_defn, work correctly in the context
+// of a header-only library. Essentially, we need to make those definitions
+// be templated, or we'll end up with multiple definitions.
 // -----------------------------------------------------------------------------
 
 #define kip_make_pure(macro) \
@@ -179,12 +180,13 @@ public:
    static constexpr const char *const description = "crayola::pure";
 
    explicit Pure() : base<Pure>() { }
-   explicit Pure(const std::string &str) : base<Pure>(str) { }
+   explicit Pure(const std::string &name) : base<Pure>(name) { }
 
-   static void initialize()
+   static auto &table()
    {
-      assert(base<Pure>::vec.size() == 0);
-      base<Pure>::vec = { kip_make_pure(kip_make_table) };
+      static const std::vector<std::pair<std::string,rgb>>
+         tab { kip_make_pure(kip_make_table) };
+      return tab;
    }
 
    kip_make_pure(kip_make_decl)
@@ -233,12 +235,13 @@ public:
    static constexpr const char *const description = "crayola::silver";
 
    explicit Silver() : base<Silver>() { }
-   explicit Silver(const std::string &str) : base<Silver>(str) { }
+   explicit Silver(const std::string &name) : base<Silver>(name) { }
 
-   static void initialize()
+   static auto &table()
    {
-      assert(base<Silver>::vec.size() == 0);
-      base<Silver>::vec = { kip_make_silver(kip_make_table) };
+      static const std::vector<std::pair<std::string,rgb>>
+         tab { kip_make_silver(kip_make_table) };
+      return tab;
    }
 
    kip_make_silver(kip_make_decl)
@@ -282,12 +285,13 @@ public:
    static constexpr const char *const description = "crayola::gem";
 
    explicit Gem() : base<Gem>() { }
-   explicit Gem(const std::string &str) : base<Gem>(str) { }
+   explicit Gem(const std::string &name) : base<Gem>(name) { }
 
-   static void initialize()
+   static auto &table()
    {
-      assert(base<Gem>::vec.size() == 0);
-      base<Gem>::vec = { kip_make_gem(kip_make_table) };
+      static const std::vector<std::pair<std::string,rgb>>
+         tab { kip_make_gem(kip_make_table) };
+      return tab;
    }
 
    kip_make_gem(kip_make_decl)
@@ -337,12 +341,13 @@ public:
    static constexpr const char *const description = "crayola::metallic";
 
    explicit Metallic() : base<Metallic>() { }
-   explicit Metallic(const std::string &str) : base<Metallic>(str) { }
+   explicit Metallic(const std::string &name) : base<Metallic>(name) { }
 
-   static void initialize()
+   static auto &table()
    {
-      assert(base<Metallic>::vec.size() == 0);
-      base<Metallic>::vec = { kip_make_metallic(kip_make_table) };
+      static const std::vector<std::pair<std::string,rgb>>
+         tab { kip_make_metallic(kip_make_table) };
+      return tab;
    }
 
    kip_make_metallic(kip_make_decl)
@@ -496,12 +501,13 @@ public:
    static constexpr const char *const description = "crayola::complete";
 
    explicit Complete() : base<Complete>() { }
-   explicit Complete(const std::string &str) : base<Complete>(str) { }
+   explicit Complete(const std::string &name) : base<Complete>(name) { }
 
-   static void initialize()
+   static auto &table()
    {
-      assert(base<Complete>::vec.size() == 0);
-      base<Complete>::vec = { kip_make_complete(kip_make_table) };
+      static const std::vector<std::pair<std::string,rgb>>
+         tab { kip_make_complete(kip_make_table) };
+      return tab;
    }
 
    kip_make_complete(kip_make_decl)
@@ -535,14 +541,14 @@ bool read_value(ISTREAM &s, crayola::base<derived> &obj)
 
    std::string word;
    if (read_value(s,word)) {
-      for (ulong n = obj.table().size();  n-- ; )
-         if (word == obj.table()[n].first)
+      for (ulong n = obj.size();  n-- ; )
+         if (word == obj[n].first)
             return obj = crayola::base<derived>(uchar(n)), !s.fail();
 
       const derived Default = derived::PureBlack;
       std::ostringstream oss;
       oss << "Unknown " << label << " color \"" << word << "\"\n"
-          << "Setting to " << label << "::" << obj.table()[Default.id()].first;
+          << "Setting to " << label << "::" << obj[Default.id()].first;
       s.warning(oss);
       return obj = Default, !s.fail();
    }
