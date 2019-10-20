@@ -170,13 +170,35 @@ bool read_value(
 
 
 // -----------------------------------------------------------------------------
-// read_color_component - read component (for now, only uchar) of RGB or RGBA
-// crayola_or_component
-// read_value(RGB)
-// read_value(RGBA)
+// read_value(RGB[A])
 // -----------------------------------------------------------------------------
 
-// read_color_component
+namespace detail {
+
+// ------------------------
+// Helper: crayola_or_component
+// ------------------------
+
+// See what's next, expecting either a crayola::complete color,
+// or a color component. The character is only peeked.
+template<class ISTREAM>
+inline bool crayola_or_component(ISTREAM &s, bool &alphabetic)
+{
+   const std::string &description =
+     "crayola::complete color, or unsigned char-based color component";
+   if (!s.prefix('\0', description, false))  // false: eof not okay
+      return false;
+
+   alphabetic = 0 != isalpha(s.peek());
+   return true;
+}
+
+
+// ------------------------
+// Helper: read_color_component
+// ------------------------
+
+// Read component (for now, only uchar) of RGB or RGBA.
 // We don't simply use read_value(uchar), because in this context we
 // want to allow for more-descriptive diagnostics than that would allow.
 template<class ISTREAM>
@@ -211,40 +233,43 @@ bool read_color_component(
    return s.verify('\0', description, true);  // true: no specific value wanted
 }
 
+} // namespace detail
 
 
-// crayola_or_component
-// See what's next, expecting either a crayola::complete color,
-// or a color component. The character is only peeked.
-template<class ISTREAM>
-inline bool crayola_or_component(ISTREAM &s, bool &alphabetic)
-{
-   const std::string &description =
-     "crayola::complete color, or unsigned char-based color component";
-   if (!s.prefix('\0', description, false))  // false: eof not okay
-      return false;
-
-   alphabetic = 0 != isalpha(s.peek());
-   return true;
-}
-
-
-
+// ------------------------
 // RGB
-template<class ISTREAM, class T>
-bool read_value(ISTREAM &s, RGB<T> &value)
+// ------------------------
+
+/*
+zzz
+
+zzz These are the ones to modify.
+
+zzz Probably set up crayola base to maintain a map of everything coming into it!
+
+zzz Have it check that a duplicate name (which wouldn't go into the map) has
+    exactly the same rgb. Or maybe it doesn't, currently (for example with red),
+    in which case consider allowing for a crayola type prefix. We'll need to
+    have some way of handling duplicate-name cases.
+
+zzz And, really, write the below function bodies more clearly
+
+*/
+
+template<class ISTREAM, class comp>
+bool read_value(ISTREAM &s, RGB<comp> &value)
 {
    crayola::complete cray;  bool alphabetic = false;
    s.bail = false;
 
    if (!(
-      crayola_or_component(s,alphabetic) && (
+      detail::crayola_or_component(s,alphabetic) && (
        ( alphabetic &&
          read_value(s,cray)) ||
        (!alphabetic &&
-         read_color_component(s,value.r) && read_comma(s) &&
-         read_color_component(s,value.g) && read_comma(s) &&
-         read_color_component(s,value.b)
+         detail::read_color_component(s,value.r) && read_comma(s) &&
+         detail::read_color_component(s,value.g) && read_comma(s) &&
+         detail::read_color_component(s,value.b)
    )))) {
       s.add(std::ios::failbit);
       addendum("Detected while reading RGB", diagnostic::error);
@@ -257,23 +282,25 @@ bool read_value(ISTREAM &s, RGB<T> &value)
 }
 
 
-
+// ------------------------
 // RGBA
-template<class ISTREAM, class T>
-bool read_value(ISTREAM &s, RGBA<T> &value)
+// ------------------------
+
+template<class ISTREAM, class comp>
+bool read_value(ISTREAM &s, RGBA<comp> &value)
 {
    crayola::complete cray;  bool alphabetic = false;
    s.bail = false;
 
    if (!(
-      crayola_or_component(s,alphabetic) && (
+      detail::crayola_or_component(s,alphabetic) && (
        ( alphabetic &&
          read_value(s,cray)) ||
        (!alphabetic &&
-         read_color_component(s,value.r) && read_comma(s) &&
-         read_color_component(s,value.g) && read_comma(s) &&
-         read_color_component(s,value.b) && read_comma(s) &&
-         read_color_component(s,value.a)
+         detail::read_color_component(s,value.r) && read_comma(s) &&
+         detail::read_color_component(s,value.g) && read_comma(s) &&
+         detail::read_color_component(s,value.b) && read_comma(s) &&
+         detail::read_color_component(s,value.a)
    )))) {
       s.add(std::ios::failbit);
       addendum("Detected while reading RGBA", diagnostic::error);
@@ -288,29 +315,34 @@ bool read_value(ISTREAM &s, RGBA<T> &value)
 
 
 // -----------------------------------------------------------------------------
-// component_traits
+// istream >> RGB[A]
+// ostream << RGB[A]
 // -----------------------------------------------------------------------------
+
+// ------------------------
+// Helper: component_traits
+// ------------------------
 
 namespace detail {
 
 template<
-   class T,
-   bool is_signed  = std::numeric_limits<T>::is_signed,
-   bool is_integer = std::numeric_limits<T>::is_integer
+   class comp,
+   bool is_signed  = std::numeric_limits<comp>::is_signed,
+   bool is_integer = std::numeric_limits<comp>::is_integer
 >
 class component_traits {  // general
 public:
-   using result = T;
+   using result = comp;
 };
 
-template<class T>
-class component_traits<T,true,true> {  // for signed integral types
+template<class comp>
+class component_traits<comp,true,true> {  // for signed integral types
 public:
    using result = long;
 };
 
-template<class T>
-class component_traits<T,false,true> {  // for unsigned integral types
+template<class comp>
+class component_traits<comp,false,true> {  // for unsigned integral types
 public:
    using result = unsigned long;
 };
@@ -318,23 +350,21 @@ public:
 }
 
 
-
-// -----------------------------------------------------------------------------
-// istream >> RGB
-// ostream << RGB
-// -----------------------------------------------------------------------------
+// ------------------------
+// RGB
+// ------------------------
 
 // kip::istream >> RGB
-template<class T>
-inline kip::istream &operator>>(kip::istream &k, RGB<T> &obj)
+template<class comp>
+inline kip::istream &operator>>(kip::istream &k, RGB<comp> &obj)
 {
    read_value(k,obj);
    return k;
 }
 
 // std::istream >> RGB
-template<class T>
-inline std::istream &operator>>(std::istream &s, RGB<T> &obj)
+template<class comp>
+inline std::istream &operator>>(std::istream &s, RGB<comp> &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -342,10 +372,10 @@ inline std::istream &operator>>(std::istream &s, RGB<T> &obj)
 }
 
 // kip::ostream << RGB
-template<class T>
-inline kip::ostream &operator<<(kip::ostream &k, const RGB<T> &obj)
+template<class comp>
+inline kip::ostream &operator<<(kip::ostream &k, const RGB<comp> &obj)
 {
-   using print_as = typename detail::component_traits<T>::result;
+   using print_as = typename detail::component_traits<comp>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -353,8 +383,8 @@ inline kip::ostream &operator<<(kip::ostream &k, const RGB<T> &obj)
 }
 
 // std::ostream << RGB
-template<class T>
-inline std::ostream &operator<<(std::ostream &s, const RGB<T> &obj)
+template<class comp>
+inline std::ostream &operator<<(std::ostream &s, const RGB<comp> &obj)
 {
    kip::ostream k(s);
    k << obj;
@@ -362,23 +392,21 @@ inline std::ostream &operator<<(std::ostream &s, const RGB<T> &obj)
 }
 
 
-
-// -----------------------------------------------------------------------------
-// istream >> RGBA
-// ostream << RGBA
-// -----------------------------------------------------------------------------
+// ------------------------
+// RGBA
+// ------------------------
 
 // kip::istream >> RGBA
-template<class T>
-inline kip::istream &operator>>(istream &k, RGBA<T> &obj)
+template<class comp>
+inline kip::istream &operator>>(kip::istream &k, RGBA<comp> &obj)
 {
    read_value(k,obj);
    return k;
 }
 
 // std::istream >> RGBA
-template<class T>
-inline std::istream &operator>>(std::istream &s, RGBA<T> &obj)
+template<class comp>
+inline std::istream &operator>>(std::istream &s, RGBA<comp> &obj)
 {
    kip::istream k(s);
    k >> obj;
@@ -386,10 +414,10 @@ inline std::istream &operator>>(std::istream &s, RGBA<T> &obj)
 }
 
 // kip::ostream << RGBA
-template<class T>
-inline kip::ostream &operator<<(kip::ostream &k, const RGBA<T> &obj)
+template<class comp>
+inline kip::ostream &operator<<(kip::ostream &k, const RGBA<comp> &obj)
 {
-   using print_as = typename detail::component_traits<T>::result;
+   using print_as = typename detail::component_traits<comp>::result;
    return
       k << print_as(obj.r) << ','
         << print_as(obj.g) << ','
@@ -398,8 +426,8 @@ inline kip::ostream &operator<<(kip::ostream &k, const RGBA<T> &obj)
 }
 
 // std::ostream << RGBA
-template<class T>
-inline std::ostream &operator<<(std::ostream &s, const RGBA<T> &obj)
+template<class comp>
+inline std::ostream &operator<<(std::ostream &s, const RGBA<comp> &obj)
 {
    kip::ostream k(s);
    k << obj;

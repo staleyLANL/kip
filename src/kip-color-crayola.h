@@ -61,6 +61,42 @@ namespace detail {
 
 
 // -----------------------------------------------------------------------------
+// Constructs for an "all colors" functionality, which will allow us to read
+// text-based colors from input files into rgb- or rgba-based models.
+// -----------------------------------------------------------------------------
+
+namespace detail {
+
+// strtolower
+// assumes ASCII :-/
+inline std::string strtolower(const std::string &in)
+{
+   std::string out = in;
+   std::transform(
+      out.begin(),
+      out.end(),
+      out.begin(),
+      [](const uchar c) { return std::tolower(c); }
+   );
+   return out;
+}
+
+} // namespace detail
+
+
+
+// allcolors
+inline std::multimap<
+   std::pair<
+      std::string, // name
+      std::string  // scope
+   >,
+   rgb // color
+> allcolors;
+
+
+
+// -----------------------------------------------------------------------------
 // crayola::base
 // -----------------------------------------------------------------------------
 
@@ -136,6 +172,22 @@ public:
 
    // description()
    static std::string description() { return derived::description; }
+
+protected:
+
+   // record
+   // for our "all colors" functionality
+   static void record(
+      const std::vector<std::pair<std::string,rgb>> &table,
+      const std::string &prefix
+   ) {
+      for (auto &tab : table)
+         allcolors.insert({
+          { detail::strtolower(tab.first),
+            detail::strtolower(prefix) },
+            tab.second
+         });
+   }
 };
 
 
@@ -176,16 +228,23 @@ inline void randomize(base<derived> &obj)
 
 template<class unused = char>
 class Pure : public base<Pure<unused>> {
+   using base = crayola::base<Pure<unused>>;
 public:
    static constexpr const char *const description = "crayola::pure";
 
-   explicit Pure() : base<Pure>() { }
-   explicit Pure(const std::string &name) : base<Pure>(name) { }
+   explicit Pure() : base() { }
+   explicit Pure(const std::string &name) : base(name) { }
 
    static auto &table()
    {
       static const std::vector<std::pair<std::string,rgb>>
          tab { kip_make_pure(kip_make_table) };
+      static bool first = true;
+      if (first) {
+         base::record(tab,"");
+         base::record(tab,"pure");
+         first = false;
+      }
       return tab;
    }
 
@@ -231,16 +290,24 @@ using pure = Pure<>;
 
 template<class unused = char>
 class Silver : public base<Silver<unused>> {
+   using base = crayola::base<Silver<unused>>;
 public:
    static constexpr const char *const description = "crayola::silver";
 
-   explicit Silver() : base<Silver>() { }
-   explicit Silver(const std::string &name) : base<Silver>(name) { }
+   explicit Silver() : base() { }
+   explicit Silver(const std::string &name) : base(name) { }
 
    static auto &table()
    {
       static const std::vector<std::pair<std::string,rgb>>
          tab { kip_make_silver(kip_make_table) };
+      static bool first = true;
+      if (first) {
+         base::record(tab,"");
+         base::record(tab,"silver");
+         base::record(tab,"SilverSwirls");
+         first = false;
+      }
       return tab;
    }
 
@@ -281,16 +348,24 @@ using SilverSwirls = silver;
 
 template<class unused = char>
 class Gem : public base<Gem<unused>> {
+   using base = crayola::base<Gem<unused>>;
 public:
    static constexpr const char *const description = "crayola::gem";
 
-   explicit Gem() : base<Gem>() { }
-   explicit Gem(const std::string &name) : base<Gem>(name) { }
+   explicit Gem() : base() { }
+   explicit Gem(const std::string &name) : base(name) { }
 
    static auto &table()
    {
       static const std::vector<std::pair<std::string,rgb>>
          tab { kip_make_gem(kip_make_table) };
+      static bool first = true;
+      if (first) {
+         base::record(tab,"");
+         base::record(tab,"gem");
+         base::record(tab,"GemTones");
+         first = false;
+      }
       return tab;
    }
 
@@ -337,16 +412,24 @@ using GemTones = gem;
 
 template<class unused = char>
 class Metallic : public base<Metallic<unused>> {
+   using base = crayola::base<Metallic<unused>>;
 public:
    static constexpr const char *const description = "crayola::metallic";
 
-   explicit Metallic() : base<Metallic>() { }
-   explicit Metallic(const std::string &name) : base<Metallic>(name) { }
+   explicit Metallic() : base() { }
+   explicit Metallic(const std::string &name) : base(name) { }
 
    static auto &table()
    {
       static const std::vector<std::pair<std::string,rgb>>
          tab { kip_make_metallic(kip_make_table) };
+      static bool first = true;
+      if (first) {
+         base::record(tab,"");
+         base::record(tab,"metallic");
+         base::record(tab,"MetallicFX");
+         first = false;
+      }
       return tab;
    }
 
@@ -497,16 +580,24 @@ using MetallicFX = metallic;
 
 template<class unused = char>
 class Complete : public base<Complete<unused>> {
+   using base = crayola::base<Complete<unused>>;
 public:
    static constexpr const char *const description = "crayola::complete";
 
-   explicit Complete() : base<Complete>() { }
-   explicit Complete(const std::string &name) : base<Complete>(name) { }
+   explicit Complete() : base() { }
+   explicit Complete(const std::string &name) : base(name) { }
 
    static auto &table()
    {
       static const std::vector<std::pair<std::string,rgb>>
          tab { kip_make_complete(kip_make_table) };
+      static bool first = true;
+      if (first) {
+         base::record(tab,"");
+         base::record(tab,"complete");
+         base::record(tab,"OneTwenty");
+         first = false;
+      }
       return tab;
    }
 

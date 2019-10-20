@@ -132,7 +132,7 @@ int main(const int, const char *const *const argv)
 
    // Most users shouldn't change these
 
-   engine.method = kip::method_t::uniform;
+   engine.method = kip::method::uniform;
 
    engine.hzone = 50;
    engine.vzone = 50;

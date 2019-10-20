@@ -912,11 +912,71 @@ bool read(
 
 
 // -----------------------------------------------------------------------------
+// earth
+// -----------------------------------------------------------------------------
+
+// earth
+std::vector<kip::array<2,kip::rgb>> earth(5);
+
+// readfile
+bool readfile(const ulong hsize, const ulong vsize, const char *const name)
+{
+   std::ifstream ifs(name, std::ios::ate | std::ios::binary);
+   const std::ios::pos_type size = ifs.tellg();
+   assert(size == long(hsize*vsize*sizeof(kip::rgb)));
+
+   static ulong index = 0;
+   earth[index].resize(hsize,vsize);
+   ifs.seekg(0, std::ios::beg);
+   return ifs.read((char *)earth[index++].data(), size) ? true : false;
+}
+
+// readearth
+bool readearth()
+{
+   std::cout << "Reading earth images..." << std::endl;
+   const bool rv =
+      readfile(8192, 4096, "earth/earth-08192x04096-shading-ice-clouds.rgb") &&
+      readfile(8192, 4096, "earth/earth-08192x04096-shading-ice.rgb") &&
+      readfile(8192, 4096, "earth/earth-08192x04096-shading.rgb") &&
+      readfile(8192, 4096, "earth/earth-08192x04096-plain.rgb") &&
+      readfile(8192, 4096, "earth/earth-08192x04096-night.rgb") &&
+      true;
+   std::cout << "Done." << std::endl;
+   return rv;
+}
+
+
+
+// -----------------------------------------------------------------------------
 // main
 // -----------------------------------------------------------------------------
 
 int main(const int argc, const char *const *const argv)
 {
+   /*
+   // zzz this should actually be a command-line argument
+   // zzz e.g. -earth 0.5
+   (void)readearth();
+   */
+
+   (void)kip::crayola::pure    ::table();
+   (void)kip::crayola::silver  ::table();
+   (void)kip::crayola::gem     ::table();
+   (void)kip::crayola::metallic::table();
+   (void)kip::crayola::complete::table();
+
+   // zzz
+   // multimap< pair< string , string >, rgb >
+   for (auto &color : kip::crayola::allcolors) {
+      std::cout
+         << '"' << color.first.first   << "\"   "
+         << '"' << color.first.second  << "\"   "
+         << int(color.second.r) << ", "
+         << int(color.second.g) << ", "
+         << int(color.second.b) << std::endl;
+   }
+
    /*
    printval(sizeof(kip::mmm<double>));
    printval(sizeof(kip::rotate<2,double,kip::op::full,kip::op::unscaled>));
