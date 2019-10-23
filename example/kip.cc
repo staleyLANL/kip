@@ -1,7 +1,4 @@
 
-// c++
-#include <map>
-
 // gl, tk
 extern "C" {
 #include "gl.h"
