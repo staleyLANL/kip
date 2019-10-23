@@ -488,6 +488,7 @@ bool istream::prefix(
 
    mark();
    if (good()) return true;
+
    std::ostringstream oss;
 
    // bad

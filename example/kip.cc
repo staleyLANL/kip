@@ -960,23 +960,6 @@ int main(const int argc, const char *const *const argv)
    (void)readearth();
    */
 
-   (void)kip::crayola::pure    ::table();
-   (void)kip::crayola::silver  ::table();
-   (void)kip::crayola::gem     ::table();
-   (void)kip::crayola::metallic::table();
-   (void)kip::crayola::complete::table();
-
-   // zzz
-   // multimap< pair< string , string >, rgb >
-   for (auto &color : kip::crayola::allcolors) {
-      std::cout
-         << '"' << color.first.first   << "\"   "
-         << '"' << color.first.second  << "\"   "
-         << int(color.second.r) << ", "
-         << int(color.second.g) << ", "
-         << int(color.second.b) << std::endl;
-   }
-
    /*
    printval(sizeof(kip::mmm<double>));
    printval(sizeof(kip::rotate<2,double,kip::op::full,kip::op::unscaled>));
@@ -988,6 +971,16 @@ int main(const int argc, const char *const *const argv)
    printval(sizeof(kip::array<1,real>));
    printval(sizeof(kip::array<2,real>));
    printval(sizeof(kip::array<3,real>));
+
+   printval(sizeof(kip::shape<real,base>::misc_type      ));
+   printval(sizeof(kip::shape<real,base>::nary_type      ));
+   printval(sizeof(kip::shape<real,base>::union_basic    ));
+   printval(sizeof(kip::shape<real,base>::union_unary    ));
+   printval(sizeof(kip::shape<real,base>::union_binary   ));
+   printval(sizeof(kip::shape<real,base>::union_vertex   ));
+   printval(sizeof(kip::shape<real,base>::union_tridata  ));
+   printval(sizeof(kip::shape<real,base>::union_surfdata ));
+   printval(sizeof(kip::shape<real,base>));
 
    printval(sizeof(kip::bicylinder<real,base>));
    printval(sizeof(kip::biwasher  <real,base>));
@@ -1031,6 +1024,8 @@ int main(const int argc, const char *const *const argv)
 
    return 0;
    */
+
+
 
    kip::threads = 0;
    std::string title = argv[0] == nullptr || argv[0][0] == '\0'

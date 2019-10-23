@@ -135,17 +135,18 @@ kip_make_read_value(long double, "long double")
 
 // -----------------------------------------------------------------------------
 // read_value(string)
+// read_color(string,string)
 // -----------------------------------------------------------------------------
 
+// read_value
 template<class ISTREAM>
 bool read_value(
    ISTREAM &s, std::string &value,
    const std::string &description = "keyword"
 ) {
+   value = "";
    if (!s.prefix('\0', description, true))  // true: eof okay
       return false;
-
-   value = "";
 
    int ch;
    while (ch = s.get(), s.good())
@@ -154,11 +155,13 @@ bool read_value(
       else
          break;
 
-   if (value == "")
+   if (value == "") {
       // Set fail() to indicate that our attempt to get a keyword failed,
       // regardless of whether or not the above get() failed in some way.
+      if (ch == ')') // <== new, sorta hack; revisit when we rewrite I/O
+         s.unget();
       s.add(std::ios::failbit);
-   else {
+   } else {
       s.unget();
       if (s.fail() && s.eof())
          s.set(s.state() & (std::ios::badbit | std::ios::eofbit));
@@ -169,35 +172,72 @@ bool read_value(
 
 
 
-// -----------------------------------------------------------------------------
-// read_value(RGB[A])
-// -----------------------------------------------------------------------------
-
-namespace detail {
-
-// ------------------------
-// Helper: crayola_or_component
-// ------------------------
-
-// See what's next, expecting either a crayola::complete color,
-// or a color component. The character is only peeked.
+// read_color
 template<class ISTREAM>
-inline bool crayola_or_component(ISTREAM &s, bool &alphabetic)
-{
-   const std::string &description =
-     "crayola::complete color, or unsigned char-based color component";
-   if (!s.prefix('\0', description, false))  // false: eof not okay
+bool read_color(
+   ISTREAM &s,
+   std::string &scope,
+   std::string &color,
+   std::string &sep
+) {
+   scope = sep = "";
+   if (!read_value(s,color,"color scope or string"))
       return false;
 
-   alphabetic = 0 != isalpha(s.peek());
+   if (!s.prefix('\0', "", true)) // true: eof okay
+      return false;
+
+   int ch = s.get();
+   if (ch == ':' || ch == '.') {
+      if (ch == ':' && (ch = s.get()) != ':') {
+         sep = "::";
+         std::ostringstream oss;
+         oss << "Color string allows \"::\", but not just \":\"";
+         error(oss);
+         s.unget();
+         return false;
+      } else
+         sep = ".";
+
+      scope = color;
+      return read_value(s,color,"color string");
+   }
+
+   s.unget();
    return true;
 }
 
 
-// ------------------------
-// Helper: read_color_component
-// ------------------------
 
+// -----------------------------------------------------------------------------
+// Helpers for read_value(RGB[A])
+// -----------------------------------------------------------------------------
+
+namespace detail {
+
+// string_or_component
+// See what's next, expecting either a color string, or a numeric color
+// component. The character is only peeked.
+template<class ISTREAM>
+bool string_or_component(ISTREAM &s, bool &isstring)
+{
+   static const std::string description =
+     "color string, or numeric color component";
+   if (!s.prefix('\0', description, false))  // false: eof not okay
+      return false;
+
+   const int ch = s.peek();
+   isstring = isalpha(ch) || ch == '_';
+   if (isstring || isdigit(ch))
+      return true;
+
+   s.unget();
+   return s.verify('\0', description, false);
+}
+
+
+
+// read_color_component
 // Read component (for now, only uchar) of RGB or RGBA.
 // We don't simply use read_value(uchar), because in this context we
 // want to allow for more-descriptive diagnostics than that would allow.
@@ -233,81 +273,119 @@ bool read_color_component(
    return s.verify('\0', description, true);  // true: no specific value wanted
 }
 
+
+
+// color2rgb
+template<class ISTREAM, class comp>
+bool color2rgb(
+   ISTREAM &s,
+   const std::string &scope,
+   const std::string &color,
+   const std::string &sep,
+   RGB<comp> &value
+) {
+   // ensure that kip::crayola::allcolors is entirely initialized
+   (void)kip::crayola::pure    ::table();
+   (void)kip::crayola::silver  ::table();
+   (void)kip::crayola::gem     ::table();
+   (void)kip::crayola::metallic::table();
+   (void)kip::crayola::complete::table();
+
+   // find; remember that the ordering is {color name, scope},
+   // not the reverse, in allcolors' key.
+   const auto range = crayola::allcolors.equal_range(
+      std::pair<std::string,std::string>(
+         crayola::detail::strtolower(color),
+         crayola::detail::strtolower(scope)
+      )
+   );
+
+   // no match?
+   if (range.first == range.second) {
+      std::ostringstream oss;
+      oss << "Unknown color string \"" << scope << sep << color << "\"\n"
+          << "Setting to (0,0,0)";
+      s.warning(oss);
+      return value.set(0,0,0), true;
+   }
+
+   // first possible rgb from allcolors...
+   value = range.first->second;
+
+   // ...check that no others have a different value
+   for (auto it = range.first;  ++it != range.second ; )
+      if (value != it->second) {
+         std::ostringstream oss;
+         oss << "Color string \"" << scope << sep << color << "\" "
+             << "is ambiguous.\nProvide a scope to disambiguate.\n"
+             << "Setting to first looked-up value: " << value << ".";
+         s.warning(oss);
+         return true;
+      }
+
+   // done
+   return true;
+}
+
 } // namespace detail
 
 
-// ------------------------
+
+// -----------------------------------------------------------------------------
+// read_value(RGB[A])
+// -----------------------------------------------------------------------------
+
 // RGB
-// ------------------------
-
-/*
-zzz
-
-zzz These are the ones to modify.
-
-zzz Probably set up crayola base to maintain a map of everything coming into it!
-
-zzz Have it check that a duplicate name (which wouldn't go into the map) has
-    exactly the same rgb. Or maybe it doesn't, currently (for example with red),
-    in which case consider allowing for a crayola type prefix. We'll need to
-    have some way of handling duplicate-name cases.
-
-zzz And, really, write the below function bodies more clearly
-
-*/
-
 template<class ISTREAM, class comp>
 bool read_value(ISTREAM &s, RGB<comp> &value)
 {
-   crayola::complete cray;  bool alphabetic = false;
    s.bail = false;
+   bool ok = false, isstring = false;
 
-   if (!(
-      detail::crayola_or_component(s,alphabetic) && (
-       ( alphabetic &&
-         read_value(s,cray)) ||
-       (!alphabetic &&
-         detail::read_color_component(s,value.r) && read_comma(s) &&
-         detail::read_color_component(s,value.g) && read_comma(s) &&
-         detail::read_color_component(s,value.b)
-   )))) {
+   if (detail::string_or_component(s,isstring)) {
+      if (isstring) {
+         std::string scope, color, sep;
+         ok = read_color(s,scope,color,sep) &&
+              detail::color2rgb(s,scope,color,sep,value);
+      } else
+         ok = detail::read_color_component(s,value.r) && read_comma(s) &&
+              detail::read_color_component(s,value.g) && read_comma(s) &&
+              detail::read_color_component(s,value.b);
+   }
+
+   if (!ok) {
       s.add(std::ios::failbit);
       addendum("Detected while reading RGB", diagnostic::error);
    }
 
-   if (alphabetic)
-      convert(cray,value);
-
    return !s.fail();
 }
 
-
-// ------------------------
 // RGBA
-// ------------------------
-
 template<class ISTREAM, class comp>
 bool read_value(ISTREAM &s, RGBA<comp> &value)
 {
-   crayola::complete cray;  bool alphabetic = false;
    s.bail = false;
+   bool ok = false, isstring = false;
 
-   if (!(
-      detail::crayola_or_component(s,alphabetic) && (
-       ( alphabetic &&
-         read_value(s,cray)) ||
-       (!alphabetic &&
-         detail::read_color_component(s,value.r) && read_comma(s) &&
-         detail::read_color_component(s,value.g) && read_comma(s) &&
-         detail::read_color_component(s,value.b) && read_comma(s) &&
-         detail::read_color_component(s,value.a)
-   )))) {
+   if (detail::string_or_component(s,isstring)) {
+      if (isstring) {
+         std::string scope, color, sep;
+         RGB<comp> tmp;
+         ok = read_color(s,scope,color,sep) &&
+              detail::color2rgb(s,scope,color,sep,tmp);
+         convert(tmp,value);
+      } else
+         ok = detail::read_color_component(s,value.r) && read_comma(s) &&
+              detail::read_color_component(s,value.g) && read_comma(s) &&
+              detail::read_color_component(s,value.b) && read_comma(s) &&
+              detail::read_color_component(s,value.a);
+   }
+
+   if (!ok) {
       s.add(std::ios::failbit);
       addendum("Detected while reading RGBA", diagnostic::error);
    }
-
-   if (alphabetic)
-      convert(cray,value);
 
    return !s.fail();
 }

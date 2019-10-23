@@ -136,6 +136,18 @@ public:
       g = gfrom;
       b = bfrom;
    }
+
+   // operator==
+   bool operator==(const RGB &rhs) const
+   {
+      return r == rhs.r && g == rhs.g && b == rhs.b;
+   }
+
+   // operator!=
+   bool operator!=(const RGB &rhs) const
+   {
+      return !(*this == rhs);
+   }
 };
 
 // for users
@@ -219,6 +231,18 @@ public:
       g = gfrom;
       b = bfrom;
       a = afrom;
+   }
+
+   // operator==
+   bool operator==(const RGBA &rhs) const
+   {
+      return r == rhs.r && g == rhs.g && b == rhs.b && a == rhs.a;
+   }
+
+   // operator!=
+   bool operator!=(const RGBA &rhs) const
+   {
+      return !(*this == rhs);
    }
 
    // zzz think about the following...
