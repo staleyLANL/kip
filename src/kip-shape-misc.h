@@ -106,13 +106,7 @@ public:
    operator       real&()       { return q; }
    operator const real&() const { return q; }
 
-   // operator()(nx,ny,nz, shape,        isnormalized [, fac = default])
-   // operator()(n,        shape,        isnormalized [, fac = default])
-   // operator()(nx,ny,nz, shape, color, isnormalized [, fac = default])
-   // operator()(n,        shape, color, isnormalized [, fac = default])
-
-
-
+   // operator()
    inq &operator()(
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
@@ -120,7 +114,7 @@ public:
       const real _fac = real(-1)
    ) {
       n.x = nx;  shape = _shape;
-      n.y = ny;  color = _shape;
+      n.y = ny;  color = &_shape->base();
       n.z = nz;  isnormalized = _isnormalized;
       fac = _fac;
       return *this;
@@ -133,7 +127,8 @@ public:
       const real _fac = real(-1)
    ) {
       shape = _shape;  n = _n;
-      color = _shape;  isnormalized = _isnormalized;
+      color = &_shape->base();
+      isnormalized = _isnormalized;
       fac = _fac;
       return *this;
    }

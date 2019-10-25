@@ -14,6 +14,11 @@
 #define KIP_SEGMENTING_LINEAR
 #define KIP_SEGMENTING_BINARY
 
+// printval
+#ifndef printval
+#define printval(val) std::cout << #val " = " << val << std::endl
+#endif
+
 
 
 // -----------------------------------------------------------------------------

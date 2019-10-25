@@ -131,7 +131,9 @@ kip_infirst(yplane)
         q(
            0, misc.plane.norm, 0, this,
           (int(std::abs(q.x/size.x)) % 2 == (q.x > 0)) ==
-          (int(std::abs(q.z/size.z)) % 2 == (q.z > 0)) ? &color : this,
+          (int(std::abs(q.z/size.z)) % 2 == (q.z > 0))
+           ? &color
+           : &this->base(),
            normalized::yes
         ),
         true

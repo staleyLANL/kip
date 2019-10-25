@@ -24,11 +24,6 @@ kip::image <real,color> image;
 // misc
 int downsize;
 
-// printval
-#ifndef printval
-#define printval(val) std::cout << #val " = " << val << std::endl
-#endif
-
 
 
 // -----------------------------------------------------------------------------
@@ -968,17 +963,9 @@ int main(const int argc, const char *const *const argv)
    printval(sizeof(kip::array<1,real>));
    printval(sizeof(kip::array<2,real>));
    printval(sizeof(kip::array<3,real>));
+   */
 
-   printval(sizeof(kip::shape<real,base>::misc_type      ));
-   printval(sizeof(kip::shape<real,base>::nary_type      ));
-   printval(sizeof(kip::shape<real,base>::union_basic    ));
-   printval(sizeof(kip::shape<real,base>::union_unary    ));
-   printval(sizeof(kip::shape<real,base>::union_binary   ));
-   printval(sizeof(kip::shape<real,base>::union_vertex   ));
-   printval(sizeof(kip::shape<real,base>::union_tridata  ));
-   printval(sizeof(kip::shape<real,base>::union_surfdata ));
-   printval(sizeof(kip::shape<real,base>));
-
+   /*
    printval(sizeof(kip::bicylinder<real,base>));
    printval(sizeof(kip::biwasher  <real,base>));
    printval(sizeof(kip::box       <real,base>));
@@ -1021,8 +1008,6 @@ int main(const int argc, const char *const *const argv)
 
    return 0;
    */
-
-
 
    kip::threads = 0;
    std::string title = argv[0] == nullptr || argv[0][0] == '\0'

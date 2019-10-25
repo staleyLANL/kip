@@ -12,18 +12,15 @@ namespace detail {
 template<class real = default_real>
 class engine;
 
-
-
-// -----------------------------------------------------------------------------
-// dummy
-// nary_element
-// shape_id_t
-// -----------------------------------------------------------------------------
-
 // dummy
 class dummy { };
 
 
+
+// -----------------------------------------------------------------------------
+// nary_element
+// shape_id_t
+// -----------------------------------------------------------------------------
 
 // nary_element (for all nary operators except ands)
 template<class real, class tag, class MIN = real>
@@ -84,8 +81,6 @@ public:
    ulong imin, iend, jmin, jend;
 };
 
-
-
 // subinfo
 namespace detail {
    class subinfo {
@@ -106,8 +101,6 @@ namespace detail {
       { }
    };
 }
-
-
 
 // eyetardiff
 template<class real>
@@ -150,35 +143,22 @@ class binner;
 
 // shape
 template<class real, class tag>
-class shape : public tag {
+class shape {
 public:
 
    // --------------------------------
    // Miscellaneous
    // --------------------------------
 
-   mutable bool is_operand : 1;
-   /*   */ bool eyelie     : 1;
-   /*   */ bool on         : 1;
-   /*   */ bool solid      : 1;
-   mutable bool isbound    : 1;
-   mutable bool baseset    : 1;
-   mutable bool interior   : 1;
-   mutable bool degenerate : 1;
-
    // id
    virtual shape_id_t id() const = 0;
-
-   // [imin,iend) x [jmin,jend)
-   mutable minend mend;
 
    // get_interior(), because some g++s don't realize interior is public
    bool get_interior() const { return interior; }
 
    // base()
-   const tag &base() const { return *this; }
-   tag &base() { return *this; }
-
+   const tag &base() const { return thebase; }
+   tag &base() { return thebase; }
 
 
    // --------------------------------
@@ -189,7 +169,6 @@ public:
       mutable real minimum;
       mutable int  lastpix;
    #endif
-
 
 
    // --------------------------------
@@ -226,7 +205,6 @@ public:
       } ands;
    };
 
-
    // for nary operators (except ands)
    class nary_type {
       private: using element_t = nary_element<real,tag>;
@@ -240,66 +218,6 @@ public:
          { return vec().push_back(element_t()), vec().back(); }
       mutable ulong total_in;
    };
-
-   /*
-   // union'd data, as we only need one-at-a-time
-   union {
-      // for certain specific shapes
-      misc_type misc;
-
-      // for most shapes
-      class {
-         mutable char _eye[sizeof(point<real >)];
-         mutable char _lie[sizeof(point<float>)];
-      public:
-         point<real > &eye() const
-            { return *(point<real > *)(void *)&_eye[0]; }
-         point<float> &lie() const
-            { return *(point<float> *)(void *)&_lie[0]; }
-      } basic;
-
-      // for unary operators
-      class {
-      public:
-         mutable real amin;
-         shape *a;
-         mutable bool ina : 1;
-      } unary;
-
-      // for binary operators
-      class {
-         using shape_ptr = shape *;
-      public:
-         mutable real amin, bmin;
-         mutable shape_ptr a, b;
-         mutable bool ina : 1;
-         mutable bool inb : 1;
-      } binary;
-
-      // for nary operators (except ands)
-      nary_type nary;
-
-      // for tri
-      class {
-      public:
-         mutable char ghi[sizeof(point<real>)];
-         mutable ulong u, v, w;
-      } vertex;
-
-      // for triangle
-      class {
-      public:
-         mutable char ghi[sizeof(point<real>)];
-      } tridata;
-
-      // for surf
-      class {
-      public:
-         mutable char mint
-            [sizeof(binner<detail::min_and_part<tri<real,tag>>>)];
-      } surfdata;
-   };
-   */
 
    // for most shapes
    class union_basic {
@@ -350,18 +268,42 @@ public:
          [sizeof(binner<detail::min_and_part<tri<real,tag>>>)];
    };
 
+
+   // --------------------------------
+   // Data
+   // --------------------------------
+
+   // size 8. virtual function table
+
+   // size 32.
+   // [imin,iend) x [jmin,jend)
+   mutable minend mend;
+
+   // size 64.
    // union'd data, as we only need one-at-a-time
    union {
-      misc_type      misc;      // for certain specific shapes
-      union_basic    basic;     // for most shapes
-      union_unary    unary;     // for unary operators
-      union_binary   binary;    // for binary operators
-      nary_type      nary;      // for nary operators (except ands)
-      union_vertex   vertex;    // for tri
-      union_tridata  tridata;   // for triangle
-      union_surfdata surfdata;  // for surf
+      misc_type      misc;      // size 40. for certain specific shapes
+      union_basic    basic;     // size 36. for most shapes
+      union_unary    unary;     // size 24. for unary operators
+      union_binary   binary;    // size 40. for binary operators
+      nary_type      nary;      // size 40. for nary operators (except ands)
+      union_vertex   vertex;    // size 48. for tri
+      union_tridata  tridata;   // size 24. for triangle
+      union_surfdata surfdata;  // size 64. for surf
    };
 
+   // size 3. for rgb
+   tag thebase;
+
+   // size 1.
+   mutable bool is_operand : 1;
+   /*   */ bool eyelie     : 1;
+   /*   */ bool on         : 1;
+   /*   */ bool solid      : 1;
+   mutable bool isbound    : 1;
+   mutable bool baseset    : 1;
+   mutable bool interior   : 1;
+   mutable bool degenerate : 1;
 
 
    // --------------------------------
@@ -379,21 +321,21 @@ public:
    // shape(derived *)
    template<template<class,class> class derived, class _real, class _tag>
    explicit shape(const derived<_real,_tag> *const) :
-      tag    ( tag() ),
-      eyelie  ( true   ),
-      on      ( true   ),
-      solid   ( true   ),
-      isbound ( false  ),
-      baseset ( false  )
+      thebase ( tag() ),
+      eyelie  ( true  ),
+      on      ( true  ),
+      solid   ( true  ),
+      isbound ( false ),
+      baseset ( false )
    { }
 
    // shape(derived *, base)
    template<template<class,class> class derived, class _real, class _tag>
    explicit shape(
       const derived<_real,_tag> *const,
-      const tag &thebase
+      const tag &_thebase
    ) :
-      tag    ( thebase ),
+      thebase (_thebase ),
       eyelie  ( true    ),
       on      ( true    ),
       solid   ( true    ),
@@ -405,14 +347,13 @@ public:
    // zzz Think about some fields, e.g. baseset; correct semantics may
    // depend on context. May need to delegate to two or more copy() functions.
    shape(const shape &from) :
-      tag    ( from.base()  ),
+      thebase ( from.base()  ),
       eyelie  ( from.eyelie  ),
       on      ( from.on      ),
       solid   ( from.solid   ),
       isbound ( from.isbound ),
       baseset ( from.baseset )
    { }
-
 
 
    // --------------------------------
@@ -423,8 +364,7 @@ public:
    // zzz Similar remark as that for copy c'tor.
    shape &operator=(const shape &from)
    {
-      this->tag::operator=(from.base());
-
+      thebase = from.base();
       eyelie  = from.eyelie;
       on      = from.on;
       solid   = from.solid;
@@ -436,7 +376,6 @@ public:
 
    // destructor
    virtual ~shape() { }
-
 
 
    // --------------------------------

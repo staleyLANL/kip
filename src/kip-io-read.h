@@ -704,7 +704,7 @@ inline std::ostream &operator<<(std::ostream &s, const point<T> &obj)
 template<class ISTREAM, class T, class tag>
 bool read_done(ISTREAM &s, kip::shape<T,tag> &shape, const char sep = ',')
 {
-   tag &base = shape;
+   tag &base = shape.base();
    s.bail = false;
 
    // prefix
