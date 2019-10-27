@@ -70,7 +70,7 @@ void initialize()
       std::cout << "initialize()" << std::endl;
 
    // model
-   // Nothing in particular to set; model.append is set in main()
+   // Nothing in particular to set; model.append is set elsewhere
 
    // view
    view.target = kip::point<real>(0.0,0.0,0.0);
@@ -958,11 +958,11 @@ int main(const int argc, const char *const *const argv)
    printval(sizeof(kip::rotate<3,double,kip::op::full,kip::op::unscaled>));
    printval(sizeof(kip::rotate<3,double,kip::op::part,kip::op::unscaled>));
    printval(sizeof(kip::rotate<3,double,kip::op::full,kip::op::  scaled>));
-
    printval(sizeof(kip::array<0,real>));
    printval(sizeof(kip::array<1,real>));
    printval(sizeof(kip::array<2,real>));
    printval(sizeof(kip::array<3,real>));
+   printval(sizeof(kip::shape<real,base>));
    */
 
    /*
@@ -984,24 +984,20 @@ int main(const int argc, const char *const *const argv)
    printval(sizeof(kip::triangle  <real,base>));
    printval(sizeof(kip::washer    <real,base>));
    printval(sizeof(kip::surf      <real,base>));
-
    printval(sizeof(kip::kipnot    <real,base>));
    printval(sizeof(kip::kipand    <real,base>));
    printval(sizeof(kip::kipcut    <real,base>));
    printval(sizeof(kip::kipor     <real,base>));
    printval(sizeof(kip::kipxor    <real,base>));
-
    printval(sizeof(kip::ands      <real,base>));
    printval(sizeof(kip::odd       <real,base>));
    printval(sizeof(kip::even      <real,base>));
    printval(sizeof(kip::some      <real,base>));
    printval(sizeof(kip::one       <real,base>));
    printval(sizeof(kip::ors       <real,base>));
-
    printval(sizeof(kip::half      <real,base>));
    printval(sizeof(kip::nothing   <real,base>));
    printval(sizeof(kip::everything<real,base>));
-
    printval(sizeof(kip::xplane    <real,base>));
    printval(sizeof(kip::yplane    <real,base>));
    printval(sizeof(kip::zplane    <real,base>));

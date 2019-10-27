@@ -7,6 +7,7 @@
 // I prefer this slightly shorter, no-underscore terminology
 using uchar = unsigned char;
 using ulong = std::size_t;
+using u32 = std::uint32_t;
 
 // Default type: real
 using default_real = double;

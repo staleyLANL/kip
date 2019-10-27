@@ -78,7 +78,7 @@ namespace detail {
 // minend
 class minend {
 public:
-   ulong imin, iend, jmin, jend;
+   u32 imin, iend, jmin, jend;
 };
 
 // subinfo
@@ -86,12 +86,12 @@ namespace detail {
    class subinfo {
    public:
       minend mend;
-      ulong i, j;
+      u32 i, j;
       unsigned nzone;
 
       explicit subinfo(
-         const ulong _i,
-         const ulong _j,
+         const u32 _i,
+         const u32 _j,
          const unsigned _nzone,
          const minend _mend
       ) :
@@ -261,13 +261,6 @@ public:
       mutable char ghi[sizeof(point<real>)];
    };
 
-   // for surf
-   class union_surfdata {
-   public:
-      mutable char mint
-         [sizeof(binner<detail::min_and_part<tri<real,tag>>>)];
-   };
-
 
    // --------------------------------
    // Data
@@ -275,21 +268,21 @@ public:
 
    // size 8. virtual function table
 
-   // size 32.
+   // size 16.
    // [imin,iend) x [jmin,jend)
    mutable minend mend;
 
-   // size 64.
+   // size 48.
    // union'd data, as we only need one-at-a-time
    union {
-      misc_type      misc;      // size 40. for certain specific shapes
-      union_basic    basic;     // size 36. for most shapes
-      union_unary    unary;     // size 24. for unary operators
-      union_binary   binary;    // size 40. for binary operators
-      nary_type      nary;      // size 40. for nary operators (except ands)
-      union_vertex   vertex;    // size 48. for tri
-      union_tridata  tridata;   // size 24. for triangle
-      union_surfdata surfdata;  // size 64. for surf
+      misc_type     misc;    // size 40. for certain specific shapes
+      union_basic   basic;   // size 36. for most shapes
+      union_unary   unary;   // size 24. for unary operators
+      union_binary  binary;  // size 40. for binary operators
+      nary_type     nary;    // size 40. for nary operators (except ands)
+      union_vertex  vertex;  // size 48. for tri
+      union_tridata tridata; // size 24. for triangle
+      ///union_surfdata surfdata;  // size 64. for surf
    };
 
    // size 3. for rgb

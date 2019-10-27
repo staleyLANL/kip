@@ -187,8 +187,8 @@ inline void to_abstract_then_fill(
    const engine<real> &engine, image<real,color> &image,
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
-   const ulong imin, const ulong iend,
-   const ulong jmin, const ulong jend,
+   const u32 imin, const u32 iend,
+   const u32 jmin, const u32 jend,
 
    const shape_vectors<real,base> &sv, const ulong binsize
 ) {
@@ -314,12 +314,12 @@ inline void rtrace_h(
    const engine<real> &engine, image<real,color> &image,
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
-   const ulong imin, const ulong iend, const int ipart,
-   const ulong jmin, const ulong jend, const real vmin, const real vmax,
+   const u32 imin, const u32 iend, const int ipart,
+   const u32 jmin, const u32 jend, const real vmin, const real vmax,
    const shape_vectors<real,base> &bin
 ) {
-   const ulong ilo = imin + ulong(ipart  )*(iend-imin)/engine.hdivision;
-   const ulong ihi = imin + ulong(ipart+1)*(iend-imin)/engine.hdivision;
+   const u32 ilo = imin + u32(ipart  )*(iend-imin)/engine.hdivision;
+   const u32 ihi = imin + u32(ipart+1)*(iend-imin)/engine.hdivision;
    if (ilo == ihi) return;
 
    const real hlo = real(ilo)*vars.hfull - vars.hmax;
@@ -352,12 +352,12 @@ inline void rtrace_v(
    const engine<real> &engine, image<real,color> &image,
    vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
 
-   const ulong imin, const ulong iend, const real hmin, const real hmax,
-   const ulong jmin, const ulong jend, const int jpart,
+   const u32 imin, const u32 iend, const real hmin, const real hmax,
+   const u32 jmin, const u32 jend, const int jpart,
    const shape_vectors<real,base> &bin
 ) {
-   const ulong jlo = jmin + ulong(jpart  )*(jend-jmin)/engine.vdivision;
-   const ulong jhi = jmin + ulong(jpart+1)*(jend-jmin)/engine.vdivision;
+   const u32 jlo = jmin + u32(jpart  )*(jend-jmin)/engine.vdivision;
+   const u32 jhi = jmin + u32(jpart+1)*(jend-jmin)/engine.vdivision;
    if (jlo == jhi) return;
 
    const real vlo = real(jlo)*vars.vfull - vars.vmax;
@@ -401,8 +401,8 @@ void rtrace(
    vars<real,base> &vars, const light<real> &light,
    array<2,pix> &pixel,
 
-   const real hmin, const real hmax, const ulong imin, const ulong iend,
-   const real vmin, const real vmax, const ulong jmin, const ulong jend,
+   const real hmin, const real hmax, const u32 imin, const u32 iend,
+   const real vmin, const real vmax, const u32 jmin, const u32 jend,
 
    const shape_vectors<real,base> &bin,
    const bool rootlevel

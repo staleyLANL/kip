@@ -247,8 +247,8 @@ template<class SHAPEVEC, class real, class color>
 inline void object_border_shape(const SHAPEVEC &shape, image<real,color> &image)
 {
    // re: dotted-line computation
-   const unsigned small = image.border.small;
-   const unsigned large = image.border.large;
+   const u32 small = image.border.small;
+   const u32 large = image.border.large;
 
    // for each shape
    for (ulong n = shape.size();  n--; ) {
@@ -256,16 +256,16 @@ inline void object_border_shape(const SHAPEVEC &shape, image<real,color> &image)
       const typename SHAPEVEC::value_type &s = shape[n];
 
       // its bounds: min and end
-      const ulong imin = s.mend.imin, iend = s.mend.iend;
-      const ulong jmin = s.mend.jmin, jend = s.mend.jend;
+      const u32 imin = s.mend.imin, iend = s.mend.iend;
+      const u32 jmin = s.mend.jmin, jend = s.mend.jend;
 
       // if we want to draw its bounds...
       if (s.on && imin < iend && jmin < jend) {
-         const ulong imax = iend-1;  assert(imax < image.hpixel);
-         const ulong jmax = jend-1;  assert(jmax < image.vpixel);
+         const u32 imax = iend-1;  assert(imax < image.hpixel);
+         const u32 jmax = jend-1;  assert(jmax < image.vpixel);
 
          color out;
-         for (ulong i = imin;  i < iend;  ++i)
+         for (u32 i = imin;  i < iend;  ++i)
             if ((i % large) < small) {
                convert(s.base(),out);
                //image(i,jmin)=image(i,jmax)=color(s.base());///color::border();
@@ -273,7 +273,7 @@ inline void object_border_shape(const SHAPEVEC &shape, image<real,color> &image)
                image(i,jmax) =
                   out;///color(s.base());///color::border();
             }
-         for (ulong j = jmin;  j < jend;  ++j)
+         for (u32 j = jmin;  j < jend;  ++j)
             if ((j % large) < small) {
                convert(s.base(),out);
                //image(imin,j)=image(imax,j)=color(s.base());///color::border();
@@ -352,8 +352,8 @@ inline void trace_recursive(
          vars  <real,base > &vars,    // auxiliary
          array<2,pix>  &pixel    // per-pixel information
 ) {
-   const ulong hpixel = image.hpixel;
-   const ulong vpixel = image.vpixel;
+   const u32 hpixel = u32(image.hpixel);
+   const u32 vpixel = u32(image.vpixel);
 
    // bookkeeping
    static shape_vectors<real,base> sv;

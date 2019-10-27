@@ -94,6 +94,10 @@ template<class real = default_real, class tag = default_base>
 class surf : public shape<real,tag> {
    using pnt_t = point<real>;
 
+   // qqq should be possible to clear up the mint stuff;
+   // perhaps no more need for char[].
+   mutable char _mint[sizeof(binner<detail::min_and_part<kip::tri<real,tag>>>)];
+
    // interior / inside()
    using shape<real,tag>::interior;
    bool inside(const point<real> &) const;
@@ -104,10 +108,8 @@ class surf : public shape<real,tag> {
 
    // mint()
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
-   using shape<real,tag>::surfdata;
    using binner_t = binner<detail::min_and_part<kip::tri<real,tag>>>;
-   binner_t &mint() const
-      { return *(binner_t *)(void *)&surfdata.mint[0]; }
+   binner_t &mint() const { return *(binner_t *)(void *)&_mint[0]; }
 
 public:
 

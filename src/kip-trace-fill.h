@@ -109,7 +109,7 @@ inline ulong get_endsorted(
 template<class real, class tag>
 inline bool inbound(
    const shape<real,tag> &obj,
-   const ulong i, const ulong j
+   const u32 i, const u32 j
 ) {
    // 2017-04-05
    // the four min and end values appear to be largely uninitialized
@@ -165,7 +165,7 @@ template<class BIN, class real, class tag>
 inline bool get_first(
    const BIN &bin,
    const unsigned s,
-   const ulong i, const ulong j,
+   const u32 i, const u32 j,
    const ulong zone,
    const eyetardiff<real> &etd,
    const real qmin, inq<real,tag> &q
@@ -300,7 +300,7 @@ public:
       const vars<real,base> &vars, const point<real> &light,
       const point<real> &target, const point<real> &diff,
       pix &pixel,
-      const ulong i, const ulong j, const ulong zone
+      const u32 i, const u32 j, const ulong zone
    ) const {
 
       (void)engine;
@@ -337,7 +337,7 @@ public:
       const vars<real,base> &vars, const point<real> &light,
       const point<real> &target, const point<real> &diff,
       pix &pixel,
-      const ulong i, const ulong j, const ulong zone
+      const u32 i, const u32 j, const ulong zone
    ) const {
 
       (void)engine;
@@ -378,7 +378,7 @@ public:
       const vars<real,base> &vars, const point<real> &light,
       const point<real> &target, const point<real> &diff,
       pix &pixel,
-      const ulong i, const ulong j, const ulong zone
+      const u32 i, const u32 j, const ulong zone
    ) const {
 
       (void)engine;
@@ -417,7 +417,7 @@ public:
       const vars<real,base> &vars, const point<real> &light,
       const point<real> &target, const point<real> &diff,
       pix &pixel,
-      const ulong i, const ulong j, const ulong zone
+      const u32 i, const u32 j, const ulong zone
    ) const {
 
       (void)image;
@@ -513,7 +513,7 @@ public:
       const real h, const real v, RGBA<unsigned> &sum,
       const vars<real,base> &vars, const light<real> &light,
       pix &pixel,
-      const ulong i, const ulong j, const ulong zone
+      const u32 i, const u32 j, const ulong zone
    ) const {
 
       (void)engine;
@@ -560,7 +560,7 @@ public:
       const real h, const real v, RGBA<unsigned> &sum,
       const vars<real,base> &vars, const light<real> &light,
       pix &pixel,
-      const ulong i, const ulong j, const ulong zone
+      const u32 i, const u32 j, const ulong zone
    ) const {
 
       (void)engine;
@@ -614,7 +614,7 @@ public:
       const real h, const real v, RGBA<unsigned> &sum,
       const vars<real,base> &vars, const light<real> &light,
       pix &pixel,
-      const ulong i, const ulong j, const ulong zone
+      const u32 i, const u32 j, const ulong zone
    ) const {
 
       (void)qa;
@@ -711,8 +711,8 @@ inline void fill_loop_plain(
    const engine<real> &engine, image<real,color> &image,
    const vars<real,base> &vars, const light<real> &light,
 
-   const ulong imin, const ulong iend,
-   const ulong jmin, const ulong jend,
+   const u32 imin, const u32 iend,
+   const u32 jmin, const u32 jend,
    const ulong zone, const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
@@ -723,13 +723,13 @@ inline void fill_loop_plain(
    const ACTION &action
 ) {
    // vertical pixels in the current bin...
-   for (ulong j = jmin;  j < jend;  ++j) {
+   for (u32 j = jmin;  j < jend;  ++j) {
       const point<real> *tar = &image.prior.targets(imin,j);
       color *ptr = &image(imin,j);  unsigned prev = 0;
       pix *p = &pixel(imin,j);
 
       // horizontal pixels in the current bin...
-      for (ulong i = imin;  i < iend;  ++i, ++tar, ++ptr, ++p) {
+      for (u32 i = imin;  i < iend;  ++i, ++tar, ++ptr, ++p) {
          const point<real> target = vars.t2e.back(*tar);
 
          action(
@@ -757,8 +757,8 @@ inline void fill_loop_lean(
    const vars  <real,base > &vars,
    const light <real      > &light,
 
-   const ulong imin, const ulong iend,
-   const ulong jmin, const ulong jend,
+   const u32 imin, const u32 iend,
+   const u32 jmin, const u32 jend,
    const ulong zone, const real maximum,
 
    std::vector<minimum_and_shape<real,base>> &bin,
@@ -773,14 +773,14 @@ inline void fill_loop_lean(
    const real vmin = vars.vhalf - vars.vmax, dsq = view.d*view.d;
 
    // vertical pixels in the current bin...
-   for (ulong j = jmin;  j < jend;  ++j) {
+   for (u32 j = jmin;  j < jend;  ++j) {
       const real v = vmin + real(j   )*vars.vfull, tmp = dsq + v*v;
       /* */ real h = hmin + real(imin)*vars.hfull;
       color *ptr = &image(imin,j);  unsigned prev = 0;
       pix   *p   = &pixel(imin,j);
 
       // horizontal pixels in the current bin...
-      for (ulong i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
+      for (u32 i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
          // a=(d,0,0), b=(0,h,v), (x,y,z)=a+(b-a)/mod(b-a)
          const real norm = real(1)/std::sqrt(tmp + h*h);
          const point<real> target =
@@ -815,8 +815,8 @@ inline void fill_loop_anti(
    const vars  <real,base > &vars,
    const light <real      > &light,
 
-   const real hcent, const ulong imin, const ulong iend,
-         real v,     const ulong jmin, const ulong jend,
+   const real hcent, const u32 imin, const u32 iend,
+         real v,     const u32 jmin, const u32 jend,
 
    const ulong zone,
    const real maximum,
@@ -831,12 +831,12 @@ inline void fill_loop_anti(
    real h = hcent;
 
    // vertical pixels in the current bin...
-   for (ulong j = jmin;  j < jend;  ++j, v += vars.vfull, h = hcent) {
+   for (u32 j = jmin;  j < jend;  ++j, v += vars.vfull, h = hcent) {
       color *ptr = &image(imin,j);
       pix   *p   = &pixel(imin,j);
 
       // horizontal pixels in the current bin...
-      for (ulong i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
+      for (u32 i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
          RGBA<unsigned> sum(0,0,0);  // qqq don't hardcode RGBA, here/elsewhere
 
          // one_anti()
@@ -863,11 +863,11 @@ inline void fill_loop_anti(
 template<class real, class color>
 inline void bin_border(
    image<real,color> &image,
-   const ulong imin, const ulong iend,
-   const ulong jmin, const ulong jend, const color &border
+   const u32 imin, const u32 iend,
+   const u32 jmin, const u32 jend, const color &border
 ) {
-   for (ulong j=jmin; j<jend; ++j) image(imin,j) = image(iend-1,j) = border;
-   for (ulong i=imin; i<iend; ++i) image(i,jmin) = image(i,jend-1) = border;
+   for (u32 j=jmin; j<jend; ++j) image(imin,j) = image(iend-1,j) = border;
+   for (u32 i=imin; i<iend; ++i) image(i,jmin) = image(i,jend-1) = border;
 }
 
 
@@ -882,8 +882,8 @@ void trace_bin(
    const light <real      > &light,
    array<2,pix> &pixel,
 
-   ulong imin, ulong iend,
-   ulong jmin, ulong jend,
+   u32 imin, u32 iend,
+   u32 jmin, u32 jend,
    const ulong zone, const ulong max_binsize,
 
    std::vector<minimum_and_shape<real,base>> &bin,

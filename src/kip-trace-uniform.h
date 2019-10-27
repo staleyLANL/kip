@@ -481,10 +481,10 @@ inline void uprepare(
          continue;
 
       // fine boundaries (used later, when shooting rays)
-      p.mend.imin = op::round<unsigned>(vars.hratsub * real(sub.imin));
-      p.mend.iend = op::round<unsigned>(vars.hratsub * real(sub.iend));
-      p.mend.jmin = op::round<unsigned>(vars.vratsub * real(sub.jmin));
-      p.mend.jend = op::round<unsigned>(vars.vratsub * real(sub.jend));
+      p.mend.imin = op::round<u32>(vars.hratsub * real(sub.imin));
+      p.mend.iend = op::round<u32>(vars.hratsub * real(sub.iend));
+      p.mend.jmin = op::round<u32>(vars.vratsub * real(sub.jmin));
+      p.mend.jend = op::round<u32>(vars.vratsub * real(sub.jend));
 
       // coarse bins (used shortly, when binning objects)
       bin.imin =  sub.imin / engine.hsub;
@@ -498,10 +498,10 @@ inline void uprepare(
        : &vars.uniform[0];
 
       // drop into bins
-      for (ulong vseg = bin.jmin;  vseg < bin.jend;  ++vseg) {
+      for (u32 vseg = bin.jmin;  vseg < bin.jend;  ++vseg) {
          ulong val = vseg*engine.hzone + bin.imin;
 
-         for (ulong hseg = bin.imin;  hseg < bin.iend;  ++hseg, ++val) {
+         for (u32 hseg = bin.imin;  hseg < bin.iend;  ++hseg, ++val) {
             // diag?
             if (diag) {
                const char rv = test_diag(vars, p, val, bin, hseg);
@@ -566,17 +566,17 @@ inline real uprepare_tri(
       if (t.degenerate || (behind[u] && behind[v] && behind[w])) continue;
 
       // tri min and end, based on those of its vertices
-      const ulong imin = op::min(me[u].imin, me[v].imin, me[w].imin);
-      const ulong iend = op::max(me[u].iend, me[v].iend, me[w].iend);
-      const ulong jmin = op::min(me[u].jmin, me[v].jmin, me[w].jmin);
-      const ulong jend = op::max(me[u].jend, me[v].jend, me[w].jend);
+      const u32 imin = op::min(me[u].imin, me[v].imin, me[w].imin);
+      const u32 iend = op::max(me[u].iend, me[v].iend, me[w].iend);
+      const u32 jmin = op::min(me[u].jmin, me[v].jmin, me[w].jmin);
+      const u32 jend = op::max(me[u].jend, me[v].jend, me[w].jend);
       if (imin == iend || jmin == jend) continue;
 
       // fine boundaries
-      t.mend.imin = op::round<unsigned>(vars.hratsub * real(imin));
-      t.mend.iend = op::round<unsigned>(vars.hratsub * real(iend));
-      t.mend.jmin = op::round<unsigned>(vars.vratsub * real(jmin));
-      t.mend.jend = op::round<unsigned>(vars.vratsub * real(jend));
+      t.mend.imin = op::round<u32>(vars.hratsub * real(imin));
+      t.mend.iend = op::round<u32>(vars.hratsub * real(iend));
+      t.mend.jmin = op::round<u32>(vars.vratsub * real(jmin));
+      t.mend.jend = op::round<u32>(vars.vratsub * real(jend));
 
       if (object_border) {
          surf.mend.imin = op::min(surf.mend.imin, t.mend.imin);
@@ -586,18 +586,18 @@ inline real uprepare_tri(
       }
 
       // coarse bins
-      const ulong bimin =  imin / engine.hsub;
-      const ulong biend = (iend + engine.hsub - 1)/engine.hsub;
-      const ulong bjmin =  jmin / engine.vsub;
-      const ulong bjend = (jend + engine.vsub - 1)/engine.vsub;
+      const u32 bimin =  imin / engine.hsub;
+      const u32 biend = (iend + engine.hsub - 1)/engine.hsub;
+      const u32 bjmin =  jmin / engine.vsub;
+      const u32 bjend = (jend + engine.vsub - 1)/engine.vsub;
 
       // bring over base
       t.base() = surf.base();
 
       // drop into bins
-      for (ulong j = bjmin;  j < bjend;  ++j) {
-         ulong val = j*engine.hzone + bimin;
-         for (ulong i = bimin;  i < biend;  ++i)
+      for (u32 j = bjmin;  j < bjend;  ++j) {
+         u32 val = j*engine.hzone + bimin;
+         for (u32 i = bimin;  i < biend;  ++i)
             bins[val++].push_back(element_t(m,t));
       }
 
@@ -644,10 +644,10 @@ inline void uprepare_surf(
          continue;
 
       if (object_border ) {
-         p.mend.imin = std::numeric_limits<ulong>::max();
-         p.mend.iend = std::numeric_limits<ulong>::min();
-         p.mend.jmin = std::numeric_limits<ulong>::max();
-         p.mend.jend = std::numeric_limits<ulong>::min();
+         p.mend.imin = std::numeric_limits<u32>::max();
+         p.mend.iend = std::numeric_limits<u32>::min();
+         p.mend.jmin = std::numeric_limits<u32>::max();
+         p.mend.jend = std::numeric_limits<u32>::min();
       }
 
       const int thread = this_thread();
@@ -764,11 +764,11 @@ public:
 
          // vars.hrat = real(image.hpixel)/real(engine.hzone)
          // vars.vrat = real(image.vpixel)/real(engine.vzone)
-         const unsigned
-            imin = op::round<unsigned>(vars.hrat*real (zone%engine.hzone)),
-            iend = op::round<unsigned>(vars.hrat*real((zone%engine.hzone)+1)),
-            jmin = op::round<unsigned>(vars.vrat*real (zone/engine.hzone)),
-            jend = op::round<unsigned>(vars.vrat*real((zone/engine.hzone)+1));
+         const u32
+            imin = op::round<u32>(vars.hrat*real (zone%engine.hzone)),
+            iend = op::round<u32>(vars.hrat*real((zone%engine.hzone)+1)),
+            jmin = op::round<u32>(vars.vrat*real (zone/engine.hzone)),
+            jend = op::round<u32>(vars.vrat*real((zone/engine.hzone)+1));
 
          if (binsize == 0)
             bin_border(image,imin,iend,jmin,jend,color::border(0,max_binsize));
