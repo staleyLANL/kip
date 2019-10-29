@@ -5,7 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class circle : public shape<real,tag> {
-   using shape<real,tag>::interior;
 
    // modified circle: (0,0,0), r, in yz plane
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -47,7 +46,7 @@ kip_process(circle)
    rsq = r*r;
    tmp = rsq/(rot.h*rot.h);
 
-   interior = false;
+   this->interior = false;
 
    return r < rot.ey
       ? std::sqrt(op::square(rot.ex) + op::square(rot.ey - r))

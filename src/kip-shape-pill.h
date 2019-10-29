@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class pill : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified pill: (0,0,0), (h,0,0), r
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -67,7 +66,7 @@ kip_process(pill)
    h3 = h2 - rot.h*(rot.h - rot.ex - rot.ex);
 
    // interior
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum
    return std::abs(
@@ -135,7 +134,7 @@ kip_infirst(pill)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   if (interior) {
+   if (this->interior) {
 
       // Inside...
 
@@ -317,7 +316,7 @@ inline bool pill<real,tag>::get_curve(
 
 kip_inall(pill)
 {
-   if (interior) return pill<real,tag>::infirst(
+   if (this->interior) return pill<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...

@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class paraboloid : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified paraboloid: (0,0,0), (h,0,0), r
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -60,7 +59,7 @@ kip_process(paraboloid)
    h3 = h2*rot.ey*rot.ey - 2*rot.ex;
 
    // interior
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum
    if (rot.ex >= rot.h && rot.ey <= r)
@@ -180,7 +179,7 @@ kip_infirst(paraboloid)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   if (interior) {
+   if (this->interior) {
 
       // x = h
       if (dx > 0) {
@@ -309,7 +308,7 @@ inline bool paraboloid<real,tag>::get_curve(
 
 kip_inall(paraboloid)
 {
-   if (interior) return paraboloid<real,tag>::infirst(
+   if (this->interior) return paraboloid<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...

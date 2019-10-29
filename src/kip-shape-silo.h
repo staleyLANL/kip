@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class silo : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified silo: (0,0,0), (h,0,0), r
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -59,7 +58,7 @@ kip_process(silo)
    // m = rot.ey^2 - r^2 + rot.ex^2
 
    // interior
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum
    return
@@ -137,7 +136,7 @@ kip_infirst(silo)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   if (interior) {
+   if (this->interior) {
 
       // Inside...
 
@@ -324,7 +323,7 @@ inline bool silo<real,tag>::get_curve(
 
 kip_inall(silo)
 {
-   if (interior) return silo<real,tag>::infirst(
+   if (this->interior) return silo<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...

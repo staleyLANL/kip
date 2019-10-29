@@ -127,21 +127,6 @@ public:
 // shape
 // -----------------------------------------------------------------------------
 
-// forward: tri, min_and_part, binner
-template<class real, class tag>
-class tri;
-
-namespace detail {
-   template<class SHAPE>
-   class min_and_part;
-}
-
-template<class T>
-class binner;
-
-
-
-// shape
 template<class real, class tag>
 class shape {
 public:
@@ -152,9 +137,6 @@ public:
 
    // id
    virtual shape_id_t id() const = 0;
-
-   // get_interior(), because some g++s don't realize interior is public
-   bool get_interior() const { return interior; }
 
    // base()
    const tag &base() const { return thebase; }
@@ -248,18 +230,14 @@ public:
       mutable bool inb : 1;
    };
 
+   /*
    // for tri
    class union_vertex {
    public:
       mutable char ghi[sizeof(point<real>)];
       mutable ulong u, v, w;
    };
-
-   // for triangle
-   class union_tridata {
-   public:
-      mutable char ghi[sizeof(point<real>)];
-   };
+   */
 
 
    // --------------------------------
@@ -280,9 +258,7 @@ public:
       union_unary   unary;   // size 24. for unary operators
       union_binary  binary;  // size 40. for binary operators
       nary_type     nary;    // size 40. for nary operators (except ands)
-      union_vertex  vertex;  // size 48. for tri
-      union_tridata tridata; // size 24. for triangle
-      ///union_surfdata surfdata;  // size 64. for surf
+      ///      union_vertex  vertex;  // size 48. for tri
    };
 
    // size 3. for rgb
@@ -383,15 +359,8 @@ public:
    virtual shape<real,tag> *duplicate() const = 0;
    virtual ulong size_of() const = 0;
 
-
-   // read
-   virtual kip::istream &read(kip::istream &) = 0;
-   virtual std::istream &read(std::istream &) = 0;
-
    // write
    virtual kip::ostream &write(kip::ostream &) const = 0;
-   virtual std::ostream &write(std::ostream &) const = 0;
-
 
    // process
    virtual real process(
@@ -451,11 +420,6 @@ public:
    kip_class *duplicate() const { return new kip_class(*this); }\
    ulong size_of() const { return sizeof(kip_class); }\
    \
-   kip::istream &read (kip::istream &k)       { return k >> *this; }\
-   std::istream &read (std::istream &s)       { return s >> *this; }\
-   kip::ostream &write(kip::ostream &k) const { return k << *this; }\
-   std::ostream &write(std::ostream &s) const { return s << *this; }\
-   \
    real process(\
       const kip::point<real> &,\
       const kip::point<real> &,\
@@ -463,6 +427,7 @@ public:
       const detail::vars<real,tag> &\
    ) const;\
    \
+   kip::ostream &write(kip::ostream &k) const { return k << *this; }\
    bbox<real> aabb() const;\
    bool dry(const rotate<3,real,op::part,op::unscaled> &) const;\
    \
@@ -481,7 +446,7 @@ public:
    ) const;\
    \
    diagnostic check() const
-   // no ';' at end - semicolons at *invocation* points help emacs indent
+// no ';' at end - semicolons at *invocation* points help emacs indent
 
 
 

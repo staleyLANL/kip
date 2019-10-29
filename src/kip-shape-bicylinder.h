@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class bicylinder : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified bicylinder: (0,0,0), (h,0,0), r.a,r.b
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -171,7 +170,7 @@ kip_process(bicylinder)
    h2 = slope*tmp;
    h3 = (rot.ey - tmp)*(rot.ey + tmp);
 
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum
    if (rot.ex <= 0 && rot.ey <= r.a)
@@ -321,7 +320,7 @@ kip_infirst(bicylinder)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   if (interior) {
+   if (this->interior) {
 
       // x = 0
       if (dx < 0) {
@@ -502,7 +501,7 @@ inline bool bicylinder<real,tag>::get_curve(
 
 kip_inall(bicylinder)
 {
-   if (interior) return bicylinder<real,tag>::infirst(
+   if (this->interior) return bicylinder<real,tag>::infirst(
       kip_etd, qmin,ints.one(), insub);
 
    // Outside...

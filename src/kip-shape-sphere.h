@@ -7,7 +7,6 @@ template<class real = default_real, class tag = default_base>
 class sphere : public shape<real,tag> {
 
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
 public:
    using shape<real,tag>::misc;
@@ -88,7 +87,7 @@ kip_process(sphere)
    misc.sphere.f() = eyeball - c;
    const real modf = mod(misc.sphere.f());
    misc.sphere.m = (modf-r)*(modf+r);  // = modf^2 - r^2
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    return std::abs(modf-r);
 } kip_end
@@ -142,7 +141,7 @@ kip_infirst(sphere)
    const real p = dot(misc.sphere.f(),diff), h = p*p - misc.sphere.m;
    if (h < 0) return false;
 
-   if (interior)
+   if (this->interior)
       q = p + std::sqrt(h);
    else
       q = p - std::sqrt(h);
@@ -160,7 +159,7 @@ kip_inall(sphere)
    const real p = dot(misc.sphere.f(),diff), h = p*p - misc.sphere.m;
    if (h < 0) return false;
 
-   if (interior) {
+   if (this->interior) {
       ints[0] = p + std::sqrt(h);
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
       ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);

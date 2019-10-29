@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class ands : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 #define   kip_class ands
 #define   kip_type  misc_type::ands_type
 #define   kip_data  misc.ands
@@ -52,7 +50,7 @@ kip_process(ands)
          in_ge1 = true, kip_data.total_in++;
       else
          in_all = false;
-   interior = kip_data.total_in == kip_data.nop;
+   this->interior = kip_data.total_in == kip_data.nop;
 
    // minimum
    real rv = kip_data.nop ? min_and_op[0].minimum : real(0);
@@ -165,7 +163,7 @@ kip_infirst(ands)
 
    // INSIDE: we're inside all operands; the overall status changes (from
    // inside to outside) at the first intersection with any object's boundary
-   if (interior) {
+   if (this->interior) {
       inq<real,tag> qtmp;  q = qmin;
 
       for (ulong i = 0;  i < kip_data.nop;  ++i)

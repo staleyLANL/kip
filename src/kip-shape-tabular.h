@@ -10,8 +10,6 @@ inline ulong ntabular = 16;
 
 template<class real = default_real, class tag = default_base>
 class tabular : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    using table_t = std::vector<xrpoint<real>>;
 
@@ -219,7 +217,7 @@ kip_process(tabular)
 
    real rv = std::numeric_limits<real>::max();  // initially
 
-   interior = false;  // possibly modified to true below
+   this->interior = false;  // possibly modified to true below
    for (unsigned i = 1;  i < npts;  ++i) {
       const xrpoint<real>
          &last = table[i-1],  // point to the left  of segment
@@ -247,7 +245,7 @@ kip_process(tabular)
        :  rot.ex >= next.x && rot.ey <= next.r
        ?  rot.ex - next.x  // east
        :  last.x <= rot.ex && rot.ex <= next.x && seg.h3 <= 0
-       ?  (interior = true, op::min(  // inside
+       ?  (this->interior = true, op::min(  // inside
              rot.ex - last.x,
              next.x - rot.ex,
              std::abs(seg.slope*(rot.ex-last.x)+last.r-rot.ey)/std::sqrt(seg.h1)
@@ -488,7 +486,7 @@ inline bool tabular<real,tag>::segment(
       if (s < 0 || m == 0) return false;
 
       // q
-      q = interior ? (g + std::sqrt(s))/m : (g - std::sqrt(s))/m;
+      q = this->interior ? (g + std::sqrt(s))/m : (g - std::sqrt(s))/m;
       if (!(0 < q && q < qmin)) return false;
 
       q.x = rot.ex + q*dx;
@@ -601,7 +599,7 @@ kip_infirst(tabular)
          if (i == 0) break;  // so we can't wrap around to maximum unsigned
 
    // If inside, examine end caps
-   return interior && (
+   return this->interior && (
       (dx < 0 && cap_lo(tar.z,qmin,q,dx,dy  )) ||
       (dx > 0 && cap_hi(tar.z,qmin,q,dx,dy,P)));
 } kip_end

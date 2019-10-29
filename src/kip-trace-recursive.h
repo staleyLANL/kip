@@ -79,7 +79,7 @@ inline void rprepare(
              !s.SHAPE::dry(vars.seg_diag[3]) &&
           )
           // zzz dry(behind) maybe earlier???
-          !s.SHAPE::dry(vars.behind) && !(s.get_interior() && s.solid))
+          !s.SHAPE::dry(vars.behind) && !(s.interior && s.solid))
       to.push_back(minimum_and_ptr<real,SHAPE>(smin,s));
    }
 }

@@ -18,14 +18,11 @@ public:
    // vertices
    point<real> u, v, w;
 
-   // ghi()
-   point<real> &ghi() const
-      { return *(point<real> *)(void *)&this->shape<real,tag>::tridata.ghi[0]; }
+   // I don't remember what this meant...
+   mutable point<real> ghi;
 
    // back
    point<real> back(const point<real> &from) const { return from; }
-
-
 
    // triangle([u[,v[,w[,tag]]]])
    explicit triangle(
@@ -119,7 +116,7 @@ public:
 kip_process(triangle)
 {
    // aff, degenerate ( = non-singular, and eyeball not in tri's plane)
-   if ((this->degenerate = !aff(u,v,w, eyeball, ghi())))
+   if ((this->degenerate = !aff(u,v,w, eyeball, ghi)))
       return 0;
 
    // local rot, eye
@@ -202,11 +199,11 @@ kip_infirst(triangle)
    return
       0 >= (dx = aff.forex(diff)) &&
       0 >= (dy = aff.forey(diff)) &&
-      0 <  (dz = aff.forez(diff,ghi())) &&
+      0 <  (dz = aff.forez(diff,ghi)) &&
       0 <=  dx + dy + dz && aff.den < dz*qmin && (
 
       q.point<real>::operator=(eyeball - real(q = aff.den/dz)*diff),
-      q(ghi(), this, normalized::yes), true);
+      q(ghi, this, normalized::yes), true);
 } kip_end
 
 

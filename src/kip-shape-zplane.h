@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class zplane : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    using shape<real,tag>::misc;
    kip_functions(zplane);
@@ -94,7 +92,7 @@ kip_process(zplane)
 {
    misc.plane.h = eyeball.z - z;
    misc.plane.norm = misc.plane.h < 0 ? real(-1) : real(1);
-   interior = false;
+   this->interior = false;
    return std::abs(misc.plane.h);
 } kip_end
 

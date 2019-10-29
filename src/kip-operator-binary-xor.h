@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class kipxor : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    using shape<real,tag>::binary;
    kip_functions(kipxor);
@@ -128,7 +126,7 @@ kip_process(kipxor)
    binary.ina = binary.a->interior;
    binary.inb = binary.b->interior;
 
-   interior = binary.ina != binary.inb;
+   this->interior = binary.ina != binary.inb;
 
    // Technically should be min(abs,abs), but minima are presumably positive.
    return std::abs(op::min(binary.amin,binary.bmin));

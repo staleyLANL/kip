@@ -1,9 +1,4 @@
 
-// nsurf
-inline ulong nsurf = 6;
-
-
-
 // -----------------------------------------------------------------------------
 // Helper constructs
 // -----------------------------------------------------------------------------
@@ -24,8 +19,6 @@ public:
       min(minimum_t(_min)), ptr(&obj)
    { }
 };
-
-
 
 // part_less
 template<class SHAPE>
@@ -48,8 +41,8 @@ public:
 template<class T>
 class binner {
    array<1,std::vector<T>> linear;
+
 public:
-   using element_type = T;
 
    // Each surf that's an *operand* contains its own binner. Some bins of some
    // of these surfs may not be reached during a ray trace. Therefore, although
@@ -92,24 +85,17 @@ public:
 
 template<class real = default_real, class tag = default_base>
 class surf : public shape<real,tag> {
-   using pnt_t = point<real>;
 
-   // qqq should be possible to clear up the mint stuff;
-   // perhaps no more need for char[].
-   mutable char _mint[sizeof(binner<detail::min_and_part<kip::tri<real,tag>>>)];
-
-   // interior / inside()
-   using shape<real,tag>::interior;
+   // inside()
    bool inside(const point<real> &) const;
 
    // bounding box
    mutable real xmin, ymin, zmin;
    mutable real xmax, ymax, zmax;
 
-   // mint()
+   // mint
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
-   using binner_t = binner<detail::min_and_part<kip::tri<real,tag>>>;
-   binner_t &mint() const { return *(binner_t *)(void *)&_mint[0]; }
+   mutable binner<detail::min_and_part<kip::tri<real,tag>>> mint;
 
 public:
 
@@ -132,10 +118,16 @@ public:
    // ------------------------
 
    // node
-   pnt_t &push(const pnt_t &n) { return node.push_back(n), node.back(); }
+   point<real> &push(const point<real> &n)
+   {
+      return node.push_back(n), node.back();
+   }
 
    // tri
-   tri_t &push(const tri_t &t) { return tri .push_back(t), tri .back(); }
+   tri_t &push(const tri_t &t)
+   {
+      return tri.push_back(t), tri.back();
+   }
 
 
    // ------------------------
@@ -146,7 +138,6 @@ public:
    explicit surf() :
       shape<real,tag>(this)
    {
-      new (&mint()) binner_t;
       this->eyelie = false;
    }
 
@@ -154,7 +145,6 @@ public:
    explicit surf(const tag &thetag) :
       shape<real,tag>(this,thetag)
    {
-      new (&mint()) binner_t;
       this->eyelie = false;
    }
 
@@ -165,7 +155,6 @@ public:
       shape<real,tag>(this),
       node(_node), tri(_tri)
    {
-      new (&mint()) binner_t;
       this->eyelie = false;
    }
 
@@ -177,7 +166,6 @@ public:
       shape<real,tag>(this,thetag),
       node(_node), tri(_tri)
    {
-      new (&mint()) binner_t;
       this->eyelie = false;
    }
 
@@ -185,7 +173,6 @@ public:
    surf(const surf &from) :
       shape<real,tag>(from), node(from.node), tri(from.tri)
    {
-      new (&mint()) binner_t;
    }
 
 
@@ -200,16 +187,6 @@ public:
       node = from.node;
       tri  = from.tri;
       return *this;
-   }
-
-
-   // ------------------------
-   // Destructor
-   // ------------------------
-
-   ~surf()
-   {
-      mint().~binner_t();
    }
 };
 
@@ -237,7 +214,7 @@ kip_process(surf)
    surf<real,tag>::aabb();
 
    // interior
-   interior = surf<real,tag>::inside(eyeball);
+   this->interior = surf<real,tag>::inside(eyeball);
 
    // ----------------
    // For global surf
@@ -251,13 +228,13 @@ kip_process(surf)
    // ----------------
 
    // process the tris
-   mint().reset(engine);
+   mint.reset(engine);
    return detail::uprepare_tri<
       detail::min_and_part<kip::tri<real,tag>>
    >(
       engine,
       vars,
-      mint(),
+      mint,
       *this,
       false  // "object border", false from here
    );
@@ -287,31 +264,32 @@ kip_aabb(surf)
 
    // identify nodes that are used by at least one triangle
    const ulong nnode = node.size();
+   assert(nnode > 0); // or ntri (see above) can't legitimately be != 0
+
    used.assign(nnode,false);
    for (ulong t = 0;  t < ntri;  ++t)
-      used[tri[t].u()] = used[tri[t].v()] = used[tri[t].w()] = true;
+      used[tri[t].u] = used[tri[t].v] = used[tri[t].w] = true;
 
-   // bounds, based on identified nodes
-   xmin = ymin = zmin =  std::numeric_limits<real>::max();
-   xmax = ymax = zmax = -xmin;
+   // compute bounds, based on identified nodes
+   ulong n = 0;
 
-   real x, y, z;  ulong n = 0;
-
-   /*
    for ( ; n < nnode;  ++n)
       if (used[n]) {
-         if ((x = node[n].x) < xmin) xmin = x;  if (xmax < x) xmax = x;
-         if ((y = node[n].y) < ymin) ymin = y;  if (ymax < y) ymax = y;
-         if ((z = node[n].z) < zmin) zmin = z;  if (zmax < z) zmax = z;
+         xmin = xmax = node[n].x;
+         ymin = ymax = node[n].y;
+         zmin = zmax = node[n].z;
          break;
       }
-   */
 
+   n++;
    for ( ; n < nnode;  ++n)
       if (used[n]) {
-         if ((x = node[n].x) < xmin) xmin = x; else if (x > xmax) xmax = x;
-         if ((y = node[n].y) < ymin) ymin = y; else if (y > ymax) ymax = y;
-         if ((z = node[n].z) < zmin) zmin = z; else if (z > zmax) zmax = z;
+         const real x = node[n].x;
+         const real y = node[n].y;
+         const real z = node[n].z;
+         if (x < xmin) xmin = x; else if (x > xmax) xmax = x;
+         if (y < ymin) ymin = y; else if (y > ymax) ymax = y;
+         if (z < zmin) zmin = z; else if (z > zmax) zmax = z;
       }
 
    // done
@@ -380,9 +358,9 @@ kip_check(surf)
 
    // Check each tri...
    for (ulong t = 0;  t < ntri;  ++t) {
-      const ulong u = tri[t].u();
-      const ulong v = tri[t].v();
-      const ulong w = tri[t].w();
+      const ulong u = tri[t].u;
+      const ulong v = tri[t].v;
+      const ulong w = tri[t].w;
 
 
       // Require: u < nnode,  v < nnode,  w < nnode
@@ -438,6 +416,7 @@ kip_check(surf)
 kip_randomize(surf)
 {
    using tri_t = typename surf<real,tag>::tri_t;
+   const ulong nsurf = 6;
 
    obj.node.clear();
    obj.tri .clear();
@@ -506,14 +485,14 @@ kip_infirst(surf)
 {
    // bookkeeping
    std::vector<detail::min_and_part<kip::tri<real,tag>>> &bin =
-      mint()[insub.nzone];
+      mint[insub.nzone];
    const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
-   if (!mint().sorted[insub.nzone]) {
+   if (!mint.sorted[insub.nzone]) {
       std::sort(bin.begin(), bin.end(),
                 detail::part_less<kip::tri<real,tag>>());
-      mint().sorted[insub.nzone] = true;
+      mint.sorted[insub.nzone] = true;
    }
 
    // examine tris
@@ -529,7 +508,7 @@ kip_infirst(surf)
    }
 
    // tri normals compute as "most toward" eyeball; for surf may need reverse...
-   return found ? interior ? q.reverse(), true : true : false;
+   return found ? this->interior ? q.reverse(), true : true : false;
 } kip_end
 
 
@@ -539,14 +518,14 @@ kip_inall(surf)
 {
    // bookkeeping
    std::vector<detail::min_and_part<kip::tri<real,tag>>> &bin =
-      mint()[insub.nzone];
+      mint[insub.nzone];
    const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
-   if (!mint().sorted[insub.nzone]) {
+   if (!mint.sorted[insub.nzone]) {
       std::sort(bin.begin(), bin.end(),
                 detail::part_less<kip::tri<real,tag>>());
-      mint().sorted[insub.nzone] = true;
+      mint.sorted[insub.nzone] = true;
    }
 
    // examine tris
@@ -564,7 +543,7 @@ kip_inall(surf)
    // reverse normals, as necessary
    if (found) {
       ints.sort();  const ulong size = ints.size();
-      for (ulong i = !interior;  i < size;  i += 2)
+      for (ulong i = !this->interior;  i < size;  i += 2)
          ints[i].reverse();
    }
    return found;

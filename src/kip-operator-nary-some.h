@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class some : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 #define   kip_class some
 #include "kip-macro-nary.h"
 };
@@ -43,7 +41,7 @@ kip_process(some)
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
    }
-   interior = kip_data.nop < 2 ||
+   this->interior = kip_data.nop < 2 ||
       (nary.total_in && nary.total_in != kip_data.nop);
 
    // minimum...
@@ -143,7 +141,7 @@ kip_infirst(some)
    if (kip_data.nop < 2) return false;  // 0 or 1 operands --> no intersection
 
    // Inside none or all operands (equivalent to !in some)...
-   if (!interior) {
+   if (!this->interior) {
       // Find the first hit with anything. It represents one of the following,
       // each of which amounts to a border of the some() object:
       //    in none --> in some

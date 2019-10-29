@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class ors : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 #define   kip_class ors
 #include "kip-macro-nary.h"
 };
@@ -47,7 +45,7 @@ kip_process(ors)
       else
          in_all = false;
    }
-   interior = kip_data.nop ? nary.total_in > 0 : true;
+   this->interior = kip_data.nop ? nary.total_in > 0 : true;
 
    // minimum
    real rv = kip_data.nop ? min_and_op[0].minimum : real(0);
@@ -140,7 +138,7 @@ kip_infirst(ors)
 
    // OUTSIDE: we're outside all operands; the overall status changes (from
    // outside to inside) at the first intersection with any object's boundary
-   if (!interior) {
+   if (!this->interior) {
       inq<real,tag> qtmp;  q = qmin;
       for (ulong i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
          if (detail::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))

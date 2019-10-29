@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class ellipsoid : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // rotation: clockwise around x, then y, then z; then +c translation
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -164,7 +163,7 @@ kip_process(ellipsoid)
    const real d0 = mod(point<real>(eye));
 
    // interior
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum
    if (eye.x >  r.x || eye.y >  r.y || eye.z >  r.z ||
@@ -319,7 +318,7 @@ kip_infirst(ellipsoid)
    const real s = p*p - g*i;
    if (s < 0 || g == 0) return false;
 
-   if (interior)
+   if (this->interior)
       q = (p + std::sqrt(s))/g;
    else
       q = (p - std::sqrt(s))/g;
@@ -374,7 +373,7 @@ inline bool ellipsoid<real,tag>::get_curve(
 
 kip_inall(ellipsoid)
 {
-   if (interior) return ellipsoid<real,tag>::infirst(
+   if (this->interior) return ellipsoid<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...

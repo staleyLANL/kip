@@ -477,7 +477,7 @@ inline void uprepare(
       minend sub, bin;
       if (p.SHAPE::dry(vars.behind) ||
          !seg_minmax(engine,vars,p, sub.imin,sub.iend,sub.jmin,sub.jend) ||
-         (p.get_interior() && p.solid))
+         (p.interior && p.solid))
          continue;
 
       // fine boundaries (used later, when shooting rays)
@@ -560,7 +560,7 @@ inline real uprepare_tri(
 
       // process
       const real m = t.tri_t::process(surf.node, vars.eyeball, engine, vars);
-      const ulong u = t.u(), v = t.v(), w = t.w();
+      const ulong u = t.u, v = t.v, w = t.w;
 
       // degenerate / coplanar with eye, or entirely behind eye
       if (t.degenerate || (behind[u] && behind[v] && behind[w])) continue;
@@ -640,7 +640,7 @@ inline void uprepare_surf(
 
       p.is_operand = false;  // global (not as operand) surf
       p.surf<real,base>::process(vars.eyeball, light[0], engine, vars);
-      if ((p.get_interior() && p.solid) || p.degenerate)
+      if ((p.interior && p.solid) || p.degenerate)
          continue;
 
       if (object_border ) {

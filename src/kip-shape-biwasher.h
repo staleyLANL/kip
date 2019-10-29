@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class biwasher : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified biwasher: (0,0,0), (h,0,0), i.a,i.b, o.a,o.b
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -186,7 +185,7 @@ kip_process(biwasher)
    itmp3 = rot.ey*rot.ey - op::square(i.a + islope*rot.ex);
    otmp3 = rot.ey*rot.ey - op::square(o.a + oslope*rot.ex);
 
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum...
    const real x = rot.ex;
@@ -608,7 +607,9 @@ kip_infirst(biwasher)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   return interior ? first_in(tar,dx,dy,qmin,q) : first_out(tar,dx,dy,qmin,q);
+   return this->interior
+      ? first_in (tar,dx,dy,qmin,q)
+      : first_out(tar,dx,dy,qmin,q);
 } kip_end
 
 

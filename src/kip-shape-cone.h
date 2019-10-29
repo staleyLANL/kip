@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class cone : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified cone: (0,0,0), (h,0,0), r
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -56,7 +55,7 @@ kip_process(cone)
    h1  = -rsq/hsq;
    h2  = (rot.ey - tmp)*(rot.ey + tmp);
 
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    return
        rot.ex >= rot.h && rot.ey <= r
@@ -134,7 +133,7 @@ kip_infirst(cone)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   if (interior) {
+   if (this->interior) {
 
       // x = h
       if (dx > 0) {
@@ -258,7 +257,7 @@ inline bool cone<real,tag>::get_curve(
 
 kip_inall(cone)
 {
-   if (interior) return cone<real,tag>::infirst(
+   if (this->interior) return cone<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...

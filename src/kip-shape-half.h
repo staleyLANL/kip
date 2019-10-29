@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class half : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    using shape<real,tag>::misc;
 
@@ -89,7 +87,7 @@ kip_process(half)
 {
    misc.half.tmp = dot(normal, eyeball-point);
    const real d = misc.half.tmp/mod(normal);
-   return (interior = d <= 0) ? -d : d;
+   return (this->interior = d <= 0) ? -d : d;
 } kip_end
 
 

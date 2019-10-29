@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class kipnot : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    using shape<real,tag>::unary;
    kip_functions(kipnot);
@@ -90,7 +88,7 @@ kip_process(kipnot)
    kip_assert(unary.amin >= 0);
 
    unary.ina = unary.a->interior;
-   interior = !unary.ina;
+   this->interior = !unary.ina;
 
    return std::abs(unary.amin);
 } kip_end

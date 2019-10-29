@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class even : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 #define   kip_class even
 #include "kip-macro-nary.h"
 };
@@ -43,7 +41,8 @@ kip_process(even)
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
    }
-   interior = kip_data.nop > 1 ? nary.total_in && nary.total_in % 2 == 0 : true;
+   this->interior =
+      kip_data.nop > 1 ? nary.total_in && nary.total_in % 2 == 0 : true;
 
    // minimum
    if (kip_data.nop < 2) return 0;

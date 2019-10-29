@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class spheroid : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified spheroid: (-h,0,0), (h,0,0), r
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -65,7 +64,7 @@ kip_process(spheroid)
    const real d0 = std::sqrt(op::square(rot.ex) + op::square(rot.ey));
 
    // interior
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum
    if (rot.ex >= rot.h || rot.ey >= r || rot.ex <= -rot.h) {
@@ -194,7 +193,7 @@ kip_infirst(spheroid)
    const real s = p*p + g*i;
    if (s < 0 || g == 0) return false;
 
-   if (interior)
+   if (this->interior)
       q = (p - std::sqrt(s))/g;
    else
       q = (p + std::sqrt(s))/g;
@@ -245,7 +244,7 @@ inline bool spheroid<real,tag>::get_curve(
 
 kip_inall(spheroid)
 {
-   if (interior) return spheroid<real,tag>::infirst(
+   if (this->interior) return spheroid<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...

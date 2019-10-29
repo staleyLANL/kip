@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class one : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 #define   kip_class one
 #include "kip-macro-nary.h"
 };
@@ -43,7 +41,7 @@ kip_process(one)
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
    }
-   interior = kip_data.nop ? nary.total_in == 1 : true;
+   this->interior = kip_data.nop ? nary.total_in == 1 : true;
 
    // minimum
    if (kip_data.nop == 0) return 0;

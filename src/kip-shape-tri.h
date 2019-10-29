@@ -62,16 +62,8 @@ public:
    using shape<real,tag>::degenerate;
    kip_functions(tri);
 
-   // u(), v(), w(): retrieve vertices
-   using shape<real,tag>::vertex;
-   ulong &u() const { return vertex.u; }
-   ulong &v() const { return vertex.v; }
-   ulong &w() const { return vertex.w; }
-
-   // ghi()
-   point<real> &ghi() const
-      { return *(point<real> *)(void *)&vertex.ghi[0]; }
-
+   ulong u, v, w;
+   mutable point<real> ghi;
 
    // ------------------------
    // Constructors, Assignment
@@ -80,27 +72,21 @@ public:
    // tri()
    explicit tri() :
       shape<real,tag>(this)
-   {  this->eyelie = false; }
+   {
+      this->eyelie = false;
+   }
 
    // tri(u,v,w)
-   explicit tri(
-      const ulong &a, const ulong &b, const ulong &c
-   ) :
-      shape<real,tag>(this)
+   explicit tri(const ulong &a, const ulong &b, const ulong &c) :
+      shape<real,tag>(this), u(a), v(b), w(c)
    {
-      u() = a;
-      v() = b;
-      w() = c;
       this->eyelie = false;
    }
 
    // tri(tri)
    tri(const tri &from) :
-      shape<real,tag>(from)
+      shape<real,tag>(from), u(from.u), v(from.v), w(from.w)
    {
-      u() = from.u();
-      v() = from.v();
-      w() = from.w();
       this->eyelie = false;
    }
 
@@ -108,12 +94,11 @@ public:
    tri &operator=(const tri &from)
    {
       this->shape<real,tag>::operator=(from);
-      u() = from.u();
-      v() = from.v();
-      w() = from.w();
+      u = from.u;
+      v = from.v;
+      w = from.w;
       return *this;
    }
-
 
    // ------------------------
    // Functions
@@ -123,12 +108,11 @@ public:
    point<real> back(const point<real> &from) const { return from; }
 
    // operator()(u,v,w)
-   tri &operator()(
-      const ulong &a, const ulong &b, const ulong &c
-   ) {
-      u() = a;
-      v() = b;
-      w() = c;
+   tri &operator()(const ulong &a, const ulong &b, const ulong &c)
+   {
+      u = a;
+      v = b;
+      w = c;
       return *this;
    }
 
@@ -172,12 +156,12 @@ inline real tri<real,tag>::process(
    const engine<real> &, const detail::vars<real,tag> &
 ) const {
    // aff, degenerate ( = non-singular, and eyeball not in tri's plane)
-   if ((degenerate = !aff(node[u()], node[v()], node[w()], eyeball, ghi())))
+   if ((degenerate = !aff(node[u], node[v], node[w], eyeball, ghi)))
       return 0;
 
    // local rot, eye
    const rotate<3,real,op::full,op::unscaled>
-      rot(node[u()], node[v()], node[w()]);
+      rot(node[u], node[v], node[w]);
    const point<real> eye = rot.fore(eyeball);
 
    // minimum   zzz Simplification is probably possible here (and in triangle).
@@ -224,11 +208,11 @@ kip_infirst(tri)
    return
       0 >= (dx = aff.forex(diff)) &&
       0 >= (dy = aff.forey(diff)) &&
-      0 <  (dz = aff.forez(diff,ghi())) &&
+      0 <  (dz = aff.forez(diff,ghi)) &&
       0 <=  dx + dy + dz && aff.den < dz*qmin && (
 
       q.point<real>::operator=(eyeball - real(q = aff.den/dz)*diff),
-      q(ghi(), this, normalized::yes), true);
+      q(ghi, this, normalized::yes), true);
 } kip_end
 
 
@@ -241,12 +225,11 @@ kip_infirst(tri)
 kip_read_value(tri) {
 
    // u, v, w
-
    s.bail = false;
    if (!(
-      read_value(s, obj.u()) && read_comma(s) &&
-      read_value(s, obj.v()) && read_comma(s) &&
-      read_value(s, obj.w())
+      read_value(s, obj.u) && read_comma(s) &&
+      read_value(s, obj.v) && read_comma(s) &&
+      read_value(s, obj.w)
    )) {
       s.add(std::ios::failbit);
       addendum("Detected while reading " + description, diagnostic::error);
@@ -259,7 +242,7 @@ kip_read_value(tri) {
 
 // kip::ostream
 kip_ostream(tri) {
-   return k << obj.u() << ',' << obj.v() << ',' << obj.w();
+   return k << obj.u << ',' << obj.v << ',' << obj.w;
 }
 
 #define   kip_class tri

@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class polygon : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    using table_t = std::vector<point<real>>;
 
@@ -92,7 +90,7 @@ public:
 
 kip_process(polygon)
 {
-   interior = false;
+   this->interior = false;
    if ((npts = size()) < 3) return 0;
 
    ulong loc = npts;

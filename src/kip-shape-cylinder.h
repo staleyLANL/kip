@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class cylinder : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified cylinder: (0,0,0), (h,0,0), r
    mutable rotate<3,real,op::full,op::scaled> rot;
@@ -55,7 +54,7 @@ kip_process(cylinder)
    basic.lie() = point<float>(rot.fore(light));
 
    h2 = (rot.ey-1)*(rot.ey+1);  // = rot.ey^2 - r^2, with r scaled to 1
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    return r*(
        rot.ex <= 0
@@ -150,7 +149,7 @@ kip_infirst(cylinder)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   if (interior) {
+   if (this->interior) {
 
       // x = 0
       if (dx < 0) {
@@ -310,7 +309,7 @@ bool cylinder<real,tag>::get_curve(
 
 kip_inall(cylinder)
 {
-   if (interior) return cylinder<real,tag>::infirst(
+   if (this->interior) return cylinder<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...

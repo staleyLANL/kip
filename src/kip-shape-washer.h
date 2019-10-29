@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class washer : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // modified washer: (0,0,0), (h,0,0), i, o
    mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -166,7 +165,7 @@ kip_process(washer)
    osq = o*o;  hout = osq - rot.ey*rot.ey;  p   = osq/hsq;
 
    // interior
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum:
    //
@@ -401,7 +400,9 @@ kip_infirst(washer)
    const real dx = tar.x - rot.ex;
    const real dy = tar.y - rot.ey;
 
-   return interior ? first_in(tar,dx,dy,qmin,q) : first_out(tar,dx,dy,qmin,q);
+   return this->interior
+      ? first_in (tar,dx,dy,qmin,q)
+      : first_out(tar,dx,dy,qmin,q);
 } kip_end
 
 

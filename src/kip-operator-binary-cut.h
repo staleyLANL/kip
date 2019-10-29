@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class kipcut : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    using shape<real,tag>::binary;
    kip_functions(kipcut);
@@ -123,7 +121,7 @@ kip_process(kipcut)
    binary.ina = binary.a->interior;
    binary.inb = binary.b->interior;
 
-   interior = binary.ina && !binary.inb;
+   this->interior = binary.ina && !binary.inb;
 
    // The following is equivalent to "and" with !inb. The effects are to swap
    // the "both" and "a" cases, and the "b" and "neither" cases.
@@ -232,7 +230,7 @@ kip_randomize(kipcut)
 kip_infirst(kipcut)
 {
    // INSIDE...
-   if (interior) {
+   if (this->interior) {
       // the overall status changes (from inside to outside) at the point
       // of first intersection with either object's boundary
       inq<real,tag> bq;
@@ -311,7 +309,7 @@ kip_inall(kipcut)
 
    const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;
    const ulong bnum = bq.size();  ulong bn = 0;  bool inb = binary.inb;
-   bool in = interior, is_a;
+   bool in = this->interior, is_a;
 
    for (ints.reset();;) {
       if (an < anum && bn < bnum) is_a = aq[an].q < bq[bn].q;

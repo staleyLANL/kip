@@ -5,8 +5,6 @@
 
 template<class real = default_real, class tag = default_base>
 class everything : public shape<real,tag> {
-   using shape<real,tag>::interior;
-
 public:
    kip_functions(everything);
    point<real> back(const point<real> &from) const { return from; }
@@ -23,7 +21,7 @@ public:
 // process
 kip_process(everything)
 {
-   interior = true;
+   this->interior = true;
    return std::numeric_limits<minimum_t>::max();
 } kip_end
 

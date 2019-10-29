@@ -6,7 +6,6 @@
 template<class real = default_real, class tag = default_base>
 class box : public shape<real,tag> {
    bool inside(const point<real> &) const;
-   using shape<real,tag>::interior;
 
    // rotation: clockwise around x, then y, then z; then +c translation
    private: mutable rotate<3,real,op::full,op::unscaled> rot;
@@ -249,7 +248,7 @@ kip_process(box)
    modr = mod(r);
 
    // interior
-   interior = inside(eyeball);
+   this->interior = inside(eyeball);
 
    // minimum distance
    return detail::bbox_minimum(basic.eye(), rot.ex, rot.ey, rot.h);
@@ -361,7 +360,7 @@ kip_infirst(box)
    const real dy = tar.y - eye.y;
    const real dz = tar.z - eye.z;
 
-   if (interior) {
+   if (this->interior) {
       if (dx < 0) {
          if (0 < (q = -eye.x/dx) && q < qmin &&
              0 <= (q.y = eye.y + q*dy) && q.y <= rot.ey &&
@@ -441,7 +440,7 @@ kip_infirst(box)
 
 kip_inall(box)
 {
-   if (interior) return box<real,tag>::infirst(
+   if (this->interior) return box<real,tag>::infirst(
       kip_etd,qmin,ints.one(),insub);
 
    // Outside...
