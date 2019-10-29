@@ -155,7 +155,7 @@ kip_infirst(some)
 
    // Inside some...
    const ulong num_operand = kip_data.nop;
-   using per_operand = afew_book<inq<real,tag>>;
+   using per_operand = afew_book<real,tag>;
 #include "kip-macro-workspace.h"
 
    // compute operand information
@@ -206,7 +206,7 @@ kip_inall(some)
    if (kip_data.nop < 2) return false;  // 0 or 1 operands --> no intersection
 
    const ulong num_operand = kip_data.nop;
-   using per_operand = afew_book<inq<real,tag>>;
+   using per_operand = afew_book<real,tag>;
 #include "kip-macro-workspace.h"
 
    // compute operand information

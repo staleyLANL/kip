@@ -8,10 +8,10 @@ namespace detail {
 class border_t {
 public:
 
-   // defaults
-   static constexpr bool default_object = false;
-   static constexpr unsigned default_small = 4;
-   static constexpr unsigned default_large = 2*default_small;
+   // default member-data values
+   static constexpr bool     default_object = false;
+   static constexpr unsigned default_small  = 4;
+   static constexpr unsigned default_large  = 2*default_small;
 
    // data
    bool bin = false;
@@ -35,8 +35,8 @@ public:
    ) {
       bin    = _bin;
       object = _object;
-      small  = _small;/// ? _small : default_small;
-      large  = _large;/// ? _large : 2*_small;
+      small  = _small;
+      large  = _large;
       return *this;
    }
 };

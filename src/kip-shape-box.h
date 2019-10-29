@@ -309,15 +309,12 @@ kip_dry(box)
 kip_check(box)
 {
    static const char *const err = "Box has non-positive half-size ";
-   using ostr_t = std::ostringstream;
+   using ostring = std::ostringstream;
    diagnostic rv = diagnostic::good;
 
-   if (r.x <= real(0))
-      { ostr_t oss; oss << err << "r.x=" << r.x; rv=error(oss); }
-   if (r.y <= real(0))
-      { ostr_t oss; oss << err << "r.y=" << r.y; rv=error(oss); }
-   if (r.z <= real(0))
-      { ostr_t oss; oss << err << "r.z=" << r.z; rv=error(oss); }
+   if (r.x <= 0) { ostring oss; oss << err << "r.x=" << r.x; rv=error(oss); }
+   if (r.y <= 0) { ostring oss; oss << err << "r.y=" << r.y; rv=error(oss); }
+   if (r.z <= 0) { ostring oss; oss << err << "r.z=" << r.z; rv=error(oss); }
 
    return rv;
 } kip_end

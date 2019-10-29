@@ -254,7 +254,7 @@ kip_infirst(kipcut)
    // the overall status changes (from outside to inside) at the point
    // after which we're inside "a" and outside "b"
 
-   afew<inq<real,tag>> aq;
+   afew<real,tag> aq;
    if (binary.amin >= qmin ||
       !detail::op_all(binary.a, kip_etd, qmin,aq, insub))
       return
@@ -263,7 +263,7 @@ kip_infirst(kipcut)
          detail::op_first(binary.b, kip_etd, qmin,q, insub) &&
         (q.reverse(), true);
 
-   afew<inq<real,tag>> bq;
+   afew<real,tag> bq;
    if (binary.bmin >= qmin ||
       !detail::op_all(binary.b, kip_etd, qmin,bq, insub))
       return !binary.inb && (q = aq[0], true);
@@ -294,7 +294,7 @@ kip_infirst(kipcut)
 
 kip_inall(kipcut)
 {
-   afew<inq<real,tag>> aq;
+   afew<real,tag> aq;
    if (!(binary.amin < qmin &&
          detail::op_all(binary.a, kip_etd, qmin,aq, insub)))
       return
@@ -302,7 +302,7 @@ kip_inall(kipcut)
          detail::op_all(binary.b, kip_etd, qmin,ints, insub) &&
          ints.reverse();
 
-   afew<inq<real,tag>> bq;
+   afew<real,tag> bq;
    if (!(binary.bmin < qmin &&
          detail::op_all(binary.b, kip_etd, qmin,bq, insub)))
       return !binary.inb && ints.assign(aq);

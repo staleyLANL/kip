@@ -71,16 +71,16 @@ bool read_shapes(kip::istream &, NARY &);
 
 // afew_book: helper class
 // An "afew", plus bookkeeping for it; for brevity with nary operator code
-template<class INQ>
+template<class real, class base>
 class afew_book {
 public:
-   afew<INQ> points;  // for this operand
+   afew<real,base> points;  // for this operand
    ulong size;  // size (computed before loop) of "points"
    ulong next;  // running next-position
    bool in_now;  // status as we move along the ray
 
-   INQ &q() { return points[next]; }
-   const INQ &q() const { return points[next]; }
+   /* */ inq<real,base> &q()       { return points[next]; }
+   const inq<real,base> &q() const { return points[next]; }
 };
 
 

@@ -230,7 +230,7 @@ kip_infirst(kipxor)
 // inall
 kip_inall(kipxor)
 {
-   afew<inq<real,tag>> aq;
+   afew<real,tag> aq;
    if (!(binary.amin < qmin &&
          detail::op_all(binary.a, kip_etd, qmin,aq,   insub)))
       return
@@ -238,7 +238,7 @@ kip_inall(kipxor)
          detail::op_all(binary.b, kip_etd, qmin,ints, insub) &&
          ints.reverse(binary.ina);
 
-   afew<inq<real,tag>> bq;
+   afew<real,tag> bq;
    if (!(binary.bmin < qmin &&
          detail::op_all(binary.b, kip_etd, qmin,bq,   insub)))
       return ints.assign(aq).reverse(binary.inb);

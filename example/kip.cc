@@ -60,8 +60,8 @@ namespace vars {
 
 // -----------------------------------------------------------------------------
 // initialize
-// Sets up the major kip objects. All values already have reasonable
-// defaults; the real purpose here is to illustrate what's available.
+// Sets up the major kip objects. All of these already have reasonable
+// default values; the real purpose here is to illustrate what's available.
 // -----------------------------------------------------------------------------
 
 void initialize()

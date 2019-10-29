@@ -222,12 +222,12 @@ kip_inall(triangle)
 kip_check(triangle)
 {
    static const char *const badvert = "Triangle has coincident vertices ";
-   using ostr_t = std::ostringstream;
+   using ostring = std::ostringstream;
    diagnostic rv = diagnostic::good;
 
-   if (u == v) { ostr_t oss;  oss << badvert << "u=v=" << u;  rv = error(oss); }
-   if (u == w) { ostr_t oss;  oss << badvert << "u=w=" << u;  rv = error(oss); }
-   if (v == w) { ostr_t oss;  oss << badvert << "v=w=" << v;  rv = error(oss); }
+   if (u == v) { ostring oss; oss << badvert << "u=v=" << u; rv = error(oss); }
+   if (u == w) { ostring oss; oss << badvert << "u=w=" << u; rv = error(oss); }
+   if (v == w) { ostring oss; oss << badvert << "v=w=" << v; rv = error(oss); }
 
    return rv;
 } kip_end

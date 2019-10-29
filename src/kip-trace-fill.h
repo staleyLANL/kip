@@ -231,7 +231,7 @@ inline bool op_first(
    return obj.infirst(kip_etd, qmin,q, insub);
 
    // Equivalent inall() call; useful for comparing first vs. all speed:
-   // afew<inq<real,tag>> ints;  ints.reset();
+   // afew<real,tag> ints;  ints.reset();
    // return obj.inall(kip_etd, qmin,ints, insub)
    //    ? q = ints[0], true
    //    : false;
@@ -250,7 +250,7 @@ inline bool op_all(
 
    // qmin, q
    const real qmin,
-   afew<inq<real,tag>> &q,
+   afew<real,tag> &q,
 
    // insub
    const subinfo &insub

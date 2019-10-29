@@ -3,7 +3,7 @@
 using default_base = rgb;
 
 // forward: shape
-template<class = default_real, class = default_base>
+template<class,class>
 class shape;
 
 

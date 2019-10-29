@@ -4,7 +4,7 @@
 
 // vars
 namespace detail {
-   template<class real = default_real, class tag = default_base>
+   template<class,class>
    class vars;
 }
 
@@ -230,15 +230,6 @@ public:
       mutable bool inb : 1;
    };
 
-   /*
-   // for tri
-   class union_vertex {
-   public:
-      mutable char ghi[sizeof(point<real>)];
-      mutable ulong u, v, w;
-   };
-   */
-
 
    // --------------------------------
    // Data
@@ -253,12 +244,11 @@ public:
    // size 48.
    // union'd data, as we only need one-at-a-time
    union {
-      misc_type     misc;    // size 40. for certain specific shapes
-      union_basic   basic;   // size 36. for most shapes
-      union_unary   unary;   // size 24. for unary operators
-      union_binary  binary;  // size 40. for binary operators
-      nary_type     nary;    // size 40. for nary operators (except ands)
-      ///      union_vertex  vertex;  // size 48. for tri
+      misc_type    misc;   // size 40. for certain specific shapes
+      union_basic  basic;  // size 36. for most shapes
+      union_unary  unary;  // size 24. for unary operators
+      union_binary binary; // size 40. for binary operators
+      nary_type    nary;   // size 40. for nary operators (except ands)
    };
 
    // size 3. for rgb
@@ -383,7 +373,7 @@ public:
    // inall
    virtual bool inall(
       const eyetardiff<real> &,
-      const real, afew<inq<real,tag>> &, const detail::subinfo &
+      const real, afew<real,tag> &, const detail::subinfo &
    ) const = 0;
 
    // check
@@ -441,7 +431,7 @@ public:
    bool inall(\
       const eyetardiff<real> &,\
       const real,\
-      afew<inq<real,tag>> &,\
+      afew<real,tag> &,\
       const detail::subinfo &\
    ) const;\
    \
@@ -516,7 +506,7 @@ public:
    bool type<real,tag>::inall(\
       const eyetardiff<real> &etd,\
       const real qmin,\
-      afew<inq<real,tag>> &ints,\
+      afew<real,tag> &ints,\
       const detail::subinfo &insub\
    ) const {\
       const kip::point<real> &eyeball = etd.eyeball;\
@@ -793,7 +783,7 @@ inline bool op_all(
    const shape<real,tag> *const,
    const eyetardiff<real> &,
    const real,
-   afew<inq<real,tag>> &,
+   afew<real,tag> &,
    const subinfo &
 );
 

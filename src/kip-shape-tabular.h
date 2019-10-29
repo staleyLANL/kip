@@ -54,11 +54,11 @@ private:
 
    void registerq(
       const real, const real, const real, const real, const real, const ulong,
-      afew<inq<real,tag>> &
+      afew<real,tag> &
    ) const;
 
    void segment2(
-      const real, const real, afew<inq<real,tag>> &,
+      const real, const real, afew<real,tag> &,
       const real, const real, const real, const real, const ulong
    ) const;
 
@@ -508,7 +508,7 @@ template<class real, class tag>
 inline void tabular<real,tag>::registerq(
    const real q, const real dx, const real dy,
    const real tar_z, const real slope, const ulong i,
-   afew<inq<real,tag>> &ints
+   afew<real,tag> &ints
 ) const {
    inq<real,tag> qtmp;
    qtmp.x = rot.ex + q*dx;
@@ -529,7 +529,7 @@ inline void tabular<real,tag>::registerq(
 // segment2
 template<class real, class tag>
 inline void tabular<real,tag>::segment2(
-   const real tar_z, const real qmin, afew<inq<real,tag>> &ints,
+   const real tar_z, const real qmin, afew<real,tag> &ints,
    const real dx, const real dy, const real tmp1, const real tmp2,
    const ulong i
 ) const {

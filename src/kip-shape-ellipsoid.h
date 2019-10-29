@@ -265,12 +265,12 @@ kip_dry(ellipsoid)
 kip_check(ellipsoid)
 {
    static const char *const err = "Ellipsoid has non-positive radius r.";
-   using ostr_t = std::ostringstream;
+   using ostring = std::ostringstream;
    diagnostic rv = diagnostic::good;
 
-   if (r.x <= real(0)) { ostr_t oss; oss << err << "x=" << r.x; rv=error(oss); }
-   if (r.y <= real(0)) { ostr_t oss; oss << err << "y=" << r.y; rv=error(oss); }
-   if (r.z <= real(0)) { ostr_t oss; oss << err << "z=" << r.z; rv=error(oss); }
+   if (r.x <= 0) { ostring oss; oss << err << "x=" << r.x; rv=error(oss); }
+   if (r.y <= 0) { ostring oss; oss << err << "y=" << r.y; rv=error(oss); }
+   if (r.z <= 0) { ostring oss; oss << err << "z=" << r.z; rv=error(oss); }
 
    return rv;
 } kip_end

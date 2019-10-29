@@ -44,7 +44,7 @@ public:
 // -----------------------------------------------------------------------------
 
 // xypoint
-template<class real = default_real>
+template<class real>
 class xypoint {
 public:
    real x, y;
@@ -53,7 +53,7 @@ public:
 };
 
 // xrpoint
-template<class real = default_real>
+template<class real>
 class xrpoint {
 public:
    real x, r;
@@ -73,14 +73,10 @@ public:
 // normalized
 enum class normalized { yes, no };
 
-
-
 // inq
 template<class real, class base>
 class inq : public point<real> {  // the point<real> is the intersection
 public:
-   using value_t = real;
-   using base_t  = base;
 
    // data
    point<real> n;
@@ -168,14 +164,14 @@ public:
 // afew
 // -----------------------------------------------------------------------------
 
-template<class INQ>
+template<class real, class base>
 class afew {
 
    // Note: length...
    //    must be >= 2 for convex() to work
    //    must be >= 4 for four() to work
    static const ulong length = 12;
-   INQ buffer[length], *ptr;
+   inq<real,base> buffer[length], *ptr;
    ulong bufsize, num;
 
 public:
@@ -198,7 +194,7 @@ public:
          bufsize = length;
          ptr = buffer;
       } else
-         ptr = new INQ[bufsize = from.bufsize];
+         ptr = new inq<real,base>[bufsize = from.bufsize];
 
       for (ulong i = 0;  i < num;  ++i)
          ptr[i] = from.ptr[i];
@@ -225,14 +221,14 @@ public:
          // "from" uses allocated memory; do the same here
          if (ptr == buffer) {
             bufsize = from.bufsize;
-            ptr = new INQ[bufsize];
+            ptr = new inq<real,base>[bufsize];
          } else {
             if (bufsize == from.bufsize) {
                // nothing
             } else {
                delete[] ptr;
                bufsize = from.bufsize;
-               ptr = new INQ[bufsize];
+               ptr = new inq<real,base>[bufsize];
             }
          }
       }
@@ -250,18 +246,18 @@ public:
    void setsize(const ulong n) { num = n; }
 
    // operator[]
-   INQ &operator[](const ulong i)
+   inq<real,base> &operator[](const ulong i)
       { kip_assert_index(i < num);  return ptr[i]; }
-   const INQ &operator[](const ulong i) const
+   const inq<real,base> &operator[](const ulong i) const
       { kip_assert_index(i < num);  return ptr[i]; }
 
    // push
-   INQ &push(const INQ &value)
+   inq<real,base> &push(const inq<real,base> &value)
    {
       kip_assert_index(num <= bufsize);
       if (num == bufsize) {
          bufsize += bufsize;
-         INQ *const newptr = new INQ[bufsize];
+         inq<real,base> *const newptr = new inq<real,base>[bufsize];
          for (ulong i = 0;  i < num;  ++i)
             newptr[i] = ptr[i];
          if (ptr != buffer)
@@ -272,7 +268,7 @@ public:
    }
 
    // one()
-   INQ &one()
+   inq<real,base> &one()
    {
       num = 1;
       return ptr[0];
@@ -290,7 +286,7 @@ public:
       num = 0;
    }
 
-   bool convex(const INQ &inq)  // for INQ of inq<> type
+   bool convex(const kip::inq<real,base> &inq)
    {
       if (num) {
          kip_assert(num == 1);
@@ -315,7 +311,7 @@ public:
       num = 0;
    }
 
-   bool four(const INQ &inq)  // for INQ of inq<> type
+   bool four(const kip::inq<real,base> &inq)
    {
       if (num < 4)
          ptr[num++] = inq;
@@ -340,16 +336,13 @@ public:
             if (ptr[1].q > ptr[3].q) std::swap(ptr[1], ptr[3]);
             if (ptr[2].q > ptr[3].q) std::swap(ptr[2], ptr[3]);
          } else
-            std::sort(
-               ptr, ptr+num,
-               detail::less<typename INQ::value_t, typename INQ::base_t>()
-            );
+            std::sort(ptr, ptr+num, detail::less<real,base>());
       }
 
       return num > 0;
    }
 
-   // reverse (reverses normals, not container of inqs)
+   // reverse (reverses normals, not container of inq<>s)
    afew &reverse(const bool doit)
    {
       if (doit)
