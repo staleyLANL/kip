@@ -12,8 +12,8 @@
 
    // kip_class([a[,b[,r[,base]]]])
    explicit kip_class(
-      const point<real> &_a = point<real>(0, 0, 0),
-      const point<real> &_b = point<real>(1, 0, 0),
+      const point<real> &_a = point<real>(0,0,0),
+      const point<real> &_b = point<real>(1,0,0),
       const real _r = 1
    ) :
       shape<real,tag>(this),

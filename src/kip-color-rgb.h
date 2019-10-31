@@ -279,7 +279,7 @@ public:
          return RGBA(max, max, max);
 
       // bin size is zero, in any event
-      return RGBA(0, 0, 0);
+      return RGBA(0,0,0);
    }
 };
 

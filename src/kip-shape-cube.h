@@ -47,8 +47,8 @@ public:
 
    // cube([c[,a[,r[,base]]]])
    explicit cube(
-      const point<real> &_c = point<real>(0, 0, 0),
-      const point<real> &_a = point<real>(0, 0, 0),
+      const point<real> &_c = point<real>(0,0,0),
+      const point<real> &_a = point<real>(0,0,0),
       const real _r = 1
    ) :
       shape<real,tag>(this),
@@ -72,7 +72,7 @@ public:
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
-      a(0, 0, 0),
+      a(0,0,0),
       r(1)
    { }
 

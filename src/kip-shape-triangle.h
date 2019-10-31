@@ -26,9 +26,9 @@ public:
 
    // triangle([u[,v[,w[,tag]]]])
    explicit triangle(
-      const point<real> &_u = point<real>(1, 0, 0),
-      const point<real> &_v = point<real>(0, 1, 0),
-      const point<real> &_w = point<real>(0, 0, 1)
+      const point<real> &_u = point<real>(1,0,0),
+      const point<real> &_v = point<real>(0,1,0),
+      const point<real> &_w = point<real>(0,0,1)
    ) :
       shape<real,tag>(this),
       u(_u), v(_v), w(_w)
@@ -49,9 +49,9 @@ public:
       const real ux, const real uy, const real uz
    ) :
       shape<real,tag>(this),
-      u(ux, uy, uz),
-      v(0, 1, 0),
-      w(0, 0, 1)
+      u(ux,uy,uz),
+      v(0,1,0),
+      w(0,0,1)
    { this->eyelie = false; }
 
    explicit triangle(
@@ -59,9 +59,9 @@ public:
       const real vx, const real vy, const real vz
    ) :
       shape<real,tag>(this),
-      u(ux, uy, uz),
-      v(vx, vy, vz),
-      w(0, 0, 1)
+      u(ux,uy,uz),
+      v(vx,vy,vz),
+      w(0,0,1)
    { this->eyelie = false; }
 
    explicit triangle(
@@ -70,9 +70,9 @@ public:
       const real wx, const real wy, const real wz
    ) :
       shape<real,tag>(this),
-      u(ux, uy, uz),
-      v(vx, vy, vz),
-      w(wx, wy, wz)
+      u(ux,uy,uz),
+      v(vx,vy,vz),
+      w(wx,wy,wz)
    { this->eyelie = false; }
 
    explicit triangle(
@@ -81,9 +81,9 @@ public:
       const real wx, const real wy, const real wz, const tag &_tag
    ) :
       shape<real,tag>(this,_tag),
-      u(ux, uy, uz),
-      v(vx, vy, vz),
-      w(wx, wy, wz)
+      u(ux,uy,uz),
+      v(vx,vy,vz),
+      w(wx,wy,wz)
    { this->eyelie = false; }
 
 
