@@ -3,7 +3,7 @@
 // everything
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class everything : public shape<real,tag> {
 public:
    kip_functions(everything);

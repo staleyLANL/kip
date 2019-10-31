@@ -437,8 +437,8 @@ int interactive(const std::string &title)
 
       for (int n = 0;  n < vars::nrender;  ++n) {
          if (n) {
-            view.theta += real(1);
-            view.phi   += real(1);
+            view.theta += 1;
+            view.phi   += 1;
          }
          render();
          if (!vars::timing)

@@ -782,7 +782,7 @@ inline void fill_loop_lean(
       // horizontal pixels in the current bin...
       for (u32 i = imin;  i < iend;  ++i, h += vars.hfull, ++ptr, ++p) {
          // a=(d,0,0), b=(0,h,v), (x,y,z)=a+(b-a)/mod(b-a)
-         const real norm = real(1)/std::sqrt(tmp + h*h);
+         const real norm = 1/std::sqrt(tmp + h*h);
          const point<real> target =
             vars.t2e.back(view.d*(1-norm), h*norm, v*norm);
          action(

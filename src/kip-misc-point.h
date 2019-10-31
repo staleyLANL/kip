@@ -34,8 +34,12 @@ public:
    void operator()(
       const point<real> &offset, const real d, const real theta, const real phi
    ) {
+      /*
       const real t = theta*(pi<real>*(real(1)/180));
       const real p = phi  *(pi<real>*(real(1)/180)), dcosp = d*std::cos(p);
+      */
+      const real t = theta*(pi<real>/180);
+      const real p = phi  *(pi<real>/180), dcosp = d*std::cos(p);
 
       x = offset.x + std::cos(t)*dcosp;
       y = offset.y - std::sin(t)*dcosp;
@@ -137,7 +141,7 @@ inline real mod(const point<real> &u)
 template<class real>
 inline point<real> normalize(const point<real> &u)
 {
-   return (real(1)/mod(u))*u;
+   return (1/mod(u))*u;
 }
 
 // pline(p,u,v)

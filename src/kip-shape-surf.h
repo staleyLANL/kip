@@ -83,7 +83,7 @@ public:
 // surf
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class surf : public shape<real,tag> {
 
    // inside()

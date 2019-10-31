@@ -3,7 +3,7 @@
 // polygon
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class polygon : public shape<real,tag> {
 public:
    using table_t = std::vector<point<real>>;
@@ -119,8 +119,8 @@ kip_process(polygon)
    poly[1] = xypoint<real>(rot.h,0);
    poly[2] = xypoint<real>(rot.ex,rot.ey);
 
-   xlo = op::min(real(0), rot.ex);  ylo = 0;
-   xhi = op::max(rot.h,rot.ex);  yhi = rot.ey;
+   xlo = op::min(real(0),rot.ex);  ylo = 0;
+   xhi = op::max(rot.h,  rot.ex);  yhi = rot.ey;
 
    for (ulong i = 3;  i < npts;  ++i) {
       const real x = rot.forex(table[i]);
@@ -215,9 +215,7 @@ kip_infirst(polygon)
 
    // done
    return point_in_poly(q.x,q.y)
-      ? q.z=0, q(0,0,basic.eye().z > 0
-                 ? real(1)
-                 : real(-1),this,normalized::yes),true
+      ? q.z=0, q(0, 0, basic.eye().z > 0 ? 1 : -1, this, normalized::yes), true
       : false;
 } kip_end
 

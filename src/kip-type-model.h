@@ -4,8 +4,8 @@
 // -----------------------------------------------------------------------------
 
 template<
-   class real = default_real,
-   class base = default_base
+   class real = defaults::real,
+   class base = defaults::base
 >
 class model {
    // copy constructor/assignment; deliberately private
@@ -82,8 +82,7 @@ public:
       \
       kip::type<real,base> &push(const kip::type<real,base> *const ptr)\
       {\
-         detail::tclass<kip::type<real,base>> t;\
-         return ptr ? push(*ptr) : default_parameter(t);\
+         return ptr ? push(*ptr) : default_parameter<kip::type<real,base>>();\
       }
 
    // operators
@@ -192,12 +191,12 @@ private:
       const kip::bbox<real> &,  // bounding box
       const shape<real,base> *const,  // associated shape
 
-      const real = real(0),  // scale
+      const real = 0,  // scale
 
       // bases
-      const base & = default_parameter(detail::tclass<base>()),
-      const base & = default_parameter(detail::tclass<base>()),
-      const base & = default_parameter(detail::tclass<base>())
+      const base & = default_parameter<base>(),
+      const base & = default_parameter<base>(),
+      const base & = default_parameter<base>()
    );
 
 public:
@@ -207,12 +206,12 @@ public:
       const kip::bbox<real> &,  // bounding box
       const shape<real,base> &,  // associated shape
 
-      const real = real(0),  // scale
+      const real = 0,  // scale
 
       // for tight/partial/loose bbox representation
-      const base & = default_parameter(detail::tclass<base>()),
-      const base & = default_parameter(detail::tclass<base>()),
-      const base & = default_parameter(detail::tclass<base>())
+      const base & = default_parameter<base>(),
+      const base & = default_parameter<base>(),
+      const base & = default_parameter<base>()
    );
 
 
@@ -231,12 +230,12 @@ public:
 
    // aabb
    kip::bbox<real> aabb(
-      const bool = false,  // each
-      const bool = false,  // overall
-      const real   = real(0),  // scale
-      const base & = default_parameter(detail::tclass<base>()),  // tight
-      const base & = default_parameter(detail::tclass<base>()),  // partial
-      const base & = default_parameter(detail::tclass<base>())   // loose
+      const bool = false, // each
+      const bool = false, // overall
+      const real = 0, // scale
+      const base & = default_parameter<base>(), // tight
+      const base & = default_parameter<base>(), // partial
+      const base & = default_parameter<base>()  // loose
    );
 };
 
@@ -248,8 +247,8 @@ public:
 // -----------------------------------------------------------------------------
 
 template<
-   class real = default_real,
-   class base = default_base
+   class real = defaults::real,
+   class base = defaults::base
 >
 class loop {
    using pshape = const shape<real,base> *;
@@ -412,13 +411,13 @@ model<real,base>::push_bbox_ptr(
    // don't bound shapes that represent bounding boxes themselves, or shapes for
    // which the bounding box is not *entirely* valid or has no finite extent.
    if ((shape && shape->isbound) || !b.valid() || !num)
-      return default_parameter(detail::tclass<bbox_representation_t>());
+      return default_parameter<bbox_representation_t>();
 
    // initialize rep, a shape that graphically represents bbox
    bbox_representation_t rep;  rep.isbound = true;
 
    // bases
-   const base &default_param = default_parameter(detail::tclass<base>());
+   const base &default_param = default_parameter<base>();
    // zzz do something about the old use of crayola here
    const base
       tight_base = &  _tight_base != &default_param
@@ -473,9 +472,7 @@ model<real,base>::push_bbox_ptr(
    #undef kip_rpush
 
    // finish
-   return rep.size()
-      ? push(rep)
-      : default_parameter(detail::tclass<bbox_representation_t>());
+   return rep.size() ? push(rep) : default_parameter<bbox_representation_t>();
 }
 
 
@@ -626,18 +623,13 @@ namespace detail {
                const bbox<real> b = obj[i].aabb();
 
                // possibly attach to model
-               if (each) model.push_bbox(
-                  b, obj[i], scale,
-
-                  &tight   == &default_parameter(detail::tclass<base>())
-                     ? obj[i] : tight,
-
-                  &partial == &default_parameter(detail::tclass<base>())
-                     ? obj[i] : partial,
-
-                  &loose   == &default_parameter(detail::tclass<base>())
-                     ? obj[i] : loose
-               );
+               if (each)
+                  model.push_bbox(
+                     b, obj[i], scale,
+                     &tight   == &default_parameter<base>() ? obj[i] : tight,
+                     &partial == &default_parameter<base>() ? obj[i] : partial,
+                     &loose   == &default_parameter<base>() ? obj[i] : loose
+                  );
 
                // update overall result; similar, e.g., to ors::aabb()
                rv = detail::bound_combine(rv, b, detail::op_leq());
@@ -692,7 +684,7 @@ bool shape_select(const std::string &name, ACTION &action)
 
    // shortened names
    #define kip_if_shape(str,type)\
-      else if (name == str) { action.fun(detail::tclass<type<real,base>>()); }
+      else if (name == str) { action.template fun<type<real,base>>(); }
    kip_if_shape("not",  kipnot)
    kip_if_shape("and",  kipand)
    kip_if_shape("cut",  kipcut)
@@ -702,7 +694,7 @@ bool shape_select(const std::string &name, ACTION &action)
 
    // full names
    #define kip_if_shape(shp)\
-      else if (name == #shp) { action.fun(detail::tclass<shp<real,base>>()); }
+      else if (name == #shp) { action.template fun<shp<real,base>>(); }
    kip_expand(kip_if_shape,)
    #undef  kip_if_shape
 
@@ -730,7 +722,7 @@ namespace detail {
       { }
 
       template<class SHAPE>
-      void fun(const tclass<SHAPE> &)
+      void fun()
       {
          SHAPE *const p = new SHAPE;
          if (p && k >> *p)
@@ -835,7 +827,7 @@ namespace detail {
       { }
 
       template<class SHAPE>
-      void fun(const tclass<SHAPE> &)
+      void fun()
       {
          static SHAPE shape;
          if (k >> shape)

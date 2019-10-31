@@ -1,4 +1,11 @@
 
+// Default color type
+namespace defaults {
+   using color = rgba;
+}
+
+
+
 // -----------------------------------------------------------------------------
 // border_t
 // -----------------------------------------------------------------------------
@@ -49,12 +56,9 @@ public:
 // image
 // -----------------------------------------------------------------------------
 
-// Default type: color
-using default_color = rgba;
-
 template<
-   class real  = default_real,
-   class color = default_color
+   class real  = defaults::real,
+   class color = defaults::color
 >
 class image {
 
@@ -79,7 +83,7 @@ public:
    const ulong &hpixel;   // references bitmap.isize()
    const ulong &vpixel;   // references bitmap.jsize()
    color background = color::background();       // background color
-   real  aspect = real(1);           // pixel aspect ratio
+   real  aspect = 1;           // pixel aspect ratio
    mutable unsigned anti;  // antialiasing indicator
    mutable detail::border_t border;  // bin/object border information
 

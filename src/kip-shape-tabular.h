@@ -8,7 +8,7 @@ inline ulong ntabular = 16;
 // tabular
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class tabular : public shape<real,tag> {
 public:
    using table_t = std::vector<xrpoint<real>>;
@@ -82,8 +82,8 @@ public:
 
    // tabular([a[,b[,(x,r)[,base]]]])
    explicit tabular(
-      const point<real> &_a = point<real>(real(0),real(0),real(0)),
-      const point<real> &_b = point<real>(real(1),real(0),real(0)),
+      const point<real> &_a = point<real>(0,0,0),
+      const point<real> &_b = point<real>(1,0,0),
       const table_t &_table = table_t()
    ) :
       shape<real,tag>(this),
@@ -675,7 +675,7 @@ kip_check(tabular)
    // points
    for (ulong i = 0;  i < npts;  ++i)
       // radii must be nonnegative
-      if (table[i].r < real(0)) {
+      if (table[i].r < 0) {
          std::ostringstream oss;
          oss << "tabular has negative radius table[" << i
              << "].r == " << table[i].r;
@@ -699,7 +699,7 @@ kip_check(tabular)
 
       // cannot have two successive zero radii
       // note: we could relax this condition
-      if (last.r == real(0) && next.r == real(0)) {
+      if (last.r == 0 && next.r == 0) {
          std::ostringstream oss;
          oss << "tabular has successive zero radii: "
             "table[" << i-1 << "].r == " << last.r << ", "

@@ -1,7 +1,4 @@
 
-// This file defines the shape class template, related functions, and other
-// functionality for use by shape and by classes derived from shape.
-
 // vars
 namespace detail {
    template<class,class>
@@ -9,31 +6,31 @@ namespace detail {
 }
 
 // engine
-template<class real = default_real>
+template<class real = defaults::real>
 class engine;
-
-// dummy
-class dummy { };
 
 
 
 // -----------------------------------------------------------------------------
 // nary_element
+// nary_element_ands
 // shape_id_t
 // -----------------------------------------------------------------------------
 
-// nary_element (for all nary operators except ands)
-template<class real, class tag, class MIN = real>
+// nary_element
+// For all nary operators except ands
+template<class real, class tag>
 class nary_element {
 public:
-   MIN min;
+   real min;
    shape<real,tag> *op;
    bool in;
 };
 
-// nary_element (for ands)
+// nary_element_ands
+// For ands
 template<class real, class tag>
-class nary_element<real,tag,dummy> {
+class nary_element_ands {
 public:
    shape<real,tag> *op;
    bool in;
@@ -175,7 +172,7 @@ public:
 
       // ands
       class ands_type {
-         private: using element_t = nary_element<real,tag,dummy>;
+         private: using element_t = nary_element_ands<real,tag>;
          public : using vec_t = std::vector<element_t>;
          private: mutable char _per[sizeof(vec_t)];
       public:
@@ -572,7 +569,7 @@ inline diagnostic onetwor_check(const char *const name, const OBJ &obj)
    diagnostic rv = diagnostic::good;
 
    // r
-   if (obj.r <= real(0)) {
+   if (obj.r <= 0) {
       std::ostringstream oss;
       oss << name << " has non-positive radius r=" << obj.r;
       rv = error(oss);

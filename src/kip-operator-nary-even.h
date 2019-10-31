@@ -3,7 +3,7 @@
 // even
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class even : public shape<real,tag> {
 #define   kip_class even
 #include "kip-macro-nary.h"

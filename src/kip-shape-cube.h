@@ -3,7 +3,7 @@
 // cube
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class cube : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -47,9 +47,9 @@ public:
 
    // cube([c[,a[,r[,base]]]])
    explicit cube(
-      const point<real> &_c = point<real>(real(0), real(0), real(0)),
-      const point<real> &_a = point<real>(real(0), real(0), real(0)),
-      const real _r = real(1)
+      const point<real> &_c = point<real>(0, 0, 0),
+      const point<real> &_a = point<real>(0, 0, 0),
+      const real _r = 1
    ) :
       shape<real,tag>(this),
       c(_c), a(_a), r(_r)
@@ -72,8 +72,8 @@ public:
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
-      a(real(0), real(0), real(0)),
-      r(real(1))
+      a(0, 0, 0),
+      r(1)
    { }
 
    explicit cube(
@@ -83,7 +83,7 @@ public:
       shape<real,tag>(this),
       c(cx,cy,cz),
       a(ax,ay,az),
-      r(real(1))
+      r(1)
    { }
 
    explicit cube(
@@ -272,7 +272,7 @@ kip_check(cube)
    static const char *const err = "Cube has non-positive half-size ";
    diagnostic rv = diagnostic::good;
 
-   if (r <= real(0)) {
+   if (r <= 0) {
       std::ostringstream oss;
       oss << err << "r=" << r;
       rv = error(oss);

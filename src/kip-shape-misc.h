@@ -107,7 +107,7 @@ public:
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
       const normalized _isnormalized,
-      const real _fac = real(-1)
+      const real _fac = -1
    ) {
       n.x = nx;  shape = _shape;
       n.y = ny;  color = &_shape->base();
@@ -120,7 +120,7 @@ public:
       const point<real> &_n,
       const kip::shape<real,base> *const _shape,
       const normalized _isnormalized,
-      const real _fac = real(-1)
+      const real _fac = -1
    ) {
       shape = _shape;  n = _n;
       color = &_shape->base();
@@ -136,7 +136,7 @@ public:
       const kip::shape<real,base> *const _shape,
       const base *const _color,
       const normalized _isnormalized,
-      const real _fac = real(-1)
+      const real _fac = -1
    ) {
       n.x = nx;  shape = _shape;
       n.y = ny;  color = _color;

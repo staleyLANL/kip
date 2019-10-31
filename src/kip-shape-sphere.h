@@ -3,7 +3,7 @@
 // sphere
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class sphere : public shape<real,tag> {
 
    bool inside(const point<real> &) const;
@@ -24,8 +24,8 @@ public:
 
    // sphere([c[,r[,base]]])
    explicit sphere(
-      const point<real> &_c = point<real>(real(0),real(0),real(0)),
-      const real _r = real(1)
+      const point<real> &_c = point<real>(0,0,0),
+      const real _r = 1
    ) :
       shape<real,tag>(this),
       c(_c), r(_r)
@@ -42,7 +42,7 @@ public:
    // sphere(c.x,c.y,c.z[,r[,base]])
    explicit sphere(
       const real cx, const real cy, const real cz,
-      const real _r = real(1)
+      const real _r = 1
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz), r(_r)
@@ -122,7 +122,7 @@ kip_dry(sphere)
 // check
 kip_check(sphere)
 {
-   if (r > real(0)) return diagnostic::good;
+   if (r > 0) return diagnostic::good;
    std::ostringstream oss;
    oss << "Sphere has non-positive radius r=" << r;
    return error(oss);

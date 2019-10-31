@@ -9,8 +9,10 @@ using uchar = unsigned char;
 using ulong = std::size_t;
 using u32 = std::uint32_t;
 
-// Default type: real
-using default_real = double;
+// Default real type
+namespace defaults {
+   using real = double;
+}
 
 // Key - like key() below, but always on (not turned off by KIP_NOKEY)
 inline void Key()
@@ -29,9 +31,8 @@ inline void key()
 }
 
 // default_parameter
-namespace detail { template<class T> class tclass; }
 template<class T>
-inline T &default_parameter(const detail::tclass<T> &)
+inline T &default_parameter()
 {
    static T value;
    return value;
@@ -84,9 +85,6 @@ enum class method {
 namespace detail {
    // no_action
    inline void no_action() { }
-
-   // tclass
-   template<class T> class tclass { };
 }
 
 namespace op {

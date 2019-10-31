@@ -3,7 +3,7 @@
 // silo
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class silo : public shape<real,tag> {
    bool inside(const point<real> &) const;
 

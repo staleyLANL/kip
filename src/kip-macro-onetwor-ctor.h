@@ -12,9 +12,9 @@
 
    // kip_class([a[,b[,r[,base]]]])
    explicit kip_class(
-      const point<real> &_a = point<real>(real(0), real(0), real(0)),
-      const point<real> &_b = point<real>(real(1), real(0), real(0)),
-      const real _r = real(1)
+      const point<real> &_a = point<real>(0, 0, 0),
+      const point<real> &_b = point<real>(1, 0, 0),
+      const real _r = 1
    ) :
       shape<real,tag>(this),
       kip_aye(_a), kip_bee(_b), r(_r)
@@ -36,8 +36,8 @@
    ) :
       shape<real,tag>(this),
       kip_aye(ax,ay,az),
-      kip_bee(real(1),real(0),real(0)),
-      r(real(1))
+      kip_bee(1,0,0),
+      r(1)
    { }
 
    explicit kip_class(
@@ -47,7 +47,7 @@
       shape<real,tag>(this),
       kip_aye(ax,ay,az),
       kip_bee(bx,by,bz),
-      r(real(1))
+      r(1)
    { }
 
    explicit kip_class(

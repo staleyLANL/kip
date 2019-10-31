@@ -242,7 +242,7 @@ COLOR kipcolor(
          1, // in.nfun,
          atotal
       );
-      const real p = 5*op::min(real(0),0.5+std::cos(20*sw_noise));
+      const real p = 5*op::min(0,0.5+std::cos(20*sw_noise));
       color.r = uchar(op::clip(0, int(r + r*p), 255));
       color.g = uchar(op::clip(0, int(g + g*p), 255));
       color.b = uchar(op::clip(0, int(b + b*p), 255));

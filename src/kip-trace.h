@@ -166,7 +166,7 @@ inline void trace_vipt(
 
          for (ulong i = 0;  i < hpixel;  ++i, h += vars.hfull) {
             // a = (d,0,0),  b = (0,h,v),  (x,y,z) = a+(b-a)/mod(b-a)
-            const real norm = real(1)/std::sqrt(tmp + h*h);
+            const real norm = 1/std::sqrt(tmp + h*h);
             image.prior.targets[n++](view.d*(1-norm), h*norm, v*norm);
          }
       }

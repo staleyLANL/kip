@@ -28,7 +28,7 @@ public:
       if (den == 0) return false;  // eyeball is in (u,v,w) plane
 
       // den
-      fac = (den < 0 ? real(-1) : real(1))/fac;  // +-1/mod(ghi)
+      fac = (den < 0 ? -1 : 1)/fac;  // +-1/mod(ghi)
       den *= fac;
 
       // abc, def, ghi
@@ -52,7 +52,7 @@ public:
 // tri
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class tri : public shape<real,tag> {
 
    // transformation
@@ -126,10 +126,10 @@ public:
 
 
 // Shouldn't call these; call enclosing surf's instead
-kip_process(tri) { assert(false); return real(0);         } kip_end
-kip_dry    (tri) { assert(false); return false;           } kip_end
+kip_process(tri) { assert(false); return 0; } kip_end
+kip_dry    (tri) { assert(false); return false; } kip_end
 kip_check  (tri) { assert(false); return diagnostic::good; } kip_end
-kip_inall  (tri) { assert(false); return false;           } kip_end
+kip_inall  (tri) { assert(false); return false; } kip_end
 
 kip_aabb  (tri) {
    assert(false);

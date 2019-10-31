@@ -3,7 +3,7 @@
 // cylinder
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class cylinder : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -158,7 +158,7 @@ kip_infirst(cylinder)
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= 1) {
-               q.x = real(0);
+               q.x = 0;
                return q(-1,0,0, this, normalized::yes, r), true;
             }
          }
@@ -203,7 +203,7 @@ kip_infirst(cylinder)
          q.z = q*tar.z;
 
          if (op::square(q.y) + op::square(q.z) <= 1) {
-            q.x = real(0);
+            q.x = 0;
             return q(-1,0,0, this, normalized::yes, r), true;
          }
       }
@@ -247,7 +247,7 @@ bool cylinder<real,tag>::get_base0(
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= 1) {
-      info.x = real(0);
+      info.x = 0;
       return info(-1,0,0, this, normalized::yes, r), true;
    }
    return false;

@@ -3,7 +3,7 @@
 // bicylinder
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class bicylinder : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -35,15 +35,15 @@ public:
 
    // bicylinder([a[,b[,r.a,r.b[,base]]]])
    explicit bicylinder(
-      const point<real> &_a = point<real>(real(0),real(0),real(0)),
-      const point<real> &_b = point<real>(real(1),real(0),real(0))
+      const point<real> &_a = point<real>(0,0,0),
+      const point<real> &_b = point<real>(1,0,0)
    ) :
       shape<real,tag>(this),
       a(_a),
       b(_b)
    {
-      r.a = real(1);
-      r.b = real(2);
+      r.a = 1;
+      r.b = 2;
    }
 
    explicit bicylinder(
@@ -82,10 +82,10 @@ public:
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
-      b(real(1),real(0),real(0))
+      b(1,0,0)
    {
-      r.a = real(1);
-      r.b = real(2);
+      r.a = 1;
+      r.b = 2;
    }
 
    explicit bicylinder(
@@ -96,8 +96,8 @@ public:
       a(ax,ay,az),
       b(bx,by,bz)
    {
-      r.a = real(1);
-      r.b = real(2);
+      r.a = 1;
+      r.b = 2;
    }
 
    explicit bicylinder(
@@ -259,21 +259,21 @@ kip_check(bicylinder)
    diagnostic rv = diagnostic::good;
 
    // r.a
-   if (r.a < real(0)) {
+   if (r.a < 0) {
       std::ostringstream oss;
       oss << "Bicylinder has negative \"a\" radius r.a=" << r.a;
       rv = error(oss);
    }
 
    // r.b
-   if (r.b < real(0)) {
+   if (r.b < 0) {
       std::ostringstream oss;
       oss << "Bicylinder has negative \"b\" radius r.b=" << r.b;
       rv = error(oss);
    }
 
    // at least one of (r.a,r.b) must be positive (one can be zero)
-   if (r.a == real(0) && r.b == real(0))
+   if (r.a == 0 && r.b == 0)
       rv = error("Bicylinder has both radii = 0 (at least one must be > 0");
 
    // require a != b
@@ -329,7 +329,7 @@ kip_infirst(bicylinder)
             q.y = rot.ey + q*dy;
             q.z = q*tar.z;
             if (op::square(q.y) + op::square(q.z) <= rasq) {
-               q.x = real(0);
+               q.x = 0;
                return q(-1,0,0, this, normalized::yes), true;
             }
          }
@@ -374,7 +374,7 @@ kip_infirst(bicylinder)
          q.z = q*tar.z;
 
          if (op::square(q.y) + op::square(q.z) <= rasq) {
-            q.x = real(0);
+            q.x = 0;
             return q(-1,0,0, this, normalized::yes), true;
          }
       }
@@ -437,7 +437,7 @@ inline bool bicylinder<real,tag>::get_base0(
    info.y = rot.ey + dy*info.q;
    info.z = tar.z*info.q;
    if (op::square(info.y) + op::square(info.z) <= rasq) {
-      info.x = real(0);
+      info.x = 0;
       return info(-1,0,0, this, normalized::yes), true;
    }
    return false;

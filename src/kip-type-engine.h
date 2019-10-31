@@ -105,8 +105,8 @@ template<class real>
 inline void fix_sort(engine<real> &obj)
 {
    // sort_frac
-   if (obj.sort_frac < real(0))
-       obj.sort_frac = real(0);
+   if (obj.sort_frac < 0)
+       obj.sort_frac = 0;
 
    // sort_min
    if (obj.sort_min < 1)

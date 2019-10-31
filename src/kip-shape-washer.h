@@ -3,7 +3,7 @@
 // washer
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class washer : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -49,13 +49,13 @@ public:
 
    // washer([a[,b[,i,o[,base]]]])
    explicit washer(
-      const point<real> &_a = point<real>(real(0),real(0),real(0)),
-      const point<real> &_b = point<real>(real(1),real(0),real(0))
+      const point<real> &_a = point<real>(0,0,0),
+      const point<real> &_b = point<real>(1,0,0)
    ) :
       shape<real,tag>(this),
       a(_a),
       b(_b),
-      i(real(1)), o(real(2))
+      i(1), o(2)
    { }
 
    explicit washer(
@@ -90,8 +90,8 @@ public:
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
-      b(real(1),real(0),real(0)),
-      i(real(1)), o(real(2))
+      b(1,0,0),
+      i(1), o(2)
    { }
 
    explicit washer(
@@ -101,7 +101,7 @@ public:
       shape<real,tag>(this),
       a(ax,ay,az),
       b(bx,by,bz),
-      i(real(1)), o(real(2))
+      i(1), o(2)
    { }
 
    explicit washer(
@@ -295,7 +295,7 @@ inline bool washer<real,tag>::first_in(
 
          const real tmp = op::square(q.y) + op::square(q.z);
          if (isq <= tmp && tmp <= osq) {
-            q.x = real(0);
+            q.x = 0;
             return q(-1,0,0, this, normalized::yes), true;
          }
       }
@@ -346,7 +346,7 @@ inline bool washer<real,tag>::first_out(
 
       const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
-         q.x = real(0);
+         q.x = 0;
          return q(-1,0,0, this, normalized::yes), true;
       }
    }
@@ -427,7 +427,7 @@ inline bool washer<real,tag>::get_base0(
 
       const real tmp = op::square(q.y) + op::square(q.z);
       if (isq <= tmp && tmp <= osq) {
-         q.x = real(0);
+         q.x = 0;
          return q(-1,0,0, this, normalized::yes), true;
       }
    }
@@ -550,14 +550,14 @@ kip_check(washer)
 
    // i
    // I think we're allowing == 0, just not < 0
-   if (i < real(0)) {
+   if (i < 0) {
       std::ostringstream oss;
       oss << "Washer has negative inner radius i=" << i;
       rv = error(oss);
    }
 
    // o
-   if (o <= real(0)) {
+   if (o <= 0) {
       std::ostringstream oss;
       oss << "Washer has non-positive outer radius o=" << o;
       rv = error(oss);

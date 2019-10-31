@@ -3,7 +3,7 @@
 // light
 // -----------------------------------------------------------------------------
 
-template<class real = default_real>
+template<class real = defaults::real>
 class light {
 
    // light source

@@ -17,9 +17,9 @@ bool trace(scene<real,base,color> &, array<2,pix> &);
 // -----------------------------------------------------------------------------
 
 template<
-   class real  = default_real,
-   class base  = default_base,
-   class color = default_color
+   class real  = defaults::real,
+   class base  = defaults::base,
+   class color = defaults::color
 >
 class scene :
    public model <real,base>,

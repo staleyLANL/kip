@@ -3,7 +3,7 @@
 // half
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class half : public shape<real,tag> {
 public:
    using shape<real,tag>::misc;
@@ -18,8 +18,8 @@ public:
 
    // half([point[,normal[,base]]])
    explicit half(
-      const kip::point<real> &_p = kip::point<real>(real(0), real(0), real(0)),
-      const kip::point<real> &_n = kip::point<real>(real(1), real(0), real(0))
+      const kip::point<real> &_p = kip::point<real>(0, 0, 0),
+      const kip::point<real> &_n = kip::point<real>(1, 0, 0)
    ) :
       shape<real,tag>(this),
       point(_p), normal(_n)
@@ -39,7 +39,7 @@ public:
       const real px, const real py, const real pz
    ) :
       shape<real,tag>(this),
-      point(px,py,pz), normal(kip::point<real>(real(1), real(0), real(0)))
+      point(px,py,pz), normal(kip::point<real>(1, 0, 0))
    { this->eyelie = false; }
 
    explicit half(

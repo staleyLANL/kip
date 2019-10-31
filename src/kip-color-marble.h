@@ -3,7 +3,7 @@
 // marble
 // -----------------------------------------------------------------------------
 
-template<class BASE, class real = default_real>
+template<class BASE, class real = defaults::real>
 class marble {
 public:
    // for i/o

@@ -243,7 +243,6 @@ inline void to_abstract_then_fill(
 // grow_portion_specific
 template<class SHAPE, class CURRENT, class PORTION, class real>
 inline void grow_portion_specific(
-   const tclass<SHAPE>,
    const CURRENT &current,
          PORTION &portion,
    const rotate<3,real,op::part,op::unscaled> seg[6],
@@ -294,8 +293,8 @@ void grow_portion(
    const char pos
 ) {
 #define kip_make_grow(type)\
-   grow_portion_specific\
-      (tclass<type<real,base>>(), current.type,portion.type, seg,pos);
+   grow_portion_specific<type<real,base>>\
+      (current.type,portion.type, seg,pos);
    kip_expand(kip_make_grow,;)
 #undef  kip_make_grow
 }

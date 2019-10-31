@@ -47,7 +47,7 @@ void block_setup_shape(
       for (int y = ya;  y <= yb;  ++y)
       for (int z = za;  z <= zb;  ++z)
          vars.block(x,y,z).vec.
-            push_back(minimum_and_shape<real,base>(real(0),*i));
+            push_back(minimum_and_shape<real,base>(0,*i));
    }
 
    // Note: neither "reset" for each block(x,y,z), nor "minimum" for each

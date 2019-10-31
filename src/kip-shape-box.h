@@ -3,7 +3,7 @@
 // box
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class box : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -46,9 +46,9 @@ public:
 
    // box([c[,a[,r[,base]]]])
    explicit box(
-      const point<real> &_c = point<real>(real(0),real(0),real(0)),
-      const point<real> &_a = point<real>(real(0),real(0),real(0)),
-      const point<real> &_r = point<real>(real(1),real(1),real(1))
+      const point<real> &_c = point<real>(0,0,0),
+      const point<real> &_a = point<real>(0,0,0),
+      const point<real> &_r = point<real>(1,1,1)
    ) :
       shape<real,tag>(this),
       c(_c), a(_a), r(_r)
@@ -71,8 +71,8 @@ public:
    ) :
       shape<real,tag>(this),
       c(cx,cy,cz),
-      a(real(0),real(0),real(0)),
-      r(real(1),real(1),real(1))
+      a(0,0,0),
+      r(1,1,1)
    { }
 
    explicit box(
@@ -82,7 +82,7 @@ public:
       shape<real,tag>(this),
       c(cx,cy,cz),
       a(ax,ay,az),
-      r(real(1),real(1),real(1))
+      r(1,1,1)
    { }
 
    explicit box(

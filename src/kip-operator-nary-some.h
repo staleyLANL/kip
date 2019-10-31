@@ -3,7 +3,7 @@
 // some
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class some : public shape<real,tag> {
 #define   kip_class some
 #include "kip-macro-nary.h"

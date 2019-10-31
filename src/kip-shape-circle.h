@@ -3,7 +3,7 @@
 // circle
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class circle : public shape<real,tag> {
 
    // modified circle: (0,0,0), r, in yz plane
@@ -93,10 +93,8 @@ kip_infirst(circle)
    q.z = q*tar.z;
 
    return op::square(q.y) + op::square(q.z) <= rsq
-      ? q.x = real(0),
-        q(
-           rot.ex < 0 ? real(-1) : real(1),
-           0, 0, this, normalized::yes), true
+      ? q.x = 0,
+        q(rot.ex < 0 ? -1 : 1, 0, 0, this, normalized::yes), true
       : false;
 } kip_end
 
@@ -122,7 +120,7 @@ kip_check(circle)
       rv = error("Circle has zero normal");
 
    // r
-   if (r <= real(0)) {
+   if (r <= 0) {
       std::ostringstream oss;
       oss << "Circle has non-positive radius r=" << r;
       rv = error(oss);

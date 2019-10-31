@@ -3,7 +3,7 @@
 // triangle
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class triangle : public shape<real,tag> {
    using T = real;
 
@@ -26,9 +26,9 @@ public:
 
    // triangle([u[,v[,w[,tag]]]])
    explicit triangle(
-      const point<real> &_u = point<real>(real(1), real(0), real(0)),
-      const point<real> &_v = point<real>(real(0), real(1), real(0)),
-      const point<real> &_w = point<real>(real(0), real(0), real(1))
+      const point<real> &_u = point<real>(1, 0, 0),
+      const point<real> &_v = point<real>(0, 1, 0),
+      const point<real> &_w = point<real>(0, 0, 1)
    ) :
       shape<real,tag>(this),
       u(_u), v(_v), w(_w)
@@ -50,8 +50,8 @@ public:
    ) :
       shape<real,tag>(this),
       u(ux, uy, uz),
-      v(real(0), real(1), real(0)),
-      w(real(0), real(0), real(1))
+      v(0, 1, 0),
+      w(0, 0, 1)
    { this->eyelie = false; }
 
    explicit triangle(
@@ -61,7 +61,7 @@ public:
       shape<real,tag>(this),
       u(ux, uy, uz),
       v(vx, vy, vz),
-      w(real(0), real(0), real(1))
+      w(0, 0, 1)
    { this->eyelie = false; }
 
    explicit triangle(

@@ -3,7 +3,7 @@
 // ors
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class ors : public shape<real,tag> {
 #define   kip_class ors
 #include "kip-macro-nary.h"
@@ -48,14 +48,14 @@ kip_process(ors)
    this->interior = kip_data.nop ? nary.total_in > 0 : true;
 
    // minimum
-   real rv = kip_data.nop ? min_and_op[0].minimum : real(0);
+   real rv = kip_data.nop ? min_and_op[0].minimum : 0;
    if (in_all)
       // in ALL; use maximum of minima (furthest exit)
       for (ulong i = 1;  i < kip_data.nop;  ++i)
          rv = op::max(rv, real(min_and_op[i].minimum));
    else if (in_ge1) {
       // in >=1; use maximum of "in" minima (furthest exit of "in"s)
-      rv = real(0);
+      rv = 0;
       for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (vec[i].in)
             rv = op::max(rv, real(min_and_op[i].minimum));

@@ -3,7 +3,7 @@
 // biwasher
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class biwasher : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -52,14 +52,14 @@ public:
 
    // biwasher([a[,b[,i.a,i.b,o.a,o.b[,base]]]])
    explicit biwasher(
-      const point<real> &_a = point<real>(real(0),real(0),real(0)),
-      const point<real> &_b = point<real>(real(1),real(0),real(0))
+      const point<real> &_a = point<real>(0,0,0),
+      const point<real> &_b = point<real>(1,0,0)
    ) :
       shape<real,tag>(this),
       a(_a), b(_b)
    {
-      i.a = real(1);  i.b = real(2);
-      o.a = real(2);  o.b = real(3);
+      i.a = 1;  i.b = 2;
+      o.a = 2;  o.b = 3;
    }
 
    explicit biwasher(
@@ -96,10 +96,10 @@ public:
    ) :
       shape<real,tag>(this),
       a(ax,ay,az),
-      b(real(1),real(0),real(0))
+      b(1,0,0)
    {
-      i.a = real(1);  i.b = real(2);
-      o.a = real(2);  o.b = real(3);
+      i.a = 1;  i.b = 2;
+      o.a = 2;  o.b = 3;
    }
 
    explicit biwasher(
@@ -110,8 +110,8 @@ public:
       a(ax,ay,az),
       b(bx,by,bz)
    {
-      i.a = real(1);  i.b = real(2);
-      o.a = real(2);  o.b = real(3);
+      i.a = 1;  i.b = 2;
+      o.a = 2;  o.b = 3;
    }
 
    explicit biwasher(
@@ -352,7 +352,7 @@ inline bool biwasher<real,tag>::first_in(
 
          const real tmp = op::square(q.y) + op::square(q.z);
          if (iasq <= tmp && tmp <= oasq) {
-            q.x = real(0);
+            q.x = 0;
             return q(-1,0,0, this, normalized::yes), true;
          }
       }
@@ -439,7 +439,7 @@ inline bool biwasher<real,tag>::first_out(
 
       const real tmp = op::square(q.y) + op::square(q.z);
       if (iasq <= tmp && tmp <= oasq) {
-         q.x = real(0);
+         q.x = 0;
          return q(-1,0,0, this, normalized::yes), true;
       }
 
@@ -523,7 +523,7 @@ inline bool biwasher<real,tag>::get_base0(
 
       const real tmp = op::square(q.y) + op::square(q.z);
       if (iasq <= tmp && tmp <= oasq) {
-         q.x = real(0);
+         q.x = 0;
          return q(-1,0,0, this, normalized::yes), true;
       }
    }

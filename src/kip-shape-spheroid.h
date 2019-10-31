@@ -3,7 +3,7 @@
 // spheroid
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class spheroid : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -53,7 +53,7 @@ kip_process(spheroid)
    ihsq = 1/rot.h/rot.h;
    eyr  = rot.ey*irsq;
    exh  = rot.ex*ihsq;
-   i    = rot.ex*exh + rot.ey*eyr - real(1);
+   i    = rot.ex*exh + rot.ey*eyr - 1;
    r2h2 = r/(rot.h+rot.h);
 
    // The minimum estimate below can be improved (generally made larger),
@@ -133,7 +133,7 @@ kip_aabb(spheroid)
    const real yval =
       detail::bound_spheroid(rot2.mat.a.y, rot2.mat.b.y, rot2.mat.c.y, hsq,rsq);
    const real zval =
-      detail::bound_spheroid(rot2.mat.a.z, real(0),      rot2.mat.c.z, hsq,rsq);
+      detail::bound_spheroid(rot2.mat.a.z, real(0), rot2.mat.c.z, hsq,rsq);
 
    return bbox<real>(
       true, rot2.shift.x-xval, rot2.shift.x+xval, true,

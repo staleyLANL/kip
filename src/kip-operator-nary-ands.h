@@ -3,7 +3,7 @@
 // ands
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class ands : public shape<real,tag> {
 #define   kip_class ands
 #define   kip_type  misc_type::ands_type
@@ -53,14 +53,14 @@ kip_process(ands)
    this->interior = kip_data.total_in == kip_data.nop;
 
    // minimum
-   real rv = kip_data.nop ? min_and_op[0].minimum : real(0);
+   real rv = kip_data.nop ? min_and_op[0].minimum : 0;
    if (in_all)
       // in ALL; use minimum of minima (need to exit any)
       for (ulong i = 1;  i < kip_data.nop;  ++i)
          rv = op::min(rv, real(min_and_op[i].minimum));
    else if (in_ge1) {
       // in >=1; use maximum of not-in minima (need to enter all others)
-      rv = real(0);
+      rv = 0;
       for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (!vec[i].in)
             rv = op::max(rv, real(min_and_op[i].minimum));

@@ -1,6 +1,8 @@
 
-// default shape base
-using default_base = rgb;
+// Default shape-base type
+namespace defaults {
+   using base = rgb;
+}
 
 // forward: shape
 template<class,class>

@@ -3,7 +3,7 @@
 // paraboloid
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class paraboloid : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
@@ -120,7 +120,7 @@ kip_aabb(paraboloid)
    detail::bound_paraboloid(
       rot2.mat.a.y, rot2.mat.b.y, rot2.mat.c.y, rot2.h,r, a.y,b.y, ymin,ymax);
    detail::bound_paraboloid(
-      rot2.mat.a.z, real(0),      rot2.mat.c.z, rot2.h,r, a.z,b.z, zmin,zmax);
+      rot2.mat.a.z, real(0), rot2.mat.c.z, rot2.h,r, a.z,b.z, zmin,zmax);
 
    return bbox<real>(
       true,xmin, xmax,true,

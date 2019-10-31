@@ -3,7 +3,7 @@
 // xplane
 // -----------------------------------------------------------------------------
 
-template<class real = default_real, class tag = default_base>
+template<class real = defaults::real, class tag = defaults::base>
 class xplane : public shape<real,tag> {
 public:
    using shape<real,tag>::misc;
@@ -20,15 +20,15 @@ public:
 
    // xplane([x[,size.y,size.z[,color[,base]]]])
    explicit xplane(
-      const real _x = real(0)
+      const real _x = 0
    ) :
       shape<real,tag>(this),
       x(_x),
       color(tag())
    {
       this->eyelie = false;
-      size.y = real(1);
-      size.z = real(1);
+      size.y = 1;
+      size.z = 1;
    }
 
    explicit xplane(
@@ -91,7 +91,7 @@ public:
 kip_process(xplane)
 {
    misc.plane.h = eyeball.x - x;
-   misc.plane.norm = misc.plane.h < 0 ? real(-1) : real(1);
+   misc.plane.norm = misc.plane.h < 0 ? -1 : 1;
    this->interior = false;
    return std::abs(misc.plane.h);
 } kip_end
@@ -156,14 +156,14 @@ kip_check(xplane)
    diagnostic rv = diagnostic::good;
 
    // size.y
-   if (size.y <= real(0)) {
+   if (size.y <= 0) {
       std::ostringstream oss;
       oss << "Xplane has non-positive size.y=" << size.y;
       rv = error(oss);
    }
 
    // size.z
-   if (size.z <= real(0)) {
+   if (size.z <= 0) {
       std::ostringstream oss;
       oss << "Xplane has non-positive size.z=" << size.z;
       rv = error(oss);
