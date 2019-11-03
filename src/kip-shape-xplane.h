@@ -16,8 +16,6 @@ public:
 
    point<real> back(const point<real> &from) const { return from; }
 
-
-
    // xplane([x[,size.y,size.z[,color[,base]]]])
    explicit xplane(
       const real _x = 0
@@ -59,8 +57,6 @@ public:
       size.z = _zsize;
    }
 
-
-
    // xplane(xplane)
    xplane(const xplane &from) :
       shape<real,tag>(from),
@@ -97,7 +93,6 @@ kip_process(xplane)
 } kip_end
 
 
-
 // aabb
 kip_aabb(xplane)
 {
@@ -110,13 +105,11 @@ kip_aabb(xplane)
 } kip_end
 
 
-
 // dry
 kip_dry(xplane)
 {
    return false;
 } kip_end
-
 
 
 // infirst
@@ -139,7 +132,6 @@ kip_infirst(xplane)
 } kip_end
 
 
-
 // inall
 kip_inall(xplane)
 {
@@ -147,7 +139,6 @@ kip_inall(xplane)
       ? ints.push(ints[0]), true
       : false;
 } kip_end
-
 
 
 // check
@@ -171,7 +162,6 @@ kip_check(xplane)
 
    return rv;
 } kip_end
-
 
 
 // randomize

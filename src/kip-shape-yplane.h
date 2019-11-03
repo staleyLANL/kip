@@ -16,8 +16,6 @@ public:
 
    point<real> back(const point<real> &from) const { return from; }
 
-
-
    // yplane([y[,size.x,size.z[,color[,base]]]])
    explicit yplane(
       const real _y = 0
@@ -59,8 +57,6 @@ public:
       size.z = _zsize;
    }
 
-
-
    // yplane(yplane)
    yplane(const yplane &from) :
       shape<real,tag>(from),
@@ -97,7 +93,6 @@ kip_process(yplane)
 } kip_end
 
 
-
 // aabb
 kip_aabb(yplane)
 {
@@ -110,13 +105,11 @@ kip_aabb(yplane)
 } kip_end
 
 
-
 // dry
 kip_dry(yplane)
 {
    return false;
 } kip_end
-
 
 
 // infirst
@@ -139,7 +132,6 @@ kip_infirst(yplane)
 } kip_end
 
 
-
 // inall
 kip_inall(yplane)
 {
@@ -147,7 +139,6 @@ kip_inall(yplane)
       ? ints.push(ints[0]), true
       : false;
 } kip_end
-
 
 
 // check
@@ -171,7 +162,6 @@ kip_check(yplane)
 
    return rv;
 } kip_end
-
 
 
 // randomize
@@ -225,8 +215,6 @@ kip_read_value(yplane) {
    }
    return !s.fail();
 }
-
-
 
 // kip::ostream
 kip_ostream(yplane) {

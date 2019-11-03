@@ -499,7 +499,7 @@ public:
 // -----------------------------------------------------------------------------
 // Anti
 // Same remark as for the "Plain" functions above; and in addition, we shoot
-// several rays *within* the pixel.
+// several rays inside the pixel.
 // -----------------------------------------------------------------------------
 
 // one_anti

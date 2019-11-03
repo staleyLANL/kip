@@ -166,8 +166,6 @@ kip_infirst(kipnot)
       ? q.reverse(), true : false;
 } kip_end
 
-
-
 // inall
 kip_inall(kipnot)
 {

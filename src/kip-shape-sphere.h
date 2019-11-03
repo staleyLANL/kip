@@ -20,8 +20,6 @@ public:
    point<real> back(const point<real> &from) const
       { return from; }
 
-
-
    // sphere([c[,r[,base]]])
    explicit sphere(
       const point<real> &_c = point<real>(0,0,0),
@@ -55,8 +53,6 @@ public:
       shape<real,tag>(this,thebase),
       c(cx,cy,cz), r(_r)
    { this->eyelie = false; }
-
-
 
    // sphere(sphere)
    sphere(const sphere &from) :
@@ -92,7 +88,6 @@ kip_process(sphere)
    return std::abs(modf-r);
 } kip_end
 
-
 // aabb
 kip_aabb(sphere)
 {
@@ -103,13 +98,11 @@ kip_aabb(sphere)
    );
 } kip_end
 
-
 // inside
 kip_inside(sphere)
 {
    return misc.sphere.m <= 0;
 } kip_end
-
 
 // dry
 kip_dry(sphere)
@@ -117,7 +110,6 @@ kip_dry(sphere)
    // perhaps slightly faster than: return seg.forez(c) >= r;
    real cz;  (void)seg.lt(c,cz);  return cz >= r+seg.valz;
 } kip_end
-
 
 // check
 kip_check(sphere)
@@ -131,17 +123,16 @@ kip_check(sphere)
 
 
 // -----------------------------------------------------------------------------
-// infirst
-// inall
+// in*
 // -----------------------------------------------------------------------------
 
 // infirst
 template<class real, class tag>
 bool sphere<real,tag>::infirst(
-   const eyetardiff<real> &etd,
-   const real qmin,
-   inq<real,tag> &q,
-   const detail::subinfo &
+   const eyetardiff<real> &etd, // 72
+   const real qmin,             //  8
+   inq<real,tag> &q,            // 88
+   const detail::subinfo &      // 28 zzz move to second, after etd
 ) const {
    const kip::point<real> &eyeball = etd.eyeball;
    const kip::point<real> &diff    = etd.diff;
@@ -155,7 +146,7 @@ bool sphere<real,tag>::infirst(
    else
       q = p - std::sqrt(h);
 
-   if (!(q < qmin && 0 < q)) return false;
+   if (!(0 < q && q < qmin)) return false;
 
    // diff = "t2e"
    q.inter = eyeball - real(q)*diff;
