@@ -165,10 +165,12 @@ template<class BIN, class real, class tag>
 inline bool get_first(
    const BIN &bin,
    const unsigned s,
-   const u32 i, const u32 j,
+   const u32 i,
+   const u32 j,
    const ulong zone,
    const eyetardiff<real> &etd,
-   const real qmin, inq<real,tag> &q
+   const real qmin,
+   inq<real,tag> &q
 ) {
    const shape<real,tag> &obj = *bin[s].shape;
    if (!inbound(obj,i,j)) return false;

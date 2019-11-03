@@ -209,13 +209,14 @@ kip_infirst(polygon)
    q = basic.eye().z/(basic.eye().z - tar.z);
    if (!(0 < q && q < qmin)) return false;
 
-   q.x = basic.eye().x + q*(tar.x - basic.eye().x);
-   if (q.x < xlo || q.x > xhi) return false;
-   q.y = basic.eye().y + q*(tar.y - basic.eye().y);
+   q.inter.x = basic.eye().x + q*(tar.x - basic.eye().x);
+   if (q.inter.x < xlo || q.inter.x > xhi) return false;
+   q.inter.y = basic.eye().y + q*(tar.y - basic.eye().y);
 
    // done
-   return point_in_poly(q.x,q.y)
-      ? q.z=0, q(0, 0, basic.eye().z > 0 ? 1 : -1, this, normalized::yes), true
+   return point_in_poly(q.inter.x,q.inter.y)
+      ? q.inter.z = 0,
+        q.set(0, 0, basic.eye().z > 0 ? 1 : -1, this, normalized::yes), true
       : false;
 } kip_end
 

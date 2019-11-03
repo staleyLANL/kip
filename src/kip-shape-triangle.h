@@ -202,8 +202,8 @@ kip_infirst(triangle)
       0 <  (dz = aff.forez(diff,ghi)) &&
       0 <=  dx + dy + dz && aff.den < dz*qmin && (
 
-      q.point<real>::operator=(eyeball - real(q = aff.den/dz)*diff),
-      q(ghi, this, normalized::yes), true);
+      q.inter = eyeball - real(q = aff.den/dz)*diff,
+      q.set(ghi, this, normalized::yes), true);
 } kip_end
 
 

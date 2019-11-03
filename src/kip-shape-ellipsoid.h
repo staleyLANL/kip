@@ -324,14 +324,15 @@ kip_infirst(ellipsoid)
       q = (p - std::sqrt(s))/g;
    if (!(0 < q && q < qmin)) return false;
 
-   q.x = eye.x - q*dx;
-   q.y = eye.y - q*dy;
-   q.z = eye.z - q*dz;
+   q.inter.x = eye.x - q*dx;
+   q.inter.y = eye.y - q*dy;
+   q.inter.z = eye.z - q*dz;
 
-   return q(
-      irsq.x*q.x, irsq.y*q.y, irsq.z*q.z,
+   return q.set(
+      irsq.x*q.inter.x, irsq.y*q.inter.y, irsq.z*q.inter.z,
       this, normalized::no
    ), true;
+
 } kip_end
 
 
@@ -352,15 +353,15 @@ inline bool ellipsoid<real,tag>::get_curve(
    if (!(0 < info.q && info.q < qmin)) return false;
 
    // intersection
-   info.x = basic.eye().x - info.q*dx;
-   info.y = basic.eye().y - info.q*dy;
-   info.z = basic.eye().z - info.q*dz;
+   info.inter.x = basic.eye().x - info.q*dx;
+   info.inter.y = basic.eye().y - info.q*dy;
+   info.inter.z = basic.eye().z - info.q*dz;
 
    // normal
-   return info(
-      irsq.x*info.x,
-      irsq.y*info.y,
-      irsq.z*info.z,
+   return info.set(
+      irsq.x*info.inter.x,
+      irsq.y*info.inter.y,
+      irsq.z*info.inter.z,
       this, normalized::no
    ), true;
 }

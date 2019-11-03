@@ -347,13 +347,13 @@ inline bool biwasher<real,tag>::first_in(
       q = -rot.ex/dx;
 
       if (0 < q && q < qmin) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
 
-         const real tmp = op::square(q.y) + op::square(q.z);
+         const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
          if (iasq <= tmp && tmp <= oasq) {
-            q.x = 0;
-            return q(-1,0,0, this, normalized::yes), true;
+            q.inter.x = 0;
+            return q.set(-1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -363,13 +363,13 @@ inline bool biwasher<real,tag>::first_in(
       q = (rot.h-rot.ex)/dx;
 
       if (0 < q && q < qmin) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
 
-         const real tmp = op::square(q.y) + op::square(q.z);
+         const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
          if (ibsq <= tmp && tmp <= obsq) {
-            q.x = rot.h;
-            return q(1,0,0, this, normalized::yes), true;
+            q.inter.x = rot.h;
+            return q.set(1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -384,12 +384,14 @@ inline bool biwasher<real,tag>::first_in(
    if (ao != 0) {
       q = (bo + std::sqrt(so))/ao;
       if (0 < q && q < qmin) {
-         q.x = rot.ex + q*dx;
-         if (0 <= q.x && q.x <= rot.h) {
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            return q(-oslope*(o.a + oslope*q.x), q.y, q.z,
-                     this, normalized::no), true;
+         q.inter.x = rot.ex + q*dx;
+         if (0 <= q.inter.x && q.inter.x <= rot.h) {
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            return q.set(
+              -oslope*(o.a + oslope*q.inter.x),
+               q.inter.y, q.inter.z, this, normalized::no
+            ), true;
          }
       }
    }
@@ -403,12 +405,14 @@ inline bool biwasher<real,tag>::first_in(
    if (ai != 0) {
       q = (bi + std::sqrt(si))/ai;
       if (0 < q && q < qmin) {
-         q.x = rot.ex + q*dx;
-         if (0 <= q.x && q.x <= rot.h) {
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            return q(islope*(i.a + islope*q.x), -q.y, -q.z,
-                     this, normalized::no), true;
+         q.inter.x = rot.ex + q*dx;
+         if (0 <= q.inter.x && q.inter.x <= rot.h) {
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            return q.set(
+               islope*(i.a + islope*q.inter.x),
+              -q.inter.y, -q.inter.z, this, normalized::no
+            ), true;
          }
       }
    }
@@ -434,13 +438,13 @@ inline bool biwasher<real,tag>::first_out(
       q = -rot.ex/dx;
       if (!(0 < q && q < qmin)) return false;
 
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
 
-      const real tmp = op::square(q.y) + op::square(q.z);
+      const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
       if (iasq <= tmp && tmp <= oasq) {
-         q.x = 0;
-         return q(-1,0,0, this, normalized::yes), true;
+         q.inter.x = 0;
+         return q.set(-1,0,0, this, normalized::yes), true;
       }
 
    // x = h
@@ -450,13 +454,13 @@ inline bool biwasher<real,tag>::first_out(
       q = (rot.h-rot.ex)/dx;
       if (!(0 < q && q < qmin)) return false;
 
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
 
-      const real tmp = op::square(q.y) + op::square(q.z);
+      const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
       if (ibsq <= tmp && tmp <= obsq) {
-         q.x = rot.h;
-         return q(1,0,0, this, normalized::yes), true;
+         q.inter.x = rot.h;
+         return q.set(1,0,0, this, normalized::yes), true;
       }
    }
 
@@ -471,12 +475,14 @@ inline bool biwasher<real,tag>::first_out(
       q = (bo - std::sqrt(so))/ao;
       if (!(0 < q && q < qmin)) return false;
 
-      q.x = rot.ex + q*dx;
-      if (0 <= q.x && q.x <= rot.h) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
-         return q(-oslope*(o.a + oslope*q.x), q.y, q.z,
-                  this, normalized::no), true;
+      q.inter.x = rot.ex + q*dx;
+      if (0 <= q.inter.x && q.inter.x <= rot.h) {
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
+         return q.set(
+           -oslope*(o.a + oslope*q.inter.x),
+            q.inter.y, q.inter.z, this, normalized::no
+         ), true;
       }
    }
 
@@ -489,12 +495,14 @@ inline bool biwasher<real,tag>::first_out(
    q = (bi + std::sqrt(si))/ai;
    if (!(0 < q && q < qmin)) return false;
 
-   q.x = rot.ex + q*dx;
-   if (0 <= q.x && q.x <= rot.h) {
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
-      return q(islope*(i.a + islope*q.x), -q.y, -q.z,
-               this, normalized::no), true;
+   q.inter.x = rot.ex + q*dx;
+   if (0 <= q.inter.x && q.inter.x <= rot.h) {
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
+      return q.set(
+         islope*(i.a + islope*q.inter.x),
+        -q.inter.y, -q.inter.z, this, normalized::no
+      ), true;
    }
 
    return false;
@@ -518,13 +526,13 @@ inline bool biwasher<real,tag>::get_base0(
    q = -rot.ex/dx;
 
    if (0 < q && q < qmin) {
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
 
-      const real tmp = op::square(q.y) + op::square(q.z);
+      const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
       if (iasq <= tmp && tmp <= oasq) {
-         q.x = 0;
-         return q(-1,0,0, this, normalized::yes), true;
+         q.inter.x = 0;
+         return q.set(-1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -541,13 +549,13 @@ inline bool biwasher<real,tag>::get_baseh(
    q = (rot.h-rot.ex)/dx;
 
    if (0 < q && q < qmin) {
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
 
-      const real tmp = op::square(q.y) + op::square(q.z);
+      const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
       if (ibsq <= tmp && tmp <= obsq) {
-         q.x = rot.h;
-         return q(1,0,0, this, normalized::yes), true;
+         q.inter.x = rot.h;
+         return q.set(1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -562,12 +570,14 @@ inline bool biwasher<real,tag>::get_inner(
    inq<real,tag> &q
 ) const {
    if (0 < q && q < qmin) {
-      q.x = rot.ex + q*dx;
-      if (0 <= q.x && q.x <= rot.h) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
-         return q(islope*(i.a + islope*q.x), -q.y, -q.z,
-                  this, normalized::no), true;
+      q.inter.x = rot.ex + q*dx;
+      if (0 <= q.inter.x && q.inter.x <= rot.h) {
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
+         return q.set(
+            islope*(i.a + islope*q.inter.x),
+           -q.inter.y, -q.inter.z, this, normalized::no
+         ), true;
       }
    }
    return false;
@@ -582,12 +592,14 @@ inline bool biwasher<real,tag>::get_outer(
    inq<real,tag> &q
 ) const {
    if (0 < q && q < qmin) {
-      q.x = rot.ex + q*dx;
-      if (0 <= q.x && q.x <= rot.h) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
-         return q(-oslope*(o.a + oslope*q.x), q.y, q.z,
-                  this, normalized::no), true;
+      q.inter.x = rot.ex + q*dx;
+      if (0 <= q.inter.x && q.inter.x <= rot.h) {
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
+         return q.set(
+           -oslope*(o.a + oslope*q.inter.x),
+            q.inter.y, q.inter.z, this, normalized::no
+         ), true;
       }
    }
    return false;

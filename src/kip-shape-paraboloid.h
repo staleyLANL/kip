@@ -185,11 +185,11 @@ kip_infirst(paraboloid)
       if (dx > 0) {
          q = (rot.h-rot.ex)/dx;
          if (0 < q && q < qmin) {
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            if (op::square(q.y) + op::square(q.z) <= rsq) {
-               q.x = rot.h;
-               return q(1,0,0, this, normalized::yes), true;
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            if (op::square(q.inter.y) + op::square(q.inter.z) <= rsq) {
+               q.inter.x = rot.h;
+               return q.set(1,0,0, this, normalized::yes), true;
             }
          }
       }
@@ -200,7 +200,7 @@ kip_infirst(paraboloid)
 
       q = (g + std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
-      q.x = rot.ex + q*dx;  // inside, so don't need the range check
+      q.inter.x = rot.ex + q*dx;  // inside, so don't need the range check
 
    } else {
 
@@ -212,12 +212,12 @@ kip_infirst(paraboloid)
          q = (rot.h - rot.ex)/dx;
          if (!(0 < q && q < qmin)) return false;
 
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
 
-         if (op::square(q.y) + op::square(q.z) <= rsq) {
-            q.x = rot.h;
-            return q(1,0,0, this, normalized::yes), true;
+         if (op::square(q.inter.y) + op::square(q.inter.z) <= rsq) {
+            q.inter.x = rot.h;
+            return q.set(1,0,0, this, normalized::yes), true;
          }
       }
 
@@ -227,8 +227,8 @@ kip_infirst(paraboloid)
 
       q = (g - std::sqrt(s))/f;
       if (!(0 < q && q < qmin)) return false;
-      q.x = rot.ex + real(q)*dx;
-      if (!(0 <= q.x && q.x <= rot.h)) return false;
+      q.inter.x = rot.ex + real(q)*dx;
+      if (!(0 <= q.inter.x && q.inter.x <= rot.h)) return false;
    }
 
    /*
@@ -242,9 +242,13 @@ kip_infirst(paraboloid)
    can scale by 1/h2 to get normal.
    */
 
-   q.y = rot.ey + real(q)*dy;
-   q.z = real(q)*tar.z;
-   return q(-1/h2, q.y, q.z, this, normalized::no), true;
+   q.inter.y = rot.ey + real(q)*dy;
+   q.inter.z = real(q)*tar.z;
+   return q.set(
+     -1/h2, q.inter.y, q.inter.z,
+      this, normalized::no
+   ), true;
+
 } kip_end
 
 
@@ -268,11 +272,11 @@ inline bool paraboloid<real,tag>::get_baseh(
    info.q = (rot.h-rot.ex)/dx;
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.y = rot.ey + dy*info.q;
-   info.z = tar.z*info.q;
-   if (op::square(info.y) + op::square(info.z) <= rsq) {
-      info.x = rot.h;
-      return info(1,0,0, this, normalized::yes), true;
+   info.inter.y = rot.ey + dy*info.q;
+   info.inter.z = tar.z*info.q;
+   if (op::square(info.inter.y) + op::square(info.inter.z) <= rsq) {
+      info.inter.x = rot.h;
+      return info.set(1,0,0, this, normalized::yes), true;
    }
    return false;
 }
@@ -291,13 +295,16 @@ inline bool paraboloid<real,tag>::get_curve(
    // check
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.x = rot.ex + info.q*dx;
-   if (!(0 <= info.x && info.x <= rot.h)) return false;
+   info.inter.x = rot.ex + info.q*dx;
+   if (!(0 <= info.inter.x && info.inter.x <= rot.h)) return false;
 
-   info.y = rot.ey + info.q*dy;
-   info.z = info.q*tar.z;
+   info.inter.y = rot.ey + info.q*dy;
+   info.inter.z = info.q*tar.z;
 
-   return info(-1/h2, info.y, info.z, this, normalized::no), true;
+   return info.set(
+     -1/h2, info.inter.y, info.inter.z,
+      this, normalized::no
+   ), true;
 }
 
 

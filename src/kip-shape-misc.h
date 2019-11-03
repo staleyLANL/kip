@@ -75,13 +75,14 @@ enum class normalized { yes, no };
 
 // inq
 template<class real, class base>
-class inq : public point<real> {  // the point<real> is the intersection
+class inq {
 public:
 
    // data
+   point<real> inter;
    point<real> n;
-   real q, fac;
-
+   real q;
+   real fac;
    const kip::shape<real,base> *shape;
    const base *color;
    normalized isnormalized;
@@ -102,46 +103,39 @@ public:
    operator       real&()       { return q; }
    operator const real&() const { return q; }
 
-   // operator()
-   inq &operator()(
-      const real nx, const real ny, const real nz,
-      const kip::shape<real,base> *const _shape,
-      const normalized _isnormalized,
-      const real _fac = -1
-   ) {
-      n.x = nx;  shape = _shape;
-      n.y = ny;  color = &_shape->base();
-      n.z = nz;  isnormalized = _isnormalized;
-      fac = _fac;
-      return *this;
-   }
-
-   inq &operator()(
+   // set
+   inq &set(
       const point<real> &_n,
       const kip::shape<real,base> *const _shape,
       const normalized _isnormalized,
       const real _fac = -1
    ) {
-      shape = _shape;  n = _n;
+      n = _n;
+      shape = _shape;
       color = &_shape->base();
       isnormalized = _isnormalized;
       fac = _fac;
       return *this;
    }
 
-   // qqq I think we need the following only because xplane,
-   // yplane, and zplane actually involve two colors...
-   inq &operator()(
+   inq &set(
       const real nx, const real ny, const real nz,
       const kip::shape<real,base> *const _shape,
-      const base *const _color,
       const normalized _isnormalized,
       const real _fac = -1
    ) {
-      n.x = nx;  shape = _shape;
-      n.y = ny;  color = _color;
-      n.z = nz;  isnormalized = _isnormalized;
-      fac = _fac;
+      return set(point<real>(nx,ny,nz), _shape, _isnormalized, _fac);
+   }
+
+   inq &set(
+      const real nx, const real ny, const real nz,
+      const kip::shape<real,base> *const _shape,
+      const base *const _color, // for xplane etc. (w/ two colors)
+      const normalized _isnormalized,
+      const real _fac = -1
+   ) {
+      set(nx,ny,nz, _shape, _isnormalized, _fac);
+      color = _color;
       return *this;
    }
 

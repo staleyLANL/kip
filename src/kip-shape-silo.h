@@ -144,11 +144,11 @@ kip_infirst(silo)
       if (dx > 0) {
          q = (rot.h-rot.ex)/dx;
          if (0 < q && q < qmin) {
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            if (op::square(q.y) + op::square(q.z) <= rsq) {
-               q.x = rot.h;
-               return q(1,0,0, this, normalized::yes), true;
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            if (op::square(q.inter.y) + op::square(q.inter.z) <= rsq) {
+               q.inter.x = rot.h;
+               return q.set(1,0,0, this, normalized::yes), true;
             }
          }
       }
@@ -160,11 +160,11 @@ kip_infirst(silo)
          q = std::sqrt(g) - p;  // only care about furthest intersection
          if (!(q < qmin)) return false;
          if (q > 0) {
-            q.x = rot.ex + q*dx;
-            if (q.x <= 0) {
-               q.y = rot.ey + q*dy;
-               q.z = q*tar.z;
-               return q(q, this, normalized::no), true;
+            q.inter.x = rot.ex + q*dx;
+            if (q.inter.x <= 0) {
+               q.inter.y = rot.ey + q*dy;
+               q.inter.z = q*tar.z;
+               return q.set(q.inter, this, normalized::no), true;
             }
          }
       }
@@ -175,7 +175,7 @@ kip_infirst(silo)
 
       q = (std::sqrt(s) - rot.ey*dy)/(c+d);
       if (!(0 < q && q < qmin)) return false;
-      q.x = rot.ex + q*dx;  // inside, so don't need the range check
+      q.inter.x = rot.ex + q*dx;  // inside, so don't need the range check
 
    } else {
 
@@ -198,12 +198,12 @@ kip_infirst(silo)
          q = (rot.h - rot.ex)/dx;
          if (!(0 < q && q < qmin)) return false;
 
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
 
-         if (op::square(q.y) + op::square(q.z) <= rsq) {
-            q.x = rot.h;
-            return q(1,0,0, this, normalized::yes), true;
+         if (op::square(q.inter.y) + op::square(q.inter.z) <= rsq) {
+            q.inter.x = rot.h;
+            return q.set(1,0,0, this, normalized::yes), true;
          }
       }
 
@@ -214,12 +214,12 @@ kip_infirst(silo)
          q = -(p + std::sqrt(g));
          if (!(0 < q)) return false;  // would be <= 0 for cyl. portion, too
 
-         q.x = rot.ex + q*dx;
-         if (q.x <= 0) {
+         q.inter.x = rot.ex + q*dx;
+         if (q.inter.x <= 0) {
             if (!(q < qmin)) return false;
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            return q(q, this, normalized::no), true;
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            return q.set(q.inter, this, normalized::no), true;
          }
       }
 
@@ -228,13 +228,17 @@ kip_infirst(silo)
 
       q = -(rot.ey*dy + std::sqrt(s))/(c+d);
       if (!(0 < q && q < qmin)) return false;
-      q.x = rot.ex + q*dx;
-      if (!(0 <= q.x && q.x <= rot.h)) return false;
+      q.inter.x = rot.ex + q*dx;
+      if (!(0 <= q.inter.x && q.inter.x <= rot.h)) return false;
    }
 
-   q.y = rot.ey + q*dy;
-   q.z = q*tar.z;
-   return q(0, q.y, q.z, this, normalized::no), true;
+   q.inter.y = rot.ey + q*dy;
+   q.inter.z = q*tar.z;
+   return q.set(
+      0, q.inter.y, q.inter.z,
+      this, normalized::no
+   ), true;
+
 } kip_end
 
 
@@ -257,13 +261,13 @@ inline bool silo<real,tag>::get_hemi0(
    // check
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.x = rot.ex + info.q*dx;
-   if (!(info.x <= 0)) return false;
+   info.inter.x = rot.ex + info.q*dx;
+   if (!(info.inter.x <= 0)) return false;
 
-   info.y = rot.ey + info.q*dy;
-   info.z = info.q*tar.z;
+   info.inter.y = rot.ey + info.q*dy;
+   info.inter.z = info.q*tar.z;
 
-   return info(info, this, normalized::no), true;
+   return info.set(info.inter, this, normalized::no), true;
 }
 
 
@@ -282,12 +286,12 @@ inline bool silo<real,tag>::get_baseh(
    info.q = (rot.h-rot.ex)/dx;
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.y = rot.ey + dy*info.q;
-   info.z = tar.z*info.q;
+   info.inter.y = rot.ey + dy*info.q;
+   info.inter.z = tar.z*info.q;
 
-   if (op::square(info.y) + op::square(info.z) <= rsq) {
-      info.x = rot.h;
-      return info(1,0,0, this, normalized::yes), true;
+   if (op::square(info.inter.y) + op::square(info.inter.z) <= rsq) {
+      info.inter.x = rot.h;
+      return info.set(1,0,0, this, normalized::yes), true;
    }
    return false;
 }
@@ -306,13 +310,16 @@ inline bool silo<real,tag>::get_curve(
    // check
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.x = rot.ex + info.q*dx;
-   if (!(0 <= info.x && info.x <= rot.h)) return false;
+   info.inter.x = rot.ex + info.q*dx;
+   if (!(0 <= info.inter.x && info.inter.x <= rot.h)) return false;
 
-   info.y = rot.ey + info.q*dy;
-   info.z = info.q*tar.z;
+   info.inter.y = rot.ey + info.q*dy;
+   info.inter.z = info.q*tar.z;
 
-   return info(0, info.y, info.z, this, normalized::no), true;
+   return info.set(
+      0, info.inter.y, info.inter.z,
+      this, normalized::no
+   ), true;
 }
 
 

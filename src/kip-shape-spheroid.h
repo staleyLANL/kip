@@ -199,11 +199,15 @@ kip_infirst(spheroid)
       q = (p + std::sqrt(s))/g;
    if (!(0 < q && q < qmin)) return false;
 
-   q.x = rot.ex + q*dx;
-   q.y = rot.ey + q*dy;
-   q.z = q*tar.z;
+   q.inter.x = rot.ex + q*dx;
+   q.inter.y = rot.ey + q*dy;
+   q.inter.z = q*tar.z;
 
-   return q(ihsq*q.x, irsq*q.y, irsq*q.z, this, normalized::no), true;
+   return q.set(
+      ihsq*q.inter.x, irsq*q.inter.y, irsq*q.inter.z,
+      this, normalized::no
+   ), true;
+
 } kip_end
 
 
@@ -223,15 +227,15 @@ inline bool spheroid<real,tag>::get_curve(
    if (!(0 < info.q && info.q < qmin)) return false;
 
    // intersection
-   info.x = rot.ex + info.q*dx;
-   info.y = rot.ey + info.q*dy;
-   info.z = info.q*tar.z;
+   info.inter.x = rot.ex + info.q*dx;
+   info.inter.y = rot.ey + info.q*dy;
+   info.inter.z = info.q*tar.z;
 
    // normal
-   return info(
-      ihsq*info.x,
-      irsq*info.y,
-      irsq*info.z,
+   return info.set(
+      ihsq*info.inter.x,
+      irsq*info.inter.y,
+      irsq*info.inter.z,
       this, normalized::no
    ), true;
 }

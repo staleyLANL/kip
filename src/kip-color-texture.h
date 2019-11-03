@@ -205,9 +205,9 @@ template<class COLOR, class real, class BASE, class T>
 COLOR kipcolor(
    const kip::shape<real,marble<BASE,T>> &shape,
    const marble<BASE,T> &in,
-   const kip::point<real> &inter
+   const kip::point<real> &intersection
 ) {
-   const point<real> exact = shape.back(inter);
+   const point<real> exact = shape.back(intersection);
    T atotal;
 
    // basic marble texture
@@ -344,7 +344,7 @@ color get_color(
    const color cshape = kipcolor<color>(
      *q.shape,
      *q.color,
-      q.fac > 0 ? q.fac*q : point<real>(q)
+      q.fac > 0 ? q.fac*q.inter : q.inter
    );
 
    // final color, after effect from light
@@ -365,7 +365,7 @@ color get_color(
          : point<float>(light),
 
       // scaled intersection
-      point<float>(q),
+      point<float>(q.inter),
 
       // normal; scaling N/A
       point<float>(q.n),

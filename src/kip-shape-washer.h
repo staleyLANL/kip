@@ -262,11 +262,14 @@ inline bool washer<real,tag>::first_in(
       if (idisc >= 0) {
          q = -(std::sqrt(idisc) + rot.ey*dy)/(c+d);
          if (0 < q && q < qmin) {
-            q.x = rot.ex + q*dx;
-            if (0 <= q.x && q.x <= rot.h) {
-               q.y = rot.ey + q*dy;
-               q.z = q*tar.z;
-               return q(0, -q.y, -q.z, this, normalized::no), true;
+            q.inter.x = rot.ex + q*dx;
+            if (0 <= q.inter.x && q.inter.x <= rot.h) {
+               q.inter.y = rot.ey + q*dy;
+               q.inter.z = q*tar.z;
+               return q.set(
+                  0, -q.inter.y, -q.inter.z,
+                  this, normalized::no
+               ), true;
             }
          }
       }
@@ -277,11 +280,14 @@ inline bool washer<real,tag>::first_in(
    if (odisc >= 0) {
       q = (std::sqrt(odisc) - rot.ey*dy)/(c+d);
       if (0 < q && q < qmin) {
-         q.x = rot.ex + q*dx;
-         if (0 <= q.x && q.x <= rot.h) {
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            return q(0, q.y, q.z, this, normalized::no), true;
+         q.inter.x = rot.ex + q*dx;
+         if (0 <= q.inter.x && q.inter.x <= rot.h) {
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            return q.set(
+               0, q.inter.y, q.inter.z,
+               this, normalized::no
+            ), true;
          }
       }
    }
@@ -290,13 +296,13 @@ inline bool washer<real,tag>::first_in(
    if (dx < 0) {
       q = -rot.ex/dx;
       if (0 < q && q < qmin) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
 
-         const real tmp = op::square(q.y) + op::square(q.z);
+         const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
          if (isq <= tmp && tmp <= osq) {
-            q.x = 0;
-            return q(-1,0,0, this, normalized::yes), true;
+            q.inter.x = 0;
+            return q.set(-1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -305,13 +311,13 @@ inline bool washer<real,tag>::first_in(
    if (dx > 0) {
       q = (rot.h-rot.ex)/dx;
       if (0 < q && q < qmin) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
 
-         const real tmp = op::square(q.y) + op::square(q.z);
+         const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
          if (isq <= tmp && tmp <= osq) {
-            q.x = rot.h;
-            return q(1,0,0, this, normalized::yes), true;
+            q.inter.x = rot.h;
+            return q.set(1,0,0, this, normalized::yes), true;
          }
       }
    }
@@ -341,13 +347,13 @@ inline bool washer<real,tag>::first_out(
       q = -rot.ex/dx;
       if (!(0 < q && q < qmin)) return false;
 
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
 
-      const real tmp = op::square(q.y) + op::square(q.z);
+      const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
       if (isq <= tmp && tmp <= osq) {
-         q.x = 0;
-         return q(-1,0,0, this, normalized::yes), true;
+         q.inter.x = 0;
+         return q.set(-1,0,0, this, normalized::yes), true;
       }
    }
 
@@ -361,11 +367,11 @@ inline bool washer<real,tag>::first_out(
       q = -(rot.ey*dy + std::sqrt(odisc))/(c+d);
       if (!(0 < q && q < qmin)) return false;
 
-      q.x = rot.ex + q*dx;
-      if (0 <= q.x && q.x <= rot.h) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
-         return q(0, q.y, q.z, this, normalized::no), true;
+      q.inter.x = rot.ex + q*dx;
+      if (0 <= q.inter.x && q.inter.x <= rot.h) {
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
+         return q.set(0, q.inter.y, q.inter.z, this, normalized::no), true;
       }
    }
 
@@ -377,11 +383,11 @@ inline bool washer<real,tag>::first_out(
       q = (std::sqrt(idisc) - rot.ey*dy)/(c+d);
       if (!(0 < q && q < qmin)) return false;
 
-      q.x = rot.ex + q*dx;
-      if (0 <= q.x && q.x <= rot.h) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
-         return q(0, -q.y, -q.z, this, normalized::no), true;
+      q.inter.x = rot.ex + q*dx;
+      if (0 <= q.inter.x && q.inter.x <= rot.h) {
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
+         return q.set(0, -q.inter.y, -q.inter.z, this, normalized::no), true;
       }
    }
 
@@ -422,13 +428,13 @@ inline bool washer<real,tag>::get_base0(
 ) const {
    q = -rot.ex/dx;
    if (0 < q && q < qmin) {
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
 
-      const real tmp = op::square(q.y) + op::square(q.z);
+      const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
       if (isq <= tmp && tmp <= osq) {
-         q.x = 0;
-         return q(-1,0,0, this, normalized::yes), true;
+         q.inter.x = 0;
+         return q.set(-1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -444,13 +450,13 @@ inline bool washer<real,tag>::get_baseh(
 ) const {
    q = (rot.h-rot.ex)/dx;
    if (0 < q && q < qmin) {
-      q.y = rot.ey + q*dy;
-      q.z = q*tar.z;
+      q.inter.y = rot.ey + q*dy;
+      q.inter.z = q*tar.z;
 
-      const real tmp = op::square(q.y) + op::square(q.z);
+      const real tmp = op::square(q.inter.y) + op::square(q.inter.z);
       if (isq <= tmp && tmp <= osq) {
-         q.x = rot.h;
-         return q(1,0,0, this, normalized::yes), true;
+         q.inter.x = rot.h;
+         return q.set(1,0,0, this, normalized::yes), true;
       }
    }
    return false;
@@ -465,11 +471,11 @@ inline bool washer<real,tag>::get_inner(
    inq<real,tag> &q
 ) const {
    if (0 < q && q < qmin) {
-      q.x = rot.ex + q*dx;
-      if (0 <= q.x && q.x <= rot.h) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
-         return q(0, -q.y, -q.z, this, normalized::no), true;
+      q.inter.x = rot.ex + q*dx;
+      if (0 <= q.inter.x && q.inter.x <= rot.h) {
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
+         return q.set(0, -q.inter.y, -q.inter.z, this, normalized::no), true;
       }
    }
    return false;
@@ -484,11 +490,11 @@ inline bool washer<real,tag>::get_outer(
    inq<real,tag> &q
 ) const {
    if (0 < q && q < qmin) {
-      q.x = rot.ex + q*dx;
-      if (0 <= q.x && q.x <= rot.h) {
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
-         return q(0, q.y, q.z, this, normalized::no), true;
+      q.inter.x = rot.ex + q*dx;
+      if (0 <= q.inter.x && q.inter.x <= rot.h) {
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
+         return q.set(0, q.inter.y, q.inter.z, this, normalized::no), true;
       }
    }
    return false;

@@ -874,7 +874,7 @@ bool read(
       // option?
       auto iter = map.find(argv[i]);
       if (iter != map.end()) {
-         int n = 0; // init prevents warning
+         int n = 0; // initialization prevents warning
          auto p = iter->second; // the pair
          if ((!p.second || getint(argc,argv,++i,n,title)) &&
              (okay = p.first(n)))

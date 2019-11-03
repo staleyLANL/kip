@@ -123,13 +123,13 @@ kip_dry(xplane)
 kip_infirst(xplane)
 {
    return 0 < (q = misc.plane.h/diff.x) && q < qmin
-      ? q.x = x,
-        q.y = eyeball.y - q*diff.y,
-        q.z = eyeball.z - q*diff.z,
-        q(
+      ? q.inter.x = x,
+        q.inter.y = eyeball.y - q*diff.y,
+        q.inter.z = eyeball.z - q*diff.z,
+        q.set(
            misc.plane.norm, 0, 0, this,
-          (int(std::abs(q.y/size.y)) % 2 == (q.y > 0)) ==
-          (int(std::abs(q.z/size.z)) % 2 == (q.z > 0))
+          (int(std::abs(q.inter.y/size.y)) % 2 == (q.inter.y > 0)) ==
+          (int(std::abs(q.inter.z/size.z)) % 2 == (q.inter.z > 0))
            ? &color
            : &this->base(),
            normalized::yes

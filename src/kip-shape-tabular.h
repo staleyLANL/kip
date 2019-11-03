@@ -1,9 +1,4 @@
 
-// ntabular
-inline ulong ntabular = 16;
-
-
-
 // -----------------------------------------------------------------------------
 // tabular
 // -----------------------------------------------------------------------------
@@ -349,11 +344,11 @@ inline bool tabular<real,tag>::cap_lo(
    q = left/dx;
    if (!(0 < q && q < qmin)) return false;
 
-   q.y = rot.ey + q*dy;
-   q.z = q*tar_z;
+   q.inter.y = rot.ey + q*dy;
+   q.inter.z = q*tar_z;
 
-   return q.y*q.y + q.z*q.z <= pre[0].rsq
-      ? q.x = table[0].x, q(-1,0,0, this, normalized::yes), true
+   return q.inter.y*q.inter.y + q.inter.z*q.inter.z <= pre[0].rsq
+      ? q.inter.x = table[0].x, q.set(-1,0,0, this, normalized::yes), true
       : false;
 }
 
@@ -370,11 +365,11 @@ inline bool tabular<real,tag>::cap_hi(
    q = right/dx;
    if (!(0 < q && q < qmin)) return false;
 
-   q.y = rot.ey + q*dy;
-   q.z = q*tar_z;
+   q.inter.y = rot.ey + q*dy;
+   q.inter.z = q*tar_z;
 
-   return q.y*q.y + q.z*q.z <= pre[P].rsq
-      ? q.x = table[P].x, q( 1,0,0, this, normalized::yes), true
+   return q.inter.y*q.inter.y + q.inter.z*q.inter.z <= pre[P].rsq
+      ? q.inter.x = table[P].x, q.set( 1,0,0, this, normalized::yes), true
       : false;
 }
 
@@ -489,12 +484,12 @@ inline bool tabular<real,tag>::segment(
       q = this->interior ? (g + std::sqrt(s))/m : (g - std::sqrt(s))/m;
       if (!(0 < q && q < qmin)) return false;
 
-      q.x = rot.ex + q*dx;
-      if (table[i].x <= q.x && q.x <= table[i+1].x)
-         return q(
-            cell.slope*(cell.slope*(table[i].x-q.x) - table[i].r),
-            q.y = rot.ey + q*dy,
-            q.z = q*tar.z,
+      q.inter.x = rot.ex + q*dx;
+      if (table[i].x <= q.inter.x && q.inter.x <= table[i+1].x)
+         return q.set(
+            cell.slope*(cell.slope*(table[i].x-q.inter.x) - table[i].r),
+            q.inter.y = rot.ey + q*dy,
+            q.inter.z = q*tar.z,
             this, normalized::no
          ), true;
    }
@@ -511,14 +506,14 @@ inline void tabular<real,tag>::registerq(
    afew<real,tag> &ints
 ) const {
    inq<real,tag> qtmp;
-   qtmp.x = rot.ex + q*dx;
+   qtmp.inter.x = rot.ex + q*dx;
 
-   if (table[i].x <= qtmp.x && qtmp.x <= table[i+1].x)
+   if (table[i].x <= qtmp.inter.x && qtmp.inter.x <= table[i+1].x)
       ints.push(
-         qtmp(
-            slope*(slope*(table[i].x - qtmp.x) - table[i].r),
-            qtmp.y = rot.ey + q*dy,
-            qtmp.z = q*tar_z,
+         qtmp.set(
+            slope*(slope*(table[i].x - qtmp.inter.x) - table[i].r),
+            qtmp.inter.y = rot.ey + q*dy,
+            qtmp.inter.z = q*tar_z,
             this, normalized::no
          ) = q
       );
@@ -726,6 +721,8 @@ kip_check(tabular)
 
 kip_randomize(tabular)
 {
+   const ulong ntabular = 16;
+
    // number of segments (+1 == number of (x,r) points)
    const ulong nseg = (ntabular < 2)
       ? 1

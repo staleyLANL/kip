@@ -89,12 +89,12 @@ kip_infirst(circle)
 
    if (dx == 0 || !(0 < (q = -rot.ex/dx) && q < qmin)) return false;
 
-   q.y = rot.ey + q*dy;
-   q.z = q*tar.z;
+   q.inter.y = rot.ey + q*dy;
+   q.inter.z = q*tar.z;
 
-   return op::square(q.y) + op::square(q.z) <= rsq
-      ? q.x = 0,
-        q(rot.ex < 0 ? -1 : 1, 0, 0, this, normalized::yes), true
+   return op::square(q.inter.y) + op::square(q.inter.z) <= rsq
+      ? q.inter.x = 0,
+        q.set(rot.ex < 0 ? -1 : 1, 0, 0, this, normalized::yes), true
       : false;
 } kip_end
 

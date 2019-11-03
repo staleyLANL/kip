@@ -155,11 +155,11 @@ kip_infirst(cylinder)
       if (dx < 0) {
          q = -rot.ex/dx;
          if (0 < q && q < qmin) {
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            if (op::square(q.y) + op::square(q.z) <= 1) {
-               q.x = 0;
-               return q(-1,0,0, this, normalized::yes, r), true;
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            if (op::square(q.inter.y) + op::square(q.inter.z) <= 1) {
+               q.inter.x = 0;
+               return q.set(-1,0,0, this, normalized::yes, r), true;
             }
          }
       }
@@ -168,11 +168,11 @@ kip_infirst(cylinder)
       if (dx > 0) {
          q = (rot.h-rot.ex)/dx;
          if (0 < q && q < qmin) {
-            q.y = rot.ey + q*dy;
-            q.z = q*tar.z;
-            if (op::square(q.y) + op::square(q.z) <= 1) {
-               q.x = rot.h;
-               return q(1,0,0, this, normalized::yes, r), true;
+            q.inter.y = rot.ey + q*dy;
+            q.inter.z = q*tar.z;
+            if (op::square(q.inter.y) + op::square(q.inter.z) <= 1) {
+               q.inter.x = rot.h;
+               return q.set(1,0,0, this, normalized::yes, r), true;
             }
          }
       }
@@ -184,7 +184,7 @@ kip_infirst(cylinder)
       q = (std::sqrt(s) - rot.ey*dy)/(c+d);
       if (!(0 < q && q < qmin)) return false;
 
-      q.x = rot.ex + q*dx;  // inside, so don't need the range check
+      q.inter.x = rot.ex + q*dx;  // inside, so don't need the range check
 
    } else {
 
@@ -199,12 +199,12 @@ kip_infirst(cylinder)
          q = -rot.ex/dx;
          if (!(0 < q && q < qmin)) return false;
 
-         q.y = rot.ey + q*dy;
-         q.z = q*tar.z;
+         q.inter.y = rot.ey + q*dy;
+         q.inter.z = q*tar.z;
 
-         if (op::square(q.y) + op::square(q.z) <= 1) {
-            q.x = 0;
-            return q(-1,0,0, this, normalized::yes, r), true;
+         if (op::square(q.inter.y) + op::square(q.inter.z) <= 1) {
+            q.inter.x = 0;
+            return q.set(-1,0,0, this, normalized::yes, r), true;
          }
       }
 
@@ -213,13 +213,17 @@ kip_infirst(cylinder)
 
       q = -(rot.ey*dy + std::sqrt(s))/(c+d);
       if (!(0 < q && q < qmin)) return false;
-      q.x = rot.ex + q*dx;
-      if (!(0 <= q.x && q.x <= rot.h)) return false;
+      q.inter.x = rot.ex + q*dx;
+      if (!(0 <= q.inter.x && q.inter.x <= rot.h)) return false;
    }
 
-   q.y = rot.ey + q*dy;
-   q.z = q*tar.z;
-   return q(0, q.y, q.z, this, normalized::no, r), true;
+   q.inter.y = rot.ey + q*dy;
+   q.inter.z = q*tar.z;
+   return q.set(
+      0, q.inter.y, q.inter.z,
+      this, normalized::no, r
+   ), true;
+
 } kip_end
 
 
@@ -244,11 +248,11 @@ bool cylinder<real,tag>::get_base0(
    info.q = -rot.ex/dx;
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.y = rot.ey + dy*info.q;
-   info.z = tar.z*info.q;
-   if (op::square(info.y) + op::square(info.z) <= 1) {
-      info.x = 0;
-      return info(-1,0,0, this, normalized::yes, r), true;
+   info.inter.y = rot.ey + dy*info.q;
+   info.inter.z = tar.z*info.q;
+   if (op::square(info.inter.y) + op::square(info.inter.z) <= 1) {
+      info.inter.x = 0;
+      return info.set(-1,0,0, this, normalized::yes, r), true;
    }
    return false;
 }
@@ -269,11 +273,11 @@ bool cylinder<real,tag>::get_baseh(
    info.q = (rot.h-rot.ex)/dx;
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.y = rot.ey + dy*info.q;
-   info.z = tar.z*info.q;
-   if (op::square(info.y) + op::square(info.z) <= 1) {
-      info.x = rot.h;
-      return info(1,0,0, this, normalized::yes, r), true;
+   info.inter.y = rot.ey + dy*info.q;
+   info.inter.z = tar.z*info.q;
+   if (op::square(info.inter.y) + op::square(info.inter.z) <= 1) {
+      info.inter.x = rot.h;
+      return info.set(1,0,0, this, normalized::yes, r), true;
    }
    return false;
 }
@@ -292,13 +296,16 @@ bool cylinder<real,tag>::get_curve(
    // check
    if (!(0 < info.q && info.q < qmin)) return false;
 
-   info.x = rot.ex + info.q*dx;
-   if (!(0 <= info.x && info.x <= rot.h)) return false;
+   info.inter.x = rot.ex + info.q*dx;
+   if (!(0 <= info.inter.x && info.inter.x <= rot.h)) return false;
 
-   info.y = rot.ey + info.q*dy;
-   info.z = info.q*tar.z;
+   info.inter.y = rot.ey + info.q*dy;
+   info.inter.z = info.q*tar.z;
 
-   return info(0, info.y, info.z, this, normalized::no, r), true;
+   return info.set(
+      0, info.inter.y, info.inter.z,
+      this, normalized::no, r
+   ), true;
 }
 
 

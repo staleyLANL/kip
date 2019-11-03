@@ -406,52 +406,50 @@ inline char test_1575(
 // -----------------------------------------------------------------------------
 
 // merge_bins - helper
+#ifdef _OPENMP
 template<class real, class base>
 inline void merge_bins(
    const int nbin, const unsigned hzone,
    vars<real,base> &vars, const int nthreads,
    const array<3,std::vector<minimum_and_shape<real,base>>> &per_zone
 ) {
-   (void)nbin;
-   (void)hzone;
-   (void)vars;
-   (void)nthreads;
-   (void)per_zone;
+   #pragma omp parallel for
+   for (int b = 0;  b < nbin;  ++b) {
+      const unsigned hseg = b % hzone;
+      const unsigned vseg = b / hzone;
 
-   #ifdef _OPENMP
-      #pragma omp parallel for
-      for (int b = 0;  b < nbin;  ++b) {
-         const unsigned hseg = b % hzone;
-         const unsigned vseg = b / hzone;
-
-         for (int t = 1;  t < nthreads;  ++t)
-            vars.uniform[b].insert(
-               vars.uniform[b].end(),
-               per_zone(hseg, vseg, t-1).begin(),
-               per_zone(hseg, vseg, t-1).end  ()
-            );
-      }
-   #endif
+      for (int t = 1;  t < nthreads;  ++t)
+         vars.uniform[b].insert(
+            vars.uniform[b].end(),
+            per_zone(hseg, vseg, t-1).begin(),
+            per_zone(hseg, vseg, t-1).end  ()
+         );
+   }
 }
+#endif
 
 
 
 // uprepare
-template<unsigned code, class real, class base, class SHAPEVEC>
+template<class real, class base, class SHAPEVEC>
 inline void uprepare(
-   const light<real> &light, const engine<real> &engine,
-   vars<real,base> &vars, const int nbin,
-   SHAPEVEC &vec,  // std::vector of model.sphere, model.ands, etc.
+   const light <real> &light,
+   const engine<real> &engine,
+   /* */ vars  <real,base> &vars,
+   const int  nbin,
+   SHAPEVEC   &vec,  // std::vector of model.sphere, model.ands, etc.
    const bool diag
 ) {
    // number of this particular type of shape
    const int numobj = int(vec.size());  // int, for OpenMP
    if (numobj == 0) return;  // none of this type of shape
 
-   // per_zone(hzone,vzone,nthreads-1) (-1 because thread 0 uses vars.uniform)
-   static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
-   const int nthreads = get_nthreads();
+   // per_zone(hzone,vzone,nthreads-1)
+   // nthreads-1 because thread 0 uses vars.uniform
+   (void)nbin;
    #ifdef _OPENMP
+      static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
+      const int nthreads = get_nthreads();
       for (ulong z = per_zone.size();  z--; )
          per_zone[z].clear();
       if (nthreads > 1)
@@ -463,28 +461,27 @@ inline void uprepare(
       #pragma omp parallel for
    #endif
    for (int i = 0;  i < numobj;  ++i) {
-      ///      const ulong i = iint;
       using SHAPE = typename SHAPEVEC::value_type;
-      SHAPE &p = vec[ulong(i)];
-      if (!p.on) continue;
+      SHAPE &shape = vec[ulong(i)];
+      if (!shape.on) continue;
 
       // minimum distance from eyeball
-      p.is_operand = false;  // or we wouldn't be in the object's std::vector
-      const real pmin = p.SHAPE::process(vars.eyeball, light[0], engine, vars);
+      shape.is_operand = false;  // or we wouldn't be in the shape vector
+      const real pmin = shape.SHAPE::process(vars.eyeball,light[0],engine,vars);
       kip_assert(pmin >= 0);
 
       // behind us, off-screen, or we're inside
       minend sub, bin;
-      if (p.SHAPE::dry(vars.behind) ||
-         !seg_minmax(engine,vars,p, sub.imin,sub.iend,sub.jmin,sub.jend) ||
-         (p.interior && p.solid))
+      if (shape.SHAPE::dry(vars.behind) ||
+         !seg_minmax(engine,vars,shape, sub.imin,sub.iend,sub.jmin,sub.jend) ||
+         (shape.interior && shape.solid))
          continue;
 
       // fine boundaries (used later, when shooting rays)
-      p.mend.imin = op::round<u32>(vars.hratsub * real(sub.imin));
-      p.mend.iend = op::round<u32>(vars.hratsub * real(sub.iend));
-      p.mend.jmin = op::round<u32>(vars.vratsub * real(sub.jmin));
-      p.mend.jend = op::round<u32>(vars.vratsub * real(sub.jend));
+      shape.mend.imin = op::round<u32>(vars.hratsub * real(sub.imin));
+      shape.mend.iend = op::round<u32>(vars.hratsub * real(sub.iend));
+      shape.mend.jmin = op::round<u32>(vars.vratsub * real(sub.jmin));
+      shape.mend.jend = op::round<u32>(vars.vratsub * real(sub.jend));
 
       // coarse bins (used shortly, when binning objects)
       bin.imin =  sub.imin / engine.hsub;
@@ -492,10 +489,14 @@ inline void uprepare(
       bin.jmin =  sub.jmin / engine.vsub;
       bin.jend = (sub.jend + engine.vsub - 1)/engine.vsub;
 
-      const int thread = this_thread();
-      std::vector<minimum_and_shape<real,base>> *const ptr = thread
-         ? &per_zone[ulong(nbin*(thread-1))]
-       : &vars.uniform[0];
+      #ifdef _OPENMP
+         const int thread = this_thread();
+         std::vector<minimum_and_shape<real,base>> *vms = thread
+            ? &per_zone[ulong(nbin*(thread-1))]
+            : &vars.uniform[0];
+      #else
+         std::vector<minimum_and_shape<real,base>> *vms = &vars.uniform[0];
+      #endif
 
       // drop into bins
       for (u32 vseg = bin.jmin;  vseg < bin.jend;  ++vseg) {
@@ -504,23 +505,25 @@ inline void uprepare(
          for (u32 hseg = bin.imin;  hseg < bin.iend;  ++hseg, ++val) {
             // diag?
             if (diag) {
-               const char rv = test_diag(vars, p, val, bin, hseg);
+               const char rv = test_diag(vars, shape, val, bin, hseg);
                if (rv == 'b') break;
                if (rv == 'c') continue;
             }
 
             // quad, 3060, 1575?
-            if (test_quad(vars, p, val) == 'c' ||
-                test_3060(vars, p, val) == 'c' ||
-                test_1575(vars, p, val) == 'c') continue;
+            if (test_quad(vars, shape, val) == 'c' ||
+                test_3060(vars, shape, val) == 'c' ||
+                test_1575(vars, shape, val) == 'c') continue;
 
             // push to bin
-            ptr[val].push_back(minimum_and_shape<real,base>(pmin,p));
+            vms[val].push_back(minimum_and_shape<real,base>(pmin,shape));
          }
       }
    }
 
+#ifdef _OPENMP
    merge_bins(nbin, engine.hzone, vars, nthreads, per_zone);
+#endif
 }
 
 
@@ -622,8 +625,8 @@ inline void uprepare_surf(
 
    // per_zone(hzone, vzone, nthreads-1) (-1 because thread 0 uses vars.uniform)
    static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
-   const int nthreads = get_nthreads();
    #ifdef _OPENMP
+      const int nthreads = get_nthreads();
       for (ulong z = per_zone.size();  z--; )
          per_zone[z].clear();
       if (nthreads > 1)
@@ -658,7 +661,9 @@ inline void uprepare_surf(
          (engine,vars, ptr,p, object_border);
    }
 
+#ifdef _OPENMP
    merge_bins(nbin, engine.hzone, vars, nthreads, per_zone);
+#endif
 }
 
 
@@ -682,43 +687,43 @@ void usetup(
    // Prepare most shapes
    const int nbin = int(engine.hzone * engine.vzone);
 
-   uprepare<1>  ( light, engine, vars, nbin, model.kipnot,     true );
+   uprepare( light, engine, vars, nbin, model.kipnot,     true );
 
-   uprepare<2>  ( light, engine, vars, nbin, model.kipand,     true );
-   uprepare<2>  ( light, engine, vars, nbin, model.kipcut,     true );
-   uprepare<2>  ( light, engine, vars, nbin, model.kipor,      true );
-   uprepare<2>  ( light, engine, vars, nbin, model.kipxor,     true );
+   uprepare( light, engine, vars, nbin, model.kipand,     true );
+   uprepare( light, engine, vars, nbin, model.kipcut,     true );
+   uprepare( light, engine, vars, nbin, model.kipor,      true );
+   uprepare( light, engine, vars, nbin, model.kipxor,     true );
 
-   uprepare<3>  ( light, engine, vars, nbin, model.ands,       true );
-   uprepare<3>  ( light, engine, vars, nbin, model.even,       true );
-   uprepare<3>  ( light, engine, vars, nbin, model.odd,        true );
-   uprepare<3>  ( light, engine, vars, nbin, model.one,        true );
-   uprepare<3>  ( light, engine, vars, nbin, model.ors,        true );
-   uprepare<3>  ( light, engine, vars, nbin, model.some,       true );
+   uprepare( light, engine, vars, nbin, model.ands,       true );
+   uprepare( light, engine, vars, nbin, model.even,       true );
+   uprepare( light, engine, vars, nbin, model.odd,        true );
+   uprepare( light, engine, vars, nbin, model.one,        true );
+   uprepare( light, engine, vars, nbin, model.ors,        true );
+   uprepare( light, engine, vars, nbin, model.some,       true );
 
-   uprepare<0>  ( light, engine, vars, nbin, model.bicylinder, true );
-   uprepare<0>  ( light, engine, vars, nbin, model.biwasher,   true );
-   uprepare<0>  ( light, engine, vars, nbin, model.box,        true );
-   uprepare<0>  ( light, engine, vars, nbin, model.cube,       true );
-   uprepare<0>  ( light, engine, vars, nbin, model.circle,     true );
-   uprepare<0>  ( light, engine, vars, nbin, model.cone,       true );
-   uprepare<0>  ( light, engine, vars, nbin, model.cylinder,   true );
-   uprepare<0>  ( light, engine, vars, nbin, model.ellipsoid,  true );
-   uprepare<0>  ( light, engine, vars, nbin, model.half,       true );
-   uprepare<0>  ( light, engine, vars, nbin, model.paraboloid, true );
-   uprepare<0>  ( light, engine, vars, nbin, model.nothing,    true );
-   uprepare<0>  ( light, engine, vars, nbin, model.everything, true );
-   uprepare<0>  ( light, engine, vars, nbin, model.pill,       true );
-   uprepare<0>  ( light, engine, vars, nbin, model.polygon,    true );
-   uprepare<0>  ( light, engine, vars, nbin, model.silo,       true );
-   uprepare<0>  ( light, engine, vars, nbin, model.sphere,     true );
-   uprepare<0>  ( light, engine, vars, nbin, model.spheroid,   true );
-   uprepare<0>  ( light, engine, vars, nbin, model.tabular,    true );
-   uprepare<0>  ( light, engine, vars, nbin, model.triangle,   true );
-   uprepare<0>  ( light, engine, vars, nbin, model.washer,     true );
-   uprepare<0>  ( light, engine, vars, nbin, model.xplane,     true );
-   uprepare<0>  ( light, engine, vars, nbin, model.yplane,     true );
-   uprepare<0>  ( light, engine, vars, nbin, model.zplane,     true );
+   uprepare( light, engine, vars, nbin, model.bicylinder, true );
+   uprepare( light, engine, vars, nbin, model.biwasher,   true );
+   uprepare( light, engine, vars, nbin, model.box,        true );
+   uprepare( light, engine, vars, nbin, model.cube,       true );
+   uprepare( light, engine, vars, nbin, model.circle,     true );
+   uprepare( light, engine, vars, nbin, model.cone,       true );
+   uprepare( light, engine, vars, nbin, model.cylinder,   true );
+   uprepare( light, engine, vars, nbin, model.ellipsoid,  true );
+   uprepare( light, engine, vars, nbin, model.half,       true );
+   uprepare( light, engine, vars, nbin, model.paraboloid, true );
+   uprepare( light, engine, vars, nbin, model.nothing,    true );
+   uprepare( light, engine, vars, nbin, model.everything, true );
+   uprepare( light, engine, vars, nbin, model.pill,       true );
+   uprepare( light, engine, vars, nbin, model.polygon,    true );
+   uprepare( light, engine, vars, nbin, model.silo,       true );
+   uprepare( light, engine, vars, nbin, model.sphere,     true );
+   uprepare( light, engine, vars, nbin, model.spheroid,   true );
+   uprepare( light, engine, vars, nbin, model.tabular,    true );
+   uprepare( light, engine, vars, nbin, model.triangle,   true );
+   uprepare( light, engine, vars, nbin, model.washer,     true );
+   uprepare( light, engine, vars, nbin, model.xplane,     true );
+   uprepare( light, engine, vars, nbin, model.yplane,     true );
+   uprepare( light, engine, vars, nbin, model.zplane,     true );
 
    // Prepare surfs; creates "tri" objects
    uprepare_surf(light, engine, vars, nbin, object_border, model.surf);

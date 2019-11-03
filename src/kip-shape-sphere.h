@@ -136,20 +136,31 @@ kip_check(sphere)
 // -----------------------------------------------------------------------------
 
 // infirst
-kip_infirst(sphere)
-{
-   const real p = dot(misc.sphere.f(),diff), h = p*p - misc.sphere.m;
+template<class real, class tag>
+bool sphere<real,tag>::infirst(
+   const eyetardiff<real> &etd,
+   const real qmin,
+   inq<real,tag> &q,
+   const detail::subinfo &
+) const {
+   const kip::point<real> &eyeball = etd.eyeball;
+   const kip::point<real> &diff    = etd.diff;
+
+   const real p = dot(misc.sphere.f(),diff);
+   const real h = p*p - misc.sphere.m;
    if (h < 0) return false;
 
    if (this->interior)
       q = p + std::sqrt(h);
    else
       q = p - std::sqrt(h);
-   if (!(0 < q && q < qmin)) return false;
 
-   q.point<real>::operator=(eyeball - real(q)*diff);
-   return q(q - c, this, normalized::no), true;
-} kip_end
+   if (!(q < qmin && 0 < q)) return false;
+
+   // diff = "t2e"
+   q.inter = eyeball - real(q)*diff;
+   return q.set(q.inter-c, this, normalized::no), true;
+}
 
 
 
@@ -162,8 +173,8 @@ kip_inall(sphere)
    if (this->interior) {
       ints[0] = p + std::sqrt(h);
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
-      ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);
-      ints[0](ints[0] - c, this, normalized::no);
+      ints[0].inter = eyeball - real(ints[0])*diff;
+      ints[0].set(ints[0].inter - c, this, normalized::no);
       ints.setsize(1);
 
    } else {
@@ -171,13 +182,13 @@ kip_inall(sphere)
 
       ints[0] = p - hsqrt;
       if (!(0 < ints[0] && ints[0] < qmin)) return false;
-      ints[0].point<real>::operator=(eyeball - real(ints[0])*diff);
-      ints[0](ints[0] - c, this, normalized::no);
+      ints[0].inter = eyeball - real(ints[0])*diff;
+      ints[0].set(ints[0].inter - c, this, normalized::no);
 
       ints[1] = p + hsqrt;
       if (0 < ints[1] && ints[1] < qmin) {
-         ints[1].point<real>::operator=(eyeball - real(ints[1])*diff);
-         ints[1](ints[1] - c, this, normalized::no);
+         ints[1].inter = eyeball - real(ints[1])*diff;
+         ints[1].set(ints[1].inter - c, this, normalized::no);
          ints.setsize(2);
       } else
          ints.setsize(1);

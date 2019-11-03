@@ -161,8 +161,8 @@ kip_infirst(half)
    const real den = dot(normal,diff);
    if (den == 0 || !(0 < (q = misc.half.tmp/den) && q < qmin)) return false;
 
-   q.kip::template point<real>::operator=(eyeball - real(q)*diff);
-   return q(normal, this, normalized::no), true;
+   q.inter = eyeball - real(q)*diff;
+   return q.set(normal, this, normalized::no), true;
 } kip_end
 
 
