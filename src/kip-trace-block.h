@@ -312,7 +312,7 @@ void btrace(
                bin[s].shape->lastpix = npix;
                if (detail::op_first(bin[s].shape,
                                   view.eyeball, view.target, diff,
-                                  qmin,*qused, insub)) {
+                                    insub, qmin,*qused)) {
                   const real q = qused->q;
                   kip_assert(0 < q && q < qmin);
                   ptr = bin[s].shape;  qmin = q;  s++;
@@ -325,7 +325,7 @@ void btrace(
                bin[s].shape->lastpix = npix;
                if (detail::op_first(bin[s].shape,
                                   eyeball, target, diff,
-                                  qmin, *qnext, insub)) {
+                                    insub, qmin, *qnext)) {
                   const real q = qnext->q;
                   kip_assert(0 < q && q < qmin);
                   ptr = bin[s].shape;  qmin = q;

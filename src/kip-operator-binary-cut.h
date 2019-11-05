@@ -236,14 +236,14 @@ kip_infirst(kipcut)
       inq<real,tag> bq;
       return
            binary.amin < qmin &&
-           detail::op_first(binary.a, etd, qmin, q, insub)
+           detail::op_first(binary.a, etd, insub, qmin, q)
          ? binary.bmin < q    &&
-           detail::op_first(binary.b, etd, real(q),bq, insub)
+           detail::op_first(binary.b, etd, insub, real(q), bq)
               ? (q=bq).reverse(), // b wins
                  true
               :  true             // a only
          : binary.bmin < qmin &&
-           detail::op_first(binary.b, etd, qmin, q, insub)
+           detail::op_first(binary.b, etd, insub, qmin, q)
               ? (q   ).reverse(), // b only
                  true
               :  false  // always (up to qmin) inside
@@ -256,16 +256,16 @@ kip_infirst(kipcut)
 
    afew<real,tag> aq;
    if (binary.amin >= qmin ||
-      !detail::op_all(binary.a, etd, qmin,aq, insub))
+      !detail::op_all(binary.a, etd, insub, qmin, aq))
       return
          binary.ina &&
          binary.bmin < qmin &&
-         detail::op_first(binary.b, etd, qmin,q, insub) &&
+         detail::op_first(binary.b, etd, insub, qmin, q) &&
         (q.reverse(), true);
 
    afew<real,tag> bq;
    if (binary.bmin >= qmin ||
-      !detail::op_all(binary.b, etd, qmin,bq, insub))
+      !detail::op_all(binary.b, etd, insub, qmin, bq))
       return !binary.inb && (q = aq[0], true);
 
    // search for the relevant point
@@ -296,15 +296,15 @@ kip_inall(kipcut)
 {
    afew<real,tag> aq;
    if (!(binary.amin < qmin &&
-         detail::op_all(binary.a, etd, qmin,aq, insub)))
+         detail::op_all(binary.a, etd, insub, qmin, aq)))
       return
          binary.ina && binary.bmin < qmin &&
-         detail::op_all(binary.b, etd, qmin,ints, insub) &&
+         detail::op_all(binary.b, etd, insub, qmin, ints) &&
          ints.reverse();
 
    afew<real,tag> bq;
    if (!(binary.bmin < qmin &&
-         detail::op_all(binary.b, etd, qmin,bq, insub)))
+         detail::op_all(binary.b, etd, insub, qmin, bq)))
       return !binary.inb && ints.assign(aq);
 
    const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;

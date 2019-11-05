@@ -162,14 +162,14 @@ kip_randomize(kipnot)
 // infirst
 kip_infirst(kipnot)
 {
-   return detail::op_first(unary.a, etd, qmin,q, insub)
+   return detail::op_first(unary.a, etd, insub, qmin, q)
       ? q.reverse(), true : false;
 } kip_end
 
 // inall
 kip_inall(kipnot)
 {
-   return detail::op_all(unary.a, etd, qmin,ints, insub)
+   return detail::op_all(unary.a, etd, insub, qmin, ints)
       ? ints.reverse() : false;
 } kip_end
 

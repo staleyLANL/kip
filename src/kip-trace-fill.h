@@ -206,18 +206,11 @@ inline bool get_first(
 // op_first
 template<class real, class tag>
 inline bool op_first(
-   // shape
    const shape<real,tag> *const s,
-
-   // eyeball, target, diff
    const eyetardiff<real> &etd,
-
-   // qmin, q
+   const subinfo &insub,
    const real qmin,
-   inq<real,tag> &q,
-
-   // insub
-   const subinfo &insub
+   inq<real,tag> &q
 ) {
    const shape<real,tag> &obj = *s;
    if (!inbound(obj,insub)) return false;
@@ -234,7 +227,7 @@ inline bool op_first(
 
    // Equivalent inall() call; useful for comparing first vs. all speed:
    // afew<real,tag> ints;  ints.reset();
-   // return obj.inall(etd, qmin,ints, insub)
+   // return obj.inall(etd, insub, qmin, ints)
    //    ? q = ints[0], true
    //    : false;
 }
@@ -244,25 +237,18 @@ inline bool op_first(
 // op_all
 template<class real, class tag>
 inline bool op_all(
-   // shape
    const shape<real,tag> *const s,
-
-   // eyeball, target, diff
    const eyetardiff<real> &etd,
-
-   // qmin, q
+   const subinfo &insub,
    const real qmin,
-   afew<real,tag> &q,
-
-   // insub
-   const subinfo &insub
+   afew<real,tag> &q
 ) {
    const shape<real,tag> &obj = *s;
    if (!inbound(obj,insub)) return false;
 
    #ifdef KIP_FUZZY
       const real eps = epsilon<real>();
-      if (!(obj.inall(etd, qmin,q, insub)))
+      if (!(obj.inall(etd, insub, qmin, q)))
          return false;
 
       const unsigned size = q.size();
@@ -275,7 +261,7 @@ inline bool op_all(
 
       return q.size();
    #else
-      return obj.inall(etd, qmin,q, insub);
+      return obj.inall(etd, insub, qmin, q);
    #endif
 }
 

@@ -110,7 +110,6 @@ public:
       copy(from);
    }
 
-
    // kip_class = kip_class
    kip_class &operator=(const kip_class &from)
    {
@@ -119,7 +118,6 @@ public:
       copy(from);
       return *this;
    }
-
 
    // destructor
    ~kip_class()

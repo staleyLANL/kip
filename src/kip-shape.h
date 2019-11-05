@@ -373,9 +373,9 @@ public:
    // inall
    virtual bool inall(
       const eyetardiff<real> &,
+      const detail::subinfo &,
       const real,
-      afew<real,tag> &,
-      const detail::subinfo &
+      afew<real,tag> &
    ) const = 0;
 
    // check
@@ -432,9 +432,9 @@ public:
    \
    bool inall(\
       const eyetardiff<real> &,\
+      const detail::subinfo &,\
       const real,\
-      afew<real,tag> &,\
-      const detail::subinfo &\
+      afew<real,tag> &\
    ) const;\
    \
    diagnostic check() const
@@ -497,23 +497,23 @@ public:
       const kip::point<real> &diff    = etd.diff;\
       \
       (void)eyeball;  (void)target;  (void)diff;\
-      (void)qmin;     (void)q;       (void)insub;
+      (void)insub;    (void)qmin;    (void)q;
 
 // kip_inall
 #define kip_inall(type)\
    template<class real, class tag>\
    bool type<real,tag>::inall(\
       const eyetardiff<real> &etd,\
+      const detail::subinfo &insub,\
       const real qmin,\
-      afew<real,tag> &ints,\
-      const detail::subinfo &insub\
+      afew<real,tag> &ints\
    ) const {\
       const kip::point<real> &eyeball = etd.eyeball;\
       const kip::point<real> &target  = etd.target;\
       const kip::point<real> &diff    = etd.diff;\
       \
       (void)eyeball;  (void)target;  (void)diff;\
-      (void)qmin;     (void)ints;    (void)insub;
+      (void)insub;    (void)qmin;    (void)ints;
 
 
 
@@ -773,9 +773,9 @@ template<class real, class tag>
 inline bool op_first(
    const shape<real,tag> *const,
    const eyetardiff<real> &,
+   const subinfo &,
    const real,
-   inq<real,tag> &,
-   const subinfo &
+   inq<real,tag> &
 );
 
 // op_all
@@ -783,9 +783,9 @@ template<class real, class tag>
 inline bool op_all(
    const shape<real,tag> *const,
    const eyetardiff<real> &,
+   const subinfo &,
    const real,
-   afew<real,tag> &,
-   const subinfo &
+   afew<real,tag> &
 );
 
 } // namespace detail

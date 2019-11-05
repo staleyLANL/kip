@@ -213,13 +213,13 @@ kip_infirst(kipxor)
    inq<real,tag> bq;
    return
         binary.amin < qmin &&
-        detail::op_first(binary.a, etd, qmin, q, insub)
+        detail::op_first(binary.a, etd, insub, qmin, q)
       ? binary.bmin < q    &&
-        detail::op_first(binary.b, etd, real(q),bq, insub)
+        detail::op_first(binary.b, etd, insub, real(q), bq)
            ? (q=bq).reverse(binary.ina), true   // b wins
            : (q    .reverse(binary.inb), true)  // a only
       : binary.bmin < qmin &&
-        detail::op_first(binary.b, etd, qmin, q, insub)
+        detail::op_first(binary.b, etd, insub, qmin, q)
            ?  q    .reverse(binary.ina), true   // b only
            :  false  // always (up to qmin) the same status
    ;
@@ -232,15 +232,15 @@ kip_inall(kipxor)
 {
    afew<real,tag> aq;
    if (!(binary.amin < qmin &&
-         detail::op_all(binary.a, etd, qmin,aq,   insub)))
+         detail::op_all(binary.a, etd, insub, qmin, aq)))
       return
          binary.bmin < qmin &&
-         detail::op_all(binary.b, etd, qmin,ints, insub) &&
+         detail::op_all(binary.b, etd, insub, qmin, ints) &&
          ints.reverse(binary.ina);
 
    afew<real,tag> bq;
    if (!(binary.bmin < qmin &&
-         detail::op_all(binary.b, etd, qmin,bq,   insub)))
+         detail::op_all(binary.b, etd, insub, qmin, bq)))
       return ints.assign(aq).reverse(binary.inb);
 
    const ulong anum = aq.size();  ulong an = 0;  bool ina = binary.ina;

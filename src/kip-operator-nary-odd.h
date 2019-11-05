@@ -87,7 +87,7 @@ kip_infirst(odd)
    inq<real,tag> qtmp;  q = qmin;
 
    for (ulong i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
-      if (detail::op_first(vec[i].op, etd, real(q),qtmp, insub))
+      if (detail::op_first(vec[i].op, etd, insub, real(q), qtmp))
          q = qtmp;
    return q < qmin;
 } kip_end
@@ -109,8 +109,7 @@ kip_inall(odd)
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       operand[i].size =
          vec[i].min < qmin &&
-         detail::op_all(vec[i].op, etd,
-                      qmin,operand[i].points, insub)
+         detail::op_all(vec[i].op, etd, insub, qmin, operand[i].points)
          ? (found = true, operand[i].points.size())
          :  0;
       operand[i].next = 0, operand[i].in_now = vec[i].in;
