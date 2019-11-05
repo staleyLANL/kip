@@ -103,7 +103,7 @@ kip_infirst(circle)
 // inall
 kip_inall(circle)
 {
-   return circle<real,tag>::infirst(kip_etd,qmin,ints.one(),insub)
+   return circle<real,tag>::infirst(etd, insub, qmin, ints.one())
       ? ints.push(ints[0]), true
       : false;
 } kip_end

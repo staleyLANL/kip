@@ -141,7 +141,7 @@ kip_infirst(ors)
    if (!this->interior) {
       inq<real,tag> qtmp;  q = qmin;
       for (ulong i = 0;  i < kip_data.nop && vec[i].min < q;  ++i)
-         if (detail::op_first(vec[i].op, kip_etd, real(q),qtmp, insub))
+         if (detail::op_first(vec[i].op, etd, real(q),qtmp, insub))
             q = qtmp;
       return q < qmin;
    }
@@ -157,7 +157,7 @@ kip_infirst(ors)
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       const bool found =
          vec[i].min < qmin &&
-         detail::op_all(vec[i].op, kip_etd,
+         detail::op_all(vec[i].op, etd,
                       qmin,operand[i].points, insub);
 
       if (found || !vec[i].in) {
@@ -217,7 +217,7 @@ kip_inall(ors)
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       const bool found =
          vec[i].min < qmin &&
-         detail::op_all(vec[i].op, kip_etd,
+         detail::op_all(vec[i].op, etd,
                       qmin,operand[i].points, insub);
 
       if (found || !vec[i].in) {

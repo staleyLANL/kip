@@ -211,7 +211,7 @@ kip_infirst(triangle)
 // inall
 kip_inall(triangle)
 {
-   return triangle<real,tag>::infirst(kip_etd,qmin,ints.one(),insub)
+   return triangle<real,tag>::infirst(etd, insub, qmin, ints.one())
       ? ints.push(ints[0]), true
       : false;
 } kip_end

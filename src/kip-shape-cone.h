@@ -264,8 +264,8 @@ inline bool cone<real,tag>::get_curve(
 
 kip_inall(cone)
 {
-   if (this->interior) return cone<real,tag>::infirst(
-      kip_etd,qmin,ints.one(),insub);
+   if (this->interior)
+      return cone<real,tag>::infirst(etd, insub, qmin, ints.one());
 
    // Outside...
    const point<real> tar = rot.fore(target);

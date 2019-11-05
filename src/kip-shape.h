@@ -75,7 +75,8 @@ namespace detail {
 // minend
 class minend {
 public:
-   u32 imin, iend, jmin, jend;
+   u32 imin, iend;
+   u32 jmin, jend;
 };
 
 // subinfo
@@ -364,13 +365,17 @@ public:
    // infirst
    virtual bool infirst(
       const eyetardiff<real> &,
-      const real, inq<real,tag> &, const detail::subinfo &
+      const detail::subinfo &,
+      const real,
+      inq<real,tag> &
    ) const = 0;
 
    // inall
    virtual bool inall(
       const eyetardiff<real> &,
-      const real, afew<real,tag> &, const detail::subinfo &
+      const real,
+      afew<real,tag> &,
+      const detail::subinfo &
    ) const = 0;
 
    // check
@@ -420,9 +425,9 @@ public:
    \
    bool infirst(\
       const eyetardiff<real> &,\
+      const detail::subinfo &,\
       const real,\
-      inq<real,tag> &,\
-      const detail::subinfo &\
+      inq<real,tag> &\
    ) const;\
    \
    bool inall(\
@@ -478,17 +483,14 @@ public:
 
 
 
-// kip_etd
-#define kip_etd etd
-
 // kip_infirst
 #define kip_infirst(type)\
    template<class real, class tag>\
    bool type<real,tag>::infirst(\
       const eyetardiff<real> &etd,\
+      const detail::subinfo &insub,\
       const real qmin,\
-      inq<real,tag> &q,\
-      const detail::subinfo &insub\
+      inq<real,tag> &q\
    ) const {\
       const kip::point<real> &eyeball = etd.eyeball;\
       const kip::point<real> &target  = etd.target;\
@@ -512,6 +514,8 @@ public:
       \
       (void)eyeball;  (void)target;  (void)diff;\
       (void)qmin;     (void)ints;    (void)insub;
+
+
 
 // kip_check
 #define kip_check(type)\

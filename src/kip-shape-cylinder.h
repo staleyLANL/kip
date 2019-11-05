@@ -316,8 +316,8 @@ bool cylinder<real,tag>::get_curve(
 
 kip_inall(cylinder)
 {
-   if (this->interior) return cylinder<real,tag>::infirst(
-      kip_etd,qmin,ints.one(),insub);
+   if (this->interior)
+      return cylinder<real,tag>::infirst(etd, insub, qmin, ints.one());
 
    // Outside...
    const point<real> tar = rot.fore(target);

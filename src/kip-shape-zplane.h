@@ -135,7 +135,7 @@ kip_infirst(zplane)
 // inall
 kip_inall(zplane)
 {
-   return zplane<real,tag>::infirst(kip_etd,qmin,ints.one(),insub)
+   return zplane<real,tag>::infirst(etd, insub, qmin, ints.one())
       ? ints.push(ints[0]), true
       : false;
 } kip_end

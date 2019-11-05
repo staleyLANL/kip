@@ -182,7 +182,7 @@ inline bool get_first(
       if (qmin == std::numeric_limits<real>::max())
          num = 0;
 
-      if (obj.infirst(etd, qmin, q, subinfo(i,j, unsigned(zone), obj.mend))) {
+      if (obj.infirst(etd, subinfo(i,j,unsigned(zone),obj.mend), qmin, q)) {
          q = real(q)*(1 + eps*random_full<real>());
          return q < qmin*(1-eps)
             ? (num = 1)
@@ -191,7 +191,7 @@ inline bool get_first(
 
       return false;
    #else
-      return obj.infirst(etd, qmin, q, subinfo(i,j, unsigned(zone), obj.mend));
+      return obj.infirst(etd, subinfo(i,j,unsigned(zone),obj.mend), qmin, q);
    #endif
 }
 
@@ -224,17 +224,17 @@ inline bool op_first(
 
    #ifdef KIP_FUZZY
       const real eps = epsilon<real>();
-      if (!(s->infirst(kip_etd, qmin,q, insub)))
+      if (!(s->infirst(etd, insub, qmin,q)))
          return false;
       return real(q = real(q)*(1 + eps*random_full<real>())) < qmin;
    #endif
 
    // general shape
-   return obj.infirst(kip_etd, qmin,q, insub);
+   return obj.infirst(etd, insub, qmin, q);
 
    // Equivalent inall() call; useful for comparing first vs. all speed:
    // afew<real,tag> ints;  ints.reset();
-   // return obj.inall(kip_etd, qmin,ints, insub)
+   // return obj.inall(etd, qmin,ints, insub)
    //    ? q = ints[0], true
    //    : false;
 }
@@ -262,7 +262,7 @@ inline bool op_all(
 
    #ifdef KIP_FUZZY
       const real eps = epsilon<real>();
-      if (!(obj.inall(kip_etd, qmin,q, insub)))
+      if (!(obj.inall(etd, qmin,q, insub)))
          return false;
 
       const unsigned size = q.size();
@@ -275,7 +275,7 @@ inline bool op_all(
 
       return q.size();
    #else
-      return obj.inall(kip_etd, qmin,q, insub);
+      return obj.inall(etd, qmin,q, insub);
    #endif
 }
 

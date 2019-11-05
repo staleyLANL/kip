@@ -503,8 +503,8 @@ inline bool bicylinder<real,tag>::get_curve(
 
 kip_inall(bicylinder)
 {
-   if (this->interior) return bicylinder<real,tag>::infirst(
-      kip_etd, qmin,ints.one(), insub);
+   if (this->interior)
+      return bicylinder<real,tag>::infirst(etd, insub, qmin, ints.one());
 
    // Outside...
    const point<real> tar = rot.fore(target);

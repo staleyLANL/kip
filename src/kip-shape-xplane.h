@@ -135,7 +135,7 @@ kip_infirst(xplane)
 // inall
 kip_inall(xplane)
 {
-   return xplane<real,tag>::infirst(kip_etd,qmin,ints.one(),insub)
+   return xplane<real,tag>::infirst(etd, insub, qmin, ints.one())
       ? ints.push(ints[0]), true
       : false;
 } kip_end

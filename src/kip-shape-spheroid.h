@@ -248,8 +248,8 @@ inline bool spheroid<real,tag>::get_curve(
 
 kip_inall(spheroid)
 {
-   if (this->interior) return spheroid<real,tag>::infirst(
-      kip_etd,qmin,ints.one(),insub);
+   if (this->interior)
+      return spheroid<real,tag>::infirst(etd, insub, qmin, ints.one());
 
    // Outside...
    const point<real> tar = rot.fore(target);

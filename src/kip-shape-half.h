@@ -170,7 +170,7 @@ kip_infirst(half)
 // inall
 kip_inall(half)
 {
-   return half<real,tag>::infirst(kip_etd, qmin,ints.one(), insub);
+   return half<real,tag>::infirst(etd, insub, qmin, ints.one());
 } kip_end
 
 

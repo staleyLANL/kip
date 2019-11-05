@@ -130,9 +130,9 @@ kip_check(sphere)
 template<class real, class tag>
 bool sphere<real,tag>::infirst(
    const eyetardiff<real> &etd, // 72
+   const detail::subinfo &,     // 28
    const real qmin,             //  8
-   inq<real,tag> &q,            // 88
-   const detail::subinfo &      // 28 zzz move to second, after etd
+   inq<real,tag> &q             // 88
 ) const {
    const kip::point<real> &eyeball = etd.eyeball;
    const kip::point<real> &diff    = etd.diff;

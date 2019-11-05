@@ -397,8 +397,8 @@ kip_infirst(cube)
 
 kip_inall(cube)
 {
-   if (this->interior) return cube<real,tag>::infirst(
-      kip_etd,qmin,ints.one(),insub);
+   if (this->interior)
+      return cube<real,tag>::infirst(etd, insub, qmin, ints.one());
 
    // Outside...
    const point<real>  tar = rot.fore(target);

@@ -503,7 +503,7 @@ kip_infirst(surf)
 
       if (fine.imin <= insub.i && insub.i < fine.iend &&
           fine.jmin <= insub.j && insub.j < fine.jend &&
-          bin[t].ptr->tri_t::infirst(kip_etd, q,qnew, insub))
+          bin[t].ptr->tri_t::infirst(etd, insub, q, qnew))
          q = qnew, found = true;
    }
 
@@ -536,7 +536,7 @@ kip_inall(surf)
 
       if (fine.imin <= insub.i && insub.i < fine.iend &&
           fine.jmin <= insub.j && insub.j < fine.jend &&
-          bin[t].ptr->tri_t::infirst(kip_etd, qmin,q, insub))
+          bin[t].ptr->tri_t::infirst(etd, insub, qmin, q))
          ints.push(q), found = true;
    }
 

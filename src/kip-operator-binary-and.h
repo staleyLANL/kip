@@ -192,13 +192,13 @@ kip_infirst(kipand)
       // of first intersection with either object's boundary
       inq<real,tag> bq;
       return
-           detail::op_first(binary.a, kip_etd, qmin, q, insub)
-         ? detail::op_first(binary.b, kip_etd, real(q),bq, insub)
+           detail::op_first(binary.a, etd, qmin, q, insub)
+         ? detail::op_first(binary.b, etd, real(q),bq, insub)
               ? q=bq, // b wins
                 true
               : true  // a only
          // b only, or stays in
-         : detail::op_first(binary.b, kip_etd, qmin, q, insub)
+         : detail::op_first(binary.b, etd, qmin, q, insub)
       ;
    }
 
@@ -207,12 +207,12 @@ kip_infirst(kipand)
    // after which we're inside both objects
 
    afew<real,tag> aq;
-   if (!detail::op_all(binary.a, kip_etd, qmin,aq, insub))
+   if (!detail::op_all(binary.a, etd, qmin,aq, insub))
       return binary.ina &&
-             detail::op_first(binary.b, kip_etd, qmin,q, insub);
+             detail::op_first(binary.b, etd, qmin,q, insub);
 
    afew<real,tag> bq;
-   if (!detail::op_all(binary.b, kip_etd, qmin,bq, insub))
+   if (!detail::op_all(binary.b, etd, qmin,bq, insub))
       return binary.inb && (q = aq[0], true);
 
    // search for the relevant point
@@ -242,12 +242,12 @@ kip_infirst(kipand)
 kip_inall(kipand)
 {
    afew<real,tag> aq;
-   if (!detail::op_all(binary.a, kip_etd, qmin,aq, insub))
+   if (!detail::op_all(binary.a, etd, qmin,aq, insub))
       return binary.ina &&
-             detail::op_all(binary.b, kip_etd, qmin,ints, insub);
+             detail::op_all(binary.b, etd, qmin,ints, insub);
 
    afew<real,tag> bq;
-   if (!detail::op_all(binary.b, kip_etd, qmin,bq, insub))
+   if (!detail::op_all(binary.b, etd, qmin,bq, insub))
       return binary.inb && ints.assign(aq);
 
    const ulong anum = aq.size();  ulong an = 0;

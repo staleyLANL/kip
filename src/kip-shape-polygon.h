@@ -225,7 +225,7 @@ kip_infirst(polygon)
 // inall
 kip_inall(polygon)
 {
-   return polygon<real,tag>::infirst(kip_etd,qmin,ints.one(),insub)
+   return polygon<real,tag>::infirst(etd, insub, qmin, ints.one())
       ? ints.push(ints[0]), true
       : false;
 } kip_end
