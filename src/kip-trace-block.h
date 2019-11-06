@@ -285,7 +285,7 @@ void btrace(
          if (vars.block[seg].reset) {
             for (ulong obj = 0;  obj < size;  ++obj)
                if (bin[obj].shape->lastpix == -2) {  // was reset only
-                  bin[obj].shape->is_operand = false;
+                  bin[obj].shape->isoperand = false;
                   bin[obj].minimum = bin[obj].shape->minimum =
                      bin[obj].shape->process(vars.eyeball, light[0]);
                   kip_assert(bin[obj].minimum >= 0);
@@ -310,9 +310,10 @@ void btrace(
          for ( ;  s < size;  ++s)
             if (bin[s].shape->lastpix < npix) {
                bin[s].shape->lastpix = npix;
-               if (detail::op_first(bin[s].shape,
-                                  view.eyeball, view.target, diff,
-                                    insub, qmin,*qused)) {
+               if (detail::op_first(
+                  bin[s].shape, view.eyeball, view.target, diff,
+                  insub, qmin, *qused
+               )) {
                   const real q = qused->q;
                   kip_assert(0 < q && q < qmin);
                   ptr = bin[s].shape;  qmin = q;  s++;
@@ -323,9 +324,10 @@ void btrace(
          for ( ;  s < size && bin[s].minimum < qmin;  ++s)
             if (bin[s].shape->lastpix < npix) {
                bin[s].shape->lastpix = npix;
-               if (detail::op_first(bin[s].shape,
-                                  eyeball, target, diff,
-                                    insub, qmin, *qnext)) {
+               if (detail::op_first(
+                  bin[s].shape, eyeball, target, diff,
+                  insub, qmin, *qnext
+               )) {
                   const real q = qnext->q;
                   kip_assert(0 < q && q < qmin);
                   ptr = bin[s].shape;  qmin = q;

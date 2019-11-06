@@ -107,11 +107,11 @@ public:
 kip_process(kipor)
 {
    // process operands
-   binary.a->is_operand = true;
+   binary.a->isoperand = true;
    binary.amin = binary.a->process(eyeball,light,engine,vars);
    kip_assert(binary.amin >= 0);
 
-   binary.b->is_operand = true;
+   binary.b->isoperand = true;
    binary.bmin = binary.b->process(eyeball,light,engine,vars);
    kip_assert(binary.bmin >= 0);
 
@@ -234,8 +234,7 @@ kip_infirst(kipor)
    // after which we're outside both objects
 
    afew<real,tag> aq;
-   if (binary.amin >= qmin ||
-      !detail::op_all(binary.a, etd, insub, qmin, aq))
+   if (binary.amin >= qmin || !detail::op_all(binary.a, etd, insub, qmin, aq))
       return
         !binary.ina && binary.bmin < qmin &&
          detail::op_first(binary.b, etd, insub, qmin, q);
@@ -272,15 +271,13 @@ kip_infirst(kipor)
 kip_inall(kipor)
 {
    afew<real,tag> aq;
-   if (!(binary.amin < qmin &&
-         detail::op_all(binary.a, etd, insub, qmin, aq)))
+   if (!(binary.amin < qmin && detail::op_all(binary.a, etd, insub, qmin, aq)))
       return
         !binary.ina && binary.bmin < qmin &&
          detail::op_all(binary.b, etd, insub, qmin, ints);
 
    afew<real,tag> bq;
-   if (!(binary.bmin < qmin &&
-         detail::op_all(binary.b, etd, insub, qmin, bq)))
+   if (!(binary.bmin < qmin && detail::op_all(binary.b, etd, insub, qmin, bq)))
       return !binary.inb && ints.assign(aq);
 
    const ulong anum = aq.size(); ulong an = 0;

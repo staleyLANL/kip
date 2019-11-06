@@ -6,10 +6,9 @@
 template<class real = defaults::real, class tag = defaults::base>
 class half : public shape<real,tag> {
 public:
-   using shape<real,tag>::misc;
-
    kip::point<real> point;
    kip::point<real> normal;  // OUT from the material
+   mutable real tmp;
 
    kip_functions(half);
    kip::point<real> back(const kip::point<real> &from) const
@@ -85,8 +84,8 @@ public:
 // process
 kip_process(half)
 {
-   misc.half.tmp = dot(normal, eyeball-point);
-   const real d = misc.half.tmp/mod(normal);
+   tmp = dot(normal, eyeball-point);
+   const real d = tmp/mod(normal);
    return (this->interior = d <= 0) ? -d : d;
 } kip_end
 
@@ -159,7 +158,7 @@ kip_check(half)
 kip_infirst(half)
 {
    const real den = dot(normal,diff);
-   if (den == 0 || !(0 < (q = misc.half.tmp/den) && q < qmin)) return false;
+   if (den == 0 || !(0 < (q = tmp/den) && q < qmin)) return false;
 
    q.inter = eyeball - real(q)*diff;
    return q.set(normal, this, normalized::no), true;

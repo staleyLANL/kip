@@ -157,20 +157,6 @@ public:
 
    // for certain specific shapes
    union misc_type {
-      // half
-      class { public: mutable real tmp; } half;
-
-      // sphere
-      class {
-         mutable char _f[sizeof(point<real>)];
-      public:
-         point<real> &f() const { return *(point<real> *)(void *)&_f[0]; }
-         mutable real m;
-      } sphere;
-
-      // plane
-      class { public: mutable real h, norm; } plane;
-
       // ands
       class ands_type {
          private: using element_t = nary_element_ands<real,tag>;
@@ -210,14 +196,6 @@ public:
          { return *(point<float> *)(void *)&_lie[0]; }
    };
 
-   // for unary operators
-   class union_unary {
-   public:
-      mutable real amin;
-      shape *a;
-      mutable bool ina : 1;
-   };
-
    // for binary operators
    class union_binary {
       using shape_ptr = shape *;
@@ -244,7 +222,6 @@ public:
    union {
       misc_type    misc;   // size 40. for certain specific shapes
       union_basic  basic;  // size 36. for most shapes
-      union_unary  unary;  // size 24. for unary operators
       union_binary binary; // size 40. for binary operators
       nary_type    nary;   // size 40. for nary operators (except ands)
    };
@@ -253,7 +230,7 @@ public:
    tag thebase;
 
    // size 1.
-   mutable bool is_operand : 1;
+   mutable bool isoperand  : 1;
    /*   */ bool eyelie     : 1;
    /*   */ bool on         : 1;
    /*   */ bool solid      : 1;

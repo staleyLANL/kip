@@ -66,7 +66,7 @@ inline void rprepare(
       SHAPE &s = *p;
       if (!s.on) continue;
 
-      s.is_operand = false;
+      s.isoperand = false;
       const real smin = s.SHAPE::process(vars.eyeball, light[0], engine, vars);
       kip_assert(smin >= 0);
 

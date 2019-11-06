@@ -6,7 +6,13 @@
 template<class real = defaults::real, class tag = defaults::base>
 class kipnot : public shape<real,tag> {
 public:
-   using shape<real,tag>::unary;
+
+   struct {
+      mutable real amin;
+      shape<real,tag> *a;
+      mutable bool ina : 1;
+   } unary;
+
    kip_functions(kipnot);
 
    point<real> back(const point<real> &from) const
@@ -83,7 +89,7 @@ public:
 // process
 kip_process(kipnot)
 {
-   unary.a->is_operand = true;
+   unary.a->isoperand = true;
    unary.amin = unary.a->process(eyeball,light,engine,vars);
    kip_assert(unary.amin >= 0);
 
@@ -214,13 +220,11 @@ kip_ostream(kipnot) {
 
    // stub
    if (kip::format == kip::format_t::format_stub)
-      okay = k << "not(" &&
-             obj.unary.a->write(k) << ')';
+      okay = k << "not(" && obj.unary.a->write(k) << ')';
 
    // one
    else if (kip::format == kip::format_t::format_one) {
-      okay = k << "not(" &&
-             obj.unary.a->write(k);
+      okay = k << "not(" && obj.unary.a->write(k);
       if (obj.baseset)
          okay = okay && k << ", " << obj.base();
       okay = okay && k << ')';

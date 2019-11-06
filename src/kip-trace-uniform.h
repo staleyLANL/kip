@@ -466,7 +466,7 @@ inline void uprepare(
       if (!shape.on) continue;
 
       // minimum distance from eyeball
-      shape.is_operand = false;  // or we wouldn't be in the shape vector
+      shape.isoperand = false;  // or we wouldn't be in the shape vector
       const real pmin = shape.SHAPE::process(vars.eyeball,light[0],engine,vars);
       kip_assert(pmin >= 0);
 
@@ -641,7 +641,7 @@ inline void uprepare_surf(
       const surf<real,base> &p = vec[ulong(s)];  // this surf
       if (!p.on) continue;
 
-      p.is_operand = false;  // global (not as operand) surf
+      p.isoperand = false;  // global (not as operand) surf
       p.surf<real,base>::process(vars.eyeball, light[0], engine, vars);
       if ((p.interior && p.solid) || p.degenerate)
          continue;

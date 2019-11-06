@@ -6,17 +6,16 @@
 namespace detail {
 
 // propagate_unary
-template<class real, class tag>
-void propagate_unary(const shape<real,tag> &obj, const bool force)
+template<class SHAPE>
+void propagate_unary(const SHAPE &obj, const bool force)
 {
    bool baseset;
    if (!(baseset = obj.unary.a->baseset) || force) {
-      obj.unary.a->base() = obj.base();  // side effect: marks as set
-      obj.unary.a->baseset = baseset;  // re-flag as necessary
+      obj.unary.a->base() = obj.base(); // side effect: marks as set
+      obj.unary.a->baseset = baseset;   // re-flag as necessary
    }
    obj.unary.a->propagate_base(force);
 }
-
 
 
 // propagate_binary
@@ -37,7 +36,6 @@ void propagate_binary(const shape<real,tag> &obj, const bool force)
    }
    obj.binary.b->propagate_base(force);
 }
-
 
 
 // propagate_nary

@@ -107,11 +107,11 @@ public:
 kip_process(kipxor)
 {
    // process operands
-   binary.a->is_operand = true;
+   binary.a->isoperand = true;
    binary.amin = binary.a->process(eyeball,light,engine,vars);
    kip_assert(binary.amin >= 0);
 
-   binary.b->is_operand = true;
+   binary.b->isoperand = true;
    binary.bmin = binary.b->process(eyeball,light,engine,vars);
    kip_assert(binary.bmin >= 0);
 

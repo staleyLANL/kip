@@ -9,11 +9,13 @@ class sphere : public shape<real,tag> {
    bool inside(const point<real> &) const;
 
 public:
-   using shape<real,tag>::misc;
+   mutable point<real> f;
 
    // center, radius
    point<real> c;
    real r;
+
+   mutable real m;
 
    kip_functions(sphere);
 
@@ -80,11 +82,10 @@ public:
 // process
 kip_process(sphere)
 {
-   misc.sphere.f() = eyeball - c;
-   const real modf = mod(misc.sphere.f());
-   misc.sphere.m = (modf-r)*(modf+r);  // = modf^2 - r^2
+   f = eyeball - c;
+   const real modf = mod(f);
+   m = (modf-r)*(modf+r);  // = modf^2 - r^2
    this->interior = inside(eyeball);
-
    return std::abs(modf-r);
 } kip_end
 
@@ -92,16 +93,16 @@ kip_process(sphere)
 kip_aabb(sphere)
 {
    return bbox<real>(
-      true, c.x-r,   c.x+r, true,
-      true, c.y-r,   c.y+r, true,
-      true, c.z-r,   c.z+r, true
+      true, c.x-r, c.x+r, true,
+      true, c.y-r, c.y+r, true,
+      true, c.z-r, c.z+r, true
    );
 } kip_end
 
 // inside
 kip_inside(sphere)
 {
-   return misc.sphere.m <= 0;
+   return m <= 0;
 } kip_end
 
 // dry
@@ -137,8 +138,8 @@ bool sphere<real,tag>::infirst(
    const kip::point<real> &eyeball = etd.eyeball;
    const kip::point<real> &diff    = etd.diff;
 
-   const real p = dot(misc.sphere.f(),diff);
-   const real h = p*p - misc.sphere.m;
+   const real p = dot(f,diff);
+   const real h = p*p - m;
    if (h < 0) return false;
 
    if (this->interior)
@@ -158,7 +159,7 @@ bool sphere<real,tag>::infirst(
 // inall
 kip_inall(sphere)
 {
-   const real p = dot(misc.sphere.f(),diff), h = p*p - misc.sphere.m;
+   const real p = dot(f,diff), h = p*p - m;
    if (h < 0) return false;
 
    if (this->interior) {

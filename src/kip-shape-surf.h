@@ -221,7 +221,7 @@ kip_process(surf)
    // ----------------
 
    // minimum needed iff surf is operand
-   if (!this->is_operand) return 0;
+   if (!this->isoperand) return 0;
 
    // ----------------
    // For operand surf

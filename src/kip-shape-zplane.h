@@ -6,11 +6,11 @@
 template<class real = defaults::real, class tag = defaults::base>
 class zplane : public shape<real,tag> {
 public:
-   using shape<real,tag>::misc;
    kip_functions(zplane);
 
    // z value, rectangle x and y sizes, tag (generally color)
    real z;
+   mutable real h, norm;
    class { public: real x, y; } size;
    tag color;
 
@@ -86,10 +86,10 @@ public:
 // process
 kip_process(zplane)
 {
-   misc.plane.h = eyeball.z - z;
-   misc.plane.norm = misc.plane.h < 0 ? -1 : 1;
+   h = eyeball.z - z;
+   norm = h < 0 ? -1 : 1;
    this->interior = false;
-   return std::abs(misc.plane.h);
+   return std::abs(h);
 } kip_end
 
 
@@ -115,12 +115,12 @@ kip_dry(zplane)
 // infirst
 kip_infirst(zplane)
 {
-   return 0 < (q = misc.plane.h/diff.z) && q < qmin
+   return 0 < (q = h/diff.z) && q < qmin
       ? q.inter.x = eyeball.x - q*diff.x,
         q.inter.y = eyeball.y - q*diff.y,
         q.inter.z = z,
         q.set(
-           0, 0, misc.plane.norm, this,
+           0, 0, norm, this,
           (int(std::abs(q.inter.x/size.x)) % 2 == (q.inter.x > 0)) ==
           (int(std::abs(q.inter.y/size.y)) % 2 == (q.inter.y > 0))
            ? &color

@@ -232,8 +232,6 @@ inline bool op_first(
    //    : false;
 }
 
-
-
 // op_all
 template<class real, class tag>
 inline bool op_all(

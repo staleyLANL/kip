@@ -107,11 +107,11 @@ public:
 kip_process(kipand)
 {
    // process operands
-   binary.a->is_operand = true;
+   binary.a->isoperand = true;
    binary.amin = binary.a->process(eyeball,light,engine,vars);
    kip_assert(binary.amin >= 0);
 
-   binary.b->is_operand = true;
+   binary.b->isoperand = true;
    binary.bmin = binary.b->process(eyeball,light,engine,vars);
    kip_assert(binary.bmin >= 0);
 
@@ -208,8 +208,7 @@ kip_infirst(kipand)
 
    afew<real,tag> aq;
    if (!detail::op_all(binary.a, etd, insub, qmin, aq))
-      return binary.ina &&
-             detail::op_first(binary.b, etd, insub, qmin, q);
+      return binary.ina && detail::op_first(binary.b, etd, insub, qmin, q);
 
    afew<real,tag> bq;
    if (!detail::op_all(binary.b, etd, insub, qmin, bq))
@@ -243,8 +242,7 @@ kip_inall(kipand)
 {
    afew<real,tag> aq;
    if (!detail::op_all(binary.a, etd, insub, qmin, aq))
-      return binary.ina &&
-             detail::op_all(binary.b, etd, insub, qmin, ints);
+      return binary.ina && detail::op_all(binary.b, etd, insub, qmin, ints);
 
    afew<real,tag> bq;
    if (!detail::op_all(binary.b, etd, insub, qmin, bq))

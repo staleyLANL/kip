@@ -23,7 +23,7 @@ kip_process(some)
    std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
-      vec[i].op->is_operand = true;
+      vec[i].op->isoperand = true;
       min_and_op[i].minimum = minimum_t((min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars));
       kip_assert(min_and_op[i].minimum >= 0);
