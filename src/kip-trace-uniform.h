@@ -402,10 +402,10 @@ inline char test_1575(
 
 
 // -----------------------------------------------------------------------------
-// uprepare: general
+// merge_bins
+// helper
 // -----------------------------------------------------------------------------
 
-// merge_bins - helper
 #ifdef _OPENMP
 template<class real, class base>
 inline void merge_bins(
@@ -430,31 +430,35 @@ inline void merge_bins(
 
 
 
-// uprepare
+// -----------------------------------------------------------------------------
+// uprepare: general
+// -----------------------------------------------------------------------------
+
 template<class real, class base, class SHAPEVEC>
-inline void uprepare(
-   const light <real> &light,
+void uprepare(
+   const light<real> &light,
    const engine<real> &engine,
-   /* */ vars  <real,base> &vars,
-   const int  nbin,
-   SHAPEVEC   &vec,  // std::vector of model.sphere, model.ands, etc.
+   vars<real,base> &vars,
+   SHAPEVEC &vec,  // std::vector: model.sphere, model.ands, etc.
    const bool diag
 ) {
    // number of this particular type of shape
    const int numobj = int(vec.size());  // int, for OpenMP
-   if (numobj == 0) return;  // none of this type of shape
+   if (numobj == 0) return;
 
-   // per_zone(hzone,vzone,nthreads-1)
-   // nthreads-1 because thread 0 uses vars.uniform
-   (void)nbin;
    #ifdef _OPENMP
+      // <3>: (hzone, vzone, nthreads-1)
+      // nthreads-1 because thread 0 uses vars.uniform
       static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
       const int nthreads = get_nthreads();
       for (ulong z = per_zone.size();  z--; )
          per_zone[z].clear();
       if (nthreads > 1)
          per_zone.resize(engine.hzone, engine.vzone, nthreads-1);
+      const int nbin = int(engine.hzone * engine.vzone);
    #endif
+
+   // zzz
 
    // for each object of this type...
    #ifdef _OPENMP
@@ -617,7 +621,7 @@ inline real uprepare_tri(
 template<class real, class base>
 inline void uprepare_surf(
    const light<real> &light, const engine<real> &engine, vars<real,base> &vars,
-   const int nbin, const bool object_border, std::vector<surf<real,base>> &vec
+   const bool object_border, std::vector<surf<real,base>> &vec
 ) {
    // number of surfs
    const int nsurf = int(vec.size());  // int, for OpenMP
@@ -634,6 +638,7 @@ inline void uprepare_surf(
    #endif
 
    // for each surf...
+   const int nbin = int(engine.hzone * engine.vzone);
    #ifdef _OPENMP
       #pragma omp parallel for
    #endif
@@ -682,51 +687,49 @@ void usetup(
 ) {
    // Build segmenters
    segment_h(engine,vars);
-   segment_v(engine,vars);  segment_various(engine,vars);
+   segment_v(engine,vars); segment_various(engine,vars);
 
    // Prepare most shapes
-   const int nbin = int(engine.hzone * engine.vzone);
+   uprepare( light, engine, vars, model.kipnot,     true );
 
-   uprepare( light, engine, vars, nbin, model.kipnot,     true );
+   uprepare( light, engine, vars, model.kipand,     true );
+   uprepare( light, engine, vars, model.kipcut,     true );
+   uprepare( light, engine, vars, model.kipor,      true );
+   uprepare( light, engine, vars, model.kipxor,     true );
 
-   uprepare( light, engine, vars, nbin, model.kipand,     true );
-   uprepare( light, engine, vars, nbin, model.kipcut,     true );
-   uprepare( light, engine, vars, nbin, model.kipor,      true );
-   uprepare( light, engine, vars, nbin, model.kipxor,     true );
+   uprepare( light, engine, vars, model.ands,       true );
+   uprepare( light, engine, vars, model.even,       true );
+   uprepare( light, engine, vars, model.odd,        true );
+   uprepare( light, engine, vars, model.one,        true );
+   uprepare( light, engine, vars, model.ors,        true );
+   uprepare( light, engine, vars, model.some,       true );
 
-   uprepare( light, engine, vars, nbin, model.ands,       true );
-   uprepare( light, engine, vars, nbin, model.even,       true );
-   uprepare( light, engine, vars, nbin, model.odd,        true );
-   uprepare( light, engine, vars, nbin, model.one,        true );
-   uprepare( light, engine, vars, nbin, model.ors,        true );
-   uprepare( light, engine, vars, nbin, model.some,       true );
-
-   uprepare( light, engine, vars, nbin, model.bicylinder, true );
-   uprepare( light, engine, vars, nbin, model.biwasher,   true );
-   uprepare( light, engine, vars, nbin, model.box,        true );
-   uprepare( light, engine, vars, nbin, model.cube,       true );
-   uprepare( light, engine, vars, nbin, model.circle,     true );
-   uprepare( light, engine, vars, nbin, model.cone,       true );
-   uprepare( light, engine, vars, nbin, model.cylinder,   true );
-   uprepare( light, engine, vars, nbin, model.ellipsoid,  true );
-   uprepare( light, engine, vars, nbin, model.half,       true );
-   uprepare( light, engine, vars, nbin, model.paraboloid, true );
-   uprepare( light, engine, vars, nbin, model.nothing,    true );
-   uprepare( light, engine, vars, nbin, model.everything, true );
-   uprepare( light, engine, vars, nbin, model.pill,       true );
-   uprepare( light, engine, vars, nbin, model.polygon,    true );
-   uprepare( light, engine, vars, nbin, model.silo,       true );
-   uprepare( light, engine, vars, nbin, model.sphere,     true );
-   uprepare( light, engine, vars, nbin, model.spheroid,   true );
-   uprepare( light, engine, vars, nbin, model.tabular,    true );
-   uprepare( light, engine, vars, nbin, model.triangle,   true );
-   uprepare( light, engine, vars, nbin, model.washer,     true );
-   uprepare( light, engine, vars, nbin, model.xplane,     true );
-   uprepare( light, engine, vars, nbin, model.yplane,     true );
-   uprepare( light, engine, vars, nbin, model.zplane,     true );
+   uprepare( light, engine, vars, model.bicylinder, true );
+   uprepare( light, engine, vars, model.biwasher,   true );
+   uprepare( light, engine, vars, model.box,        true );
+   uprepare( light, engine, vars, model.cube,       true );
+   uprepare( light, engine, vars, model.circle,     true );
+   uprepare( light, engine, vars, model.cone,       true );
+   uprepare( light, engine, vars, model.cylinder,   true );
+   uprepare( light, engine, vars, model.ellipsoid,  true );
+   uprepare( light, engine, vars, model.half,       true );
+   uprepare( light, engine, vars, model.paraboloid, true );
+   uprepare( light, engine, vars, model.nothing,    true );
+   uprepare( light, engine, vars, model.everything, true );
+   uprepare( light, engine, vars, model.pill,       true );
+   uprepare( light, engine, vars, model.polygon,    true );
+   uprepare( light, engine, vars, model.silo,       true );
+   uprepare( light, engine, vars, model.sphere,     true );
+   uprepare( light, engine, vars, model.spheroid,   true );
+   uprepare( light, engine, vars, model.tabular,    true );
+   uprepare( light, engine, vars, model.triangle,   true );
+   uprepare( light, engine, vars, model.washer,     true );
+   uprepare( light, engine, vars, model.xplane,     true );
+   uprepare( light, engine, vars, model.yplane,     true );
+   uprepare( light, engine, vars, model.zplane,     true );
 
    // Prepare surfs; creates "tri" objects
-   uprepare_surf(light, engine, vars, nbin, object_border, model.surf);
+   uprepare_surf(light, engine, vars, object_border, model.surf);
 }
 
 
@@ -734,6 +737,7 @@ void usetup(
 // -----------------------------------------------------------------------------
 // utrace_helper
 // Helper for utrace()
+// qqq 2019-11-07, I'm not sure why I split this off from utrace() itself.
 // -----------------------------------------------------------------------------
 
 template<class real, class tag, class color, class pix>
@@ -745,30 +749,32 @@ public:
    // ------------------------
 
    void operator()(
-      const int nzone,
-      const view <real> &view,
-      const light<real> &light, const engine<real> &engine,
-      vars<real,tag> &vars, image<real,color> &image, array<2,pix> &pixel
+      const ulong nzone,
+      const view  <real> &view,
+      const light <real> &light,
+      const engine<real> &engine,
+      vars <real,tag> &vars,
+      image<real,color> &image,
+      array<2,pix> &pixel
    ) const {
-
       // Compute maximum bin size
-      // qqq should parallelize, if openmp
+      // qqq consider parallelizing if openmp
       ulong max_binsize = 0;
-      if (image.border.bin) {
-         for (int zone = 0;  zone < nzone;  ++zone)
-            max_binsize = std::max(max_binsize, vars.uniform[ulong(zone)].size());
-      }
+      if (image.border.bin)
+         for (ulong zone = 0;  zone < nzone;  ++zone)
+            max_binsize = std::max(max_binsize, vars.uniform[zone].size());
 
       // Loop over the bins
       #if defined(_OPENMP)
          #pragma omp parallel for
       #endif
-      for (ulong zone = 0;  zone < ulong(nzone);  ++zone) {
+      for (ulong zone = 0;  zone < nzone;  ++zone) {
          const ulong binsize = vars.uniform[zone].size();
-         if (binsize == 0 && !image.border.bin) continue;
+         if (binsize == 0 && !image.border.bin)
+            continue;
 
-         // vars.hrat = real(image.hpixel)/real(engine.hzone)
-         // vars.vrat = real(image.vpixel)/real(engine.vzone)
+         // vars.hrat = real(image.hpixel) / real(engine.hzone)
+         // vars.vrat = real(image.vpixel) / real(engine.vzone)
          const u32
             imin = op::round<u32>(vars.hrat*real (zone%engine.hzone)),
             iend = op::round<u32>(vars.hrat*real((zone%engine.hzone)+1)),
@@ -777,13 +783,12 @@ public:
 
          if (binsize == 0)
             bin_border(image,imin,iend,jmin,jend,color::border(0,max_binsize));
-         else {
+         else
             trace_bin(
                engine, view, image, vars, light, pixel,
                imin,iend, jmin,jend, zone, max_binsize,
-               vars.uniform[zone], binsize  // latter = former.size()
+               vars.uniform[zone]
             );
-         }
       }
    }
 };
@@ -806,7 +811,7 @@ void utrace(
 ) {
    const ulong nzone = engine.hzone*engine.vzone;
    utrace_helper<real,tag,color,pix>()
-      (int(nzone), view, light, engine, vars, image, pixel);
+      (nzone, view, light, engine, vars, image, pixel);
 }
 
 } // namespace detail

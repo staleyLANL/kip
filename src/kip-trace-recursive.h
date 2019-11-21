@@ -184,14 +184,18 @@ public:
 template<class real, class base, class color, class pix>
 inline void to_abstract_then_fill(
    const view<real> &view,
-   const engine<real> &engine, image<real,color> &image,
-   vars<real,base> &vars, const light<real> &light, array<2,pix> &pixel,
+   const engine<real> &engine,
+   image<real,color> &image,
+   vars<real,base> &vars,
+   const light<real> &light,
+   array<2,pix> &pixel,
 
    const u32 imin, const u32 iend,
    const u32 jmin, const u32 jend,
 
-   const shape_vectors<real,base> &sv, const ulong binsize
+   const shape_vectors<real,base> &sv
 ) {
+   const ulong binsize = sv.size();
    std::vector<minimum_and_shape<real,base>> bin;
    bin.reserve(binsize);
 
@@ -228,8 +232,7 @@ inline void to_abstract_then_fill(
 
    trace_bin(
       engine, view, image, vars, light, pixel,
-      imin,iend, jmin,jend, zone, max_binsize,
-      bin,binsize
+      imin,iend, jmin,jend, zone, max_binsize, bin
    );
 }
 
@@ -409,9 +412,7 @@ void rtrace(
    assert(false);
    (void)rootlevel;  // used iff OpenMP
 
-   const ulong binsize = bin.size();
-   ///   std::cout << "kip: binsize == " << binsize << std::endl;
-   if (binsize == 0) {
+   if (bin.size() == 0) {
       // might have border to draw
       if (image.border.bin)
          bin_border(image, imin,iend, jmin,jend, color::border(0,0));
@@ -425,7 +426,7 @@ void rtrace(
       ///      std::cout << "kip: calling to_abstract_then_fill()" << std::endl;
       to_abstract_then_fill(
          view,engine,image, vars,light, pixel,
-         imin,iend,jmin,jend, bin,binsize
+         imin,iend,jmin,jend, bin
       );
       return;
    }

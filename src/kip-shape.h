@@ -775,32 +775,60 @@ inline bool op_all(
 // vec_reset
 // -----------------------------------------------------------------------------
 
-// minimum_t
-using minimum_t = float;
-
 // minimum_and_ptr
 template<class real, class SHAPE>
 class minimum_and_ptr {
 public:
-   minimum_t minimum;
    SHAPE *shape;
+   real minimum;
 
-   explicit minimum_and_ptr() { }
-   explicit minimum_and_ptr(const real _minimum, SHAPE &_ptr) :
-      minimum(minimum_t(_minimum)), shape(&_ptr) { }
+   explicit minimum_and_ptr()
+   { }
+
+   explicit minimum_and_ptr(const real m, SHAPE &s)
+    : shape(&s), minimum(m)
+   { }
 };
 
+
+/*
 // minimum_and_shape
 template<class real, class base>
 class minimum_and_shape : public minimum_and_ptr<real,shape<real,base>> {
 public:
-   explicit minimum_and_shape() { }
-   explicit minimum_and_shape(
-      const real _minimum, shape<real,base> &_shape
-   ) : minimum_and_ptr<real, shape<real,base>>(_minimum,_shape) { }
+   explicit minimum_and_shape()
+   { }
+
+   explicit minimum_and_shape(const real m, shape<real,base> &s)
+      : minimum_and_ptr<real, shape<real,base>>(m,s)
+   { }
+};
+*/
+
+// minimum_and_shape
+template<class real, class base>
+class minimum_and_shape {
+public:
+   kip::shape<real,base> *shape;
+   real minimum;
+
+   explicit minimum_and_shape()
+   { }
+
+   explicit minimum_and_shape(const real m, kip::shape<real,base> &s)
+    : shape(&s), minimum(m)
+   { }
 };
 
-
+/*
+template<class real, class base>
+inline bool operator<(
+   const minimum_and_shape<real,base> &a,
+   const minimum_and_shape<real,base> &b
+) {
+   return a.minimum < b.minimum;
+}
+*/
 
 // vec_reset
 template<class real, class base>
@@ -822,10 +850,11 @@ namespace detail {
 template<class real, class tag>
 class less {
 public:
+
    // for minimum_and_shape
    bool operator()(
-      const minimum_and_shape<real,tag> &a,
-      const minimum_and_shape<real,tag> &b
+      const minimum_and_shape<real,tag> a,
+      const minimum_and_shape<real,tag> b
    ) const {
       return a.minimum < b.minimum;
    }

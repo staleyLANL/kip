@@ -339,7 +339,7 @@ void btrace(
 
       // color
       if (ptr)
-         image(h,v) = detail::get_color<color>(*qused);
+         image(h,v) = detail::pixel_color<color>(*qused);
    }
    }
 #endif

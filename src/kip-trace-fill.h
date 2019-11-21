@@ -159,6 +159,8 @@ inline bool inbound(
 // -----------------------------------------------------------------------------
 // Globally-called:
 //    get_first
+// This serves essentially as a middleman between one of our several *_plain
+// and *_anti functions below, and an individual shape's infirst() function.
 // -----------------------------------------------------------------------------
 
 template<class BIN, class real, class tag>
@@ -271,7 +273,9 @@ inline bool op_all(
 // and each loops over the bin's objects.
 // -----------------------------------------------------------------------------
 
-// one_plain
+// 1. one_plain
+// Particular (i,j) in particular bin; loop over the shapes in the bin.
+// If this function is called, there's actually just one such shape.
 template<class real, class base, class color, class pix>
 class one_plain {
 public:
@@ -301,14 +305,16 @@ public:
       const eyetardiff<real> etd(vars.eyeball, target, diff);
 
       get_first(bin, 0, i, j, zone, etd, maximum, qa)
-         ? (*ptr = get_color<color>(vars.eyeball, light, qa, pixel))
+         ? (*ptr = pixel_color<color>(vars.eyeball, light, qa, pixel))
          :  *ptr;
    }
 };
 
 
 
-// two_plain
+// 2. two_plain
+// Particular (i,j) in particular bin; loop over the shapes in the bin.
+// If this function is called, there are in fact just two such shapes.
 template<class real, class base, class color, class pix>
 class two_plain {
 public:
@@ -339,17 +345,20 @@ public:
       get_first(bin, 0, i, j, zone, etd, maximum, qa)
          ? bin[1].minimum < qa.q &&
       get_first(bin, 1, i, j, zone, etd, qa.q, qb)
-         ? (*ptr = get_color<color>(vars.eyeball, light, qb, pixel))
-         : (*ptr = get_color<color>(vars.eyeball, light, qa, pixel))
+         ? (*ptr = pixel_color<color>(vars.eyeball, light, qb, pixel))
+         : (*ptr = pixel_color<color>(vars.eyeball, light, qa, pixel))
          : get_first(bin, 1, i, j, zone, etd, maximum, qb)
-         ? (*ptr = get_color<color>(vars.eyeball, light, qb, pixel))
+         ? (*ptr = pixel_color<color>(vars.eyeball, light, qb, pixel))
          :  *ptr;
    }
 };
 
 
 
-// max_plain
+// 3. max_plain
+// Particular (i,j) in particular bin; loop over the shapes in the bin.
+// If this function is called, then endsorted == binsize, meaning we've
+// exactly fully sorted (not partially sorted) the bin.
 template<class real, class base, class color, class pix>
 class max_plain {
 public:
@@ -380,7 +389,7 @@ public:
             for ( ; ++s < binsize && bin[s].minimum < *qa_ptr ; )
                if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
                   std::swap(qa_ptr,qb_ptr);
-           *ptr = get_color<color>(vars.eyeball, light, *qa_ptr, pixel);
+           *ptr = pixel_color<color>(vars.eyeball, light, *qa_ptr, pixel);
             return;
          }
    }
@@ -388,7 +397,12 @@ public:
 
 
 
-// any_plain
+// 4. any_plain
+// Particular (i,j) in particular bin; loop over the shapes in the bin.
+// If this function is called, then endsorted < binsize, and we'll do additional
+// partial sorts as necessary right here (not in the caller, as this and earlier
+// functions visit *all* shapes in the bin until the found-object and depth
+// sorting considerations prove that we can stop).
 template<class real, class base, class color, class pix>
 class any_plain {
 public:
@@ -473,7 +487,7 @@ public:
 
       // color
       found
-       ? (*ptr = get_color<color>(vars.eyeball, light, *qa_ptr, pixel))
+       ? (*ptr = pixel_color<color>(vars.eyeball, light, *qa_ptr, pixel))
        :  *ptr;
    }
 };
@@ -482,11 +496,13 @@ public:
 
 // -----------------------------------------------------------------------------
 // Anti
-// Same remark as for the "Plain" functions above; and in addition, we shoot
-// several rays inside the pixel.
+// Similar remarks as for the "Plain" functions above; we'll compress here.
+// In addition, we shoot several rays inside the pixel.
 // -----------------------------------------------------------------------------
 
 // one_anti
+// Particular (i,j) in particular bin; loop over the shapes in the bin.
+// Here, there's just one such shape.
 template<class real, class base, class color, class pix>
 class one_anti {
 public:
@@ -523,7 +539,7 @@ public:
 
          // examine object
          sum += get_first(bin, 0, i, j, zone, etd, maximum, qa)
-             ? (found = true, get_color<color>(vars.eyeball, light[0], qa, pixel))
+             ? (found = true, pixel_color<color>(vars.eyeball, light[0], qa, pixel))
              :  image.background;
       }
 
@@ -534,6 +550,8 @@ public:
 
 
 // two_anti
+// Particular (i,j) in particular bin; loop over the shapes in the bin.
+// Here, there are exactly two such shapes.
 template<class real, class base, class color, class pix>
 class two_anti {
 public:
@@ -571,12 +589,12 @@ public:
          sum += get_first(bin, 0, i, j, zone, etd, maximum, qa)
               ? get_first(bin, 1, i, j, zone, etd, qa.q, qb)
                    // [1] is better
-                 ? (found=true, get_color<color>(vars.eyeball,light[0],qb,pixel))
+                 ? (found=true, pixel_color<color>(vars.eyeball,light[0],qb,pixel))
                    // [0] is better (or only)...
-                 : (found=true, get_color<color>(vars.eyeball,light[0],qa,pixel))
+                 : (found=true, pixel_color<color>(vars.eyeball,light[0],qa,pixel))
               : get_first(bin, 1, i, j, zone, etd, maximum, qa)
                    // [1] is only...
-                 ? (found=true, get_color<color>(vars.eyeball,light[0],qa,pixel))
+                 ? (found=true, pixel_color<color>(vars.eyeball,light[0],qa,pixel))
                    // neither...
                  :  image.background;
       }
@@ -587,7 +605,15 @@ public:
 
 
 
+// max_anti
+// We don't have this; the below function will be used instead.
+
+
+
 // any_anti
+// Particular (i,j) in particular bin; loop over the shapes in the bin.
+// If this function is called, then endsorted <= binsize. Note that it
+// include the == case, as we don't have max_anti.
 template<class real, class base, class color, class pix>
 class any_anti {
 public:
@@ -607,12 +633,12 @@ public:
       (void)qb;
 
       // zzz Should make this optimization in the earlier two functions.
-      // zzz For that matter, all of this could be simplified further,
-      // zzz with certain code put/changed elsewhere.
+      // For that matter, all of this could be simplified further,
+      // with certain code put/changed elsewhere.
       //    542.91 sec, 1140248 kb
       //    539.93 sec, 1162492 kb
       //    529.91 sec, 1142612 kb
-      // zzz IMPORTANT NOTE: still need to figure out what's wrong with
+      // IMPORTANT NOTE: still need to figure out what's wrong with
       // this function, then stop using scene.sort_min = 10000000.
 
       const real hh = h + vars.hhalf*(vars.rec_anti(real())-1);
@@ -661,7 +687,7 @@ public:
 
          if (f) {
             found = true;
-            sum += get_color<color>(vars.eyeball,light[0], *qa_ptr, pixel);
+            sum += pixel_color<color>(vars.eyeball,light[0], *qa_ptr, pixel);
          } else {
             sum += image.background;
          }
@@ -687,8 +713,8 @@ public:
 //    two_plain()
 //    max_plain()
 //    any_plain()
-// Each loops over individual shapes, for a specific pixel.
 
+// Particular bin; loop over pixels
 template<
    class real, class base, class color, class pix,
    class ACTION
@@ -718,6 +744,7 @@ inline void fill_loop_plain(
       for (u32 i = imin;  i < iend;  ++i, ++tar, ++ptr, ++p) {
          const point<real> target = vars.t2e.back(*tar);
 
+         // action(individual pixel)
          action(
             engine,image, bin,endsorted,binsize,
             maximum, qa,&qa, qb,&qb, ptr,prev,
@@ -732,6 +759,13 @@ inline void fill_loop_plain(
 
 
 // fill_loop_lean
+// For each (i,j), calls one of:
+//    one_plain()
+//    two_plain()
+//    max_plain()
+//    any_plain()
+
+// Particular bin; loop over pixels
 template<
    class real, class base, class color, class pix,
    class ACTION
@@ -771,6 +805,8 @@ inline void fill_loop_lean(
          const real norm = 1/std::sqrt(tmp + h*h);
          const point<real> target =
             vars.t2e.back(view.d*(1-norm), h*norm, v*norm);
+
+         // action(individual pixel)
          action(
             engine,image, bin,endsorted,binsize,
             maximum, qa,&qa, qb,&qb, ptr,prev,
@@ -789,9 +825,8 @@ inline void fill_loop_lean(
 //    one_anti()
 //    two_anti()
 //    any_anti()
-// Each loops over individual shapes, for a specific pixel.
 
-// qqq Figure out good antialiasing treatment of per-pixel information
+// Particular bin; loop over pixels
 template<
   class real, class base, class color, class pix, class ulong, class ACTION
 >
@@ -814,6 +849,7 @@ inline void fill_loop_anti(
    array<2,pix> &pixel,
    const ACTION &action
 ) {
+   // qqq Figure out good antialiasing treatment of per-pixel information
    real h = hcent;
 
    // vertical pixels in the current bin...
@@ -828,6 +864,8 @@ inline void fill_loop_anti(
          // one_anti()
          // two_anti()
          // any_anti()
+
+         // action(individual pixel)
          if (action(
             engine, image, bin, endsorted, binsize,
             maximum, qa, &qa, qb, &qb, h, v, sum, vars, light, *p,
@@ -859,6 +897,17 @@ inline void bin_border(
 
 
 // trace_bin
+//
+// Particular bin; loop over pixels.
+//
+// This function makes some determinations involving bin size, sorting, engine
+// flags, and antialiasing yes/no, and, based on these factors, delegates to
+// one of fill_loop_*, and with one of several functors, to do the actual work.
+//
+// The "actual work" in this context consists of completing the pixels in this
+// bin, i.e. placing colors into them (and possibly drawing a border, if the
+// requisite flag is set).
+
 template<class real, class base, class color, class pix>
 void trace_bin(
    const engine<real      > &engine,
@@ -866,29 +915,33 @@ void trace_bin(
          image <real,color> &image,
    const vars  <real,base > &vars,
    const light <real      > &light,
-   array<2,pix> &pixel,
-
+         array <2,pix     > &pixel,
    u32 imin, u32 iend,
    u32 jmin, u32 jend,
    const ulong zone, const ulong max_binsize,
-
-   std::vector<minimum_and_shape<real,base>> &bin,
-   const ulong binsize
+   std::vector<minimum_and_shape<real,base>> &bin
 ) {
+   const ulong binsize = bin.size();
+
    // border?
+   // If so, then draw the bin's border and squeeze in its bounds - which no
+   // longer need to be ray-traced, because we just put the border into them!
    if (image.border.bin)
-      bin_border(image, imin++,iend--, jmin++,jend--,
-                 color::border(binsize, max_binsize));
+      bin_border(
+         image, imin++,iend--, jmin++,jend--,
+         color::border(binsize, max_binsize)
+      );
 
    // binsize-dependent [partial-]sorting actions
    using diff_t =
       typename std::vector<minimum_and_shape<real,base>>::difference_type;
-   ulong endsorted = 0;
+   ulong endsorted = binsize; // for now
 
    if (binsize == 2) {
       if (bin[1].minimum < bin[0].minimum)
          std::swap(bin[0], bin[1]);
    } else if (binsize > 2) {
+      // change endsorted
       endsorted = get_endsorted(0, engine, binsize);
       std::partial_sort(
          bin.begin(),

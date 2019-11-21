@@ -11,7 +11,7 @@ extern "C" {
 // kip: types
 using real  = double;
 using base  = kip::rgb;
-///using base  = kip::crayola::complete;
+///using base  = kip::picture<kip::rgb>;
 using color = kip::rgba;
 
 // kip: objects
@@ -41,7 +41,7 @@ namespace vars {
    int vpos = 0;
 
    // initial #renders prior to user control
-   int nrender = 0;
+   int nrotate = 0;
 
    // if timing: no window; render, exit
    bool timing = false;
@@ -249,6 +249,22 @@ bool sample(const sampling samp)
 // Return value: does image need to be re-rendered?
 // -----------------------------------------------------------------------------
 
+// helper: cyclepic
+template<class real, class base>
+inline bool cyclepic(const kip::model<real,base> &)
+{
+   return false;
+}
+template<class real, class base, class T>
+inline bool cyclepic(const kip::model<real,kip::picture<base,T>> &)
+{
+   kip::npic++;
+   return kip::picture<base,T>::image.size() > 1;
+}
+
+
+
+// move
 bool move(const int key)
 {
    using std::fmod;
@@ -272,12 +288,14 @@ bool move(const int key)
             engine.method != kip::method::uniform
           ? engine.method  = kip::method::uniform, true
           : false;
-
       case XK_r :
          return
             engine.method != kip::method::recursive
           ? engine.method  = kip::method::recursive, true
           : false;
+
+      // kip::npic
+      case XK_grave : return cyclepic(model);
 
       // bin/object border toggle
       case XK_bracketleft  : image.border.bin    = !image.border.bin   ;  break;
@@ -424,7 +442,7 @@ int interactive(const std::string &title)
       }
    }
 
-   if (vars::nrender > 0) {
+   if (vars::nrotate > 0) {
       // Meaning: if the current image size (which in this context would have
       // been kip's default) is different from what we need, given the window
       // size and the down-sampling, then [hv]image will come back as what we
@@ -435,7 +453,7 @@ int interactive(const std::string &title)
          image.upsize(ulong(himage),ulong(vimage));
       // else image is already exactly the size we need, so we're good to go
 
-      for (int n = 0;  n < vars::nrender;  ++n) {
+      for (int n = 0;  n < vars::nrotate;  ++n) {
          if (n) {
             view.theta += 1;
             view.phi   += 1;
@@ -451,7 +469,7 @@ int interactive(const std::string &title)
       // start
       tkExposeFunc (expose);
       tkKeyDownFunc(keydown);
-      if (vars::nrender < 1)
+      if (vars::nrotate < 1)
          image.upsize(0,0); // ensure render()
       tkExec();
 
@@ -701,10 +719,10 @@ inline bool vpos(const int n)
 // misc, threads
 // ------------------------
 
-// render
-inline bool render(const int n)
+// rotate
+inline bool rotate(const int n)
 {
-   vars::nrender = std::abs(n);
+   vars::nrotate = std::abs(n);
    return true;
 }
 
@@ -820,7 +838,7 @@ std::map<std::string, std::pair<bool (*)(const int), bool>> map = {
    { "-vpos",    { args::vpos,    true  } },
 
    // misc
-   { "-render",  { args::render,  true  } },
+   { "-rotate",  { args::rotate,  true  } },
    { "-timing",  { args::timing,  false } },
    { "-exit",    { args::Exit,    false } },
    { "-print",   { args::print,   false } },
@@ -904,53 +922,12 @@ bool read(
 
 
 // -----------------------------------------------------------------------------
-// earth
-// -----------------------------------------------------------------------------
-
-// earth
-std::vector<kip::array<2,kip::rgb>> earth(5);
-
-// readfile
-bool readfile(const ulong hsize, const ulong vsize, const char *const name)
-{
-   std::ifstream ifs(name, std::ios::ate | std::ios::binary);
-   const std::ios::pos_type size = ifs.tellg();
-   assert(size == long(hsize*vsize*sizeof(kip::rgb)));
-
-   static ulong index = 0;
-   earth[index].resize(hsize,vsize);
-   ifs.seekg(0, std::ios::beg);
-   return ifs.read((char *)earth[index++].data(), size) ? true : false;
-}
-
-// readearth
-bool readearth()
-{
-   std::cout << "Reading earth images..." << std::endl;
-   const bool rv =
-      readfile(8192, 4096, "earth/earth-08192x04096-shading-ice-clouds.rgb") &&
-      readfile(8192, 4096, "earth/earth-08192x04096-shading-ice.rgb") &&
-      readfile(8192, 4096, "earth/earth-08192x04096-shading.rgb") &&
-      readfile(8192, 4096, "earth/earth-08192x04096-plain.rgb") &&
-      readfile(8192, 4096, "earth/earth-08192x04096-night.rgb") &&
-      true;
-   std::cout << "Done." << std::endl;
-   return rv;
-}
-
-
-
-// -----------------------------------------------------------------------------
 // main
 // -----------------------------------------------------------------------------
 
 int main(const int argc, const char *const *const argv)
 {
-   /*
-   // zzz this should actually be a command-line argument
-   // zzz e.g. -earth 0.5
-   (void)readearth();
-   */
+   // kip::flat = true;
 
    /*
    printval(sizeof(kip::mmm<double>));

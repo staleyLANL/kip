@@ -6,9 +6,10 @@
 template<class BASE, class real = defaults::real>
 class marble {
 public:
-   // for i/o
+   // description, for i/o
    static const std::string description;
 
+   // data
    real amp, ampfac;
    real per, perfac;
    unsigned nfun;
@@ -35,9 +36,9 @@ public:
 };
 
 // description
-template<class basis, class real>
-const std::string marble<basis,real>::description =
-   std::string("marble<") + basis::description + ">";
+template<class BASE, class real>
+const std::string marble<BASE,real>::description =
+   std::string("marble<") + BASE::description + ">";
 
 
 

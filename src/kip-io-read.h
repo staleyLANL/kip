@@ -628,6 +628,49 @@ inline std::ostream &operator<<(std::ostream &s, const marble<BASE,real> &obj)
 
 
 // -----------------------------------------------------------------------------
+// istream >> picture
+// ostream << picture
+// -----------------------------------------------------------------------------
+
+// kip::istream >> picture
+template<class BASE, class real>
+inline kip::istream &operator>>(kip::istream &k, picture<BASE,real> &obj)
+{
+   read_value(k,obj);
+   return k;
+}
+
+// std::istream >> picture
+template<class BASE, class real>
+inline std::istream &operator>>(std::istream &s, picture<BASE,real> &obj)
+{
+   kip::istream k(s);
+   k >> obj;
+   return s;
+}
+
+// kip::ostream << picture
+template<class BASE, class real>
+inline kip::ostream &operator<<(kip::ostream &k, const picture<BASE,real> &obj)
+{
+   return k
+      << obj.base << ','
+      << obj.i;
+   ;
+}
+
+// std::ostream << picture
+template<class BASE, class real>
+inline std::ostream &operator<<(std::ostream &s, const picture<BASE,real> &obj)
+{
+   kip::ostream k(s);
+   k << obj;
+   return s;
+}
+
+
+
+// -----------------------------------------------------------------------------
 // read_value(point)
 // -----------------------------------------------------------------------------
 

@@ -13,6 +13,11 @@ public:
    { }
 };
 
+// largely for testing
+inline bool flat = false;
+inline int npic = -1;
+
+// for the rest of this file
 namespace detail {
 
 
@@ -36,6 +41,7 @@ inline real cosine(const real a, const real t, const real b)
 
 
 
+// fastrand
 inline int fastrand(const unsigned seed)
 { 
    return ((214013 * seed + 2531011) >> 16) & 0x7FFF; 
@@ -182,84 +188,167 @@ real noise(
 
 
 // -----------------------------------------------------------------------------
-// kipcolor
+// shape_color
+//
+// The two bools are:
+//
+//  - IN. Should shape.back() be called (true) to get the actual (neither
+//    rotated nor scaled) intersection? False == no, that was done already.
+//
+//  - OUT (but caller initializes to true). Should the caller continue on
+//    and modify the returned color to account for a light-based highlight?
+//
+// Note 1: The general case doesn't [need to] do anything with those.
+//
+// Note 2: Because shape.back() is virtual, we don't just call it directly
+// from pixel_color() later in this file, if it's needed, avoiding the worry
+// about conditionally doing so later. As far as the optimizer knows, the
+// back() call (remember, virtual and probably indeterminate at compile-time)
+// may have side effects, so that it probably can't optimize it away even if
+// the shape_color() function that receives back()'s result doesn't use it.
 // -----------------------------------------------------------------------------
 
 // general
-template<class COLOR, class real, class BASE>
-inline COLOR kipcolor(
-   const kip::shape<real,BASE> &,
-   const BASE &base,
-   const kip::point<real> &
+template<class COLOR, class SHAPE, class IN, class real>
+inline COLOR shape_color(
+   const SHAPE &,
+   const IN &in,
+   const kip::point<real> &,
+   const bool,  // "back": call shape.back()?
+   const bool & // "hilite": default=true; should caller highlight?
 ) {
-   COLOR color;
-   convert(base,color);
-   return color;
+   // The general case just reports the object's basic color,
+   // and doesn't need to deal with the bools
+   COLOR out;
+   convert(in,out);
+   return out;
 }
 
 
 
 // marble
-// T for marble is probably the same as real, but may be different
-template<class COLOR, class real, class BASE, class T>
-COLOR kipcolor(
-   const kip::shape<real,marble<BASE,T>> &shape,
-   const marble<BASE,T> &in,
-   const kip::point<real> &intersection
+// T for marble is probably the same as real, but doesn't need to be
+template<class COLOR, class SHAPE, class BASE, class T, class real>
+COLOR shape_color(
+   const SHAPE &shape,
+   const marble<BASE,T> &mar,
+   const kip::point<real> &intersection,
+   bool  back,
+   bool & // hilite
 ) {
-   const point<real> exact = shape.back(intersection);
-   T atotal;
+   const point<real> exact = back ? shape.back(intersection) : intersection;
+   back = false;
 
    // basic marble texture
+   T atotal;
    const real noise = detail::noise(
-      exact.x + in.seed,
-      exact.y + in.seed,
-      exact.z + in.seed,
-      in.amp, in.ampfac,
-      in.per, in.perfac,
-      in.nfun,
+      exact.x + mar.seed,
+      exact.y + mar.seed,
+      exact.z + mar.seed,
+      mar.amp, mar.ampfac,
+      mar.per, mar.perfac,
+      mar.nfun,
       atotal // output
    );
    const real fac = atotal*std::sin(noise);
 
-   COLOR color;
-   convert(in,color);
+   COLOR out;
+   convert(mar,out);
 
    const rgb white(255,255,255);
-   const int r = op::clip(0, int(color.r + (white.r-color.r)*fac), 255);
-   const int g = op::clip(0, int(color.g + (white.g-color.g)*fac), 255);
-   const int b = op::clip(0, int(color.b + (white.b-color.b)*fac), 255);
+   const int r = op::clip(0, int(out.r + (white.r-out.r)*fac), 255);
+   const int g = op::clip(0, int(out.g + (white.g-out.g)*fac), 255);
+   const int b = op::clip(0, int(out.b + (white.b-out.b)*fac), 255);
 
    // black swirls
-   if (in.swirl) {
+   if (mar.swirl) {
       const real sw_noise = detail::noise(
-         exact.x,/// + in.seed*100,
-         exact.y,/// + in.seed*10000,
-         exact.z,/// + in.seed*1000000,
+         exact.x,/// + mar.seed*100,
+         exact.y,/// + mar.seed*10000,
+         exact.z,/// + mar.seed*1000000,
          // zzz probably have separate parameters for swirl code
-         in.amp, in.ampfac,
-         0.5*in.per, in.perfac,
-         1, // in.nfun,
+         mar.amp, mar.ampfac,
+         0.5*mar.per, mar.perfac,
+         1, // mar.nfun,
          atotal
       );
       const real p = 5*op::min(0,0.5+std::cos(20*sw_noise));
-      color.r = uchar(op::clip(0, int(r + r*p), 255));
-      color.g = uchar(op::clip(0, int(g + g*p), 255));
-      color.b = uchar(op::clip(0, int(b + b*p), 255));
+      out.r = uchar(op::clip(0, int(r + r*p), 255));
+      out.g = uchar(op::clip(0, int(g + g*p), 255));
+      out.b = uchar(op::clip(0, int(b + b*p), 255));
    } else
-      color.set(uchar(r), uchar(g), uchar(b));
+      out.set(uchar(r), uchar(g), uchar(b));
 
-   return color;
+   return out;
+}
+
+
+
+// picture
+// T for picture is probably the same as real, but doesn't need to be
+template<class COLOR, class SHAPE, class BASE, class T, class real>
+COLOR shape_color(
+   const SHAPE &shape,
+   const picture<BASE,T> &pic,
+   const kip::point<real> &intersection,
+   bool  back,
+   bool &hilite
+) {
+   // use base, if pic.i is out of range
+   const int nimage = int(pic.image.size());
+   if (!(0 <= pic.i && pic.i < nimage))
+      return shape_color<COLOR>(shape, pic.base, intersection, back, hilite);
+
+   // select image
+   const kip::array<2,kip::rgb> &arr =
+      *pic.image[ulong(kip::npic < 0 ? pic.i : (kip::npic %= nimage))];
+
+   // use base, if image is empty
+   if (arr.size() == 0)
+      return shape_color<COLOR>(shape, pic.base, intersection, back, hilite);
+
+   // OK, good to go...
+   const point<real> exact = back ? shape.back(intersection) : intersection;
+   back = false;
+
+   // zzz Look over the following carefully, for correctness; also simplify
+
+   // For now, consider "exact" relative to (0,0,0)
+   /*
+   const real x = exact.x;
+   const real y = exact.y;
+   const real z = exact.z;
+   */
+   const real r = mod(exact);
+   const real p = atan2(exact.y,exact.x); // [-pi..pi]
+   const real t = acos(exact.z/r);
+
+   const int isize = int(arr.isize());
+   const int jsize = int(arr.jsize());
+
+   const real pfrac = std::abs(p + pi<real>)/(2*pi<real>);
+   const real tfrac = t/pi<real>;
+
+   const kip::rgb in = arr(
+      ulong(int(pfrac * isize) % isize),
+      ulong(int(tfrac * jsize) % jsize)
+   );
+   COLOR out;
+   convert(in,out);
+
+   // done
+   hilite = false;
+   return out;
 }
 
 
 
 // -----------------------------------------------------------------------------
-// diffuse_specular
+// highlight
 // -----------------------------------------------------------------------------
 
 template<class color, class real>
-color diffuse_specular(
+color highlight(
    const color &shapecol,
    const real q,
    const point<real> &eyeball,
@@ -305,79 +394,73 @@ color diffuse_specular(
 
 
 // -----------------------------------------------------------------------------
-// get_color
+// pixel_color
 // -----------------------------------------------------------------------------
 
-// get_color
-template<class color, class real, class base, class pix>
-color get_color(
+// Normally I'd have ordered the template parameters (real,base,color), as is
+// done elsewhere. Here, however, at the time of this writing, color doesn't
+// appear in the argument list, and we need the output to be of this type. So,
+// we're putting color first so it's easy to call as pixel_color<color>(...).
+
+template<class color, class real, class base, class EXTRA>
+color pixel_color(
    const point<real> &eyeball,
    const point<real> &light,
    const inq<real,base> &q,
-   pix &pixel
+   // extra per-pixel information (not pixel color, which is returned)
+   EXTRA &pixinfo
 ) {
-   // ----------------
-   // Color
-   // ----------------
+   // Extra per-pixel information
+   pixinfo.set(q);
 
-#ifdef KIP_COLOR_FLAT
-   // flat
-   (void)eyeball; (void)light; (void)pixel;
-   const RGB<uchar> c = *q.color;
-   ///kipcolor<color>(q, q.fac > 0 ? q.fac*q : point<real>(q));
-   const color rv(c.r, c.g, c.b);
+   // Flat?
+   // Then simple base ==> color conversion...
+   if (kip::flat) {
+      color out;
+      convert(*q.color,out);
+      return out;
+   }
 
-#else
-   // diffuse or specular
-   //    const RGB<uchar> &rgbval,
-   //    const real q,
-   //    const point<real> &eyeball,
-   //    const point<real> &light,
-   //    const point<real> &intersection,
-   //    const point<real> &normal,
-   //    const bool isnormalized
+   // Not flat?
+   // Then the general case...
 
-   ///   std::cout << "q.fac = " << q.fac << std::endl;
-   ///   std::cout << "point = " << point<real>(q) << std::endl;
-
-   // shape color at ray intersection
-   const color cshape = kipcolor<color>(
-     *q.shape,
-     *q.color,
-      q.fac > 0 ? q.fac*q.inter : q.inter
+   // Shape color at ray intersection. In the general case this is just copied
+   // from the second argument, but it can be different for special base types
+   // such as marble (which generally computes to something else) or picture.
+   bool hilite = true; // unless overridden...
+   const color c = shape_color<color>(
+     *q.shape, // the shape itself
+     *q.color, // usually shape->color, but (e.g. for [xyz]plane) can differ
+      q.fac > 0 ? q.fac*q.inter : q.inter,
+      true,    // true == must use back() on above if need true intersection
+      hilite   // defaulted to true above; callee can change
    );
+   if (!hilite) return c;
 
-   // final color, after effect from light
-   const color rv = diffuse_specular<color>(
-      cshape,
-
-      // scaled q needed by diffuse_specular()
+   // Final color, after effect from light
+   const color out = highlight(
+      // nominal shape color at intersection, from above
+      c,
+      // scaled q
       float(q.fac > 0 ? q.q/q.fac : q.q),
-
       // scaled eyeball
       q.shape->eyelie
          ? point<float>(q.shape->basic.eye())
          : point<float>(eyeball),
-
       // scaled light
       q.shape->eyelie
          ? q.shape->basic.lie()
          : point<float>(light),
-
       // scaled intersection
       point<float>(q.inter),
-
-      // normal; scaling N/A
+      // normal; scaling irrelevant
       point<float>(q.n),
-
       // normal-is-normalized
       q.isnormalized == normalized::yes
    );
-#endif
 
-   // done
-   pixel.set(q);
-   return rv;
+   // Done
+   return out;
 }
 
 } // namespace detail

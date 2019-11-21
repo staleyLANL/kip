@@ -38,6 +38,7 @@
 #include <limits>
 #include <list>
 #include <map>
+#include <memory>
 #include <new>
 #include <sstream>
 #include <vector>
@@ -83,6 +84,7 @@ class ostream;
 #include "kip-color-rgb.h"
 #include "kip-color-crayola.h"
 #include "kip-color-marble.h"
+#include "kip-color-picture.h"
 #include "kip-color-colormap.h"
 
 // ----------------
@@ -159,7 +161,7 @@ class ostream;
 // ----------------
 
 #include "kip-type-ray.h"
-#include "kip-color-texture.h"
+#include "kip-color.h"
 
 // ----------------
 // major classes

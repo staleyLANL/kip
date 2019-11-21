@@ -24,8 +24,8 @@ kip_process(ors)
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->isoperand = true;
-      min_and_op[i].minimum = minimum_t((min_and_op[i].shape = vec[i].op)->
-         process(eyeball,light,engine,vars));
+      min_and_op[i].minimum = (min_and_op[i].shape = vec[i].op)->
+         process(eyeball,light,engine,vars);
       kip_assert(min_and_op[i].minimum >= 0);
    }
 

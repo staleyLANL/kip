@@ -22,7 +22,7 @@ public:
 kip_process(nothing)
 {
    this->interior = false;
-   return std::numeric_limits<minimum_t>::max();
+   return std::numeric_limits<real>::max();
 } kip_end
 
 

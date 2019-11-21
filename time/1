@@ -11,9 +11,9 @@ echo
 # ------------------------
 
 echo "not"
-/usr/bin/time -f '   %e' s -not              50 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -not              50 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -not              50 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -not              50 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -not              50 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -not              50 -rotate 40 -timing -threads 1
 
 
 # ------------------------
@@ -21,24 +21,24 @@ echo "not"
 # ------------------------
 
 echo "and"
-/usr/bin/time -f '   %e' s -and          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -and          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -and          250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -and          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -and          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -and          250000 -rotate 40 -timing -threads 1
 
 echo "cut"
-/usr/bin/time -f '   %e' s -cut          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cut          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cut          250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cut          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cut          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cut          250000 -rotate 40 -timing -threads 1
 
 echo "or"
-/usr/bin/time -f '   %e' s -or           250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -or           250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -or           250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -or           250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -or           250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -or           250000 -rotate 40 -timing -threads 1
 
 echo "xor"
-/usr/bin/time -f '   %e' s -xor          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -xor          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -xor          250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xor          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xor          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xor          250000 -rotate 40 -timing -threads 1
 
 
 # ------------------------
@@ -46,44 +46,44 @@ echo "xor"
 # ------------------------
 
 echo "half"
-/usr/bin/time -f '   %e' s -half            500 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -half            500 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -half            500 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -half            500 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -half            500 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -half            500 -rotate 40 -timing -threads 1
 
 echo "nothing"
-/usr/bin/time -f '   %e' s -nothing    10000000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -nothing    10000000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -nothing    10000000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -nothing    10000000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -nothing    10000000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -nothing    10000000 -rotate 40 -timing -threads 1
 
 echo "everything"
-/usr/bin/time -f '   %e' s -everything 10000000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -everything 10000000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -everything 10000000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -everything 10000000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -everything 10000000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -everything 10000000 -rotate 40 -timing -threads 1
 
 echo "xplane"
-/usr/bin/time -f '   %e' s -xplane          100 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -xplane          100 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -xplane          100 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xplane          100 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xplane          100 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xplane          100 -rotate 40 -timing -threads 1
 
 echo "yplane"
-/usr/bin/time -f '   %e' s -yplane          100 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -yplane          100 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -yplane          100 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -yplane          100 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -yplane          100 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -yplane          100 -rotate 40 -timing -threads 1
 
 echo "zplane"
-/usr/bin/time -f '   %e' s -zplane          100 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -zplane          100 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -zplane          100 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -zplane          100 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -zplane          100 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -zplane          100 -rotate 40 -timing -threads 1
 
 echo "xyz"
-/usr/bin/time -f '   %e' s -xyz           50000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -xyz           50000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -xyz           50000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xyz           50000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xyz           50000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -xyz           50000 -rotate 40 -timing -threads 1
 
 echo "quad"
-/usr/bin/time -f '   %e' s -quad          50000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -quad          50000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -quad          50000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -quad          50000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -quad          50000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -quad          50000 -rotate 40 -timing -threads 1
 
 
 # ------------------------
@@ -91,86 +91,91 @@ echo "quad"
 # ------------------------
 
 echo "bicylinder"
-/usr/bin/time -f '   %e' s -bicylinder   250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -bicylinder   250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -bicylinder   250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -bicylinder   250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -bicylinder   250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -bicylinder   250000 -rotate 40 -timing -threads 1
 
 echo "biwasher"
-/usr/bin/time -f '   %e' s -biwasher     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -biwasher     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -biwasher     250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -biwasher     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -biwasher     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -biwasher     250000 -rotate 40 -timing -threads 1
 
 echo "box"
-/usr/bin/time -f '   %e' s -box          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -box          250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -box          250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -box          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -box          250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -box          250000 -rotate 40 -timing -threads 1
 
 echo "circle"
-/usr/bin/time -f '   %e' s -circle       250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -circle       250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -circle       250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -circle       250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -circle       250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -circle       250000 -rotate 40 -timing -threads 1
 
 echo "cone"
-/usr/bin/time -f '   %e' s -cone         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cone         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cone         250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cone         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cone         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cone         250000 -rotate 40 -timing -threads 1
 
 echo "cube"
-/usr/bin/time -f '   %e' s -cube         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cube         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cube         250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cube         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cube         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cube         250000 -rotate 40 -timing -threads 1
 
 echo "cylinder"
-/usr/bin/time -f '   %e' s -cylinder     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cylinder     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -cylinder     250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cylinder     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cylinder     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -cylinder     250000 -rotate 40 -timing -threads 1
 
 echo "ellipsoid"
-/usr/bin/time -f '   %e' s -ellipsoid    250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -ellipsoid    250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -ellipsoid    250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -ellipsoid    250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -ellipsoid    250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -ellipsoid    250000 -rotate 40 -timing -threads 1
 
 echo "paraboloid"
-/usr/bin/time -f '   %e' s -paraboloid   250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -paraboloid   250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -paraboloid   250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -paraboloid   250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -paraboloid   250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -paraboloid   250000 -rotate 40 -timing -threads 1
 
 echo "pill"
-/usr/bin/time -f '   %e' s -pill         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -pill         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -pill         250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -pill         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -pill         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -pill         250000 -rotate 40 -timing -threads 1
 
 echo "polygon"
-/usr/bin/time -f '   %e' s -polygon      250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -polygon      250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -polygon      250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -polygon      250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -polygon      250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -polygon      250000 -rotate 40 -timing -threads 1
 
 echo "silo"
-/usr/bin/time -f '   %e' s -silo         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -silo         250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -silo         250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -silo         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -silo         250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -silo         250000 -rotate 40 -timing -threads 1
 
 echo "sphere"
-/usr/bin/time -f '   %e' s -sphere       250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -sphere       250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -sphere       250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -sphere       250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -sphere       250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -sphere       250000 -rotate 40 -timing -threads 1
 
 echo "spheroid"
-/usr/bin/time -f '   %e' s -spheroid     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -spheroid     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -spheroid     250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -spheroid     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -spheroid     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -spheroid     250000 -rotate 40 -timing -threads 1
 
 echo "tabular"
-/usr/bin/time -f '   %e' s -tabular      250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -tabular      250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -tabular      250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -tabular      250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -tabular      250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -tabular      250000 -rotate 40 -timing -threads 1
 
 echo "triangle"
-/usr/bin/time -f '   %e' s -triangle     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -triangle     250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -triangle     250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -triangle     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -triangle     250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -triangle     250000 -rotate 40 -timing -threads 1
 
 echo "washer"
-/usr/bin/time -f '   %e' s -washer       250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -washer       250000 -render 40 -timing -threads 1
-/usr/bin/time -f '   %e' s -washer       250000 -render 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -washer       250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -washer       250000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -washer       250000 -rotate 40 -timing -threads 1
+
+echo "surf"
+/usr/bin/time -f '   %e' s -surf          50000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -surf          50000 -rotate 40 -timing -threads 1
+/usr/bin/time -f '   %e' s -surf          50000 -rotate 40 -timing -threads 1
