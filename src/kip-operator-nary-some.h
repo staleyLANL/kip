@@ -20,13 +20,13 @@ kip_process(some)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
+   std::vector<minimum_and_ptr<real,shape<real,tag>>> min_and_op(kip_data.nop);
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->isoperand = true;
-      min_and_op[i].minimum = (min_and_op[i].shape = vec[i].op)->
+      min_and_op[i].min = (min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars);
-      kip_assert(min_and_op[i].minimum >= 0);
+      kip_assert(min_and_op[i].min >= 0);
    }
 
    // The logical-some operator is mutually reflexive, so we can arbitrarily
@@ -37,7 +37,7 @@ kip_process(some)
    // Bookkeeping
    nary.total_in = 0;
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
-      vec[i].min = min_and_op[i].minimum;
+      vec[i].min = min_and_op[i].min;
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
    }
@@ -54,17 +54,17 @@ kip_process(some)
 
    // If in none, or in all; hit anything to get "some"
    if (nary.total_in == 0 || nary.total_in == kip_data.nop) {
-      real rv = min_and_op[0].minimum;
+      real rv = min_and_op[0].min;
       for (ulong i = 1;  i < kip_data.nop;  ++i)
-         rv = op::min(rv, real(min_and_op[i].minimum));
+         rv = op::min(rv, real(min_and_op[i].min));
       return rv;
    }
 
    // If in some, either exit all ins, or enter all outs
    real ins = 0, outs = 0;
    for (ulong i = 0;  i < kip_data.nop;  ++i)
-      if (vec[i].in) ins  = op::max(ins,  real(min_and_op[i].minimum));
-      else            outs = op::max(outs, real(min_and_op[i].minimum));
+      if (vec[i].in) ins  = op::max(ins,  real(min_and_op[i].min));
+      else            outs = op::max(outs, real(min_and_op[i].min));
    return op::min(ins,outs);
 } kip_end
 

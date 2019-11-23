@@ -1,51 +1,8 @@
 
 // -----------------------------------------------------------------------------
-// Helper constructs
+// binner
 // -----------------------------------------------------------------------------
 
-namespace detail {
-
-// min_and_part
-template<class SHAPE, class real>
-class min_and_part {
-public:
-   // data
-   /*
-zzz
-see if removing const has any speed effect
-see notes file
-the point is to see if we can consolidate some things
-should vet and check in code soon
-been doing lots of work
-   */
-   /*const*/ SHAPE *ptr;
-   real min;
-
-   // min_and_part(min,ptr)
-   ///   template<class real>
-   explicit min_and_part(const real _min, /*const*/ SHAPE &obj) :
-      ptr(&obj), min(_min)
-   { }
-};
-
-// part_less
-template<class SHAPE, class real>
-class part_less {
-public:
-   // for min_and_part
-   bool operator()(
-      const min_and_part<SHAPE,real> &a,
-      const min_and_part<SHAPE,real> &b
-   ) const {
-      return a.min < b.min;
-   }
-};
-
-} // namespace detail
-
-
-
-// binner
 template<class T>
 class binner {
    array<1,std::vector<T>> linear;
@@ -103,7 +60,7 @@ class surf : public shape<real,tag> {
 
    // mint
    // minimum eyeball-to-tri distances, and (to-be-)depth-sorted tri access
-   mutable binner<detail::min_and_part<kip::tri<real,tag>,real>> mint;
+   mutable binner<minimum_and_ptr<real,kip::tri<real,tag>>> mint;
 
 public:
 
@@ -237,9 +194,7 @@ kip_process(surf)
 
    // process the tris
    mint.reset(engine);
-   return detail::uprepare_tri<
-      detail::min_and_part<kip::tri<real,tag>,real>
-   >(
+   return detail::uprepare_tri<minimum_and_ptr<real,kip::tri<real,tag>>>(
       engine,
       vars,
       mint,
@@ -492,14 +447,16 @@ kip_randomize(surf)
 kip_infirst(surf)
 {
    // bookkeeping
-   std::vector<detail::min_and_part<kip::tri<real,tag>,real>> &bin =
+   std::vector<minimum_and_ptr<real,kip::tri<real,tag>>> &bin =
       mint[insub.nzone];
    const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint.sorted[insub.nzone]) {
-      std::sort(bin.begin(), bin.end(),
-                detail::part_less<kip::tri<real,tag>,real>());
+      std::sort(
+         bin.begin(), bin.end(),
+         detail::less<real,kip::tri<real,tag>>()
+      );
       mint.sorted[insub.nzone] = true;
    }
 
@@ -507,11 +464,11 @@ kip_infirst(surf)
    q = qmin;  bool found = false;
    for (unsigned t = 0;  t < ntri && bin[t].min < q;  ++t) {
       inq<real,tag> qnew;
-      const minend &fine = bin[t].ptr->mend;
+      const minend &fine = bin[t].shape->mend;
 
       if (fine.imin <= insub.i && insub.i < fine.iend &&
           fine.jmin <= insub.j && insub.j < fine.jend &&
-          bin[t].ptr->tri_t::infirst(etd, insub, q, qnew))
+          bin[t].shape->tri_t::infirst(etd, insub, q, qnew))
          q = qnew, found = true;
    }
 
@@ -525,14 +482,16 @@ kip_infirst(surf)
 kip_inall(surf)
 {
    // bookkeeping
-   std::vector<detail::min_and_part<kip::tri<real,tag>,real>> &bin =
+   std::vector<minimum_and_ptr<real,kip::tri<real,tag>>> &bin =
       mint[insub.nzone];
    const ulong ntri = bin.size();  if (ntri == 0) return false;
 
    // depth-sort bin, if necessary
    if (!mint.sorted[insub.nzone]) {
-      std::sort(bin.begin(), bin.end(),
-                detail::part_less<kip::tri<real,tag>,real>());
+      std::sort(
+         bin.begin(), bin.end(),
+         detail::less<real,kip::tri<real,tag>>()
+      );
       mint.sorted[insub.nzone] = true;
    }
 
@@ -540,11 +499,11 @@ kip_inall(surf)
    bool found = false;
    for (unsigned t = 0;  t < ntri && bin[t].min < qmin;  ++t) {
       inq<real,tag> q;
-      const minend &fine = bin[t].ptr->mend;
+      const minend &fine = bin[t].shape->mend;
 
       if (fine.imin <= insub.i && insub.i < fine.iend &&
           fine.jmin <= insub.j && insub.j < fine.jend &&
-          bin[t].ptr->tri_t::infirst(etd, insub, qmin, q))
+          bin[t].shape->tri_t::infirst(etd, insub, qmin, q))
          ints.push(q), found = true;
    }
 

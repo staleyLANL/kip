@@ -20,13 +20,13 @@ kip_process(even)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
+   std::vector<minimum_and_ptr<real,shape<real,tag>>> min_and_op(kip_data.nop);
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->isoperand = true;
-      min_and_op[i].minimum = (min_and_op[i].shape = vec[i].op)->
+      min_and_op[i].min = (min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars);
-      kip_assert(min_and_op[i].minimum >= 0);
+      kip_assert(min_and_op[i].min >= 0);
    }
 
    // The logical-even operator is mutually reflexive, so we can arbitrarily
@@ -37,7 +37,7 @@ kip_process(even)
    // Bookkeeping
    nary.total_in = 0;
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
-      vec[i].min = min_and_op[i].minimum;
+      vec[i].min = min_and_op[i].min;
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
    }
@@ -50,7 +50,7 @@ kip_process(even)
 
    // in 0
    if (nary.total_in == 0)
-      return min_and_op[1].minimum;  // get to at least two (minima [0] and [1])
+      return min_and_op[1].min;  // get to at least two (minima [0] and [1])
 
    // in 1
    if (nary.total_in == 1) {
@@ -58,12 +58,12 @@ kip_process(even)
       // qqq in fact I think we just need to check [0] or [1] here...
       for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (!vec[i].in)
-            return min_and_op[i].minimum;
+            return min_and_op[i].min;
       assert(false);
    }
 
    // in > 1: get to any border
-   return min_and_op[0].minimum;
+   return min_and_op[0].min;
 } kip_end
 
 
@@ -81,8 +81,6 @@ namespace detail {
          std::partial_sort(c.begin(), c.begin()+2, c.end(), compare);
    }
 }
-
-
 
 // aabb
 kip_aabb(even)
@@ -107,12 +105,10 @@ kip_aabb(even)
          if (b.z.max.finite()) zmax.push_back(b.z.max); }
    }
 
-   twosort(xmin,detail::less<real,tag>()),
-   twosort(xmax,detail::more<real,tag>());
-   twosort(ymin,detail::less<real,tag>()),
-   twosort(ymax,detail::more<real,tag>());
-   twosort(zmin,detail::less<real,tag>()),
-   twosort(zmax,detail::more<real,tag>());
+   using detail::twosort;
+   twosort(xmin, std::less<real>()), twosort(xmax, std::greater<real>());
+   twosort(ymin, std::less<real>()), twosort(ymax, std::greater<real>());
+   twosort(zmin, std::less<real>()), twosort(zmax, std::greater<real>());
 
    return bbox<real>(
       false,

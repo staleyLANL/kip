@@ -20,13 +20,13 @@ kip_process(ors)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
+   std::vector<minimum_and_ptr<real,shape<real,tag>>> min_and_op(kip_data.nop);
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->isoperand = true;
-      min_and_op[i].minimum = (min_and_op[i].shape = vec[i].op)->
+      min_and_op[i].min = (min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars);
-      kip_assert(min_and_op[i].minimum >= 0);
+      kip_assert(min_and_op[i].min >= 0);
    }
 
    // The logical-ors operator is mutually reflexive, so we can arbitrarily
@@ -39,7 +39,7 @@ kip_process(ors)
    bool in_ge1 = false;  // remains false if no objects
    nary.total_in = 0;
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
-      vec[i].min = min_and_op[i].minimum;
+      vec[i].min = min_and_op[i].min;
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          in_ge1 = true, nary.total_in++;
       else
@@ -48,21 +48,21 @@ kip_process(ors)
    this->interior = kip_data.nop ? nary.total_in > 0 : true;
 
    // minimum
-   real rv = kip_data.nop ? min_and_op[0].minimum : 0;
+   real rv = kip_data.nop ? min_and_op[0].min : 0;
    if (in_all)
       // in ALL; use maximum of minima (furthest exit)
       for (ulong i = 1;  i < kip_data.nop;  ++i)
-         rv = op::max(rv, real(min_and_op[i].minimum));
+         rv = op::max(rv, real(min_and_op[i].min));
    else if (in_ge1) {
       // in >=1; use maximum of "in" minima (furthest exit of "in"s)
       rv = 0;
       for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (vec[i].in)
-            rv = op::max(rv, real(min_and_op[i].minimum));
+            rv = op::max(rv, real(min_and_op[i].min));
    } else
       // in NONE; use minimum of minima (closest entry)
       for (ulong i = 1;  i < kip_data.nop;  ++i)
-         rv = op::min(rv, real(min_and_op[i].minimum));
+         rv = op::min(rv, real(min_and_op[i].min));
    return rv;
 } kip_end
 

@@ -22,13 +22,13 @@ kip_process(ands)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
+   std::vector<minimum_and_ptr<real,shape<real,tag>>> min_and_op(kip_data.nop);
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->isoperand = true;
-      min_and_op[i].minimum = (min_and_op[i].shape = vec[i].op)->
+      min_and_op[i].min = (min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars);
-      kip_assert(min_and_op[i].minimum >= 0);
+      kip_assert(min_and_op[i].min >= 0);
    }
 
    // The logical-ands operator is mutually reflexive, so we can arbitrarily
@@ -53,21 +53,21 @@ kip_process(ands)
    this->interior = kip_data.total_in == kip_data.nop;
 
    // minimum
-   real rv = kip_data.nop ? min_and_op[0].minimum : 0;
+   real rv = kip_data.nop ? min_and_op[0].min : 0;
    if (in_all)
       // in ALL; use minimum of minima (need to exit any)
       for (ulong i = 1;  i < kip_data.nop;  ++i)
-         rv = op::min(rv, real(min_and_op[i].minimum));
+         rv = op::min(rv, real(min_and_op[i].min));
    else if (in_ge1) {
       // in >=1; use maximum of not-in minima (need to enter all others)
       rv = 0;
       for (ulong i = 0;  i < kip_data.nop;  ++i)
          if (!vec[i].in)
-            rv = op::max(rv, real(min_and_op[i].minimum));
+            rv = op::max(rv, real(min_and_op[i].min));
    } else
       // in NONE; use maximum of minima (need to enter all)
       for (ulong i = 1;  i < kip_data.nop;  ++i)
-         rv = op::max(rv, real(min_and_op[i].minimum));
+         rv = op::max(rv, real(min_and_op[i].min));
    return rv;
 } kip_end
 

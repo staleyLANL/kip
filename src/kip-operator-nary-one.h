@@ -20,13 +20,13 @@ kip_process(one)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
+   std::vector<minimum_and_ptr<real,shape<real,tag>>> min_and_op(kip_data.nop);
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->isoperand = true;
-      min_and_op[i].minimum = (min_and_op[i].shape = vec[i].op)->
+      min_and_op[i].min = (min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars);
-      kip_assert(min_and_op[i].minimum >= 0);
+      kip_assert(min_and_op[i].min >= 0);
    }
 
    // The logical-one operator is mutually reflexive, so we can arbitrarily
@@ -37,7 +37,7 @@ kip_process(one)
    // Bookkeeping
    nary.total_in = 0;
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
-      vec[i].min = min_and_op[i].minimum;
+      vec[i].min = min_and_op[i].min;
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
    }
@@ -47,16 +47,16 @@ kip_process(one)
    if (kip_data.nop == 0) return 0;
 
    if (nary.total_in < 2) {
-      real rv = min_and_op[0].minimum;
+      real rv = min_and_op[0].min;
       for (ulong i = 1;  i < kip_data.nop;  ++i)
-         rv = op::min(rv, real(min_and_op[i].minimum));
+         rv = op::min(rv, real(min_and_op[i].min));
       return rv;
    }
 
    std::vector<real> minin(nary.total_in);  ulong n = 0;
    for (ulong i = 0;  i < kip_data.nop;  ++i)
       if (vec[i].in)
-         minin[n++] = min_and_op[i].minimum;
+         minin[n++] = min_and_op[i].min;
 
    std::sort(minin.begin(), minin.end());
    return minin[nary.total_in-2];  // in total_in, require exit from total_in-1

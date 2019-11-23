@@ -281,7 +281,7 @@ class one_plain {
 public:
    void operator()(
       const engine<real> &engine, const image<real,color> &image,
-      std::vector<minimum_and_shape<real,base>> &bin,
+      std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
       inq<real,base> &qa, inq<real,base> *qa_ptr,
       inq<real,base> &qb, inq<real,base> *qb_ptr,
@@ -320,7 +320,7 @@ class two_plain {
 public:
    void operator()(
       const engine<real> &engine, const image<real,color> &image,
-      std::vector<minimum_and_shape<real,base>> &bin,
+      std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
       inq<real,base> &qa, inq<real,base> *qa_ptr,
       inq<real,base> &qb, inq<real,base> *qb_ptr,
@@ -343,7 +343,7 @@ public:
       const eyetardiff<real> etd(vars.eyeball, target, diff);
 
       get_first(bin, 0, i, j, zone, etd, maximum, qa)
-         ? bin[1].minimum < qa.q &&
+         ? bin[1].min < qa.q &&
       get_first(bin, 1, i, j, zone, etd, qa.q, qb)
          ? (*ptr = pixel_color<color>(vars.eyeball, light, qb, pixel))
          : (*ptr = pixel_color<color>(vars.eyeball, light, qa, pixel))
@@ -364,7 +364,7 @@ class max_plain {
 public:
    void operator()(
       const engine<real> &engine, const image<real,color> &image,
-      std::vector<minimum_and_shape<real,base>> &bin,
+      std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
       inq<real,base> &qa, inq<real,base> *qa_ptr,
       inq<real,base> &qb, inq<real,base> *qb_ptr,
@@ -386,7 +386,7 @@ public:
 
       for (unsigned s = 0;  s < binsize;  ++s)
          if (get_first(bin, s, i, j, zone, etd, maximum, qa)) {
-            for ( ; ++s < binsize && bin[s].minimum < *qa_ptr ; )
+            for ( ; ++s < binsize && bin[s].min < *qa_ptr ; )
                if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
                   std::swap(qa_ptr,qb_ptr);
            *ptr = pixel_color<color>(vars.eyeball, light, *qa_ptr, pixel);
@@ -408,7 +408,7 @@ class any_plain {
 public:
    void operator()(
       const engine<real> &engine, const image<real,color> &image,
-      std::vector<minimum_and_shape<real,base>> &bin,
+      std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
       inq<real,base> &qa, inq<real,base> *qa_ptr,
       inq<real,base> &qb, inq<real,base> *qb_ptr,
@@ -440,7 +440,7 @@ public:
          // examine bin[prev+1] forward
          s = prev+1;
          for (;;) {
-            for ( ;  s < endsorted && (!found || bin[s].minimum < *qa_ptr);  ++s)
+            for ( ;  s < endsorted && (!found || bin[s].min < *qa_ptr);  ++s)
                if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
                   std::swap(qa_ptr,qb_ptr), newprev = s, found = true;
 
@@ -467,7 +467,7 @@ public:
                { std::swap(qa_ptr,qb_ptr);  prev = s++;  found = true;  break; }
 
          for (;;) {
-            for ( ;  s < endsorted && bin[s].minimum < *qa_ptr;  ++s)
+            for ( ;  s < endsorted && bin[s].min < *qa_ptr;  ++s)
                if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
                   std::swap(qa_ptr,qb_ptr), prev = s, found = true;
 
@@ -508,7 +508,7 @@ class one_anti {
 public:
    bool operator()(
       const engine<real> &engine, const image<real,color> &image,
-      std::vector<minimum_and_shape<real,base>> &bin,
+      std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
       inq<real,base> &qa, inq<real,base> *qa_ptr,
       inq<real,base> &qb, inq<real,base> *qb_ptr,
@@ -557,7 +557,7 @@ class two_anti {
 public:
    bool operator()(
       const engine<real> &engine, const image<real,color> &image,
-      std::vector<minimum_and_shape<real,base>> &bin,
+      std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
       inq<real,base> &qa, inq<real,base> *qa_ptr,
       inq<real,base> &qb, inq<real,base> *qb_ptr,
@@ -619,7 +619,7 @@ class any_anti {
 public:
    bool operator()(
       const engine<real> &engine, const image<real,color> &image,
-      std::vector<minimum_and_shape<real,base>> &bin,
+      std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
       ulong &endsorted, const ulong binsize, const real maximum,
       inq<real,base> &qa, inq<real,base> *qa_ptr,
       inq<real,base> &qb, inq<real,base> *qb_ptr,
@@ -668,7 +668,7 @@ public:
                { std::swap(qa_ptr,qb_ptr);  f = true;  s++;  break; }
 
          for (;;) {
-            for ( ;  s < endsorted && bin[s].minimum < *qa_ptr;  ++s)
+            for ( ;  s < endsorted && bin[s].min < *qa_ptr;  ++s)
                if (get_first(bin, s, i, j, zone, etd, real(*qa_ptr), *qb_ptr))
                   std::swap(qa_ptr,qb_ptr), f = true;
 
@@ -727,7 +727,7 @@ inline void fill_loop_plain(
    const u32 jmin, const u32 jend,
    const ulong zone, const real maximum,
 
-   std::vector<minimum_and_shape<real,base>> &bin,
+   std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
    ulong endsorted, const ulong binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
@@ -781,7 +781,7 @@ inline void fill_loop_lean(
    const u32 jmin, const u32 jend,
    const ulong zone, const real maximum,
 
-   std::vector<minimum_and_shape<real,base>> &bin,
+   std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
    ulong endsorted, const ulong binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
@@ -842,7 +842,7 @@ inline void fill_loop_anti(
    const ulong zone,
    const real maximum,
 
-   std::vector<minimum_and_shape<real,base>> &bin,
+   std::vector<minimum_and_ptr<real,shape<real,base>>> &bin,
    ulong endsorted, const ulong binsize,
    inq<real,base> &qa, inq<real,base> &qb,
 
@@ -919,7 +919,7 @@ void trace_bin(
    u32 imin, u32 iend,
    u32 jmin, u32 jend,
    const ulong zone, const ulong max_binsize,
-   std::vector<minimum_and_shape<real,base>> &bin
+   std::vector<minimum_and_ptr<real,shape<real,base>>> &bin
 ) {
    const ulong binsize = bin.size();
 
@@ -934,11 +934,11 @@ void trace_bin(
 
    // binsize-dependent [partial-]sorting actions
    using diff_t =
-      typename std::vector<minimum_and_shape<real,base>>::difference_type;
+      typename std::vector<minimum_and_ptr<real,shape<real,base>>>::difference_type;
    ulong endsorted = binsize; // for now
 
    if (binsize == 2) {
-      if (bin[1].minimum < bin[0].minimum)
+      if (bin[1].min < bin[0].min)
          std::swap(bin[0], bin[1]);
    } else if (binsize > 2) {
       // change endsorted

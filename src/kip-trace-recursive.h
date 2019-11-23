@@ -164,10 +164,10 @@ void rsetup(
 
 template<class real, class base>
 class functor_sv2bin {
-   std::vector<minimum_and_shape<real,base>> &bin;
+   std::vector<minimum_and_ptr<real,shape<real,base>>> &bin;
 
 public:
-   functor_sv2bin(std::vector<minimum_and_shape<real,base>> &_bin) :
+   functor_sv2bin(std::vector<minimum_and_ptr<real,shape<real,base>>> &_bin) :
       bin(_bin) { }
 
    template<class CONTAINER>
@@ -175,7 +175,7 @@ public:
    {
       const ulong size = c.size();
       for (ulong s = 0;  s < size;  ++s)
-         bin.push_back(minimum_and_shape<real,base>(c[s].minimum, *c[s].shape));
+         bin.push_back(minimum_and_ptr<real,shape<real,base>>(c[s].min, *c[s].shape));
    }
 };
 
@@ -196,7 +196,7 @@ inline void to_abstract_then_fill(
    const shape_vectors<real,base> &sv
 ) {
    const ulong binsize = sv.size();
-   std::vector<minimum_and_shape<real,base>> bin;
+   std::vector<minimum_and_ptr<real,shape<real,base>>> bin;
    bin.reserve(binsize);
 
    const functor_sv2bin<real,base> f(bin);

@@ -20,13 +20,13 @@ kip_process(odd)
    // process operands
    vec_t &vec = kip_data.vec();
    kip_data.nop = vec.size();
-   std::vector<minimum_and_shape<real,tag>> min_and_op(kip_data.nop);
+   std::vector<minimum_and_ptr<real,shape<real,tag>>> min_and_op(kip_data.nop);
 
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
       vec[i].op->isoperand = true;
-      min_and_op[i].minimum = (min_and_op[i].shape = vec[i].op)->
+      min_and_op[i].min = (min_and_op[i].shape = vec[i].op)->
          process(eyeball,light,engine,vars);
-      kip_assert(min_and_op[i].minimum >= 0);
+      kip_assert(min_and_op[i].min >= 0);
    }
 
    // The logical-odd operator is mutually reflexive, so we can arbitrarily
@@ -37,14 +37,14 @@ kip_process(odd)
    // Bookkeeping
    nary.total_in = 0;
    for (ulong i = 0;  i < kip_data.nop;  ++i) {
-      vec[i].min = min_and_op[i].minimum;
+      vec[i].min = min_and_op[i].min;
       if ((vec[i].in=(vec[i].op=min_and_op[i].shape)->interior))  // =, not ==
          nary.total_in++;
    }
    this->interior = kip_data.nop ? nary.total_in % 2 == 1 : true;
 
    // minimum
-   return kip_data.nop ? min_and_op[0].minimum : 0;
+   return kip_data.nop ? min_and_op[0].min : 0;
 } kip_end
 
 

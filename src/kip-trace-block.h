@@ -47,7 +47,7 @@ void block_setup_shape(
       for (int y = ya;  y <= yb;  ++y)
       for (int z = za;  z <= zb;  ++z)
          vars.block(x,y,z).vec.
-            push_back(minimum_and_shape<real,base>(0,*i));
+            push_back(minimum_and_ptr<real,shape<real,base>>(0,*i));
    }
 
    // Note: neither "reset" for each block(x,y,z), nor "minimum" for each
@@ -275,7 +275,7 @@ void btrace(
          const unsigned seg = i + engine.xzone*(j + engine.yzone*k);
 
          // bin: the present segment
-         using vector_t = std::vector<minimum_and_shape<real,base>>;
+         using vector_t = std::vector<minimum_and_ptr<real,shape<real,base>>>;
 
          vector_t &bin = vars.block[seg].vec;
          const ulong size = bin.size();

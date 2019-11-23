@@ -411,7 +411,7 @@ template<class real, class base>
 inline void merge_bins(
    const int nbin, const unsigned hzone,
    vars<real,base> &vars, const int nthreads,
-   const array<3,std::vector<minimum_and_shape<real,base>>> &per_zone
+   const array<3,std::vector<minimum_and_ptr<real,shape<real,base>>>> &per_zone
 ) {
    #pragma omp parallel for
    for (int b = 0;  b < nbin;  ++b) {
@@ -449,7 +449,7 @@ void uprepare(
    #ifdef _OPENMP
       // <3>: (hzone, vzone, nthreads-1)
       // nthreads-1 because thread 0 uses vars.uniform
-      static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
+      static array<3,std::vector<minimum_and_ptr<real,shape<real,base>>>> per_zone;
       const int nthreads = get_nthreads();
       for (ulong z = per_zone.size();  z--; )
          per_zone[z].clear();
@@ -495,11 +495,11 @@ void uprepare(
 
       #ifdef _OPENMP
          const int thread = this_thread();
-         std::vector<minimum_and_shape<real,base>> *vms = thread
+         std::vector<minimum_and_ptr<real,kip::shape<real,base>>> *vms = thread
             ? &per_zone[ulong(nbin*(thread-1))]
             : &vars.uniform[0];
       #else
-         std::vector<minimum_and_shape<real,base>> *vms = &vars.uniform[0];
+         std::vector<minimum_and_ptr<real,kip::shape<real,base>>> *vms = &vars.uniform[0];
       #endif
 
       // drop into bins
@@ -520,7 +520,7 @@ void uprepare(
                 test_1575(vars, shape, val) == 'c') continue;
 
             // push to bin
-            vms[val].push_back(minimum_and_shape<real,base>(pmin,shape));
+            vms[val].push_back(minimum_and_ptr<real,kip::shape<real,base>>(pmin,shape));
          }
       }
    }
@@ -628,7 +628,7 @@ inline void uprepare_surf(
    if (nsurf == 0) return;
 
    // per_zone(hzone, vzone, nthreads-1) (-1 because thread 0 uses vars.uniform)
-   static array<3,std::vector<minimum_and_shape<real,base>>> per_zone;
+   static array<3,std::vector<minimum_and_ptr<real,shape<real,base>>>> per_zone;
    #ifdef _OPENMP
       const int nthreads = get_nthreads();
       for (ulong z = per_zone.size();  z--; )
@@ -659,10 +659,10 @@ inline void uprepare_surf(
       }
 
       const int thread = this_thread();
-      std::vector<minimum_and_shape<real,base>> *const ptr = thread
+      std::vector<minimum_and_ptr<real,shape<real,base>>> *const ptr = thread
        ? &per_zone[ulong(nbin*(thread-1))]
        : &vars.uniform[0];
-      uprepare_tri<minimum_and_shape<real,base>>
+      uprepare_tri<minimum_and_ptr<real,shape<real,base>>>
          (engine,vars, ptr,p, object_border);
    }
 

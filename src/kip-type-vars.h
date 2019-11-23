@@ -10,7 +10,7 @@ template<class real, class tag>  // template arguments defaulted elsewhere
 class vars {
 public:
    // Shapes: abstract access for uniform and block methods
-   array<2,std::vector<minimum_and_shape<real,tag>>> uniform;
+   array<2,std::vector<minimum_and_ptr<real,shape<real,tag>>>> uniform;
    array<3,vec_reset<real,tag>> block;
 
    // Miscellaneous

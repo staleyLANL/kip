@@ -771,7 +771,6 @@ inline bool op_all(
 
 // -----------------------------------------------------------------------------
 // minimum_and_ptr
-// minimum_and_shape
 // vec_reset
 // -----------------------------------------------------------------------------
 
@@ -780,136 +779,63 @@ template<class real, class SHAPE>
 class minimum_and_ptr {
 public:
    SHAPE *shape;
-   real minimum;
+   real min;
 
    explicit minimum_and_ptr()
    { }
 
    explicit minimum_and_ptr(const real m, SHAPE &s)
-    : shape(&s), minimum(m)
+    : shape(&s), min(m)
    { }
 };
-
-
-/*
-// minimum_and_shape
-template<class real, class base>
-class minimum_and_shape : public minimum_and_ptr<real,shape<real,base>> {
-public:
-   explicit minimum_and_shape()
-   { }
-
-   explicit minimum_and_shape(const real m, shape<real,base> &s)
-      : minimum_and_ptr<real, shape<real,base>>(m,s)
-   { }
-};
-*/
-
-// minimum_and_shape
-template<class real, class base>
-class minimum_and_shape {
-public:
-   kip::shape<real,base> *shape;
-   real minimum;
-
-   explicit minimum_and_shape()
-   { }
-
-   explicit minimum_and_shape(const real m, kip::shape<real,base> &s)
-    : shape(&s), minimum(m)
-   { }
-};
-
-/*
-template<class real, class base>
-inline bool operator<(
-   const minimum_and_shape<real,base> &a,
-   const minimum_and_shape<real,base> &b
-) {
-   return a.minimum < b.minimum;
-}
-*/
 
 // vec_reset
 template<class real, class base>
 class vec_reset {
 public:
-   std::vector<minimum_and_shape<real,base>> vec;
+   std::vector<minimum_and_ptr<real,shape<real,base>>> vec;
    bool reset;
 };
 
 
 
 // -----------------------------------------------------------------------------
-// less, same, more
+// less, more
 // -----------------------------------------------------------------------------
 
 namespace detail {
 
 // less
-template<class real, class tag>
+template<class real, class base>
 class less {
 public:
-
-   // for minimum_and_shape
+   // for minimum_and_ptr
+   template<class SHAPE>
    bool operator()(
-      const minimum_and_shape<real,tag> a,
-      const minimum_and_shape<real,tag> b
+      const minimum_and_ptr<real,SHAPE> a,
+      const minimum_and_ptr<real,SHAPE> b
    ) const {
-      return a.minimum < b.minimum;
+      return a.min < b.min;
    }
 
-   // for real
-   bool operator()(const real a, const real b) const { return a < b; }
-
    // for inq
-   bool operator()(const inq<real,tag> &a, const inq<real,tag> &b) const
+   bool operator()(const inq<real,base> &a, const inq<real,base> &b) const
       { return a.q < b.q; }
 };
 
 
 
-// less_mmi
-template<class real> class mmi;
-
-template<class real>
-class less_mmi {
-public:
-   // for mmi
-   bool operator()(
-      const mmi<real> &a,
-      const mmi<real> &b
-   ) const
-      { return a.qsq < b.qsq; }
-};
-
-
-
-// same
-template<class real>
-class same {
-public:
-   // for point
-   bool operator()(const point<real> &a, const point<real> &b) const
-      { return a == b; }
-};
-
-
-
 // more
-template<class real, class tag>
+template<class real, class base>
 class more {
 public:
-   // for minimum_and_shape
+   // for minimum_and_ptr
    bool operator()(
-      const minimum_and_shape<real,tag> &a,
-      const minimum_and_shape<real,tag> &b
+      const minimum_and_ptr<real,shape<real,base>> &a,
+      const minimum_and_ptr<real,shape<real,base>> &b
    ) const {
-      return a.minimum > b.minimum;
+      return a.min > b.min;
    }
-
-   // for real
-   bool operator()(const real a, const real b) const { return a > b; }
 };
 
 } // namespace detail
